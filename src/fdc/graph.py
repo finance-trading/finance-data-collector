@@ -26,6 +26,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 from fdc.sec_storage import CACHE_DIR, PROJECT_ROOT
+from fdc.web_data import write_data
 
 WEB_DIR = PROJECT_ROOT / "web"
 COMPANIES_PATH = WEB_DIR / "data" / "companies.json"
@@ -287,10 +288,10 @@ def main() -> None:
         include_cohold=not args.offline and not args.no_cohold,
         wait=args.wait,
     )
-    GRAPH_PATH.write_text(json.dumps(graph, ensure_ascii=False, indent=1))
+    json_path, js_path = write_data(GRAPH_PATH.stem, graph, GRAPH_PATH.parent)
     types = Counter(link["type"] for link in graph["links"])
     total = f"{len(graph['nodes'])} nodes, {len(graph['links'])} links, {dict(types)}"
-    print(f"wrote {GRAPH_PATH} — {total}")
+    print(f"wrote {json_path} + {js_path.name} — {total}")
 
 
 if __name__ == "__main__":

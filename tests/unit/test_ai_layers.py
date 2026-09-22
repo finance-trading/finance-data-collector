@@ -221,6 +221,10 @@ def test_main_writes_tree_json(tmp_path, monkeypatch):
     assert payload["generated_at"]
     assert payload["source"] == "web/data/companies.json"
 
+    shim = out.with_suffix(".js")
+    assert shim.exists()
+    assert 'window.__FDC_DATA__["layers"] = {' in shim.read_text()
+
 
 def test_enrich_graph_adds_layers_to_matching_nodes(tmp_path):
     graph_path = tmp_path / "graph.json"

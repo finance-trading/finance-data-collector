@@ -29,6 +29,7 @@ from pathlib import Path
 
 from fdc.graph import load_ticker_cik_map
 from fdc.sec_storage import PROJECT_ROOT
+from fdc.web_data import write_data
 
 WEB_DIR = PROJECT_ROOT / "web"
 DATA_DIR = WEB_DIR / "data"
@@ -289,7 +290,7 @@ def enrich_graph(
         if company.get("also_in"):
             node["also_in"] = list(company["also_in"])
         updated += 1
-    path.write_text(json.dumps(payload, ensure_ascii=False, indent=1))
+    write_data(path.stem, payload, path.parent)
     return updated
 
 
@@ -316,12 +317,13 @@ def main(argv: list[str] | None = None) -> None:
     print(f"universe: {len(companies)} companies · {len(layers)} layers")
     resolved = resolve_ciks(companies)
     tree = build_tree(resolved, layers, time.strftime("%Y-%m-%d %H:%M"))
-    args.out.write_text(json.dumps(tree, ensure_ascii=False, indent=1))
+    json_path, js_path = write_data(args.out.stem, tree, args.out.parent)
 
     stats = tree["stats"]
     print(
-        f"wrote {args.out} — {stats['companies']} companies · {stats['layers']} layers · "
-        f"{stats['segments']} segments · {stats['cross_layer']} cross-layer roles"
+        f"wrote {json_path} + {js_path.name} — {stats['companies']} companies · "
+        f"{stats['layers']} layers · {stats['segments']} segments · "
+        f"{stats['cross_layer']} cross-layer roles"
     )
     if args.enrich_graph:
         names = {layer["id"]: layer["name"] for layer in layers}

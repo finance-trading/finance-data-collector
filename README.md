@@ -32,6 +32,10 @@ uv run python -m http.server -d web 8000
 # http://localhost:8000/             3D 公司关系图（行业 / 分层着色）
 ```
 
+构建脚本同时写出 `data/<name>.json` 与 `data/<name>.js`（脚本垫片），所以直接双击
+`web/layers.html` / `web/index.html` 也能打开：`file://` 下浏览器禁止 `fetch()`，页面会自动
+改用 `<script>` 垫片读取数据，无需起本地服务器。
+
 `tests/unit/test_ai_layers.py` 覆盖分层契约校验（未知层、未声明细分、重复 ticker、空环节）与
 树 / ASCII / Mermaid 渲染，全部离线运行。
 
