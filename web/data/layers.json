@@ -1,0 +1,1837 @@
+{
+ "generated_at": "2026-09-22 08:38",
+ "source": "web/data/companies.json",
+ "stats": {
+  "companies": 99,
+  "layers": 6,
+  "segments": 25,
+  "cross_layer": 12
+ },
+ "root": {
+  "id": "ai",
+  "type": "root",
+  "name": "AI 产业链",
+  "name_en": "AI Value Chain",
+  "count": 99,
+  "children": [
+   {
+    "id": "power",
+    "type": "layer",
+    "name": "能源与电力",
+    "name_en": "Energy & Power",
+    "summary": "AI 算力的物理底座：发电、输电、配电与液冷散热。机柜功率密度上升后，电力供给成为算力扩张的第一约束。",
+    "count": 8,
+    "children": [
+     {
+      "id": "power/数据中心电力与温控",
+      "type": "segment",
+      "name": "数据中心电力与温控",
+      "layer": "power",
+      "count": 2,
+      "children": [
+       {
+        "id": "VRT",
+        "type": "company",
+        "ticker": "VRT",
+        "name": "Vertiv",
+        "cik": 1674101,
+        "sector": "Industrials",
+        "industry": "Electrical Equipment",
+        "layer": "power",
+        "segment": "数据中心电力与温控",
+        "description": "数据中心配电、UPS 与液冷温控，AI 机柜功率密度提升的直接受益者。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1674101"
+       },
+       {
+        "id": "ETN",
+        "type": "company",
+        "ticker": "ETN",
+        "name": "Eaton",
+        "cik": 1551182,
+        "sector": "Industrials",
+        "industry": "Electrical Equipment",
+        "layer": "power",
+        "segment": "数据中心电力与温控",
+        "description": "电气设备与数据中心配电、UPS 及微电网。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1551182"
+       }
+      ]
+     },
+     {
+      "id": "power/发电与核电",
+      "type": "segment",
+      "name": "发电与核电",
+      "layer": "power",
+      "count": 5,
+      "children": [
+       {
+        "id": "GEV",
+        "type": "company",
+        "ticker": "GEV",
+        "name": "GE Vernova",
+        "cik": 1996810,
+        "sector": "Industrials",
+        "industry": "Heavy Electrical Equipment",
+        "layer": "power",
+        "segment": "发电与核电",
+        "description": "燃气轮机、电网设备与核电技术，数据中心供电建设方。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1996810"
+       },
+       {
+        "id": "CEG",
+        "type": "company",
+        "ticker": "CEG",
+        "name": "Constellation Energy",
+        "cik": 1868275,
+        "sector": "Utilities",
+        "industry": "Power Generation",
+        "layer": "power",
+        "segment": "发电与核电",
+        "description": "美国最大核电运营商，向超大规模数据中心直供电。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1868275"
+       },
+       {
+        "id": "VST",
+        "type": "company",
+        "ticker": "VST",
+        "name": "Vistra",
+        "cik": 1692819,
+        "sector": "Utilities",
+        "industry": "Power Generation",
+        "layer": "power",
+        "segment": "发电与核电",
+        "description": "独立发电商，核电、天然气与零售电力组合。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1692819"
+       },
+       {
+        "id": "TLN",
+        "type": "company",
+        "ticker": "TLN",
+        "name": "Talen Energy",
+        "cik": 1622536,
+        "sector": "Utilities",
+        "industry": "Power Generation",
+        "layer": "power",
+        "segment": "发电与核电",
+        "description": "核电资产，与 AWS 签订数据中心长期供电协议。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1622536"
+       },
+       {
+        "id": "NRG",
+        "type": "company",
+        "ticker": "NRG",
+        "name": "NRG Energy",
+        "cik": 1013871,
+        "sector": "Utilities",
+        "industry": "Power Generation",
+        "layer": "power",
+        "segment": "发电与核电",
+        "description": "发电与零售电力，布局数据中心供电交易。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1013871"
+       }
+      ]
+     },
+     {
+      "id": "power/电网与工程",
+      "type": "segment",
+      "name": "电网与工程",
+      "layer": "power",
+      "count": 1,
+      "children": [
+       {
+        "id": "PWR",
+        "type": "company",
+        "ticker": "PWR",
+        "name": "Quanta Services",
+        "cik": 1050915,
+        "sector": "Industrials",
+        "industry": "Construction & Engineering",
+        "layer": "power",
+        "segment": "电网与工程",
+        "description": "电网建设与数据中心电力接入工程。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1050915"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "id": "silicon",
+    "type": "layer",
+    "name": "芯片与半导体",
+    "name_en": "Semiconductors & Silicon",
+    "summary": "算力芯片、存储、模拟电源、晶圆代工、设备材料、EDA/IP 与光互连，是 AI 硬件价值链最上游。",
+    "count": 31,
+    "children": [
+     {
+      "id": "silicon/算力芯片",
+      "type": "segment",
+      "name": "算力芯片",
+      "layer": "silicon",
+      "count": 6,
+      "children": [
+       {
+        "id": "NVDA",
+        "type": "company",
+        "ticker": "NVDA",
+        "name": "NVIDIA",
+        "cik": 1045810,
+        "sector": "Technology",
+        "industry": "Semiconductors",
+        "layer": "silicon",
+        "segment": "算力芯片",
+        "description": "GPU 与 AI 加速器龙头，数据中心与游戏芯片。",
+        "also_in": [
+         "infra"
+        ],
+        "cross_in": [
+         "算力基础设施与云"
+        ],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1045810"
+       },
+       {
+        "id": "AMD",
+        "type": "company",
+        "ticker": "AMD",
+        "name": "Advanced Micro Devices",
+        "cik": 2488,
+        "sector": "Technology",
+        "industry": "Semiconductors",
+        "layer": "silicon",
+        "segment": "算力芯片",
+        "description": "x86 CPU 与数据中心 GPU，AI 芯片竞争者。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=2488"
+       },
+       {
+        "id": "AVGO",
+        "type": "company",
+        "ticker": "AVGO",
+        "name": "Broadcom",
+        "cik": 1730168,
+        "sector": "Technology",
+        "industry": "Semiconductors",
+        "layer": "silicon",
+        "segment": "算力芯片",
+        "description": "半导体与基础设施软件（VMware），AI 网络互连。",
+        "also_in": [
+         "infra"
+        ],
+        "cross_in": [
+         "算力基础设施与云"
+        ],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1730168"
+       },
+       {
+        "id": "MRVL",
+        "type": "company",
+        "ticker": "MRVL",
+        "name": "Marvell",
+        "cik": 1835632,
+        "sector": "Technology",
+        "industry": "Semiconductors",
+        "layer": "silicon",
+        "segment": "算力芯片",
+        "description": "定制 ASIC 与数据中心互连芯片。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1835632"
+       },
+       {
+        "id": "INTC",
+        "type": "company",
+        "ticker": "INTC",
+        "name": "Intel",
+        "cik": 50863,
+        "sector": "Technology",
+        "industry": "Semiconductors",
+        "layer": "silicon",
+        "segment": "算力芯片",
+        "description": "CPU 大厂，转型 AI 与代工。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=50863"
+       },
+       {
+        "id": "QCOM",
+        "type": "company",
+        "ticker": "QCOM",
+        "name": "Qualcomm",
+        "cik": 804328,
+        "sector": "Technology",
+        "industry": "Semiconductors",
+        "layer": "silicon",
+        "segment": "算力芯片",
+        "description": "移动 SoC 与自研 AI 边缘芯片。",
+        "also_in": [
+         "edge"
+        ],
+        "cross_in": [
+         "终端与具身智能"
+        ],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=804328"
+       }
+      ]
+     },
+     {
+      "id": "silicon/存储芯片",
+      "type": "segment",
+      "name": "存储芯片",
+      "layer": "silicon",
+      "count": 4,
+      "children": [
+       {
+        "id": "MU",
+        "type": "company",
+        "ticker": "MU",
+        "name": "Micron",
+        "cik": 723125,
+        "sector": "Technology",
+        "industry": "Semiconductors",
+        "layer": "silicon",
+        "segment": "存储芯片",
+        "description": "内存/HBM 存储芯片，AI 算力关键。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=723125"
+       },
+       {
+        "id": "SNDK",
+        "type": "company",
+        "ticker": "SNDK",
+        "name": "Sandisk",
+        "cik": 2023554,
+        "sector": "Technology",
+        "industry": "Semiconductors",
+        "layer": "silicon",
+        "segment": "存储芯片",
+        "description": "闪存存储产品。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=2023554"
+       },
+       {
+        "id": "WDC",
+        "type": "company",
+        "ticker": "WDC",
+        "name": "Western Digital",
+        "cik": 106040,
+        "sector": "Technology",
+        "industry": "Technology Hardware",
+        "layer": "silicon",
+        "segment": "存储芯片",
+        "description": "近线大容量 HDD，AI 数据存储需求受益。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=106040"
+       },
+       {
+        "id": "STX",
+        "type": "company",
+        "ticker": "STX",
+        "name": "Seagate",
+        "cik": 1137789,
+        "sector": "Technology",
+        "industry": "Technology Hardware",
+        "layer": "silicon",
+        "segment": "存储芯片",
+        "description": "近线硬盘与存储系统，数据中心冷数据层。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1137789"
+       }
+      ]
+     },
+     {
+      "id": "silicon/模拟与电源芯片",
+      "type": "segment",
+      "name": "模拟与电源芯片",
+      "layer": "silicon",
+      "count": 4,
+      "children": [
+       {
+        "id": "ADI",
+        "type": "company",
+        "ticker": "ADI",
+        "name": "Analog Devices",
+        "cik": 6281,
+        "sector": "Technology",
+        "industry": "Semiconductors",
+        "layer": "silicon",
+        "segment": "模拟与电源芯片",
+        "description": "模拟芯片，数据中心电源管理。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=6281"
+       },
+       {
+        "id": "MPWR",
+        "type": "company",
+        "ticker": "MPWR",
+        "name": "Monolithic Power Systems",
+        "cik": 1280452,
+        "sector": "Technology",
+        "industry": "Semiconductors",
+        "layer": "silicon",
+        "segment": "模拟与电源芯片",
+        "description": "电源管理芯片，AI 服务器多相供电模块。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1280452"
+       },
+       {
+        "id": "ON",
+        "type": "company",
+        "ticker": "ON",
+        "name": "ON Semiconductor",
+        "cik": 1097864,
+        "sector": "Technology",
+        "industry": "Semiconductors",
+        "layer": "silicon",
+        "segment": "模拟与电源芯片",
+        "description": "功率半导体，数据中心与汽车电源。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1097864"
+       },
+       {
+        "id": "TXN",
+        "type": "company",
+        "ticker": "TXN",
+        "name": "Texas Instruments",
+        "cik": 97476,
+        "sector": "Technology",
+        "industry": "Semiconductors",
+        "layer": "silicon",
+        "segment": "模拟与电源芯片",
+        "description": "模拟与嵌入式芯片龙头，AI 电源链间接受益。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=97476"
+       }
+      ]
+     },
+     {
+      "id": "silicon/晶圆代工",
+      "type": "segment",
+      "name": "晶圆代工",
+      "layer": "silicon",
+      "count": 2,
+      "children": [
+       {
+        "id": "TSM",
+        "type": "company",
+        "ticker": "TSM",
+        "name": "TSMC",
+        "cik": 1046179,
+        "sector": "Technology",
+        "industry": "Semiconductors",
+        "layer": "silicon",
+        "segment": "晶圆代工",
+        "description": "全球最大晶圆代工，先进制程领先。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1046179"
+       },
+       {
+        "id": "GFS",
+        "type": "company",
+        "ticker": "GFS",
+        "name": "GlobalFoundries",
+        "cik": 1709048,
+        "sector": "Technology",
+        "industry": "Semiconductors",
+        "layer": "silicon",
+        "segment": "晶圆代工",
+        "description": "成熟制程代工，汽车、工业与硅光平台。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1709048"
+       }
+      ]
+     },
+     {
+      "id": "silicon/半导体设备与材料",
+      "type": "segment",
+      "name": "半导体设备与材料",
+      "layer": "silicon",
+      "count": 8,
+      "children": [
+       {
+        "id": "ASML",
+        "type": "company",
+        "ticker": "ASML",
+        "name": "ASML",
+        "cik": 937966,
+        "sector": "Technology",
+        "industry": "Semiconductor Equipment",
+        "layer": "silicon",
+        "segment": "半导体设备与材料",
+        "description": "EUV 光刻机独家供应商。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=937966"
+       },
+       {
+        "id": "AMAT",
+        "type": "company",
+        "ticker": "AMAT",
+        "name": "Applied Materials",
+        "cik": 6951,
+        "sector": "Technology",
+        "industry": "Semiconductor Equipment",
+        "layer": "silicon",
+        "segment": "半导体设备与材料",
+        "description": "沉积、刻蚀与离子注入设备，先进封装受益。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=6951"
+       },
+       {
+        "id": "LRCX",
+        "type": "company",
+        "ticker": "LRCX",
+        "name": "Lam Research",
+        "cik": 707549,
+        "sector": "Technology",
+        "industry": "Semiconductor Equipment",
+        "layer": "silicon",
+        "segment": "半导体设备与材料",
+        "description": "刻蚀与沉积设备，HBM 与 3D 封装关键。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=707549"
+       },
+       {
+        "id": "KLAC",
+        "type": "company",
+        "ticker": "KLAC",
+        "name": "KLA",
+        "cik": 319201,
+        "sector": "Technology",
+        "industry": "Semiconductor Equipment",
+        "layer": "silicon",
+        "segment": "半导体设备与材料",
+        "description": "量测与检测设备，先进制程良率控制。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=319201"
+       },
+       {
+        "id": "TER",
+        "type": "company",
+        "ticker": "TER",
+        "name": "Teradyne",
+        "cik": 97210,
+        "sector": "Technology",
+        "industry": "Semiconductor Equipment",
+        "layer": "silicon",
+        "segment": "半导体设备与材料",
+        "description": "半导体测试设备与协作机器人。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=97210"
+       },
+       {
+        "id": "ONTO",
+        "type": "company",
+        "ticker": "ONTO",
+        "name": "Onto Innovation",
+        "cik": 704532,
+        "sector": "Technology",
+        "industry": "Semiconductor Equipment",
+        "layer": "silicon",
+        "segment": "半导体设备与材料",
+        "description": "先进封装量测与检测设备。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=704532"
+       },
+       {
+        "id": "ENTG",
+        "type": "company",
+        "ticker": "ENTG",
+        "name": "Entegris",
+        "cik": 1101302,
+        "sector": "Technology",
+        "industry": "Semiconductor Equipment",
+        "layer": "silicon",
+        "segment": "半导体设备与材料",
+        "description": "半导体材料、过滤与洁净方案。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1101302"
+       },
+       {
+        "id": "KEYS",
+        "type": "company",
+        "ticker": "KEYS",
+        "name": "Keysight",
+        "cik": 1601046,
+        "sector": "Technology",
+        "industry": "Electronic Equipment",
+        "layer": "silicon",
+        "segment": "半导体设备与材料",
+        "description": "测试测量仪器，光模块与高速接口验证。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1601046"
+       }
+      ]
+     },
+     {
+      "id": "silicon/EDA 与 IP",
+      "type": "segment",
+      "name": "EDA 与 IP",
+      "layer": "silicon",
+      "count": 3,
+      "children": [
+       {
+        "id": "SNPS",
+        "type": "company",
+        "ticker": "SNPS",
+        "name": "Synopsys",
+        "cik": 883241,
+        "sector": "Technology",
+        "industry": "System Software",
+        "layer": "silicon",
+        "segment": "EDA 与 IP",
+        "description": "EDA 龙头与芯片 IP，AI 芯片设计工具链。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=883241"
+       },
+       {
+        "id": "CDNS",
+        "type": "company",
+        "ticker": "CDNS",
+        "name": "Cadence Design Systems",
+        "cik": 813672,
+        "sector": "Technology",
+        "industry": "System Software",
+        "layer": "silicon",
+        "segment": "EDA 与 IP",
+        "description": "EDA 与仿真验证，AI 芯片与系统设计。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=813672"
+       },
+       {
+        "id": "ARM",
+        "type": "company",
+        "ticker": "ARM",
+        "name": "Arm",
+        "cik": 1973239,
+        "sector": "Technology",
+        "industry": "Semiconductors",
+        "layer": "silicon",
+        "segment": "EDA 与 IP",
+        "description": "CPU 架构授权，端侧 AI 核心。",
+        "also_in": [
+         "edge"
+        ],
+        "cross_in": [
+         "终端与具身智能"
+        ],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1973239"
+       }
+      ]
+     },
+     {
+      "id": "silicon/互连与光器件",
+      "type": "segment",
+      "name": "互连与光器件",
+      "layer": "silicon",
+      "count": 4,
+      "children": [
+       {
+        "id": "CRDO",
+        "type": "company",
+        "ticker": "CRDO",
+        "name": "Credo Technology",
+        "cik": 1807794,
+        "sector": "Technology",
+        "industry": "Semiconductors",
+        "layer": "silicon",
+        "segment": "互连与光器件",
+        "description": "AI 互连芯片。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1807794"
+       },
+       {
+        "id": "ALAB",
+        "type": "company",
+        "ticker": "ALAB",
+        "name": "Astera Labs",
+        "cik": 1736297,
+        "sector": "Technology",
+        "industry": "Semiconductors",
+        "layer": "silicon",
+        "segment": "互连与光器件",
+        "description": "AI 互连接口 IP/芯片。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1736297"
+       },
+       {
+        "id": "COHR",
+        "type": "company",
+        "ticker": "COHR",
+        "name": "Coherent",
+        "cik": 820318,
+        "sector": "Technology",
+        "industry": "Electronic Components",
+        "layer": "silicon",
+        "segment": "互连与光器件",
+        "description": "光模块与激光器件，数据中心光互连。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=820318"
+       },
+       {
+        "id": "LITE",
+        "type": "company",
+        "ticker": "LITE",
+        "name": "Lumentum",
+        "cik": 1633978,
+        "sector": "Technology",
+        "industry": "Electronic Components",
+        "layer": "silicon",
+        "segment": "互连与光器件",
+        "description": "高速光模块与光器件。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1633978"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "id": "infra",
+    "type": "layer",
+    "name": "算力基础设施与云",
+    "name_en": "Compute Infrastructure & Cloud",
+    "summary": "AI 服务器整机、数据中心网络、超大规模云与 GPU 算力租赁，把芯片转化为可售算力。",
+    "count": 19,
+    "children": [
+     {
+      "id": "infra/云与超大规模",
+      "type": "segment",
+      "name": "云与超大规模",
+      "layer": "infra",
+      "count": 6,
+      "children": [
+       {
+        "id": "MSFT",
+        "type": "company",
+        "ticker": "MSFT",
+        "name": "Microsoft",
+        "cik": 789019,
+        "sector": "Technology",
+        "industry": "System Software",
+        "layer": "infra",
+        "segment": "云与超大规模",
+        "description": "Azure、Windows、Copilot 与 OpenAI 合资。",
+        "also_in": [
+         "model"
+        ],
+        "cross_in": [
+         "模型与数据平台"
+        ],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=789019"
+       },
+       {
+        "id": "GOOGL",
+        "type": "company",
+        "ticker": "GOOGL",
+        "name": "Alphabet",
+        "cik": 1652044,
+        "sector": "Communication Services",
+        "industry": "Interactive Media",
+        "layer": "infra",
+        "segment": "云与超大规模",
+        "description": "Google 搜索、Gemini 大模型与云计算。",
+        "also_in": [
+         "model"
+        ],
+        "cross_in": [
+         "模型与数据平台"
+        ],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1652044"
+       },
+       {
+        "id": "GOOG",
+        "type": "company",
+        "ticker": "GOOG",
+        "name": "Alphabet Class C",
+        "cik": 1652044,
+        "sector": "Communication Services",
+        "industry": "Interactive Media",
+        "layer": "infra",
+        "segment": "云与超大规模",
+        "description": "Alphabet 的 C 类无表决权股。",
+        "also_in": [
+         "model"
+        ],
+        "cross_in": [
+         "模型与数据平台"
+        ],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1652044"
+       },
+       {
+        "id": "AMZN",
+        "type": "company",
+        "ticker": "AMZN",
+        "name": "Amazon",
+        "cik": 1018724,
+        "sector": "Consumer Discretionary",
+        "industry": "Commerce",
+        "layer": "infra",
+        "segment": "云与超大规模",
+        "description": "电商、AWS 与生成式 AI（Bedrock）。",
+        "also_in": [
+         "model"
+        ],
+        "cross_in": [
+         "模型与数据平台"
+        ],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1018724"
+       },
+       {
+        "id": "ORCL",
+        "type": "company",
+        "ticker": "ORCL",
+        "name": "Oracle",
+        "cik": 1341439,
+        "sector": "Technology",
+        "industry": "Data & Application Svc",
+        "layer": "infra",
+        "segment": "云与超大规模",
+        "description": "云数据库与 OCI 大算力中心。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1341439"
+       },
+       {
+        "id": "BABA",
+        "type": "company",
+        "ticker": "BABA",
+        "name": "Alibaba",
+        "cik": 1577552,
+        "sector": "Communication Services",
+        "industry": "Commerce",
+        "layer": "infra",
+        "segment": "云与超大规模",
+        "description": "通义千问与阿里云。",
+        "also_in": [
+         "model"
+        ],
+        "cross_in": [
+         "模型与数据平台"
+        ],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1577552"
+       }
+      ]
+     },
+     {
+      "id": "infra/GPU 算力租赁",
+      "type": "segment",
+      "name": "GPU 算力租赁",
+      "layer": "infra",
+      "count": 2,
+      "children": [
+       {
+        "id": "CRWV",
+        "type": "company",
+        "ticker": "CRWV",
+        "name": "CoreWeave",
+        "cik": 1769628,
+        "sector": "Technology",
+        "industry": "Data & Application Svc",
+        "layer": "infra",
+        "segment": "GPU 算力租赁",
+        "description": "GPU 云（Neocloud）龙头，为大模型公司提供专属算力。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1769628"
+       },
+       {
+        "id": "NBIS",
+        "type": "company",
+        "ticker": "NBIS",
+        "name": "Nebius",
+        "cik": 1513845,
+        "sector": "Technology",
+        "industry": "Data & Application Svc",
+        "layer": "infra",
+        "segment": "GPU 算力租赁",
+        "description": "欧洲 GPU 云与 AI 基础设施（原 Yandex 海外业务）。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1513845"
+       }
+      ]
+     },
+     {
+      "id": "infra/AI 服务器与整机",
+      "type": "segment",
+      "name": "AI 服务器与整机",
+      "layer": "infra",
+      "count": 3,
+      "children": [
+       {
+        "id": "SMCI",
+        "type": "company",
+        "ticker": "SMCI",
+        "name": "Super Micro Computer",
+        "cik": 1375365,
+        "sector": "Technology",
+        "industry": "Technology Hardware",
+        "layer": "infra",
+        "segment": "AI 服务器与整机",
+        "description": "AI 服务器整机与液冷。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1375365"
+       },
+       {
+        "id": "DELL",
+        "type": "company",
+        "ticker": "DELL",
+        "name": "Dell Technologies",
+        "cik": 1571996,
+        "sector": "Technology",
+        "industry": "Technology Hardware",
+        "layer": "infra",
+        "segment": "AI 服务器与整机",
+        "description": "AI 服务器（PowerEdge）与企业硬件。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1571996"
+       },
+       {
+        "id": "HPE",
+        "type": "company",
+        "ticker": "HPE",
+        "name": "Hewlett Packard Enterprise",
+        "cik": 1645590,
+        "sector": "Technology",
+        "industry": "Technology Hardware",
+        "layer": "infra",
+        "segment": "AI 服务器与整机",
+        "description": "企业硬件与 HPC。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1645590"
+       }
+      ]
+     },
+     {
+      "id": "infra/数据中心网络",
+      "type": "segment",
+      "name": "数据中心网络",
+      "layer": "infra",
+      "count": 4,
+      "children": [
+       {
+        "id": "ANET",
+        "type": "company",
+        "ticker": "ANET",
+        "name": "Arista Networks",
+        "cik": 1596532,
+        "sector": "Technology",
+        "industry": "Communication Equipment",
+        "layer": "infra",
+        "segment": "数据中心网络",
+        "description": "云数据中心交换机。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1596532"
+       },
+       {
+        "id": "CSCO",
+        "type": "company",
+        "ticker": "CSCO",
+        "name": "Cisco",
+        "cik": 858877,
+        "sector": "Technology",
+        "industry": "Communication Equipment",
+        "layer": "infra",
+        "segment": "数据中心网络",
+        "description": "网络设备与基础设施软件。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=858877"
+       },
+       {
+        "id": "CIEN",
+        "type": "company",
+        "ticker": "CIEN",
+        "name": "Ciena",
+        "cik": 936395,
+        "sector": "Technology",
+        "industry": "Communication Equipment",
+        "layer": "infra",
+        "segment": "数据中心网络",
+        "description": "光传输与 DCI，数据中心互联。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=936395"
+       },
+       {
+        "id": "NOK",
+        "type": "company",
+        "ticker": "NOK",
+        "name": "Nokia",
+        "cik": 924613,
+        "sector": "Technology",
+        "industry": "Communication Equipment",
+        "layer": "infra",
+        "segment": "数据中心网络",
+        "description": "网络设备，5G 与数据中心光网络。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=924613"
+       }
+      ]
+     },
+     {
+      "id": "infra/电信与连接",
+      "type": "segment",
+      "name": "电信与连接",
+      "layer": "infra",
+      "count": 4,
+      "children": [
+       {
+        "id": "T",
+        "type": "company",
+        "ticker": "T",
+        "name": "AT&T",
+        "cik": 732717,
+        "sector": "Communication Services",
+        "industry": "Telecom Services",
+        "layer": "infra",
+        "segment": "电信与连接",
+        "description": "美国无线/宽带运营商。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=732717"
+       },
+       {
+        "id": "VZ",
+        "type": "company",
+        "ticker": "VZ",
+        "name": "Verizon",
+        "cik": 732712,
+        "sector": "Communication Services",
+        "industry": "Telecom Services",
+        "layer": "infra",
+        "segment": "电信与连接",
+        "description": "美国无线/宽带运营商。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=732712"
+       },
+       {
+        "id": "TMUS",
+        "type": "company",
+        "ticker": "TMUS",
+        "name": "T-Mobile US",
+        "cik": 1283699,
+        "sector": "Communication Services",
+        "industry": "Telecom Services",
+        "layer": "infra",
+        "segment": "电信与连接",
+        "description": "美国无线运营商。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1283699"
+       },
+       {
+        "id": "CHTR",
+        "type": "company",
+        "ticker": "CHTR",
+        "name": "Charter Communications",
+        "cik": 1091667,
+        "sector": "Communication Services",
+        "industry": "Telecom Services",
+        "layer": "infra",
+        "segment": "电信与连接",
+        "description": "宽带电视运营商（Spectrum）。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1091667"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "id": "model",
+    "type": "layer",
+    "name": "模型与数据平台",
+    "name_en": "Models & Data Platform",
+    "summary": "基础大模型、数据云与 MLOps、AI 开发平台，处在算力与商业应用之间的中间层。",
+    "count": 7,
+    "children": [
+     {
+      "id": "model/基础模型",
+      "type": "segment",
+      "name": "基础模型",
+      "layer": "model",
+      "count": 1,
+      "children": [
+       {
+        "id": "META",
+        "type": "company",
+        "ticker": "META",
+        "name": "Meta",
+        "cik": 1326801,
+        "sector": "Communication Services",
+        "industry": "Internet Content",
+        "layer": "model",
+        "segment": "基础模型",
+        "description": "社交与 Llama 开源大模型。",
+        "also_in": [
+         "infra"
+        ],
+        "cross_in": [
+         "算力基础设施与云"
+        ],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1326801"
+       }
+      ]
+     },
+     {
+      "id": "model/数据云与 MLOps",
+      "type": "segment",
+      "name": "数据云与 MLOps",
+      "layer": "model",
+      "count": 4,
+      "children": [
+       {
+        "id": "SNOW",
+        "type": "company",
+        "ticker": "SNOW",
+        "name": "Snowflake",
+        "cik": 1640147,
+        "sector": "Technology",
+        "industry": "Data & Application Svc",
+        "layer": "model",
+        "segment": "数据云与 MLOps",
+        "description": "云数据仓库，AI 数据平台。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1640147"
+       },
+       {
+        "id": "MDB",
+        "type": "company",
+        "ticker": "MDB",
+        "name": "MongoDB",
+        "cik": 1441816,
+        "sector": "Technology",
+        "industry": "Data & Application Svc",
+        "layer": "model",
+        "segment": "数据云与 MLOps",
+        "description": "文档数据库与 Atlas Vector Search，RAG 数据层。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1441816"
+       },
+       {
+        "id": "DDOG",
+        "type": "company",
+        "ticker": "DDOG",
+        "name": "Datadog",
+        "cik": 1561550,
+        "sector": "Technology",
+        "industry": "IT Svc",
+        "layer": "model",
+        "segment": "数据云与 MLOps",
+        "description": "可观测性与云监控。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1561550"
+       },
+       {
+        "id": "ESTC",
+        "type": "company",
+        "ticker": "ESTC",
+        "name": "Elastic",
+        "cik": 1707753,
+        "sector": "Technology",
+        "industry": "Application Svc",
+        "layer": "model",
+        "segment": "数据云与 MLOps",
+        "description": "搜索/观测/AI 检索平台。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1707753"
+       }
+      ]
+     },
+     {
+      "id": "model/AI 开发平台",
+      "type": "segment",
+      "name": "AI 开发平台",
+      "layer": "model",
+      "count": 2,
+      "children": [
+       {
+        "id": "AI",
+        "type": "company",
+        "ticker": "AI",
+        "name": "C3.ai",
+        "cik": 1577526,
+        "sector": "Technology",
+        "industry": "Application Svc",
+        "layer": "model",
+        "segment": "AI 开发平台",
+        "description": "企业 AI 应用开发平台（C3 Agentic AI）。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1577526"
+       },
+       {
+        "id": "GTLB",
+        "type": "company",
+        "ticker": "GTLB",
+        "name": "GitLab",
+        "cik": 1653482,
+        "sector": "Technology",
+        "industry": "System Software",
+        "layer": "model",
+        "segment": "AI 开发平台",
+        "description": "DevSecOps 平台与 AI 编码助手（Duo）。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1653482"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "id": "app",
+    "type": "layer",
+    "name": "AI 软件与应用",
+    "name_en": "AI Software & Applications",
+    "summary": "企业软件与 Agent、广告营销、安全与身份、消费内容应用与 IT 服务集成，直接变现 AI 能力。",
+    "count": 29,
+    "children": [
+     {
+      "id": "app/企业软件与 Agent",
+      "type": "segment",
+      "name": "企业软件与 Agent",
+      "layer": "app",
+      "count": 9,
+      "children": [
+       {
+        "id": "CRM",
+        "type": "company",
+        "ticker": "CRM",
+        "name": "Salesforce",
+        "cik": 1108524,
+        "sector": "Technology",
+        "industry": "Application Svc",
+        "layer": "app",
+        "segment": "企业软件与 Agent",
+        "description": "CRM SaaS 与 Agentforce AI。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1108524"
+       },
+       {
+        "id": "NOW",
+        "type": "company",
+        "ticker": "NOW",
+        "name": "ServiceNow",
+        "cik": 1373715,
+        "sector": "Technology",
+        "industry": "Application Svc",
+        "layer": "app",
+        "segment": "企业软件与 Agent",
+        "description": "企业工作流 SaaS 与 AI 代理。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1373715"
+       },
+       {
+        "id": "MNDY",
+        "type": "company",
+        "ticker": "MNDY",
+        "name": "monday.com",
+        "cik": 1845338,
+        "sector": "Technology",
+        "industry": "Application Svc",
+        "layer": "app",
+        "segment": "企业软件与 Agent",
+        "description": "工作协作平台与 AI 自动化。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1845338"
+       },
+       {
+        "id": "FRSH",
+        "type": "company",
+        "ticker": "FRSH",
+        "name": "Freshworks",
+        "cik": 1544522,
+        "sector": "Technology",
+        "industry": "Application Svc",
+        "layer": "app",
+        "segment": "企业软件与 Agent",
+        "description": "SaaS 办公自动化与 AI。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1544522"
+       },
+       {
+        "id": "DOCU",
+        "type": "company",
+        "ticker": "DOCU",
+        "name": "DocuSign",
+        "cik": 1261333,
+        "sector": "Technology",
+        "industry": "Application Svc",
+        "layer": "app",
+        "segment": "企业软件与 Agent",
+        "description": "电子签名与 AI 工作流。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1261333"
+       },
+       {
+        "id": "PATH",
+        "type": "company",
+        "ticker": "PATH",
+        "name": "UiPath",
+        "cik": 1734722,
+        "sector": "Technology",
+        "industry": "Application Svc",
+        "layer": "app",
+        "segment": "企业软件与 Agent",
+        "description": "RPA 与 Agentic AI 自动化。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1734722"
+       },
+       {
+        "id": "U",
+        "type": "company",
+        "ticker": "U",
+        "name": "Unity Software",
+        "cik": 1810806,
+        "sector": "Technology",
+        "industry": "Application Svc",
+        "layer": "app",
+        "segment": "企业软件与 Agent",
+        "description": "游戏引擎与实时 3D，Unity AI。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1810806"
+       },
+       {
+        "id": "PLTR",
+        "type": "company",
+        "ticker": "PLTR",
+        "name": "Palantir",
+        "cik": 1321655,
+        "sector": "Technology",
+        "industry": "Application Svc",
+        "layer": "app",
+        "segment": "企业软件与 Agent",
+        "description": "数据平台与 AIP 商业/国防 AI。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1321655"
+       },
+       {
+        "id": "SOUN",
+        "type": "company",
+        "ticker": "SOUN",
+        "name": "SoundHound AI",
+        "cik": 1840856,
+        "sector": "Technology",
+        "industry": "Application Svc",
+        "layer": "app",
+        "segment": "企业软件与 Agent",
+        "description": "语音 AI 助手（汽车、餐饮与客服）。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1840856"
+       }
+      ]
+     },
+     {
+      "id": "app/广告与营销 AI",
+      "type": "segment",
+      "name": "广告与营销 AI",
+      "layer": "app",
+      "count": 2,
+      "children": [
+       {
+        "id": "APP",
+        "type": "company",
+        "ticker": "APP",
+        "name": "AppLovin",
+        "cik": 1751008,
+        "sector": "Communication Services",
+        "industry": "Media",
+        "layer": "app",
+        "segment": "广告与营销 AI",
+        "description": "移动广告与 AI 推荐引擎。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1751008"
+       },
+       {
+        "id": "TTD",
+        "type": "company",
+        "ticker": "TTD",
+        "name": "The Trade Desk",
+        "cik": 1671933,
+        "sector": "Technology",
+        "industry": "Application Svc",
+        "layer": "app",
+        "segment": "广告与营销 AI",
+        "description": "程序化广告 DSP 与 AI 编排。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1671933"
+       }
+      ]
+     },
+     {
+      "id": "app/安全与身份",
+      "type": "segment",
+      "name": "安全与身份",
+      "layer": "app",
+      "count": 5,
+      "children": [
+       {
+        "id": "CRWD",
+        "type": "company",
+        "ticker": "CRWD",
+        "name": "CrowdStrike",
+        "cik": 1535527,
+        "sector": "Technology",
+        "industry": "IT Svc",
+        "layer": "app",
+        "segment": "安全与身份",
+        "description": "云安全与 Falcon 平台。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1535527"
+       },
+       {
+        "id": "PANW",
+        "type": "company",
+        "ticker": "PANW",
+        "name": "Palo Alto Networks",
+        "cik": 1327567,
+        "sector": "Technology",
+        "industry": "IT Svc",
+        "layer": "app",
+        "segment": "安全与身份",
+        "description": "网络安全平台。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1327567"
+       },
+       {
+        "id": "ZS",
+        "type": "company",
+        "ticker": "ZS",
+        "name": "Zscaler",
+        "cik": 1713683,
+        "sector": "Technology",
+        "industry": "IT Svc",
+        "layer": "app",
+        "segment": "安全与身份",
+        "description": "零信任云安全。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1713683"
+       },
+       {
+        "id": "OKTA",
+        "type": "company",
+        "ticker": "OKTA",
+        "name": "Okta",
+        "cik": 1660134,
+        "sector": "Technology",
+        "industry": "IT Svc",
+        "layer": "app",
+        "segment": "安全与身份",
+        "description": "身份管理与 SSO。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1660134"
+       },
+       {
+        "id": "NET",
+        "type": "company",
+        "ticker": "NET",
+        "name": "Cloudflare",
+        "cik": 1477333,
+        "sector": "Technology",
+        "industry": "Data & Application Svc",
+        "layer": "app",
+        "segment": "安全与身份",
+        "description": "边缘云、Workers 与 AI 网关。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1477333"
+       }
+      ]
+     },
+     {
+      "id": "app/消费与内容应用",
+      "type": "segment",
+      "name": "消费与内容应用",
+      "layer": "app",
+      "count": 9,
+      "children": [
+       {
+        "id": "DUOL",
+        "type": "company",
+        "ticker": "DUOL",
+        "name": "Duolingo",
+        "cik": 1562088,
+        "sector": "Communication Services",
+        "industry": "Interactive Media",
+        "layer": "app",
+        "segment": "消费与内容应用",
+        "description": "语言学习，AI 个性化课程。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1562088"
+       },
+       {
+        "id": "SHOP",
+        "type": "company",
+        "ticker": "SHOP",
+        "name": "Shopify",
+        "cik": 1594805,
+        "sector": "Technology",
+        "industry": "Commerce",
+        "layer": "app",
+        "segment": "消费与内容应用",
+        "description": "电商平台，Sidekick AI。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1594805"
+       },
+       {
+        "id": "UBER",
+        "type": "company",
+        "ticker": "UBER",
+        "name": "Uber",
+        "cik": 1543151,
+        "sector": "Communication Services",
+        "industry": "Commerce",
+        "layer": "app",
+        "segment": "消费与内容应用",
+        "description": "出行与即时配送。",
+        "also_in": [
+         "edge"
+        ],
+        "cross_in": [
+         "终端与具身智能"
+        ],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1543151"
+       },
+       {
+        "id": "RDDT",
+        "type": "company",
+        "ticker": "RDDT",
+        "name": "Reddit",
+        "cik": 1713445,
+        "sector": "Communication Services",
+        "industry": "Interactive Media",
+        "layer": "app",
+        "segment": "消费与内容应用",
+        "description": "社交通讯，AI 检索变现。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1713445"
+       },
+       {
+        "id": "RBLX",
+        "type": "company",
+        "ticker": "RBLX",
+        "name": "Roblox",
+        "cik": 1315098,
+        "sector": "Communication Services",
+        "industry": "Entertainment",
+        "layer": "app",
+        "segment": "消费与内容应用",
+        "description": "UGC 平台与生成式 AI 内容。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1315098"
+       },
+       {
+        "id": "TTWO",
+        "type": "company",
+        "ticker": "TTWO",
+        "name": "Take-Two Interactive",
+        "cik": 946581,
+        "sector": "Communication Services",
+        "industry": "Entertainment",
+        "layer": "app",
+        "segment": "消费与内容应用",
+        "description": "游戏发行，AI 辅助开发。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=946581"
+       },
+       {
+        "id": "NFLX",
+        "type": "company",
+        "ticker": "NFLX",
+        "name": "Netflix",
+        "cik": 1065280,
+        "sector": "Communication Services",
+        "industry": "Entertainment",
+        "layer": "app",
+        "segment": "消费与内容应用",
+        "description": "流媒体与个性化推荐 AI。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1065280"
+       },
+       {
+        "id": "SPOT",
+        "type": "company",
+        "ticker": "SPOT",
+        "name": "Spotify",
+        "cik": 1639920,
+        "sector": "Communication Services",
+        "industry": "Interactive Media",
+        "layer": "app",
+        "segment": "消费与内容应用",
+        "description": "音乐流媒体与 AI 播客。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1639920"
+       },
+       {
+        "id": "PDD",
+        "type": "company",
+        "ticker": "PDD",
+        "name": "Pinduoduo",
+        "cik": 1737806,
+        "sector": "Communication Services",
+        "industry": "Commerce",
+        "layer": "app",
+        "segment": "消费与内容应用",
+        "description": "拼多多/Temu 电商。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1737806"
+       }
+      ]
+     },
+     {
+      "id": "app/IT 服务与集成",
+      "type": "segment",
+      "name": "IT 服务与集成",
+      "layer": "app",
+      "count": 4,
+      "children": [
+       {
+        "id": "ACN",
+        "type": "company",
+        "ticker": "ACN",
+        "name": "Accenture",
+        "cik": 1467373,
+        "sector": "Technology",
+        "industry": "IT Svc",
+        "layer": "app",
+        "segment": "IT 服务与集成",
+        "description": "IT 咨询与实施，企业 AI 落地。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1467373"
+       },
+       {
+        "id": "INFY",
+        "type": "company",
+        "ticker": "INFY",
+        "name": "Infosys",
+        "cik": 1067491,
+        "sector": "Technology",
+        "industry": "IT Svc",
+        "layer": "app",
+        "segment": "IT 服务与集成",
+        "description": "IT 服务外包，AI 转型交付。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1067491"
+       },
+       {
+        "id": "EPAM",
+        "type": "company",
+        "ticker": "EPAM",
+        "name": "EPAM Systems",
+        "cik": 1352010,
+        "sector": "Technology",
+        "industry": "IT Svc",
+        "layer": "app",
+        "segment": "IT 服务与集成",
+        "description": "软件工程服务，AI 工程能力。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1352010"
+       },
+       {
+        "id": "IBM",
+        "type": "company",
+        "ticker": "IBM",
+        "name": "IBM",
+        "cik": 51143,
+        "sector": "Technology",
+        "industry": "IT Svc",
+        "layer": "app",
+        "segment": "IT 服务与集成",
+        "description": "混合云、watsonx 与 AI 咨询。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=51143"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "id": "edge",
+    "type": "layer",
+    "name": "终端与具身智能",
+    "name_en": "Edge & Embodied AI",
+    "summary": "端侧设备、自动驾驶与机器人，把模型下沉到物理世界。",
+    "count": 5,
+    "children": [
+     {
+      "id": "edge/端侧设备",
+      "type": "segment",
+      "name": "端侧设备",
+      "layer": "edge",
+      "count": 3,
+      "children": [
+       {
+        "id": "AAPL",
+        "type": "company",
+        "ticker": "AAPL",
+        "name": "Apple",
+        "cik": 320193,
+        "sector": "Technology",
+        "industry": "Consumer Electronics",
+        "layer": "edge",
+        "segment": "端侧设备",
+        "description": "iOS 生态、Mac 与 Apple Intelligence。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=320193"
+       },
+       {
+        "id": "HPQ",
+        "type": "company",
+        "ticker": "HPQ",
+        "name": "HP Inc",
+        "cik": 47217,
+        "sector": "Technology",
+        "industry": "Technology Hardware",
+        "layer": "edge",
+        "segment": "端侧设备",
+        "description": "PC 与企业计算硬件。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=47217"
+       },
+       {
+        "id": "SONO",
+        "type": "company",
+        "ticker": "SONO",
+        "name": "Sonos",
+        "cik": 1314727,
+        "sector": "Technology",
+        "industry": "Consumer Electronics",
+        "layer": "edge",
+        "segment": "端侧设备",
+        "description": "智能音箱与音频产品。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1314727"
+       }
+      ]
+     },
+     {
+      "id": "edge/自动驾驶与机器人",
+      "type": "segment",
+      "name": "自动驾驶与机器人",
+      "layer": "edge",
+      "count": 2,
+      "children": [
+       {
+        "id": "TSLA",
+        "type": "company",
+        "ticker": "TSLA",
+        "name": "Tesla",
+        "cik": 1318605,
+        "sector": "Consumer Discretionary",
+        "industry": "Auto",
+        "layer": "edge",
+        "segment": "自动驾驶与机器人",
+        "description": "电动车与自动驾驶、机器人 Optimus。",
+        "also_in": [
+         "power"
+        ],
+        "cross_in": [
+         "能源与电力"
+        ],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1318605"
+       },
+       {
+        "id": "MBLY",
+        "type": "company",
+        "ticker": "MBLY",
+        "name": "Mobileye",
+        "cik": 1910139,
+        "sector": "Consumer Discretionary",
+        "industry": "Auto",
+        "layer": "edge",
+        "segment": "自动驾驶与机器人",
+        "description": "ADAS/自动驾驶芯片与算法。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1910139"
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ }
+}

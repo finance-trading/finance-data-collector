@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 产业分层 · 分层图 / 树状图</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #0a0e1a; color: #dfe6ff;
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; }
+  #topbar { position: fixed; top: 0; left: 0; right: 0; height: 52px; display: flex; align-items: center;
+    gap: 12px; padding: 0 16px; background: rgba(15, 20, 35, .94);
+    border-bottom: 1px solid rgba(90, 120, 255, .28); z-index: 20; }
+  .brand { font-size: 15px; color: #fff; white-space: nowrap; }
+  .brand small { color: #7f8ab5; font-size: 11px; margin-left: 6px; font-weight: 400; }
+  .modes { display: flex; gap: 6px; }
+  button.mode { background: rgba(90, 120, 255, .14); color: #9db4ff; border: 1px solid rgba(90, 120, 255, .3);
+    border-radius: 8px; padding: 5px 11px; font-size: 12px; cursor: pointer; }
+  button.mode.active { background: #3a4a80; color: #fff; }
+  #search { flex: 0 1 300px; background: #131a2e; border: 1px solid rgba(90, 120, 255, .3); border-radius: 8px;
+    color: #dfe6ff; padding: 6px 10px; font-size: 12px; outline: none; }
+  #stats { font-size: 11px; color: #7f8ab5; white-space: nowrap; }
+  #back { margin-left: auto; color: #7fa2ff; font-size: 12px; text-decoration: none; white-space: nowrap; }
+  #view { position: fixed; left: 0; top: 52px; width: 100%; height: calc(100% - 52px); display: block; cursor: grab; }
+  .panel { position: fixed; z-index: 10; background: rgba(15, 20, 35, .94);
+    border: 1px solid rgba(90, 120, 255, .35); border-radius: 10px; padding: 12px 14px; color: #dfe6ff;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, .5); backdrop-filter: blur(6px); }
+  .panel h2 { font-size: 13px; margin-bottom: 8px; color: #fff; }
+  .panel p { font-size: 12.5px; line-height: 1.55; }
+  .panel .close { position: absolute; top: 6px; right: 10px; cursor: pointer; color: #8b96c2; font-size: 13px; }
+  #legend { top: 66px; right: 16px; width: 252px; max-height: calc(100% - 108px); overflow: auto; }
+  .row { display: flex; align-items: center; gap: 7px; font-size: 12px; margin: 5px 0; cursor: pointer;
+    user-select: none; }
+  .row .n { margin-left: auto; color: #7f8ab5; font-size: 11px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  #card { left: 16px; bottom: 16px; width: 370px; max-height: calc(100% - 120px); overflow: auto; display: none; }
+  #card h2 { font-size: 15px; }
+  #card .sub { color: #8b96c2; font-size: 12px; margin: 2px 0 8px; }
+  #card .meta { margin-top: 9px; font-size: 11px; color: #7f8ab5; }
+  #card a { color: #7fa2ff; text-decoration: none; }
+  .badge { display: inline-block; padding: 1px 7px; border-radius: 9px; font-size: 11px;
+    background: rgba(90, 120, 255, .18); color: #9db4ff; margin: 0 5px 4px 0; }
+  .badge.cross { background: rgba(246, 173, 85, .16); color: #f6ad55; }
+  #hint { position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); color: #5c679a;
+    font-size: 11px; z-index: 5; }
+  #mermaid { position: fixed; left: 0; top: 52px; width: 100%; height: calc(100% - 52px); display: none;
+    padding: 16px; overflow: auto; background: #0a0e1a; color: #cbd5ff; font: 12px/1.6 ui-monospace, Menlo, monospace;
+    white-space: pre; z-index: 8; }
+</style>
+</head>
+<body>
+<header id="topbar">
+  <div class="brand">AI 产业链分层<small id="gen-time"></small></div>
+  <div class="modes">
+    <button class="mode active" data-mode="columns">分层图</button>
+    <button class="mode" data-mode="tree">树状图</button>
+    <button class="mode" data-mode="mermaid">Mermaid</button>
+  </div>
+  <input id="search" type="search" placeholder="搜索 ticker / 公司 / 说明">
+  <span id="stats"></span>
+  <a id="back" href="index.html">公司关系图 →</a>
+</header>
+
+<svg id="view"></svg>
+<pre id="mermaid"></pre>
+
+<div id="legend" class="panel">
+  <h2>分层（点击过滤）</h2>
+  <div id="legend-rows"></div>
+  <div class="row" style="margin-top:8px">
+    <input type="checkbox" id="show-cross" checked><span class="dot" style="background:#f6ad55"></span>跨层角色虚线
+  </div>
+</div>
+
+<div id="card" class="panel">
+  <span class="close" onclick="document.getElementById('card').style.display='none'">✕</span>
+  <h2 id="card-name"></h2>
+  <div class="sub" id="card-path"></div>
+  <p id="card-desc"></p>
+  <div id="card-badges"></div>
+  <div class="meta" id="card-meta"></div>
+</div>
+
+<div id="hint"></div>
+<script type="module">
+import * as d3 from "https://esm.sh/d3@7.9.0?target=es2022";
+
+// ---------------------------------------------------------------- data prep
+const data = await (await fetch("data/layers.json")).json();
+const layers = data.root.children;
+const palette = ["#f6ad55", "#7f8dff", "#4fd1c5", "#9f7aea", "#68d391", "#f687b3", "#fbd38d", "#63b3ed"];
+const colorOf = {};
+layers.forEach((layer, index) => { colorOf[layer.id] = palette[index % palette.length]; });
+
+const companies = layers.flatMap(layer => layer.children.flatMap(segment => segment.children.map(node => ({
+  ...node,
+  layerName: layer.name,
+  segmentName: segment.name,
+}))));
+const byLayer = new Map(layers.map(layer => [layer.id, companies.filter(company => company.layer === layer.id)]));
+const byTicker = new Map(companies.map(company => [company.ticker, company]));
+
+const hidden = new Set();
+const collapsed = new Set();
+let showCross = true;
+let mode = "columns";
+let contentSize = { width: 1200, height: 600 };
+let needsFit = true;
+
+const $ = id => document.getElementById(id);
+const svg = d3.select("#view");
+const chart = svg.append("g");
+const zoom = d3.zoom().scaleExtent([0.2, 2.5]).on("zoom", event => chart.attr("transform", event.transform));
+svg.call(zoom);
+
+const query = () => $("search").value.trim().toLowerCase();
+const matches = company => {
+  const q = query();
+  if (!q) return true;
+  return [company.ticker, company.name, company.description, company.layerName, company.segmentName,
+    company.industry, company.sector, ...company.cross_in].join(" ").toLowerCase().includes(q);
+};
+const visible = company => !hidden.has(company.layer) && matches(company);
+const crossTargets = company => company.also_in.filter(id => !hidden.has(id));
+
+$("gen-time").textContent = data.generated_at ? ` · ${data.generated_at}` : "";
+$("stats").textContent = `${data.stats.companies} 家公司 · ${data.stats.layers} 层 · ` +
+  `${data.stats.segments} 个细分 · ${data.stats.cross_layer} 个跨层角色`;
+$("hint").textContent = "点击公司节点查看详情 · 滚轮缩放 · 拖拽平移 · 树状图点击层/细分可折叠";
+
+// ---------------------------------------------------------------- card panel
+function showCard(company) {
+  $("card-name").textContent = `${company.name} (${company.ticker})`;
+  $("card-path").textContent = `${company.layerName} · ${company.segmentName}`;
+  $("card-desc").textContent = company.description;
+  $("card-badges").innerHTML =
+    `<span class="badge">${company.industry}</span>` +
+    company.cross_in.map(name => `<span class="badge cross">跨层：${name}</span>`).join("");
+  $("card-meta").innerHTML = `CIK ${company.cik} · ${company.sector} · ` +
+    `<a href="${company.edgar}" target="_blank">EDGAR 档案 →</a>`;
+  $("card").style.display = "block";
+}
+
+// ---------------------------------------------------------------- legend / controls
+const legendRows = $("legend-rows");
+layers.forEach(layer => {
+  const row = document.createElement("div");
+  row.className = "row";
+  row.innerHTML = `<input type="checkbox" checked>` +
+    `<span class="dot" style="background:${colorOf[layer.id]}"></span>` +
+    `<span>${layer.name}</span><span class="n">${layer.count}</span>`;
+  row.querySelector("input").onchange = event => {
+    if (event.target.checked) { hidden.delete(layer.id); } else { hidden.add(layer.id); }
+    render();
+  };
+  legendRows.appendChild(row);
+});
+$("show-cross").onchange = event => { showCross = event.target.checked; render(); };
+$("search").oninput = () => render();
+document.querySelectorAll("button.mode").forEach(button => {
+  button.onclick = () => {
+    mode = button.dataset.mode;
+    document.querySelectorAll("button.mode").forEach(other => other.classList.toggle("active", other === button));
+    $("mermaid").style.display = mode === "mermaid" ? "block" : "none";
+    svg.style("display", mode === "mermaid" ? "none" : "block");
+    needsFit = true;
+    render();
+  };
+});
+window.addEventListener("resize", () => { needsFit = true; render(); });
+// ---------------------------------------------------------------- 分层图（按层分列 + 跨层虚线）
+const COL_W = 216, ROW_H = 30, SEG_H = 24, TOP = 132;
+
+function renderColumns() {
+  const columns = [];
+  layers.forEach((layer, index) => {
+    const nodes = byLayer.get(layer.id).filter(visible);
+    const column = { layer, index, nodes, segments: [] };
+    let y = TOP;
+    layer.children.forEach(segment => {
+      const members = nodes.filter(company => company.segment === segment.name);
+      if (members.length) {
+        column.segments.push({ segment, members, top: y });
+        y += SEG_H + members.length * ROW_H;
+      }
+    });
+    column.bottom = y;
+    columns.push(column);
+  });
+
+  contentSize = {
+    width: 60 + layers.length * COL_W,
+    height: Math.max(440, d3.max(columns, column => column.bottom) + 60),
+  };
+  chart.selectAll("*").remove();
+  const positions = new Map();
+
+  columns.forEach(column => {
+    const x = 40 + column.index * COL_W;
+    const color = colorOf[column.layer.id];
+    chart.append("rect").attr("x", x - 14).attr("y", 58).attr("width", COL_W - 28).attr("height", 48)
+      .attr("rx", 9).attr("fill", `${color}1f`).attr("stroke", `${color}66`)
+      .append("title").text(column.layer.summary);
+    chart.append("text").attr("x", x).attr("y", 80).attr("fill", color)
+      .style("font-size", "13px").style("font-weight", "600")
+      .text(`${column.layer.name} (${column.nodes.length})`);
+    chart.append("text").attr("x", x).attr("y", 97).attr("fill", "#7f8ab5").style("font-size", "10.5px")
+      .text(column.layer.name_en);
+    chart.append("line").attr("x1", x - 14).attr("x2", x - 14).attr("y1", TOP - 10).attr("y2", column.bottom)
+      .attr("stroke", `${color}55`);
+
+    column.segments.forEach(entry => {
+      chart.append("text").attr("x", x).attr("y", entry.top + 12).attr("fill", "#8b96c2")
+        .style("font-size", "11px").text(`${entry.segment.name} · ${entry.members.length}`);
+      entry.members.forEach((company, offset) => {
+        const cy = entry.top + SEG_H + offset * ROW_H + ROW_H / 2;
+        positions.set(company.ticker, [x, cy]);
+        const node = chart.append("g").style("cursor", "pointer").on("click", () => showCard(company));
+        node.append("circle").attr("cx", x).attr("cy", cy).attr("r", 5).attr("fill", color)
+          .attr("stroke", "#0a0e1a").attr("stroke-width", 1);
+        node.append("text").attr("x", x + 12).attr("y", cy + 4).attr("fill", "#e6ecff")
+          .style("font-size", "12px").text(company.ticker);
+        node.append("text").attr("x", x + 58).attr("y", cy + 4).attr("fill", "#8b96c2")
+          .style("font-size", "11.5px")
+          .text(company.name.length > 20 ? `${company.name.slice(0, 19)}…` : company.name);
+        node.append("title").text(`${company.ticker} ${company.name}\n${company.description}`);
+      });
+    });
+  });
+
+  if (!showCross) { return; }
+  const link = d3.linkHorizontal().x(point => point[0]).y(point => point[1]);
+  positions.forEach(([x, y], ticker) => {
+    crossTargets(byTicker.get(ticker)).forEach(targetId => {
+      const targetX = 40 + layers.findIndex(layer => layer.id === targetId) * COL_W;
+      chart.append("path").attr("d", link({ source: [x + 7, y], target: [targetX - 2, TOP - 34] }))
+        .attr("fill", "none").attr("stroke", "#f6ad55").attr("stroke-opacity", 0.45)
+        .attr("stroke-dasharray", "4 4").attr("stroke-width", 1.1);
+    });
+  });
+}
+// ---------------------------------------------------------------- 树状图（可折叠）
+const TREE_ROW = 26, TREE_DEPTH = 300, TREE_LABEL = 240;
+
+function treeData() {
+  const root = { id: "ai", name: `AI 产业链 (${data.root.count})`, layer: null, children: [] };
+  layers.forEach(layer => {
+    if (hidden.has(layer.id)) return;
+    const segments = layer.children.map(segment => {
+      const members = byLayer.get(layer.id).filter(company => company.segment === segment.name && matches(company));
+      if (!members.length) return null;
+      return {
+        id: segment.id,
+        name: `${segment.name} (${members.length})`,
+        layer: layer.id,
+        children: members.map(company => ({
+          id: company.ticker,
+          name: `${company.ticker} ${company.name}`,
+          layer: layer.id,
+          ref: company,
+          children: [],
+        })),
+      };
+    }).filter(Boolean);
+    if (segments.length) {
+      root.children.push({
+        id: layer.id, name: `${layer.name} (${layer.count})`, layer: layer.id, children: segments,
+      });
+    }
+  });
+  return root;
+}
+
+function renderTree() {
+  const root = d3.hierarchy(treeData(), node => (collapsed.has(node.id) ? null : node.children));
+  d3.tree().nodeSize([TREE_ROW, TREE_DEPTH])(root);
+
+  const xs = d3.extent(root.descendants(), node => node.x);
+  const ys = d3.extent(root.descendants(), node => node.y);
+  contentSize = { width: ys[1] + TREE_LABEL + 80, height: xs[1] - xs[0] + 120 };
+  chart.selectAll("*").remove();
+  const shift = 60 - xs[0];
+
+  chart.append("g").selectAll("path").data(root.links()).join("path")
+    .attr("d", d3.linkHorizontal().x(node => node.y + 20).y(node => node.x + shift))
+    .attr("fill", "none")
+    .attr("stroke", link => colorOf[link.target.data.layer] || "#3a4a80")
+    .attr("stroke-opacity", link => (link.target.data.ref ? 0.32 : 0.7))
+    .attr("stroke-width", link => (link.target.data.ref ? 1 : 1.6));
+
+  const nodes = chart.append("g").selectAll("g").data(root.descendants()).join("g")
+    .attr("transform", node => `translate(${node.y + 20}, ${node.x + shift})`)
+    .style("cursor", "pointer")
+    .on("click", (event, node) => {
+      if (node.data.ref) { showCard(node.data.ref); return; }
+      if (collapsed.has(node.data.id)) { collapsed.delete(node.data.id); } else { collapsed.add(node.data.id); }
+      render();
+    });
+
+  nodes.append("circle").attr("r", node => (node.data.ref ? 4 : 5.5))
+    .attr("fill", node => colorOf[node.data.layer] || "#9db4ff").attr("stroke", "#0a0e1a");
+  nodes.append("text").attr("x", 11).attr("dy", 4)
+    .attr("fill", node => (node.data.ref ? "#cbd5ff" : "#fff"))
+    .style("font-size", node => (node.data.ref ? "11.5px" : "12.5px"))
+    .style("font-weight", node => (node.data.ref ? "400" : "600"))
+    .text(node => node.data.name);
+  nodes.append("title").text(node => (node.data.ref
+    ? `${node.data.ref.description} · 跨层：${node.data.ref.cross_in.join("/") || "无"}`
+    : "点击折叠 / 展开"));
+}
+// ---------------------------------------------------------------- Mermaid 文本（与 CLI 输出一致）
+function mermaidText() {
+  const lines = ["graph LR", `  R["${data.root.name} (${data.root.count})"]`];
+  const cross = [];
+  layers.forEach((layer, index) => {
+    if (hidden.has(layer.id)) return;
+    lines.push(`  L${index}["${layer.name} · ${layer.name_en} (${layer.count})"]`);
+    lines.push(`  R --> L${index}`);
+    layer.children.forEach((segment, si) => {
+      const members = byLayer.get(layer.id).filter(company => company.segment === segment.name && matches(company));
+      if (!members.length) return;
+      lines.push(`  L${index}S${si}["${segment.name} (${members.length})"]`);
+      lines.push(`  L${index} --> L${index}S${si}`);
+      members.forEach(company => {
+        const id = `n_${company.ticker.replace(/[^A-Za-z0-9]/g, "_")}`;
+        lines.push(`  ${id}["${company.ticker} ${company.name}"]`);
+        lines.push(`  L${index}S${si} --> ${id}`);
+        crossTargets(company).forEach(target => {
+          cross.push(`  ${id} -.-> L${layers.findIndex(other => other.id === target)}`);
+        });
+      });
+    });
+  });
+  return lines.concat(cross).join("\n");
+}
+
+function fit() {
+  const box = svg.node().getBoundingClientRect();
+  svg.attr("width", box.width).attr("height", box.height);
+  const scale = Math.min(1, box.width / contentSize.width, box.height / contentSize.height);
+  svg.call(zoom.transform, d3.zoomIdentity.translate(0, 0).scale(scale));
+}
+
+function render() {
+  if (mode === "mermaid") { $("mermaid").textContent = mermaidText(); return; }
+  if (mode === "tree") { renderTree(); } else { renderColumns(); }
+  if (needsFit) { fit(); needsFit = false; }
+}
+
+render();
+</script>
+</body>
+</html>
+
+
+
+

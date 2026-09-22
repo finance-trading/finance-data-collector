@@ -221,3 +221,6 @@ __marimo__/
 .streamlit/secrets.toml
 
 sec/
+
+# Playwright MCP browser session dumps (screenshots, page snapshots)
+.playwright-mcp/
