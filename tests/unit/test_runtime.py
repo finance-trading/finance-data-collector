@@ -86,3 +86,9 @@ def test_session_scope_without_tables_still_connects(tmp_path, monkeypatch):
 
     with session_scope() as session:
         assert session.execute(text("SELECT 1")).scalar_one() == 1
+
+
+def test_engine_enables_pool_pre_ping_for_sqlite(tmp_path, monkeypatch):
+    _use_sqlite(monkeypatch, tmp_path, name="pre_ping.db")
+
+    assert get_engine().pool._pre_ping is True

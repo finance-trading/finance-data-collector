@@ -26,7 +26,10 @@ def _engine_options(url: str) -> dict[str, object]:
     """Return engine options that keep SQLite test backends usable."""
 
     if url.startswith("sqlite"):
-        options: dict[str, object] = {"connect_args": {"check_same_thread": False}}
+        options: dict[str, object] = {
+            "connect_args": {"check_same_thread": False},
+            "pool_pre_ping": True,
+        }
         if ":memory:" in url:
             options["poolclass"] = StaticPool
         return options
