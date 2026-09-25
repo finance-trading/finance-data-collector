@@ -38,6 +38,7 @@ DEFAULT_FORMS = [
     "S-1", "S-3", "S-8",
     "424B", "485A", "485B",
 ]
+IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".gif", ".png", ".bmp", ".svg", ".tif", ".tiff", ".webp"}
 EDGAR_BASE = "https://www.sec.gov"
 DATA_BASE = "https://data.sec.gov"
 BASE_DELAY = 0.35
@@ -350,7 +351,7 @@ def get_filing_files(cik: int, accession: str, ua: str) -> List[str]:
 # Download filing
 # ---------------------------------------------------------------------------
 
-def download_filing(cik: int, filing: Dict, output_dir: Path, ua: str, force: bool) -> List[Path]:
+def download_filing(cik: int, filing: Dict, output_dir: Path, ua: str, force: bool, no_images: bool = True, include_txt: bool = False) -> List[Path]:
     form = filing["form"]
     accession = filing["accession"]
     accession_clean = accession.replace("-", "")
@@ -372,6 +373,20 @@ def download_filing(cik: int, filing: Dict, output_dir: Path, ua: str, force: bo
     for filename in files:
         if not filename or ".." in filename:
             continue
+
+        # Skip image files if --no-images is set
+        if no_images:
+            ext = Path(filename).suffix.lower()
+            if ext in IMAGE_EXTENSIONS:
+                continue
+
+        # Skip the complete-submission .txt package by default (use --include-txt to keep it).
+        # It duplicates every other file in the directory (plus generated
+        # XBRL viewer files) and accounts for ~2/3 of disk usage.
+        if not include_txt and filename.lower().endswith(".txt"):
+            stem = filename[:-4]
+            if stem.replace("-", "") == accession_clean:
+                continue
 
         file_path = filing_dir / filename
         if file_path.exists() and not force:
@@ -448,6 +463,13 @@ def main():
                         help=f"Max requests per minute (default: {MAX_REQUESTS_PER_MINUTE})")
     parser.add_argument("--concurrency", type=int, default=1,
                         help="Number of concurrent downloads (default: 1, use 2-3 for speed)")
+    image_group = parser.add_mutually_exclusive_group()
+    image_group.add_argument("--include-images", action="store_true",
+                             help="Include image files (.jpg, .png, .gif, .svg, etc.)")
+    image_group.add_argument("--no-images", action="store_true", help=argparse.SUPPRESS)
+    parser.add_argument("--include-txt", action="store_true",
+                        help="Include the complete-submission .txt package (~25-40MB per filing, "
+                             "duplicates the other files in the directory)")
 
     args = parser.parse_args()
 
@@ -514,7 +536,15 @@ def main():
         print(f"\n[{i}/{len(filtered)}] {form} filed {date}", end="")
 
         try:
-            downloaded = download_filing(cik, filing, output_dir, ua, args.force)
+            downloaded = download_filing(
+                cik,
+                filing,
+                output_dir,
+                ua,
+                args.force,
+                no_images=not args.include_images,
+                include_txt=args.include_txt,
+            )
             total_downloaded += len(downloaded)
             if not downloaded:
                 _tick_skip()

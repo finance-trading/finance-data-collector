@@ -5,7 +5,7 @@ description: Download complete SEC filing and exhibit packages for a company fro
 
 # SEC Filings Download
 
-Download **all** SEC filings for a company from SEC EDGAR, including complete exhibit packages. Handles pagination for companies with 1000+ filings.
+Download **all** SEC filings for a company from SEC EDGAR, including text, XBRL, and non-image exhibit files. Image attachments are skipped by default because they are usually not needed for financial/company analysis. Handles pagination for companies with 1000+ filings.
 
 ## When to Use
 
@@ -59,6 +59,9 @@ python .agents/skills/sec-filings-download/scripts/download_sec_filings.py MSFT 
 
 # Custom output directory
 python .agents/skills/sec-filings-download/scripts/download_sec_filings.py MSFT --output-dir /path/to/output
+
+# Include image attachments when a complete visual archive is needed
+python .agents/skills/sec-filings-download/scripts/download_sec_filings.py MSFT --include-images
 ```
 
 **CLI arguments:**
@@ -71,6 +74,8 @@ python .agents/skills/sec-filings-download/scripts/download_sec_filings.py MSFT 
 | `--force` | false | Re-download files that already exist |
 | `--refresh-cache` | false | Force refresh of cached metadata from EDGAR |
 | `--output-dir PATH` | sec/<TICKER> | Override output directory |
+| `--include-images` | false | Include image attachments; images are skipped by default |
+| `--include-txt` | false | Include the complete-submission `.txt` package (~25-40MB per filing, duplicates other files; skipped by default) |
 
 ## Output Structure
 
@@ -130,6 +135,7 @@ After download completes:
 - **User-Agent**: EDGAR requires a valid email in User-Agent header (`email/1.0`)
 - **Rate limit**: 0.11s delay between requests (≤10 req/sec, EDGAR's limit)
 - **Idempotent**: Skips files that already exist (unless `--force`)
+- **Image policy**: Skips common image attachments by default; use `--include-images` to download them
 - **Respect robots.txt**: Only downloads requested filing types
 
 ## Downstream Usage
@@ -198,6 +204,7 @@ Example: `sec/MSFT/10-K/0000789019-25-000002/msft-20250630.htm`
 - **No full-text search**: Use `grep` or `ripgrep` on downloaded HTML files
 - **Amended filings**: Excluded by default; use `--include-amended` if needed
 - **Large downloads**: Companies with extensive history (MSFT, GOOG, AAPL) may take significant time on first run
+- **Image attachments**: Skipped by default; use `--include-images` if an image-only exhibit is needed for visual due diligence
 
 ## Compliance Notice
 
