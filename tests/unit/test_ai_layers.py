@@ -59,10 +59,25 @@ def test_real_universe_satisfies_layer_contract():
         "app",
         "edge",
     ]
-    assert len(companies) >= 90
+    assert len(companies) >= 190
     assert len({company["ticker"] for company in companies}) == len(companies)
     for layer in layers:
         assert any(company["layer"] == layer["id"] for company in companies), layer["id"]
+    app = next(layer for layer in layers if layer["id"] == "app")
+    assert app["segments"] == [
+        "企业软件与 Agent",
+        "广告与营销 AI",
+        "安全与身份",
+        "消费与内容应用",
+        "IT 服务与集成",
+        "金融 AI",
+        "医疗 AI 与计算生物",
+        "客服与联络中心 AI",
+        "AI 开发工具",
+        "法律科技 AI",
+        "垂直 SaaS AI",
+        "国防与政府 AI",
+    ]
 
 
 def test_real_universe_tree_is_ordered_and_complete():
@@ -82,7 +97,7 @@ def test_real_universe_tree_is_ordered_and_complete():
     ]
     assert len(leaves) == len(companies)
     assert tree["stats"]["companies"] == len(companies)
-    assert tree["stats"]["segments"] == 25
+    assert tree["stats"]["segments"] == 32
     assert tree["stats"]["cross_layer"] >= 1
     assert all(node["edgar"].startswith("https://www.sec.gov/") for node in leaves)
     assert all(node["cik"] for node in leaves)
@@ -226,6 +241,102 @@ def test_main_writes_tree_json(tmp_path, monkeypatch):
     assert 'window.__FDC_DATA__["layers"] = {' in shim.read_text()
 
 
+def test_audit_graph_reports_missing_and_stale_nodes():
+    graph = {
+        "nodes": [{"id": 1, "ticker": "AAA"}, {"id": 99, "ticker": "GONE"}],
+        "links": [{"source": 1, "target": 99}],
+        "generated_at": "2026-01-01 00:00",
+    }
+
+    report = ai_layers.audit_graph(graph, ["AAA", "BBB"])
+
+    assert report == {
+        "nodes": 2,
+        "links": 1,
+        "matched": 1,
+        "missing": ["BBB"],
+        "stale": ["GONE"],
+    }
+
+
+def test_audit_graph_is_aligned_for_identical_sets():
+    graph = {"nodes": [{"id": 1, "ticker": "aaa"}], "links": []}
+
+    report = ai_layers.audit_graph(graph, ["AAA"])
+
+    assert (report["matched"], report["missing"], report["stale"]) == (1, [], [])
+
+
+def test_render_alignment_flags_missing_and_stale():
+    status = ai_layers.render_alignment(
+        {"nodes": 62, "links": 1199, "matched": 61, "missing": ["AAAA", "BBBB"], "stale": ["GONE"]}
+    )
+
+    assert status.splitlines()[0] == (
+        "graph alignment: 61/63 universe tickers matched · 62 nodes · 1199 links"
+    )
+    assert "missing (2): AAAA, BBBB" in status
+    assert "stale (1): GONE" in status
+
+
+def test_main_exits_nonzero_when_graph_lags_universe(tmp_path, monkeypatch, capsys):
+    rows = [make_company("AAA", "up", "设备", cik=1), make_company("BBB", "down", "应用", cik=2)]
+    graph_path = tmp_path / "graph.json"
+    graph_path.write_text(json.dumps({"nodes": [{"id": 1, "ticker": "AAA"}], "links": []}))
+    monkeypatch.setattr(
+        ai_layers, "load_universe", lambda path=ai_layers.COMPANIES_PATH: (rows, LAYERS)
+    )
+    monkeypatch.setattr(ai_layers, "resolve_ciks", lambda companies, ticker_map=None: companies)
+    monkeypatch.setattr(ai_layers, "GRAPH_PATH", graph_path)
+
+    with pytest.raises(SystemExit) as exit_info:
+        ai_layers.main(["--out", str(tmp_path / "layers.json"), "--enrich-graph"])
+
+    captured = capsys.readouterr()
+    assert exit_info.value.code == 1
+    assert "graph alignment: 1/2 universe tickers matched" in captured.out
+    assert "missing (1): BBB" in captured.out
+    assert "graph.json is out of sync" in captured.err
+
+
+def test_main_allow_stale_graph_reports_but_exits_zero(tmp_path, monkeypatch, capsys):
+    rows = [make_company("AAA", "up", "设备", cik=1), make_company("BBB", "down", "应用", cik=2)]
+    graph_path = tmp_path / "graph.json"
+    graph_path.write_text(json.dumps({"nodes": [{"id": 1, "ticker": "AAA"}], "links": []}))
+    monkeypatch.setattr(
+        ai_layers, "load_universe", lambda path=ai_layers.COMPANIES_PATH: (rows, LAYERS)
+    )
+    monkeypatch.setattr(ai_layers, "resolve_ciks", lambda companies, ticker_map=None: companies)
+    monkeypatch.setattr(ai_layers, "GRAPH_PATH", graph_path)
+    out = tmp_path / "layers.json"
+
+    ai_layers.main(["--out", str(out), "--enrich-graph", "--allow-stale-graph"])
+
+    captured = capsys.readouterr()
+    assert "ignored by --allow-stale-graph" in captured.out
+    assert captured.err == ""
+    assert json.loads(out.read_text())["stats"]["companies"] == 2
+
+
+def test_enrich_graph_requires_an_existing_graph(tmp_path):
+    with pytest.raises(UniverseError, match="does not exist"):
+        enrich_graph([make_company("AAA", "up", "设备")], tmp_path / "graph.json")
+
+
+def test_real_graph_matches_universe():
+    """The checked-in 3D graph must cover the curated universe, not a subset."""
+    companies, _ = ai_layers.load_universe()
+
+    report = ai_layers.audit_graph(
+        json.loads(ai_layers.GRAPH_PATH.read_text()),
+        [company["ticker"] for company in companies],
+    )
+
+    assert report["missing"] == []
+    assert report["stale"] == []
+    assert report["nodes"] == len(companies)
+
+
 def test_enrich_graph_adds_layers_to_matching_nodes(tmp_path):
     graph_path = tmp_path / "graph.json"
     graph_path.write_text(
@@ -250,4 +361,3 @@ def test_enrich_graph_adds_layers_to_matching_nodes(tmp_path):
     assert payload["nodes"][0]["also_in"] == ["down"]
     assert "layer" not in payload["nodes"][1]
     assert payload["links"] == [{"source": 1, "target": 99}]
-

@@ -18,12 +18,19 @@ Usage:
     uv run python -m fdc.ai_layers --tree           # ASCII tree to stdout
     uv run python -m fdc.ai_layers --mermaid        # mermaid graph to stdout
     uv run python -m fdc.ai_layers --enrich-graph   # copy layer/segment into graph.json
+
+``--enrich-graph`` also audits the graph against the universe: when graph.json was
+built before the universe grew (or still lists dropped tickers) the command prints
+the offending ``missing`` / ``stale`` tickers and exits non-zero, so a stale graph
+cannot ship silently.  Rebuild with ``fdc.graph`` (then enrich again), or pass
+``--allow-stale-graph`` to inspect the drift anyway.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import sys
 import time
 from pathlib import Path
 
@@ -42,6 +49,10 @@ EDGAR_BROWSER = "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=
 ROOT_ID = "ai"
 ROOT_NAME = "AI 产业链"
 ROOT_NAME_EN = "AI Value Chain"
+GRAPH_STALE_HINT = (
+    "graph.json is out of sync with the universe — rebuild it: "
+    "uv run python -m fdc.graph && uv run python -m fdc.ai_layers --enrich-graph"
+)
 
 
 class UniverseError(ValueError):
@@ -274,6 +285,8 @@ def enrich_graph(
     label nodes without re-reading companies.json.
     """
     path = Path(graph_path)
+    if not path.exists():
+        raise UniverseError(f"{path} does not exist — build it first: uv run python -m fdc.graph")
     payload = json.loads(path.read_text())
     names = layer_names or {}
     by_cik = {company["cik"]: company for company in companies}
@@ -294,6 +307,45 @@ def enrich_graph(
     return updated
 
 
+def audit_graph(graph: dict, tickers: list[str]) -> dict:
+    """Compare a graph.json payload with the universe tickers.
+
+    ``missing`` are universe tickers the graph does not carry (the graph predates
+    them), ``stale`` are graph tickers that left the universe.  Both empty means
+    the graph is aligned and can be published.
+    """
+    expected = {str(ticker).upper() for ticker in tickers}
+    present = {str(node.get("ticker", node["id"])).upper() for node in graph.get("nodes", [])}
+    return {
+        "nodes": len(graph.get("nodes", [])),
+        "links": len(graph.get("links", [])),
+        "matched": len(expected & present),
+        "missing": sorted(expected - present),
+        "stale": sorted(present - expected),
+    }
+
+
+def _ticker_preview(tickers: list[str], limit: int = 8) -> str:
+    """Comma-joined first ``limit`` tickers, then a ``+n more`` suffix."""
+    head = ", ".join(tickers[:limit])
+    rest = len(tickers) - limit
+    return f"{head}, … (+{rest})" if rest > 0 else head
+
+
+def render_alignment(report: dict) -> str:
+    """One-line graph/universe alignment summary plus offending tickers."""
+    total = report["matched"] + len(report["missing"])
+    lines = [
+        f"graph alignment: {report['matched']}/{total} universe tickers matched · "
+        f"{report['nodes']} nodes · {report['links']} links"
+    ]
+    if report["missing"]:
+        lines.append(f"  missing ({len(report['missing'])}): {_ticker_preview(report['missing'])}")
+    if report["stale"]:
+        lines.append(f"  stale ({len(report['stale'])}): {_ticker_preview(report['stale'])}")
+    return "\n".join(lines)
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(
         description="Build the AI value-chain layer tree from web/data/companies.json."
@@ -311,6 +363,11 @@ def main(argv: list[str] | None = None) -> None:
         action="store_true",
         help="also copy layer/segment into web/data/graph.json",
     )
+    parser.add_argument(
+        "--allow-stale-graph",
+        action="store_true",
+        help="report a graph.json that lags the universe but still exit 0",
+    )
     args = parser.parse_args(argv)
 
     companies, layers = load_universe()
@@ -325,14 +382,26 @@ def main(argv: list[str] | None = None) -> None:
         f"{stats['layers']} layers · {stats['segments']} segments · "
         f"{stats['cross_layer']} cross-layer roles"
     )
+    stale_graph = False
     if args.enrich_graph:
         names = {layer["id"]: layer["name"] for layer in layers}
-        enriched = enrich_graph(resolved, layer_names=names)
+        enriched = enrich_graph(resolved, graph_path=GRAPH_PATH, layer_names=names)
         print(f"enriched {enriched} matching nodes in {GRAPH_PATH}")
+        report = audit_graph(
+            json.loads(Path(GRAPH_PATH).read_text()),
+            [company["ticker"] for company in resolved],
+        )
+        print(render_alignment(report))
+        stale_graph = bool(report["missing"] or report["stale"])
+        if stale_graph and args.allow_stale_graph:
+            print("  ! stale graph.json ignored by --allow-stale-graph")
     if args.tree:
         print(render_tree(tree))
     if args.mermaid:
         print(render_mermaid(tree, include_companies=not args.mermaid_summary))
+    if stale_graph and not args.allow_stale_graph:
+        print(f"  ! {GRAPH_STALE_HINT}", file=sys.stderr)
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":
