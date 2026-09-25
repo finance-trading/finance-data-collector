@@ -7,18 +7,27 @@ web/data/graph.json consumed by web/index.html.
 Edge types:
 - industry   : same GICS sub-industry (bounded K-nearest so meshes stay readable)
 - crossref   : EDGAR full-text search — universe peers' 10-K filings mentioning this ticker
-- coholding  : EDGAR 13F-HR — universe companies held by the same managers
+- coholding  : EDGAR 13F-HR — universe companies held by the same managers. Raw overlap is
+               index-fund noise (7.5k edges, median shared managers 3, max 19), so pairs
+               need --cohold-min-shared managers and are capped to --cohold-neighbors
+               reciprocal strongest partners.
+
+EFTS responses are cached under sec/.cache/efts, so re-runs are instant and offline;
+pass --refresh-cache to query EDGAR again.
 
 Usage:
     uv run python -m fdc.graph
     uv run python -m fdc.graph --no-cohold
     uv run python -m fdc.graph --offline   # no network: industry edges only
+    uv run python -m fdc.graph --refresh-cache
 """
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import re
 import time
 import urllib.parse
 import urllib.request
@@ -32,6 +41,7 @@ WEB_DIR = PROJECT_ROOT / "web"
 COMPANIES_PATH = WEB_DIR / "data" / "companies.json"
 GRAPH_PATH = WEB_DIR / "data" / "graph.json"
 TICKERS_CACHE = CACHE_DIR / "company_tickers.json"
+EFTS_CACHE = CACHE_DIR / "efts"
 
 DATA_SEC = "https://data.sec.gov"
 EFTS = "https://efts.sec.gov/LATEST/search-index"
@@ -66,6 +76,64 @@ def http_get_json(url: str, timeout: int = 30, retries: int = 3) -> dict:
     raise RuntimeError(f"GET failed after {retries} attempts: {url}: {last}")
 
 
+def efts_cache_path(url: str) -> Path:
+    """Deterministic, human-inspectable cache filename for one EFTS query."""
+    params = dict(urllib.parse.parse_qsl(urllib.parse.urlparse(url).query))
+    label = f"{params.get('forms', 'q')}-{params.get('q', '')}"
+    slug = re.sub(r"[^A-Za-z0-9]+", "-", label).strip("-").lower()[:60]
+    digest = hashlib.sha1(url.encode()).hexdigest()[:10]
+    return EFTS_CACHE / f"{slug}-{digest}.json"
+
+
+def fetch_efts(url: str, refresh: bool = False) -> tuple[dict, bool]:
+    """Return (payload, from_cache) for an EFTS query, caching the response on disk."""
+    path = efts_cache_path(url)
+    if path.exists() and not refresh:
+        try:
+            return json.loads(path.read_text()), True
+        except json.JSONDecodeError:
+            print(f"  ! ignoring corrupt cache file {path.name}")
+    data = http_get_json(url)
+    EFTS_CACHE.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(data, ensure_ascii=False))
+    return data, False
+
+
+def pair_key(edge: dict) -> tuple[int, int]:
+    """Order-independent identity of an edge, for dedup and ranking."""
+    return tuple(sorted((edge["source"], edge["target"])))
+
+
+def cap_neighbors(edges: list[dict], k: int) -> list[dict]:
+    """Keep only edges that both endpoints rank among their K strongest.
+
+    Reciprocal-only keeps every node's degree <= k, which is what stops 13F
+    co-holding from turning the 3D view into a hairball. Ties break on the
+    endpoint pair, so the result is deterministic. k <= 0 disables the cap.
+    """
+    if k <= 0:
+        return edges
+
+    incident: dict[int, list[dict]] = defaultdict(list)
+    for edge in edges:
+        incident[edge["source"]].append(edge)
+        incident[edge["target"]].append(edge)
+
+    def rank(edge: dict) -> tuple[int, int, int]:
+        a, b = pair_key(edge)
+        return (-edge["weight"], a, b)
+
+    keep = {
+        node: {pair_key(edge) for edge in sorted(group, key=rank)[:k]}
+        for node, group in incident.items()
+    }
+    return [
+        edge
+        for edge in edges
+        if pair_key(edge) in keep[edge["source"]] and pair_key(edge) in keep[edge["target"]]
+    ]
+
+
 def load_ticker_cik_map() -> dict[str, int]:
     """ticker -> cik, from the local cache or EDGAR company_tickers.json."""
     if TICKERS_CACHE.exists():
@@ -90,60 +158,141 @@ def resolve_companies(universe: list[dict]) -> list[dict]:
     return out
 
 
-def industry_edges(companies: list[dict], k: int = 3) -> list[dict]:
-    """Within each sub-industry, link every company to its K nearest peers.
+def add_industry_edge(
+    edges: dict[frozenset[int], dict],
+    a: dict,
+    b: dict,
+    label: str,
+    detail: str,
+) -> None:
+    """Record one derived industry link, counting repeats as extra weight."""
+    key = frozenset((a["cik"], b["cik"]))
+    edge = edges.get(key)
+    if edge is None:
+        x, y = sorted((a["cik"], b["cik"]))
+        edges[key] = {
+            "source": x,
+            "target": y,
+            "type": "industry",
+            "weight": 1,
+            "desc": f"{label}：{detail}",
+        }
+    else:
+        edge["weight"] += 1
 
-    Nearest = deterministic order by name, so a small group is a mesh and a
-    large group stays bounded instead of a hairball.
+
+def nearest_names(group: list[dict], company: dict, k: int) -> list[dict]:
+    """The K companies closest to `company` in a name-sorted bucket."""
+    ordered = sorted(group, key=lambda c: c["name"])
+    index = next(i for i, c in enumerate(ordered) if c["cik"] == company["cik"])
+    after = ordered[index + 1 : index + 1 + k]
+    before = list(reversed(ordered[max(0, index - k) : index]))
+    return (after + before)[:k]
+
+
+def link_group(
+    group: list[dict],
+    k: int,
+    label: str,
+    detail: str,
+    edges: dict[frozenset[int], dict],
+) -> None:
+    """Mesh a bucket: every member links to its K next neighbours (by name)."""
+    for i, c in enumerate(group):
+        for peer in group[i + 1 : i + 1 + k]:
+            add_industry_edge(edges, c, peer, label, detail)
+
+
+def industry_edges(
+    companies: list[dict],
+    k: int = 3,
+    layer_names: dict[str, str] | None = None,
+) -> list[dict]:
+    """Link each company to its K nearest peers at the finest level that works.
+
+    Level 1 buckets by GICS (sector, industry), then any company still without a
+    peer falls back to (layer, segment) and finally to the layer, so no curated
+    company floats unconnected in the 3D view. A company that is alone in every
+    bucket (KEYS sits alone in its GICS industry) is linked to the nearest names
+    of its layer instead. Within a bucket "nearest" is deterministic by name, so
+    a small group is a mesh and a large group stays bounded instead of a hairball.
     """
-    by_ind: dict[tuple[str, str], list[dict]] = defaultdict(list)
-    for c in companies:
-        by_ind[(c["sector"], c["industry"])].append(c)
-
+    names = layer_names or {}
     edges: dict[frozenset[int], dict] = {}
-    for (_sector, industry), group in by_ind.items():
-        group.sort(key=lambda c: c["name"])
-        for i, c in enumerate(group):
-            for j in list(range(i + 1, min(i + 1 + k, len(group)))):
-                peer = group[j]
-                key = frozenset((c["cik"], peer["cik"]))
-                e = edges.get(key)
-                if e is None:
-                    e = edges[key] = {
-                        "source": c["cik"],
-                        "target": peer["cik"],
-                        "type": "industry",
-                        "weight": 1,
-                        "desc": f"同 GICS 子行业：{industry}（{_sector}）",
-                    }
-                else:
-                    e["weight"] += 1
+    connected: set[int] = set()
+
+    levels = (
+        (
+            "同 GICS 子行业",
+            lambda c: (c["sector"], c["industry"]),
+            lambda c: f"{c['industry']}（{c['sector']}）",
+        ),
+        (
+            "同分层环节",
+            lambda c: (c.get("layer"), c.get("segment")),
+            lambda c: f"{c.get('segment')}（{names.get(c.get('layer'), c.get('layer'))}）",
+        ),
+        (
+            "同分层",
+            lambda c: c.get("layer"),
+            lambda c: str(names.get(c.get("layer"), c.get("layer"))),
+        ),
+    )
+
+    for label, bucket_of, detail_of in levels:
+        buckets: dict[object, list[dict]] = defaultdict(list)
+        for c in companies:
+            if c["cik"] not in connected:
+                buckets[bucket_of(c)].append(c)
+        for group in buckets.values():
+            if len(group) < 2:
+                continue
+            group.sort(key=lambda c: c["name"])
+            link_group(group, k, label, detail_of(group[0]), edges)
+            connected.update(c["cik"] for c in group)
+
+    for c in [c for c in companies if c["cik"] not in connected]:
+        for label, bucket_of, detail_of in levels:
+            bucket = [o for o in companies if bucket_of(o) == bucket_of(c)]
+            if len(bucket) < 2:
+                continue
+            for peer in nearest_names(bucket, c, k):
+                add_industry_edge(edges, c, peer, label, detail_of(c))
+            connected.add(c["cik"])
+            break
     return list(edges.values())
 
 
 def crossref_edges(
-    companies: list[dict], count: int = 100, wait: float = 0.3
+    companies: list[dict],
+    count: int = 100,
+    wait: float = 0.3,
+    refresh: bool = False,
 ) -> list[dict]:
     """EFTS-search all universe 10-K filings for each company's ticker."""
     cik_set = {c["cik"] for c in companies}
     by_cik = {c["cik"]: c for c in companies}
     # mentions[me][other] = other's 10-K filings mention me's ticker
     mentions: dict[int, Counter] = defaultdict(Counter)
+    fetched = 0
 
     for c in companies:
         q = c["ticker"] if len(c["ticker"]) >= 2 else c["name"]
         url = f"{EFTS}?q={urllib.parse.quote(q)}&forms=10-K&count={count}"
         try:
-            data = http_get_json(url)
+            data, cached = fetch_efts(url, refresh)
         except RuntimeError as exc:
             print(f"  ! crossref query failed for {c['ticker']}: {exc}")
             continue
+        if not cached:
+            fetched += 1
+            time.sleep(wait)
         for hit in data.get("hits", {}).get("hits", []):
             for filer in hit.get("_source", {}).get("ciks", []):
                 filer = int(filer)
                 if filer in cik_set and filer != c["cik"]:
                     mentions[c["cik"]][filer] += 1
-        time.sleep(wait)
+    print(f"  crossref: {fetched}/{len(companies)} queries fetched from EDGAR (rest cached)")
 
     pairs: dict[frozenset[int], tuple[int, int]] = {}
     for me, counter in mentions.items():
@@ -170,36 +319,51 @@ def crossref_edges(
     return edges
 
 
-def cohold_edges(companies: list[dict], threshold: int = 2, wait: float = 0.3) -> list[dict]:
+def cohold_edges(
+    companies: list[dict],
+    min_shared: int = 8,
+    neighbors: int = 5,
+    wait: float = 0.3,
+    refresh: bool = False,
+) -> list[dict]:
     """Shared 13F-HR managers between universe companies.
 
     EFTS name-inversion: search 13F-HR filings for each company's name ->
     the set of filing-manager CIKs; intersect per pair. No XML parsing.
+
+    Overlap counts filings that mention both names, so index-style managers that
+    file for every large cap make every pair overlap a little. Pairs therefore
+    need `min_shared` managers and then survive only if both endpoints rank each
+    other among their `neighbors` strongest partners (`neighbors=0` disables).
     """
     holders: dict[int, set[int]] = {}
+    fetched = 0
     for c in companies:
         url = f"{EFTS}?q={urllib.parse.quote(c['name'])}&forms=13F-HR&count=100"
         try:
-            data = http_get_json(url)
+            data, cached = fetch_efts(url, refresh)
         except RuntimeError as exc:
             print(f"  ! cohold query failed for {c['ticker']}: {exc}")
             holders[c["cik"]] = set()
             time.sleep(wait)
             continue
+        if not cached:
+            fetched += 1
+            time.sleep(wait)
         managers = set()
         for hit in data.get("hits", {}).get("hits", []):
             for m in hit.get("_source", {}).get("ciks", []):
                 managers.add(int(m))
         holders[c["cik"]] = managers
-        time.sleep(wait)
+    print(f"  coholding: {fetched}/{len(companies)} queries fetched from EDGAR (rest cached)")
 
-    edges = []
+    candidates = []
     for i, a in enumerate(companies):
         for b in companies[i + 1:]:
             shared = holders[a["cik"]] & holders[b["cik"]]
-            if len(shared) >= threshold:
+            if len(shared) >= min_shared:
                 x, y = sorted((a["cik"], b["cik"]))
-                edges.append({
+                candidates.append({
                     "source": x,
                     "target": y,
                     "type": "coholding",
@@ -209,7 +373,14 @@ def cohold_edges(companies: list[dict], threshold: int = 2, wait: float = 0.3) -
                         f"{by_ticker(companies, x)} 与 {by_ticker(companies, y)}"
                     ),
                 })
-    return edges
+
+    kept = cap_neighbors(candidates, neighbors)
+    dropped = len(candidates) - len(kept)
+    print(
+        f"  coholding: {len(candidates)} pairs share >= {min_shared} managers, "
+        f"{len(kept)} kept (dropped {dropped} one-sided strongest)"
+    )
+    return kept
 
 
 def by_ticker(companies: list[dict], cik: int) -> str:
@@ -222,6 +393,10 @@ def build(
     include_crossref: bool,
     include_cohold: bool,
     wait: float,
+    cohold_min_shared: int = 8,
+    cohold_neighbors: int = 5,
+    refresh_cache: bool = False,
+    layer_names: dict[str, str] | None = None,
 ) -> dict:
     nodes = [
         {
@@ -238,23 +413,29 @@ def build(
         for c in companies
     ]
 
-    links = industry_edges(companies, k=k_industry)
-    seen_pairs = {frozenset((link["source"], link["target"])) for link in links}
+    links = industry_edges(companies, k=k_industry, layer_names=layer_names)
+    seen_pairs = {pair_key(link) for link in links}
 
     extra: list[dict] = []
     if include_crossref:
         print(f"crossref: {len(companies)} EFTS 10-K mention queries ...")
         extra.extend(
             edge
-            for edge in crossref_edges(companies, wait=wait)
-            if frozenset((edge["source"], edge["target"])) not in seen_pairs
+            for edge in crossref_edges(companies, wait=wait, refresh=refresh_cache)
+            if pair_key(edge) not in seen_pairs
         )
     if include_cohold:
         print(f"coholding: {len(companies)} EFTS 13F-HR holder queries ...")
         extra.extend(
             edge
-            for edge in cohold_edges(companies, wait=wait)
-            if frozenset((edge["source"], edge["target"])) not in seen_pairs
+            for edge in cohold_edges(
+                companies,
+                min_shared=cohold_min_shared,
+                neighbors=cohold_neighbors,
+                wait=wait,
+                refresh=refresh_cache,
+            )
+            if pair_key(edge) not in seen_pairs
         )
 
     links.extend(extra)
@@ -270,12 +451,34 @@ def main() -> None:
         "--industry-neighbors",
         type=int,
         default=3,
-        help="K nearest peers per company within a sub-industry",
+        help=(
+            "K nearest peers per company; buckets fall back from GICS sub-industry "
+            "to layer segment to layer so nobody is left isolated"
+        ),
+    )
+    ap.add_argument(
+        "--cohold-min-shared",
+        type=int,
+        default=8,
+        help="keep 13F pairs sharing at least this many managers (default 8)",
+    )
+    ap.add_argument(
+        "--cohold-neighbors",
+        type=int,
+        default=5,
+        help="cap each company to its K strongest reciprocal 13F partners, 0 = no cap",
+    )
+    ap.add_argument(
+        "--refresh-cache",
+        action="store_true",
+        help="re-query EDGAR instead of reading sec/.cache/efts",
     )
     ap.add_argument("--wait", type=float, default=0.3, help="seconds between EDGAR queries")
     args = ap.parse_args()
 
-    companies = json.loads(COMPANIES_PATH.read_text())["companies"]
+    payload = json.loads(COMPANIES_PATH.read_text())
+    companies = payload["companies"]
+    layer_names = {layer["id"]: layer["name"] for layer in payload.get("layers", [])}
     print(f"universe: {len(companies)} companies")
 
     companies = resolve_companies(companies)
@@ -287,6 +490,10 @@ def main() -> None:
         include_crossref=not args.offline and not args.no_crossref,
         include_cohold=not args.offline and not args.no_cohold,
         wait=args.wait,
+        cohold_min_shared=args.cohold_min_shared,
+        cohold_neighbors=args.cohold_neighbors,
+        refresh_cache=args.refresh_cache,
+        layer_names=layer_names,
     )
     json_path, js_path = write_data(GRAPH_PATH.stem, graph, GRAPH_PATH.parent)
     types = Counter(link["type"] for link in graph["links"])

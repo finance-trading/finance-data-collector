@@ -32,7 +32,7 @@
 </style>
 </head>
 <body>
-<canvas id="graph"></canvas>
+<div id="graph"></div>
 
 <div id="card" class="panel">
   <span class="close" onclick="this.parentElement.style.display='none'">✕</span>
@@ -90,6 +90,10 @@ async function loadData(name) {
 
 (async () => {
   const data = await loadData("graph");
+  data.links.forEach(link => {
+    if (typeof link.source === "number") link.source = data.nodes.find(node => node.id === link.source)?.ticker || link.source;
+    if (typeof link.target === "number") link.target = data.nodes.find(node => node.id === link.target)?.ticker || link.target;
+  });
   document.getElementById("gen-time").textContent = data.generated_at || "";
 
   // colouring dimension: GICS sector (default) or AI value-chain layer
@@ -111,8 +115,9 @@ async function loadData(name) {
   // three-forcegraph throws when the link set changes during a live update).
   // Links whose endpoints are filtered out are hidden as well.
   const byId = new Map(data.nodes.map(node => [node.id, node]));
+  const byTicker = new Map(data.nodes.map(node => [node.ticker, node]));
   const hiddenRef = ref => {
-    const node = ref && typeof ref === "object" ? ref : byId.get(ref);
+    const node = ref && typeof ref === "object" ? ref : (byTicker.get(ref) || byId.get(ref));
     return hidden.has(dims[dim].of(node || {}));
   };
   const linkShown = link =>
@@ -123,7 +128,7 @@ async function loadData(name) {
   };
   const Graph = ThreeForceGraph()(document.getElementById("graph"))
     .graphData(data)
-    .nodeId("id")
+    .nodeId("ticker")
     .nodeLabel(n => `${n.name} (${n.ticker})${n.layer_name ? " · " + n.layer_name : ""}`)
     .nodeRelSize(d => 2 + Math.min(6, (degree[d.id] || 0) * 0.5))
     .nodeColor(n => n.color)
@@ -134,13 +139,18 @@ async function loadData(name) {
     .showNavInfo(false);
   setTimeout(() => console.log("nodes:", data.nodes.length, "links:", data.links.length), 1500);
 
-  Graph.camera().position.z = 190;
+  Graph.camera().position.z = 80;
+  // Center and scale the completed layout so every company is visible initially.
+  Graph.onEngineStop(() => Graph.zoomToFit(800, 80));
+  window.__graph = Graph;  // TEMP debug hook
 
   // degree (links still carry raw ids here; force-graph swaps them in its own copy)
   const degree = {};
   data.links.forEach(l => {
-    degree[l.source] = (degree[l.source] || 0) + 1;
-    degree[l.target] = (degree[l.target] || 0) + 1;
+    const source = typeof l.source === "object" ? l.source.ticker : (byTicker.has(l.source) ? l.source : byId.get(l.source)?.ticker);
+    const target = typeof l.target === "object" ? l.target.ticker : (byTicker.has(l.target) ? l.target : byId.get(l.target)?.ticker);
+    if (source) degree[source] = (degree[source] || 0) + 1;
+    if (target) degree[target] = (degree[target] || 0) + 1;
   });
 
   Graph.onNodeClick(node => {
@@ -150,9 +160,13 @@ async function loadData(name) {
       `${node.layer_name ? node.layer_name + " · " : ""}${node.segment ? node.segment + " · " : ""}${node.sector} · ${node.industry}`;
     document.getElementById("card-desc").textContent = node.description || "";
     document.getElementById("card-meta").innerHTML =
-      `CIK ${node.id} · 度 ${degree[node.id] || 1}<br><a href="${node.edgar}" target="_blank">EDGAR 档案 →</a>`;
+      `CIK ${node.id} · 度 ${degree[node.ticker] || 1}<br><a href="${node.edgar}" target="_blank">EDGAR 档案 →</a>`;
     el.style.display = "block";
     document.getElementById("link").style.display = "none";
+  });
+
+  Graph.onNodeHover(node => {
+    document.getElementById("graph").style.cursor = node ? "pointer" : "default";
   });
 
   Graph.onLinkClick(link => {

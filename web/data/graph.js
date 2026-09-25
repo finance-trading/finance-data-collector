@@ -3,19 +3,211 @@ window.__FDC_DATA__ = window.__FDC_DATA__ || {};
 window.__FDC_DATA__["graph"] = {
  "nodes": [
   {
+   "id": 1674101,
+   "ticker": "VRT",
+   "name": "Vertiv",
+   "sector": "Industrials",
+   "industry": "Electrical Equipment",
+   "layer": "power",
+   "segment": "数据中心电力与温控",
+   "description": "数据中心配电、UPS 与液冷温控，AI 机柜功率密度提升的直接受益者。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1674101",
+   "layer_name": "能源与电力"
+  },
+  {
+   "id": 1551182,
+   "ticker": "ETN",
+   "name": "Eaton",
+   "sector": "Industrials",
+   "industry": "Electrical Equipment",
+   "layer": "power",
+   "segment": "数据中心电力与温控",
+   "description": "电气设备与数据中心配电、UPS 及微电网。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1551182",
+   "layer_name": "能源与电力"
+  },
+  {
+   "id": 1996810,
+   "ticker": "GEV",
+   "name": "GE Vernova",
+   "sector": "Industrials",
+   "industry": "Heavy Electrical Equipment",
+   "layer": "power",
+   "segment": "发电与核电",
+   "description": "燃气轮机、电网设备与核电技术，数据中心供电建设方。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1996810",
+   "layer_name": "能源与电力"
+  },
+  {
+   "id": 1868275,
+   "ticker": "CEG",
+   "name": "Constellation Energy",
+   "sector": "Utilities",
+   "industry": "Power Generation",
+   "layer": "power",
+   "segment": "发电与核电",
+   "description": "美国最大核电运营商，向超大规模数据中心直供电。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1868275",
+   "layer_name": "能源与电力"
+  },
+  {
+   "id": 1692819,
+   "ticker": "VST",
+   "name": "Vistra",
+   "sector": "Utilities",
+   "industry": "Power Generation",
+   "layer": "power",
+   "segment": "发电与核电",
+   "description": "独立发电商，核电、天然气与零售电力组合。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1692819",
+   "layer_name": "能源与电力"
+  },
+  {
+   "id": 1622536,
+   "ticker": "TLN",
+   "name": "Talen Energy",
+   "sector": "Utilities",
+   "industry": "Power Generation",
+   "layer": "power",
+   "segment": "发电与核电",
+   "description": "核电资产，与 AWS 签订数据中心长期供电协议。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1622536",
+   "layer_name": "能源与电力"
+  },
+  {
+   "id": 1013871,
+   "ticker": "NRG",
+   "name": "NRG Energy",
+   "sector": "Utilities",
+   "industry": "Power Generation",
+   "layer": "power",
+   "segment": "发电与核电",
+   "description": "发电与零售电力，布局数据中心供电交易。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1013871",
+   "layer_name": "能源与电力"
+  },
+  {
+   "id": 1050915,
+   "ticker": "PWR",
+   "name": "Quanta Services",
+   "sector": "Industrials",
+   "industry": "Construction & Engineering",
+   "layer": "power",
+   "segment": "电网与工程",
+   "description": "电网建设与数据中心电力接入工程。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1050915",
+   "layer_name": "能源与电力"
+  },
+  {
+   "id": 1326160,
+   "ticker": "DUK",
+   "name": "Duke Energy",
+   "sector": "Utilities",
+   "industry": "Electric Utilities",
+   "layer": "power",
+   "segment": "发电与核电",
+   "description": "美国大型公用事业，核电与燃气资产为数据中心提供稳定电力。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1326160",
+   "layer_name": "能源与电力"
+  },
+  {
+   "id": 92122,
+   "ticker": "SO",
+   "name": "Southern Company",
+   "sector": "Utilities",
+   "industry": "Electric Utilities",
+   "layer": "power",
+   "segment": "发电与核电",
+   "description": "美国电力公用事业与核电运营商，受益于 AI 数据中心负荷增长。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=92122",
+   "layer_name": "能源与电力"
+  },
+  {
+   "id": 4904,
+   "ticker": "AEP",
+   "name": "American Electric Power",
+   "sector": "Utilities",
+   "industry": "Electric Utilities",
+   "layer": "power",
+   "segment": "电网与工程",
+   "description": "美国输配电网络运营商，扩建 AI 数据中心接入容量。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=4904",
+   "layer_name": "能源与电力"
+  },
+  {
+   "id": 72903,
+   "ticker": "XEL",
+   "name": "Xcel Energy",
+   "sector": "Utilities",
+   "industry": "Electric Utilities",
+   "layer": "power",
+   "segment": "发电与核电",
+   "description": "美国电力公用事业，向大型科技客户提供低碳电力。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=72903",
+   "layer_name": "能源与电力"
+  },
+  {
+   "id": 874761,
+   "ticker": "AES",
+   "name": "AES Corporation",
+   "sector": "Utilities",
+   "industry": "Independent Power Producers",
+   "layer": "power",
+   "segment": "发电与核电",
+   "description": "发电与储能开发商，为数据中心建设可再生能源和电池容量。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=874761",
+   "layer_name": "能源与电力"
+  },
+  {
+   "id": 753308,
+   "ticker": "NEE",
+   "name": "NextEra Energy",
+   "sector": "Utilities",
+   "industry": "Electric Utilities",
+   "layer": "power",
+   "segment": "发电与核电",
+   "description": "可再生能源与电力公用事业龙头，承接 AI 负荷增长。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=753308",
+   "layer_name": "能源与电力"
+  },
+  {
+   "id": 827052,
+   "ticker": "EIX",
+   "name": "Edison International",
+   "sector": "Utilities",
+   "industry": "Electric Utilities",
+   "layer": "power",
+   "segment": "电网与工程",
+   "description": "加州电网与配电运营商，服务高密度数据中心用电需求。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=827052",
+   "layer_name": "能源与电力"
+  },
+  {
+   "id": 1130310,
+   "ticker": "CNP",
+   "name": "CenterPoint Energy",
+   "sector": "Utilities",
+   "industry": "Multi-Utilities",
+   "layer": "power",
+   "segment": "电网与工程",
+   "description": "电力与天然气输配网络，为数据中心扩容提供基础设施。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1130310",
+   "layer_name": "能源与电力"
+  },
+  {
    "id": 1045810,
    "ticker": "NVDA",
    "name": "NVIDIA",
    "sector": "Technology",
    "industry": "Semiconductors",
-   "description": "GPU 与 AI 加速器龙头，数据中心与游戏芯片。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1045810",
    "layer": "silicon",
    "segment": "算力芯片",
+   "description": "GPU 与 AI 加速器龙头，数据中心与游戏芯片。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1045810",
+   "layer_name": "芯片与半导体",
    "also_in": [
     "infra"
-   ],
-   "layer_name": "芯片与半导体"
+   ]
   },
   {
    "id": 2488,
@@ -23,10 +215,10 @@ window.__FDC_DATA__["graph"] = {
    "name": "Advanced Micro Devices",
    "sector": "Technology",
    "industry": "Semiconductors",
-   "description": "x86 CPU 与数据中心 GPU，AI 芯片竞争者。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=2488",
    "layer": "silicon",
    "segment": "算力芯片",
+   "description": "x86 CPU 与数据中心 GPU，AI 芯片竞争者。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=2488",
    "layer_name": "芯片与半导体"
   },
   {
@@ -35,64 +227,25 @@ window.__FDC_DATA__["graph"] = {
    "name": "Broadcom",
    "sector": "Technology",
    "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "算力芯片",
    "description": "半导体与基础设施软件（VMware），AI 网络互连。",
    "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1730168",
-   "layer": "silicon",
-   "segment": "算力芯片",
+   "layer_name": "芯片与半导体",
    "also_in": [
     "infra"
-   ],
-   "layer_name": "芯片与半导体"
+   ]
   },
   {
-   "id": 1046179,
-   "ticker": "TSM",
-   "name": "TSMC",
+   "id": 1835632,
+   "ticker": "MRVL",
+   "name": "Marvell",
    "sector": "Technology",
    "industry": "Semiconductors",
-   "description": "全球最大晶圆代工，先进制程领先。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1046179",
-   "layer": "silicon",
-   "segment": "晶圆代工",
-   "layer_name": "芯片与半导体"
-  },
-  {
-   "id": 937966,
-   "ticker": "ASML",
-   "name": "ASML",
-   "sector": "Technology",
-   "industry": "Semiconductors",
-   "description": "EUV 光刻机独家供应商。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=937966",
-   "layer": "silicon",
-   "segment": "半导体设备与材料",
-   "layer_name": "芯片与半导体"
-  },
-  {
-   "id": 723125,
-   "ticker": "MU",
-   "name": "Micron",
-   "sector": "Technology",
-   "industry": "Semiconductors",
-   "description": "内存/HBM 存储芯片，AI 算力关键。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=723125",
-   "layer": "silicon",
-   "segment": "存储芯片",
-   "layer_name": "芯片与半导体"
-  },
-  {
-   "id": 804328,
-   "ticker": "QCOM",
-   "name": "Qualcomm",
-   "sector": "Technology",
-   "industry": "Semiconductors",
-   "description": "移动 SoC 与自研 AI 边缘芯片。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=804328",
    "layer": "silicon",
    "segment": "算力芯片",
-   "also_in": [
-    "edge"
-   ],
+   "description": "定制 ASIC 与数据中心互连芯片。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1835632",
    "layer_name": "芯片与半导体"
   },
   {
@@ -101,49 +254,37 @@ window.__FDC_DATA__["graph"] = {
    "name": "Intel",
    "sector": "Technology",
    "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "算力芯片",
    "description": "CPU 大厂，转型 AI 与代工。",
    "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=50863",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 804328,
+   "ticker": "QCOM",
+   "name": "Qualcomm",
+   "sector": "Technology",
+   "industry": "Semiconductors",
    "layer": "silicon",
    "segment": "算力芯片",
-   "layer_name": "芯片与半导体"
-  },
-  {
-   "id": 6281,
-   "ticker": "ADI",
-   "name": "Analog Devices",
-   "sector": "Technology",
-   "industry": "Semiconductors",
-   "description": "模拟芯片，数据中心电源管理。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=6281",
-   "layer": "silicon",
-   "segment": "模拟与电源芯片",
-   "layer_name": "芯片与半导体"
-  },
-  {
-   "id": 1835632,
-   "ticker": "MRVL",
-   "name": "Marvell",
-   "sector": "Technology",
-   "industry": "Semiconductors",
-   "description": "定制 ASIC 与数据中心互连芯片。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1835632",
-   "layer": "silicon",
-   "segment": "算力芯片",
-   "layer_name": "芯片与半导体"
-  },
-  {
-   "id": 1973239,
-   "ticker": "ARM",
-   "name": "Arm",
-   "sector": "Technology",
-   "industry": "Semiconductors",
-   "description": "CPU 架构授权，端侧 AI 核心。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1973239",
-   "layer": "silicon",
-   "segment": "EDA 与 IP",
+   "description": "移动 SoC 与自研 AI 边缘芯片。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=804328",
+   "layer_name": "芯片与半导体",
    "also_in": [
     "edge"
-   ],
+   ]
+  },
+  {
+   "id": 723125,
+   "ticker": "MU",
+   "name": "Micron",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "存储芯片",
+   "description": "内存/HBM 存储芯片，AI 算力关键。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=723125",
    "layer_name": "芯片与半导体"
   },
   {
@@ -152,11 +293,242 @@ window.__FDC_DATA__["graph"] = {
    "name": "Sandisk",
    "sector": "Technology",
    "industry": "Semiconductors",
-   "description": "闪存存储产品。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=2023554",
    "layer": "silicon",
    "segment": "存储芯片",
+   "description": "闪存存储产品。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=2023554",
    "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 106040,
+   "ticker": "WDC",
+   "name": "Western Digital",
+   "sector": "Technology",
+   "industry": "Technology Hardware",
+   "layer": "silicon",
+   "segment": "存储芯片",
+   "description": "近线大容量 HDD，AI 数据存储需求受益。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=106040",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 1137789,
+   "ticker": "STX",
+   "name": "Seagate",
+   "sector": "Technology",
+   "industry": "Technology Hardware",
+   "layer": "silicon",
+   "segment": "存储芯片",
+   "description": "近线硬盘与存储系统，数据中心冷数据层。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1137789",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 6281,
+   "ticker": "ADI",
+   "name": "Analog Devices",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "模拟与电源芯片",
+   "description": "模拟芯片，数据中心电源管理。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=6281",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 1280452,
+   "ticker": "MPWR",
+   "name": "Monolithic Power Systems",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "模拟与电源芯片",
+   "description": "电源管理芯片，AI 服务器多相供电模块。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1280452",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 1097864,
+   "ticker": "ON",
+   "name": "ON Semiconductor",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "模拟与电源芯片",
+   "description": "功率半导体，数据中心与汽车电源。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1097864",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 97476,
+   "ticker": "TXN",
+   "name": "Texas Instruments",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "模拟与电源芯片",
+   "description": "模拟与嵌入式芯片龙头，AI 电源链间接受益。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=97476",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 1046179,
+   "ticker": "TSM",
+   "name": "TSMC",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "晶圆代工",
+   "description": "全球最大晶圆代工，先进制程领先。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1046179",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 1709048,
+   "ticker": "GFS",
+   "name": "GlobalFoundries",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "晶圆代工",
+   "description": "成熟制程代工，汽车、工业与硅光平台。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1709048",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 937966,
+   "ticker": "ASML",
+   "name": "ASML",
+   "sector": "Technology",
+   "industry": "Semiconductor Equipment",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "EUV 光刻机独家供应商。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=937966",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 6951,
+   "ticker": "AMAT",
+   "name": "Applied Materials",
+   "sector": "Technology",
+   "industry": "Semiconductor Equipment",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "沉积、刻蚀与离子注入设备，先进封装受益。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=6951",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 707549,
+   "ticker": "LRCX",
+   "name": "Lam Research",
+   "sector": "Technology",
+   "industry": "Semiconductor Equipment",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "刻蚀与沉积设备，HBM 与 3D 封装关键。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=707549",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 319201,
+   "ticker": "KLAC",
+   "name": "KLA",
+   "sector": "Technology",
+   "industry": "Semiconductor Equipment",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "量测与检测设备，先进制程良率控制。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=319201",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 97210,
+   "ticker": "TER",
+   "name": "Teradyne",
+   "sector": "Technology",
+   "industry": "Semiconductor Equipment",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "半导体测试设备与协作机器人。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=97210",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 704532,
+   "ticker": "ONTO",
+   "name": "Onto Innovation",
+   "sector": "Technology",
+   "industry": "Semiconductor Equipment",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "先进封装量测与检测设备。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=704532",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 1101302,
+   "ticker": "ENTG",
+   "name": "Entegris",
+   "sector": "Technology",
+   "industry": "Semiconductor Equipment",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "半导体材料、过滤与洁净方案。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1101302",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 1601046,
+   "ticker": "KEYS",
+   "name": "Keysight",
+   "sector": "Technology",
+   "industry": "Electronic Equipment",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "测试测量仪器，光模块与高速接口验证。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1601046",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 883241,
+   "ticker": "SNPS",
+   "name": "Synopsys",
+   "sector": "Technology",
+   "industry": "System Software",
+   "layer": "silicon",
+   "segment": "EDA 与 IP",
+   "description": "EDA 龙头与芯片 IP，AI 芯片设计工具链。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=883241",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 813672,
+   "ticker": "CDNS",
+   "name": "Cadence Design Systems",
+   "sector": "Technology",
+   "industry": "System Software",
+   "layer": "silicon",
+   "segment": "EDA 与 IP",
+   "description": "EDA 与仿真验证，AI 芯片与系统设计。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=813672",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 1973239,
+   "ticker": "ARM",
+   "name": "Arm",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "EDA 与 IP",
+   "description": "CPU 架构授权，端侧 AI 核心。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1973239",
+   "layer_name": "芯片与半导体",
+   "also_in": [
+    "edge"
+   ]
   },
   {
    "id": 1807794,
@@ -164,10 +536,10 @@ window.__FDC_DATA__["graph"] = {
    "name": "Credo Technology",
    "sector": "Technology",
    "industry": "Semiconductors",
-   "description": "AI 互连芯片。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1807794",
    "layer": "silicon",
    "segment": "互连与光器件",
+   "description": "AI 互连芯片。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1807794",
    "layer_name": "芯片与半导体"
   },
   {
@@ -176,23 +548,338 @@ window.__FDC_DATA__["graph"] = {
    "name": "Astera Labs",
    "sector": "Technology",
    "industry": "Semiconductors",
-   "description": "AI 互连接口 IP/芯片。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1736297",
    "layer": "silicon",
    "segment": "互连与光器件",
+   "description": "AI 互连接口 IP/芯片。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1736297",
    "layer_name": "芯片与半导体"
   },
   {
-   "id": 320193,
-   "ticker": "AAPL",
-   "name": "Apple",
+   "id": 820318,
+   "ticker": "COHR",
+   "name": "Coherent",
    "sector": "Technology",
-   "industry": "Consumer Electronics",
-   "description": "iOS 生态、Mac 与 Apple Intelligence。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=320193",
-   "layer": "edge",
-   "segment": "端侧设备",
-   "layer_name": "终端与具身智能"
+   "industry": "Electronic Components",
+   "layer": "silicon",
+   "segment": "互连与光器件",
+   "description": "光模块与激光器件，数据中心光互连。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=820318",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 1633978,
+   "ticker": "LITE",
+   "name": "Lumentum",
+   "sector": "Technology",
+   "industry": "Electronic Components",
+   "layer": "silicon",
+   "segment": "互连与光器件",
+   "description": "高速光模块与光器件。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1633978",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 1033767,
+   "ticker": "UMC",
+   "name": "United Microelectronics",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "晶圆代工",
+   "description": "成熟制程晶圆代工，支撑电源、连接与边缘 AI 芯片。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1033767",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 1122411,
+   "ticker": "ASX",
+   "name": "ASE Technology",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "全球封装测试龙头，承接 AI 芯片先进封装需求。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1122411",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 88941,
+   "ticker": "SMTC",
+   "name": "Semtech",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "互连与光器件",
+   "description": "高速连接与边缘通信芯片，面向数据中心和 AI 网络。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=88941",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 827054,
+   "ticker": "MCHP",
+   "name": "Microchip Technology",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "模拟与电源芯片",
+   "description": "微控制器与模拟芯片，服务边缘 AI、汽车和工业设备。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=827054",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 1413447,
+   "ticker": "NXPI",
+   "name": "NXP Semiconductors",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "算力芯片",
+   "description": "汽车与工业边缘处理器，提供本地 AI 与感知芯片。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1413447",
+   "layer_name": "芯片与半导体",
+   "also_in": [
+    "edge"
+   ]
+  },
+  {
+   "id": 932787,
+   "ticker": "STM",
+   "name": "STMicroelectronics",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "算力芯片",
+   "description": "微控制器、传感器与边缘 AI 芯片供应商。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=932787",
+   "layer_name": "芯片与半导体",
+   "also_in": [
+    "edge"
+   ]
+  },
+  {
+   "id": 895419,
+   "ticker": "WOLF",
+   "name": "Wolfspeed",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "模拟与电源芯片",
+   "description": "碳化硅功率半导体，服务 AI 数据中心电源和电动车。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=895419",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 855658,
+   "ticker": "LSCC",
+   "name": "Lattice Semiconductor",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "算力芯片",
+   "description": "低功耗 FPGA 与边缘 AI 加速器。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=855658",
+   "layer_name": "芯片与半导体",
+   "also_in": [
+    "edge"
+   ]
+  },
+  {
+   "id": 1047127,
+   "ticker": "AMKR",
+   "name": "Amkor Technology",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "先进封装与测试服务，支持 AI 芯片量产。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1047127",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 1113232,
+   "ticker": "ACLS",
+   "name": "Axcelis Technologies",
+   "sector": "Technology",
+   "industry": "Semiconductor Equipment",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "离子注入设备供应商，服务功率和先进半导体制造。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1113232",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 24741,
+   "ticker": "GLW",
+   "name": "Corning",
+   "sector": "Technology",
+   "industry": "Electronic Components",
+   "layer": "silicon",
+   "segment": "互连与光器件",
+   "description": "光纤、光连接和玻璃材料，支撑 AI 数据中心带宽升级。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=24741",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 1408710,
+   "ticker": "FN",
+   "name": "Fabrinet",
+   "sector": "Technology",
+   "industry": "Electronic Components",
+   "layer": "silicon",
+   "segment": "互连与光器件",
+   "description": "光通信和精密光电产品代工，受益于 AI 光互连需求。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1408710",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 820313,
+   "ticker": "APH",
+   "name": "Amphenol",
+   "sector": "Technology",
+   "industry": "Electronic Components",
+   "layer": "silicon",
+   "segment": "互连与光器件",
+   "description": "高速连接器与线缆，连接 AI 服务器、交换机和机柜。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=820313",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 1111928,
+   "ticker": "IPGP",
+   "name": "IPG Photonics",
+   "sector": "Technology",
+   "industry": "Electronic Components",
+   "layer": "silicon",
+   "segment": "互连与光器件",
+   "description": "光纤激光器与光电器件，服务先进制造和数据中心互连。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1111928",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 1275014,
+   "ticker": "UCTT",
+   "name": "Ultra Clean Holdings",
+   "sector": "Technology",
+   "industry": "Semiconductor Equipment",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "半导体设备子系统供应商，受益于先进制程和 AI 芯片扩产。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1275014",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 1039399,
+   "ticker": "FORM",
+   "name": "FormFactor",
+   "sector": "Technology",
+   "industry": "Semiconductor Equipment",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "晶圆探针与测试设备，支持高带宽存储和 AI 芯片验证。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1039399",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 29002,
+   "ticker": "DIOD",
+   "name": "Diodes",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "模拟与电源芯片",
+   "description": "分立器件和电源管理芯片，服务服务器与工业 AI 设备。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=29002",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 1604778,
+   "ticker": "QRVO",
+   "name": "Qorvo",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "算力芯片",
+   "description": "射频和连接芯片，服务无线边缘设备与智能终端。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1604778",
+   "layer_name": "芯片与半导体",
+   "also_in": [
+    "edge"
+   ]
+  },
+  {
+   "id": 4127,
+   "ticker": "SWKS",
+   "name": "Skyworks Solutions",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "算力芯片",
+   "description": "无线连接和射频芯片，支持端侧 AI 设备。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=4127",
+   "layer_name": "芯片与半导体",
+   "also_in": [
+    "edge"
+   ]
+  },
+  {
+   "id": 1329394,
+   "ticker": "SIMO",
+   "name": "Silicon Motion Technology",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "存储芯片",
+   "description": "NAND 闪存控制器，支撑 AI 数据密集型存储。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1329394",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 810136,
+   "ticker": "PLAB",
+   "name": "Photronics",
+   "sector": "Technology",
+   "industry": "Semiconductor Equipment",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "光掩模制造商，服务先进逻辑和存储芯片。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=810136",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 1652535,
+   "ticker": "ICHR",
+   "name": "Ichor Holdings",
+   "sector": "Technology",
+   "industry": "Semiconductor Equipment",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "半导体设备流体输送系统，受益于 AI 晶圆厂扩产。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1652535",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 1109138,
+   "ticker": "CAMT",
+   "name": "Camtek",
+   "sector": "Technology",
+   "industry": "Semiconductor Equipment",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "先进封装和计量检测设备，服务 AI 芯片良率提升。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1109138",
+   "layer_name": "芯片与半导体"
+  },
+  {
+   "id": 1040470,
+   "ticker": "AEHR",
+   "name": "Aehr Test Systems",
+   "sector": "Technology",
+   "industry": "Semiconductor Equipment",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "功率和半导体老化测试设备，服务 AI 电源链和汽车芯片。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1040470",
+   "layer_name": "芯片与半导体"
   },
   {
    "id": 789019,
@@ -200,14 +887,14 @@ window.__FDC_DATA__["graph"] = {
    "name": "Microsoft",
    "sector": "Technology",
    "industry": "System Software",
-   "description": "Azure、Windows、Copilot 与 OpenAI 合资。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=789019",
    "layer": "infra",
    "segment": "云与超大规模",
+   "description": "Azure、Windows、Copilot 与 OpenAI 合资。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=789019",
+   "layer_name": "算力基础设施与云",
    "also_in": [
     "model"
-   ],
-   "layer_name": "算力基础设施与云"
+   ]
   },
   {
    "id": 1652044,
@@ -215,14 +902,14 @@ window.__FDC_DATA__["graph"] = {
    "name": "Alphabet",
    "sector": "Communication Services",
    "industry": "Interactive Media",
-   "description": "Google 搜索、Gemini 大模型与云计算。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1652044",
    "layer": "infra",
    "segment": "云与超大规模",
+   "description": "Google 搜索、Gemini 大模型与云计算。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1652044",
+   "layer_name": "算力基础设施与云",
    "also_in": [
     "model"
-   ],
-   "layer_name": "算力基础设施与云"
+   ]
   },
   {
    "id": 1652044,
@@ -230,14 +917,14 @@ window.__FDC_DATA__["graph"] = {
    "name": "Alphabet Class C",
    "sector": "Communication Services",
    "industry": "Interactive Media",
-   "description": "Alphabet 的 C 类无表决权股。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1652044",
    "layer": "infra",
    "segment": "云与超大规模",
+   "description": "Alphabet 的 C 类无表决权股。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1652044",
+   "layer_name": "算力基础设施与云",
    "also_in": [
     "model"
-   ],
-   "layer_name": "算力基础设施与云"
+   ]
   },
   {
    "id": 1018724,
@@ -245,44 +932,14 @@ window.__FDC_DATA__["graph"] = {
    "name": "Amazon",
    "sector": "Consumer Discretionary",
    "industry": "Commerce",
-   "description": "电商、AWS 与生成式 AI（Bedrock）。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1018724",
    "layer": "infra",
    "segment": "云与超大规模",
+   "description": "电商、AWS 与生成式 AI（Bedrock）。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1018724",
+   "layer_name": "算力基础设施与云",
    "also_in": [
     "model"
-   ],
-   "layer_name": "算力基础设施与云"
-  },
-  {
-   "id": 1326801,
-   "ticker": "META",
-   "name": "Meta",
-   "sector": "Communication Services",
-   "industry": "Internet Content",
-   "description": "社交与 Llama 开源大模型。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1326801",
-   "layer": "model",
-   "segment": "基础模型",
-   "also_in": [
-    "infra"
-   ],
-   "layer_name": "模型与数据平台"
-  },
-  {
-   "id": 1318605,
-   "ticker": "TSLA",
-   "name": "Tesla",
-   "sector": "Consumer Discretionary",
-   "industry": "Auto",
-   "description": "电动车与自动驾驶、机器人 Optimus。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1318605",
-   "layer": "edge",
-   "segment": "自动驾驶与机器人",
-   "also_in": [
-    "power"
-   ],
-   "layer_name": "终端与具身智能"
+   ]
   },
   {
    "id": 1341439,
@@ -290,191 +947,11 @@ window.__FDC_DATA__["graph"] = {
    "name": "Oracle",
    "sector": "Technology",
    "industry": "Data & Application Svc",
-   "description": "云数据库与 OCI 大算力中心。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1341439",
    "layer": "infra",
    "segment": "云与超大规模",
+   "description": "云数据库与 OCI 大算力中心。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1341439",
    "layer_name": "算力基础设施与云"
-  },
-  {
-   "id": 1108524,
-   "ticker": "CRM",
-   "name": "Salesforce",
-   "sector": "Technology",
-   "industry": "Application Svc",
-   "description": "CRM SaaS 与 Agentforce AI。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1108524",
-   "layer": "app",
-   "segment": "企业软件与 Agent",
-   "layer_name": "AI 软件与应用"
-  },
-  {
-   "id": 1373715,
-   "ticker": "NOW",
-   "name": "ServiceNow",
-   "sector": "Technology",
-   "industry": "Application Svc",
-   "description": "企业工作流 SaaS 与 AI 代理。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1373715",
-   "layer": "app",
-   "segment": "企业软件与 Agent",
-   "layer_name": "AI 软件与应用"
-  },
-  {
-   "id": 1321655,
-   "ticker": "PLTR",
-   "name": "Palantir",
-   "sector": "Technology",
-   "industry": "Application Svc",
-   "description": "数据平台与 AIP 商业/国防 AI。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1321655",
-   "layer": "app",
-   "segment": "企业软件与 Agent",
-   "layer_name": "AI 软件与应用"
-  },
-  {
-   "id": 1640147,
-   "ticker": "SNOW",
-   "name": "Snowflake",
-   "sector": "Technology",
-   "industry": "Data & Application Svc",
-   "description": "云数据仓库，AI 数据平台。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1640147",
-   "layer": "model",
-   "segment": "数据云与 MLOps",
-   "layer_name": "模型与数据平台"
-  },
-  {
-   "id": 1562088,
-   "ticker": "DUOL",
-   "name": "Duolingo",
-   "sector": "Communication Services",
-   "industry": "Interactive Media",
-   "description": "语言学习，AI 个性化课程。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1562088",
-   "layer": "app",
-   "segment": "消费与内容应用",
-   "layer_name": "AI 软件与应用"
-  },
-  {
-   "id": 1535527,
-   "ticker": "CRWD",
-   "name": "CrowdStrike",
-   "sector": "Technology",
-   "industry": "IT Svc",
-   "description": "云安全与 Falcon 平台。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1535527",
-   "layer": "app",
-   "segment": "安全与身份",
-   "layer_name": "AI 软件与应用"
-  },
-  {
-   "id": 1327567,
-   "ticker": "PANW",
-   "name": "Palo Alto Networks",
-   "sector": "Technology",
-   "industry": "IT Svc",
-   "description": "网络安全平台。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1327567",
-   "layer": "app",
-   "segment": "安全与身份",
-   "layer_name": "AI 软件与应用"
-  },
-  {
-   "id": 1713683,
-   "ticker": "ZS",
-   "name": "Zscaler",
-   "sector": "Technology",
-   "industry": "IT Svc",
-   "description": "零信任云安全。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1713683",
-   "layer": "app",
-   "segment": "安全与身份",
-   "layer_name": "AI 软件与应用"
-  },
-  {
-   "id": 1660134,
-   "ticker": "OKTA",
-   "name": "Okta",
-   "sector": "Technology",
-   "industry": "IT Svc",
-   "description": "身份管理与 SSO。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1660134",
-   "layer": "app",
-   "segment": "安全与身份",
-   "layer_name": "AI 软件与应用"
-  },
-  {
-   "id": 1477333,
-   "ticker": "NET",
-   "name": "Cloudflare",
-   "sector": "Technology",
-   "industry": "Data & Application Svc",
-   "description": "边缘云、Workers 与 AI 网关。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1477333",
-   "layer": "app",
-   "segment": "安全与身份",
-   "layer_name": "AI 软件与应用"
-  },
-  {
-   "id": 1561550,
-   "ticker": "DDOG",
-   "name": "Datadog",
-   "sector": "Technology",
-   "industry": "IT Svc",
-   "description": "可观测性与云监控。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1561550",
-   "layer": "model",
-   "segment": "数据云与 MLOps",
-   "layer_name": "模型与数据平台"
-  },
-  {
-   "id": 1707753,
-   "ticker": "ESTC",
-   "name": "Elastic",
-   "sector": "Technology",
-   "industry": "Application Svc",
-   "description": "搜索/观测/AI 检索平台。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1707753",
-   "layer": "model",
-   "segment": "数据云与 MLOps",
-   "layer_name": "模型与数据平台"
-  },
-  {
-   "id": 1544522,
-   "ticker": "FRSH",
-   "name": "Freshworks",
-   "sector": "Technology",
-   "industry": "Application Svc",
-   "description": "SaaS 办公自动化与 AI。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1544522",
-   "layer": "app",
-   "segment": "企业软件与 Agent",
-   "layer_name": "AI 软件与应用"
-  },
-  {
-   "id": 1751008,
-   "ticker": "APP",
-   "name": "AppLovin",
-   "sector": "Communication Services",
-   "industry": "Media",
-   "description": "移动广告与 AI 推荐引擎。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1751008",
-   "layer": "app",
-   "segment": "广告与营销 AI",
-   "layer_name": "AI 软件与应用"
-  },
-  {
-   "id": 1594805,
-   "ticker": "SHOP",
-   "name": "Shopify",
-   "sector": "Technology",
-   "industry": "Commerce",
-   "description": "电商平台，Sidekick AI。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1594805",
-   "layer": "app",
-   "segment": "消费与内容应用",
-   "layer_name": "AI 软件与应用"
   },
   {
    "id": 1577552,
@@ -482,256 +959,37 @@ window.__FDC_DATA__["graph"] = {
    "name": "Alibaba",
    "sector": "Communication Services",
    "industry": "Commerce",
-   "description": "通义千问与阿里云。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1577552",
    "layer": "infra",
    "segment": "云与超大规模",
+   "description": "通义千问与阿里云。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1577552",
+   "layer_name": "算力基础设施与云",
    "also_in": [
     "model"
-   ],
+   ]
+  },
+  {
+   "id": 1769628,
+   "ticker": "CRWV",
+   "name": "CoreWeave",
+   "sector": "Technology",
+   "industry": "Data & Application Svc",
+   "layer": "infra",
+   "segment": "GPU 算力租赁",
+   "description": "GPU 云（Neocloud）龙头，为大模型公司提供专属算力。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1769628",
    "layer_name": "算力基础设施与云"
   },
   {
-   "id": 1737806,
-   "ticker": "PDD",
-   "name": "Pinduoduo",
-   "sector": "Communication Services",
-   "industry": "Commerce",
-   "description": "拼多多/Temu 电商。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1737806",
-   "layer": "app",
-   "segment": "消费与内容应用",
-   "layer_name": "AI 软件与应用"
-  },
-  {
-   "id": 1065280,
-   "ticker": "NFLX",
-   "name": "Netflix",
-   "sector": "Communication Services",
-   "industry": "Entertainment",
-   "description": "流媒体与个性化推荐 AI。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1065280",
-   "layer": "app",
-   "segment": "消费与内容应用",
-   "layer_name": "AI 软件与应用"
-  },
-  {
-   "id": 1639920,
-   "ticker": "SPOT",
-   "name": "Spotify",
-   "sector": "Communication Services",
-   "industry": "Interactive Media",
-   "description": "音乐流媒体与 AI 播客。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1639920",
-   "layer": "app",
-   "segment": "消费与内容应用",
-   "layer_name": "AI 软件与应用"
-  },
-  {
-   "id": 1315098,
-   "ticker": "RBLX",
-   "name": "Roblox",
-   "sector": "Communication Services",
-   "industry": "Entertainment",
-   "description": "UGC 平台与生成式 AI 内容。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1315098",
-   "layer": "app",
-   "segment": "消费与内容应用",
-   "layer_name": "AI 软件与应用"
-  },
-  {
-   "id": 1543151,
-   "ticker": "UBER",
-   "name": "Uber",
-   "sector": "Communication Services",
-   "industry": "Commerce",
-   "description": "出行与即时配送。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1543151",
-   "layer": "app",
-   "segment": "消费与内容应用",
-   "also_in": [
-    "edge"
-   ],
-   "layer_name": "AI 软件与应用"
-  },
-  {
-   "id": 1261333,
-   "ticker": "DOCU",
-   "name": "DocuSign",
+   "id": 1513845,
+   "ticker": "NBIS",
+   "name": "Nebius",
    "sector": "Technology",
-   "industry": "Application Svc",
-   "description": "电子签名与 AI 工作流。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1261333",
-   "layer": "app",
-   "segment": "企业软件与 Agent",
-   "layer_name": "AI 软件与应用"
-  },
-  {
-   "id": 1671933,
-   "ticker": "TTD",
-   "name": "The Trade Desk",
-   "sector": "Technology",
-   "industry": "Application Svc",
-   "description": "程序化广告 DSP 与 AI 编排。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1671933",
-   "layer": "app",
-   "segment": "广告与营销 AI",
-   "layer_name": "AI 软件与应用"
-  },
-  {
-   "id": 946581,
-   "ticker": "TTWO",
-   "name": "Take-Two Interactive",
-   "sector": "Communication Services",
-   "industry": "Entertainment",
-   "description": "游戏发行，AI 辅助开发。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=946581",
-   "layer": "app",
-   "segment": "消费与内容应用",
-   "layer_name": "AI 软件与应用"
-  },
-  {
-   "id": 1810806,
-   "ticker": "U",
-   "name": "Unity Software",
-   "sector": "Technology",
-   "industry": "Application Svc",
-   "description": "游戏引擎与实时 3D，Unity AI。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1810806",
-   "layer": "app",
-   "segment": "企业软件与 Agent",
-   "layer_name": "AI 软件与应用"
-  },
-  {
-   "id": 1845338,
-   "ticker": "MNDY",
-   "name": "monday.com",
-   "sector": "Technology",
-   "industry": "Application Svc",
-   "description": "工作协作平台与 AI 自动化。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1845338",
-   "layer": "app",
-   "segment": "企业软件与 Agent",
-   "layer_name": "AI 软件与应用"
-  },
-  {
-   "id": 1734722,
-   "ticker": "PATH",
-   "name": "UiPath",
-   "sector": "Technology",
-   "industry": "Application Svc",
-   "description": "RPA 与 Agentic AI 自动化。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1734722",
-   "layer": "app",
-   "segment": "企业软件与 Agent",
-   "layer_name": "AI 软件与应用"
-  },
-  {
-   "id": 1713445,
-   "ticker": "RDDT",
-   "name": "Reddit",
-   "sector": "Communication Services",
-   "industry": "Interactive Media",
-   "description": "社交通讯，AI 检索变现。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1713445",
-   "layer": "app",
-   "segment": "消费与内容应用",
-   "layer_name": "AI 软件与应用"
-  },
-  {
-   "id": 1596532,
-   "ticker": "ANET",
-   "name": "Arista Networks",
-   "sector": "Technology",
-   "industry": "Communication Equipment",
-   "description": "云数据中心交换机。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1596532",
+   "industry": "Data & Application Svc",
    "layer": "infra",
-   "segment": "数据中心网络",
-   "layer_name": "算力基础设施与云"
-  },
-  {
-   "id": 858877,
-   "ticker": "CSCO",
-   "name": "Cisco",
-   "sector": "Technology",
-   "industry": "Communication Equipment",
-   "description": "网络设备与基础设施软件。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=858877",
-   "layer": "infra",
-   "segment": "数据中心网络",
-   "layer_name": "算力基础设施与云"
-  },
-  {
-   "id": 732717,
-   "ticker": "T",
-   "name": "AT&T",
-   "sector": "Communication Services",
-   "industry": "Telecom Services",
-   "description": "美国无线/宽带运营商。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=732717",
-   "layer": "infra",
-   "segment": "电信与连接",
-   "layer_name": "算力基础设施与云"
-  },
-  {
-   "id": 732712,
-   "ticker": "VZ",
-   "name": "Verizon",
-   "sector": "Communication Services",
-   "industry": "Telecom Services",
-   "description": "美国无线/宽带运营商。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=732712",
-   "layer": "infra",
-   "segment": "电信与连接",
-   "layer_name": "算力基础设施与云"
-  },
-  {
-   "id": 1283699,
-   "ticker": "TMUS",
-   "name": "T-Mobile US",
-   "sector": "Communication Services",
-   "industry": "Telecom Services",
-   "description": "美国无线运营商。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1283699",
-   "layer": "infra",
-   "segment": "电信与连接",
-   "layer_name": "算力基础设施与云"
-  },
-  {
-   "id": 1091667,
-   "ticker": "CHTR",
-   "name": "Charter Communications",
-   "sector": "Communication Services",
-   "industry": "Telecom Services",
-   "description": "宽带电视运营商（Spectrum）。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1091667",
-   "layer": "infra",
-   "segment": "电信与连接",
-   "layer_name": "算力基础设施与云"
-  },
-  {
-   "id": 1571996,
-   "ticker": "DELL",
-   "name": "Dell Technologies",
-   "sector": "Technology",
-   "industry": "Technology Hardware",
-   "description": "AI 服务器（PowerEdge）与企业硬件。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1571996",
-   "layer": "infra",
-   "segment": "AI 服务器与整机",
-   "layer_name": "算力基础设施与云"
-  },
-  {
-   "id": 1645590,
-   "ticker": "HPE",
-   "name": "Hewlett Packard Enterprise",
-   "sector": "Technology",
-   "industry": "Technology Hardware",
-   "description": "企业硬件与 HPC。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1645590",
-   "layer": "infra",
-   "segment": "AI 服务器与整机",
+   "segment": "GPU 算力租赁",
+   "description": "欧洲 GPU 云与 AI 基础设施（原 Yandex 海外业务）。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1513845",
    "layer_name": "算力基础设施与云"
   },
   {
@@ -740,11 +998,1487 @@ window.__FDC_DATA__["graph"] = {
    "name": "Super Micro Computer",
    "sector": "Technology",
    "industry": "Technology Hardware",
-   "description": "AI 服务器整机与液冷。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1375365",
    "layer": "infra",
    "segment": "AI 服务器与整机",
+   "description": "AI 服务器整机与液冷。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1375365",
    "layer_name": "算力基础设施与云"
+  },
+  {
+   "id": 1571996,
+   "ticker": "DELL",
+   "name": "Dell Technologies",
+   "sector": "Technology",
+   "industry": "Technology Hardware",
+   "layer": "infra",
+   "segment": "AI 服务器与整机",
+   "description": "AI 服务器（PowerEdge）与企业硬件。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1571996",
+   "layer_name": "算力基础设施与云"
+  },
+  {
+   "id": 1645590,
+   "ticker": "HPE",
+   "name": "Hewlett Packard Enterprise",
+   "sector": "Technology",
+   "industry": "Technology Hardware",
+   "layer": "infra",
+   "segment": "AI 服务器与整机",
+   "description": "企业硬件与 HPC。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1645590",
+   "layer_name": "算力基础设施与云"
+  },
+  {
+   "id": 1596532,
+   "ticker": "ANET",
+   "name": "Arista Networks",
+   "sector": "Technology",
+   "industry": "Communication Equipment",
+   "layer": "infra",
+   "segment": "数据中心网络",
+   "description": "云数据中心交换机。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1596532",
+   "layer_name": "算力基础设施与云"
+  },
+  {
+   "id": 858877,
+   "ticker": "CSCO",
+   "name": "Cisco",
+   "sector": "Technology",
+   "industry": "Communication Equipment",
+   "layer": "infra",
+   "segment": "数据中心网络",
+   "description": "网络设备与基础设施软件。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=858877",
+   "layer_name": "算力基础设施与云"
+  },
+  {
+   "id": 936395,
+   "ticker": "CIEN",
+   "name": "Ciena",
+   "sector": "Technology",
+   "industry": "Communication Equipment",
+   "layer": "infra",
+   "segment": "数据中心网络",
+   "description": "光传输与 DCI，数据中心互联。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=936395",
+   "layer_name": "算力基础设施与云"
+  },
+  {
+   "id": 924613,
+   "ticker": "NOK",
+   "name": "Nokia",
+   "sector": "Technology",
+   "industry": "Communication Equipment",
+   "layer": "infra",
+   "segment": "数据中心网络",
+   "description": "网络设备，5G 与数据中心光网络。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=924613",
+   "layer_name": "算力基础设施与云"
+  },
+  {
+   "id": 732717,
+   "ticker": "T",
+   "name": "AT&T",
+   "sector": "Communication Services",
+   "industry": "Telecom Services",
+   "layer": "infra",
+   "segment": "电信与连接",
+   "description": "美国无线/宽带运营商。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=732717",
+   "layer_name": "算力基础设施与云"
+  },
+  {
+   "id": 732712,
+   "ticker": "VZ",
+   "name": "Verizon",
+   "sector": "Communication Services",
+   "industry": "Telecom Services",
+   "layer": "infra",
+   "segment": "电信与连接",
+   "description": "美国无线/宽带运营商。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=732712",
+   "layer_name": "算力基础设施与云"
+  },
+  {
+   "id": 1283699,
+   "ticker": "TMUS",
+   "name": "T-Mobile US",
+   "sector": "Communication Services",
+   "industry": "Telecom Services",
+   "layer": "infra",
+   "segment": "电信与连接",
+   "description": "美国无线运营商。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1283699",
+   "layer_name": "算力基础设施与云"
+  },
+  {
+   "id": 1091667,
+   "ticker": "CHTR",
+   "name": "Charter Communications",
+   "sector": "Communication Services",
+   "industry": "Telecom Services",
+   "layer": "infra",
+   "segment": "电信与连接",
+   "description": "宽带电视运营商（Spectrum）。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1091667",
+   "layer_name": "算力基础设施与云"
+  },
+  {
+   "id": 1101239,
+   "ticker": "EQIX",
+   "name": "Equinix",
+   "sector": "Real Estate",
+   "industry": "REITs",
+   "layer": "infra",
+   "segment": "云与超大规模",
+   "description": "全球数据中心与互联平台，为 AI 云和企业算力提供机房。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1101239",
+   "layer_name": "算力基础设施与云",
+   "also_in": [
+    "power"
+   ]
+  },
+  {
+   "id": 1297996,
+   "ticker": "DLR",
+   "name": "Digital Realty",
+   "sector": "Real Estate",
+   "industry": "REITs",
+   "layer": "infra",
+   "segment": "云与超大规模",
+   "description": "全球数据中心 REIT，承载超大规模 AI 训练和推理。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1297996",
+   "layer_name": "算力基础设施与云",
+   "also_in": [
+    "power"
+   ]
+  },
+  {
+   "id": 1053507,
+   "ticker": "AMT",
+   "name": "American Tower",
+   "sector": "Real Estate",
+   "industry": "REITs",
+   "layer": "infra",
+   "segment": "电信与连接",
+   "description": "无线通信基础设施，为边缘计算和连接提供站点。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1053507",
+   "layer_name": "算力基础设施与云"
+  },
+  {
+   "id": 1329099,
+   "ticker": "BIDU",
+   "name": "Baidu",
+   "sector": "Communication Services",
+   "industry": "Interactive Media",
+   "layer": "infra",
+   "segment": "云与超大规模",
+   "description": "百度智能云与文心大模型，提供中国 AI 云和模型服务。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1329099",
+   "layer_name": "算力基础设施与云",
+   "also_in": [
+    "model"
+   ]
+  },
+  {
+   "id": 1549802,
+   "ticker": "JD",
+   "name": "JD.com",
+   "sector": "Consumer Discretionary",
+   "industry": "Commerce",
+   "layer": "infra",
+   "segment": "云与超大规模",
+   "description": "电商与物流智能化平台，使用 AI 优化供应链和推荐。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1549802",
+   "layer_name": "算力基础设施与云",
+   "also_in": [
+    "app"
+   ]
+  },
+  {
+   "id": 1878848,
+   "ticker": "IREN",
+   "name": "IREN",
+   "sector": "Technology",
+   "industry": "Data & Application Svc",
+   "layer": "infra",
+   "segment": "GPU 算力租赁",
+   "description": "数据中心运营商，向 AI 云和高性能计算扩展。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1878848",
+   "layer_name": "算力基础设施与云"
+  },
+  {
+   "id": 1144879,
+   "ticker": "APLD",
+   "name": "Applied Digital",
+   "sector": "Technology",
+   "industry": "Data & Application Svc",
+   "layer": "infra",
+   "segment": "GPU 算力租赁",
+   "description": "高密度数据中心与 GPU 云基础设施开发商。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1144879",
+   "layer_name": "算力基础设施与云"
+  },
+  {
+   "id": 1964789,
+   "ticker": "HUT",
+   "name": "Hut 8",
+   "sector": "Technology",
+   "industry": "Data & Application Svc",
+   "layer": "infra",
+   "segment": "GPU 算力租赁",
+   "description": "能源与数据中心平台，转向 AI 算力租赁。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1964789",
+   "layer_name": "算力基础设施与云"
+  },
+  {
+   "id": 1839341,
+   "ticker": "CORZ",
+   "name": "Core Scientific",
+   "sector": "Technology",
+   "industry": "Data & Application Svc",
+   "layer": "infra",
+   "segment": "GPU 算力租赁",
+   "description": "大规模数据中心运营商，为 AI 客户部署 GPU 机群。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1839341",
+   "layer_name": "算力基础设施与云"
+  },
+  {
+   "id": 1083301,
+   "ticker": "WULF",
+   "name": "TeraWulf",
+   "sector": "Technology",
+   "industry": "Data & Application Svc",
+   "layer": "infra",
+   "segment": "GPU 算力租赁",
+   "description": "低碳数据中心和 AI 高性能计算基础设施。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1083301",
+   "layer_name": "算力基础设施与云"
+  },
+  {
+   "id": 1508475,
+   "ticker": "VNET",
+   "name": "VNET Group",
+   "sector": "Technology",
+   "industry": "Data & Application Svc",
+   "layer": "infra",
+   "segment": "GPU 算力租赁",
+   "description": "中国数据中心运营商，提供云和 AI 托管算力。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1508475",
+   "layer_name": "算力基础设施与云"
+  },
+  {
+   "id": 1002047,
+   "ticker": "NTAP",
+   "name": "NetApp",
+   "sector": "Technology",
+   "industry": "Technology Hardware",
+   "layer": "infra",
+   "segment": "AI 服务器与整机",
+   "description": "企业数据存储和 AI 数据管理平台。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1002047",
+   "layer_name": "算力基础设施与云",
+   "also_in": [
+    "model"
+   ]
+  },
+  {
+   "id": 866374,
+   "ticker": "FLEX",
+   "name": "Flex",
+   "sector": "Technology",
+   "industry": "Technology Hardware",
+   "layer": "infra",
+   "segment": "AI 服务器与整机",
+   "description": "电子制造服务与数据中心硬件供应链。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=866374",
+   "layer_name": "算力基础设施与云"
+  },
+  {
+   "id": 1048695,
+   "ticker": "FFIV",
+   "name": "F5",
+   "sector": "Technology",
+   "industry": "Communication Equipment",
+   "layer": "infra",
+   "segment": "数据中心网络",
+   "description": "应用交付与 AI 流量安全，连接企业数据中心。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1048695",
+   "layer_name": "算力基础设施与云"
+  },
+  {
+   "id": 1086222,
+   "ticker": "AKAM",
+   "name": "Akamai Technologies",
+   "sector": "Technology",
+   "industry": "Data & Application Svc",
+   "layer": "infra",
+   "segment": "数据中心网络",
+   "description": "边缘云、内容分发和 AI 推理网络。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1086222",
+   "layer_name": "算力基础设施与云",
+   "also_in": [
+    "edge"
+   ]
+  },
+  {
+   "id": 717826,
+   "ticker": "ERIC",
+   "name": "Ericsson",
+   "sector": "Technology",
+   "industry": "Communication Equipment",
+   "layer": "infra",
+   "segment": "电信与连接",
+   "description": "5G 无线网络和边缘计算基础设施。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=717826",
+   "layer_name": "算力基础设施与云"
+  },
+  {
+   "id": 1708055,
+   "ticker": "RBBN",
+   "name": "Ribbon Communications",
+   "sector": "Technology",
+   "industry": "Communication Equipment",
+   "layer": "infra",
+   "segment": "电信与连接",
+   "description": "电信软件与实时通信网络，支持边缘 AI 连接。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1708055",
+   "layer_name": "算力基础设施与云"
+  },
+  {
+   "id": 1867072,
+   "ticker": "KD",
+   "name": "Kyndryl",
+   "sector": "Technology",
+   "industry": "IT Svc",
+   "layer": "infra",
+   "segment": "云与超大规模",
+   "description": "企业 IT 基础设施托管与云迁移，帮助客户部署 AI 工作负载。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1867072",
+   "layer_name": "算力基础设施与云",
+   "also_in": [
+    "app"
+   ]
+  },
+  {
+   "id": 1810019,
+   "ticker": "RXT",
+   "name": "Rackspace Technology",
+   "sector": "Technology",
+   "industry": "IT Svc",
+   "layer": "infra",
+   "segment": "云与超大规模",
+   "description": "多云托管与生成式 AI 服务，为企业运营 AI 算力。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1810019",
+   "layer_name": "算力基础设施与云",
+   "also_in": [
+    "app"
+   ]
+  },
+  {
+   "id": 1526125,
+   "ticker": "GDS",
+   "name": "GDS Holdings",
+   "sector": "Technology",
+   "industry": "Data & Application Svc",
+   "layer": "infra",
+   "segment": "云与超大规模",
+   "description": "中国高性能数据中心运营商，承载云和 AI 训练需求。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1526125",
+   "layer_name": "算力基础设施与云",
+   "also_in": [
+    "power"
+   ]
+  },
+  {
+   "id": 18926,
+   "ticker": "LUMN",
+   "name": "Lumen Technologies",
+   "sector": "Communication Services",
+   "industry": "Telecom Services",
+   "layer": "infra",
+   "segment": "电信与连接",
+   "description": "光纤网络和边缘连接，为数据中心和 AI 推理提供带宽。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=18926",
+   "layer_name": "算力基础设施与云"
+  },
+  {
+   "id": 1326801,
+   "ticker": "META",
+   "name": "Meta",
+   "sector": "Communication Services",
+   "industry": "Internet Content",
+   "layer": "model",
+   "segment": "基础模型",
+   "description": "社交与 Llama 开源大模型。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1326801",
+   "layer_name": "模型与数据平台",
+   "also_in": [
+    "infra"
+   ]
+  },
+  {
+   "id": 1640147,
+   "ticker": "SNOW",
+   "name": "Snowflake",
+   "sector": "Technology",
+   "industry": "Data & Application Svc",
+   "layer": "model",
+   "segment": "数据云与 MLOps",
+   "description": "云数据仓库，AI 数据平台。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1640147",
+   "layer_name": "模型与数据平台"
+  },
+  {
+   "id": 1441816,
+   "ticker": "MDB",
+   "name": "MongoDB",
+   "sector": "Technology",
+   "industry": "Data & Application Svc",
+   "layer": "model",
+   "segment": "数据云与 MLOps",
+   "description": "文档数据库与 Atlas Vector Search，RAG 数据层。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1441816",
+   "layer_name": "模型与数据平台"
+  },
+  {
+   "id": 1561550,
+   "ticker": "DDOG",
+   "name": "Datadog",
+   "sector": "Technology",
+   "industry": "IT Svc",
+   "layer": "model",
+   "segment": "数据云与 MLOps",
+   "description": "可观测性与云监控。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1561550",
+   "layer_name": "模型与数据平台"
+  },
+  {
+   "id": 1707753,
+   "ticker": "ESTC",
+   "name": "Elastic",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "model",
+   "segment": "数据云与 MLOps",
+   "description": "搜索/观测/AI 检索平台。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1707753",
+   "layer_name": "模型与数据平台"
+  },
+  {
+   "id": 1577526,
+   "ticker": "AI",
+   "name": "C3.ai",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "model",
+   "segment": "AI 开发平台",
+   "description": "企业 AI 应用开发平台（C3 Agentic AI）。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1577526",
+   "layer_name": "模型与数据平台"
+  },
+  {
+   "id": 1653482,
+   "ticker": "GTLB",
+   "name": "GitLab",
+   "sector": "Technology",
+   "industry": "System Software",
+   "layer": "model",
+   "segment": "AI 开发平台",
+   "description": "DevSecOps 平台与 AI 编码助手（Duo）。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1653482",
+   "layer_name": "模型与数据平台"
+  },
+  {
+   "id": 1000184,
+   "ticker": "SAP",
+   "name": "SAP",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "model",
+   "segment": "数据云与 MLOps",
+   "description": "企业数据平台与 Joule AI 助手，连接业务数据和模型。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1000184",
+   "layer_name": "模型与数据平台",
+   "also_in": [
+    "app"
+   ]
+  },
+  {
+   "id": 1404655,
+   "ticker": "HUBS",
+   "name": "HubSpot",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "model",
+   "segment": "AI 开发平台",
+   "description": "CRM 与营销自动化平台，内置生成式 AI 工具。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1404655",
+   "layer_name": "模型与数据平台"
+  },
+  {
+   "id": 1585521,
+   "ticker": "ZM",
+   "name": "Zoom Communications",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "客服与联络中心 AI",
+   "description": "协作与联络中心平台，提供 AI Companion 和企业智能。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1585521",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1108524,
+   "ticker": "CRM",
+   "name": "Salesforce",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "企业软件与 Agent",
+   "description": "CRM SaaS 与 Agentforce AI，面向销售和客户运营。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1108524",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1373715,
+   "ticker": "NOW",
+   "name": "ServiceNow",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "企业软件与 Agent",
+   "description": "企业工作流 SaaS 与 AI 代理。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1373715",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1845338,
+   "ticker": "MNDY",
+   "name": "monday.com",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "垂直 SaaS AI",
+   "description": "工作协作平台与 AI 自动化。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1845338",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1544522,
+   "ticker": "FRSH",
+   "name": "Freshworks",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "客服与联络中心 AI",
+   "description": "SaaS 客服、IT 服务台与 AI 自动化。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1544522",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1261333,
+   "ticker": "DOCU",
+   "name": "DocuSign",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "法律科技 AI",
+   "description": "电子签名、合同生命周期与 AI 合同分析工作流。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1261333",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1734722,
+   "ticker": "PATH",
+   "name": "UiPath",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "AI 开发工具",
+   "description": "RPA、工作流编排与 Agentic AI 自动化开发平台。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1734722",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1810806,
+   "ticker": "U",
+   "name": "Unity Software",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "AI 开发工具",
+   "description": "游戏引擎与实时 3D，提供 Unity AI 开发工具。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1810806",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1321655,
+   "ticker": "PLTR",
+   "name": "Palantir",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "国防与政府 AI",
+   "description": "数据平台与 AIP 商业、国防和政府 AI。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1321655",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1840856,
+   "ticker": "SOUN",
+   "name": "SoundHound AI",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "客服与联络中心 AI",
+   "description": "语音 AI 助手与联络中心自动化（汽车、餐饮与客服）。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1840856",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1751008,
+   "ticker": "APP",
+   "name": "AppLovin",
+   "sector": "Communication Services",
+   "industry": "Media",
+   "layer": "app",
+   "segment": "广告与营销 AI",
+   "description": "移动广告与 AI 推荐引擎。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1751008",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1671933,
+   "ticker": "TTD",
+   "name": "The Trade Desk",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "广告与营销 AI",
+   "description": "程序化广告 DSP 与 AI 编排。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1671933",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1535527,
+   "ticker": "CRWD",
+   "name": "CrowdStrike",
+   "sector": "Technology",
+   "industry": "IT Svc",
+   "layer": "app",
+   "segment": "安全与身份",
+   "description": "云安全与 Falcon 平台。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1535527",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1327567,
+   "ticker": "PANW",
+   "name": "Palo Alto Networks",
+   "sector": "Technology",
+   "industry": "IT Svc",
+   "layer": "app",
+   "segment": "安全与身份",
+   "description": "网络安全平台。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1327567",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1713683,
+   "ticker": "ZS",
+   "name": "Zscaler",
+   "sector": "Technology",
+   "industry": "IT Svc",
+   "layer": "app",
+   "segment": "安全与身份",
+   "description": "零信任云安全。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1713683",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1660134,
+   "ticker": "OKTA",
+   "name": "Okta",
+   "sector": "Technology",
+   "industry": "IT Svc",
+   "layer": "app",
+   "segment": "安全与身份",
+   "description": "身份管理与 SSO。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1660134",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1477333,
+   "ticker": "NET",
+   "name": "Cloudflare",
+   "sector": "Technology",
+   "industry": "Data & Application Svc",
+   "layer": "app",
+   "segment": "安全与身份",
+   "description": "边缘云、Workers 与 AI 网关。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1477333",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1562088,
+   "ticker": "DUOL",
+   "name": "Duolingo",
+   "sector": "Communication Services",
+   "industry": "Interactive Media",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "语言学习，AI 个性化课程。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1562088",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1594805,
+   "ticker": "SHOP",
+   "name": "Shopify",
+   "sector": "Technology",
+   "industry": "Commerce",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "电商平台，Sidekick AI。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1594805",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1543151,
+   "ticker": "UBER",
+   "name": "Uber",
+   "sector": "Communication Services",
+   "industry": "Commerce",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "出行与即时配送。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1543151",
+   "layer_name": "AI 软件与应用",
+   "also_in": [
+    "edge"
+   ]
+  },
+  {
+   "id": 1713445,
+   "ticker": "RDDT",
+   "name": "Reddit",
+   "sector": "Communication Services",
+   "industry": "Interactive Media",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "社交通讯，AI 检索变现。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1713445",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1315098,
+   "ticker": "RBLX",
+   "name": "Roblox",
+   "sector": "Communication Services",
+   "industry": "Entertainment",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "UGC 平台与生成式 AI 内容。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1315098",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 946581,
+   "ticker": "TTWO",
+   "name": "Take-Two Interactive",
+   "sector": "Communication Services",
+   "industry": "Entertainment",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "游戏发行，AI 辅助开发。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=946581",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1065280,
+   "ticker": "NFLX",
+   "name": "Netflix",
+   "sector": "Communication Services",
+   "industry": "Entertainment",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "流媒体与个性化推荐 AI。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1065280",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1639920,
+   "ticker": "SPOT",
+   "name": "Spotify",
+   "sector": "Communication Services",
+   "industry": "Interactive Media",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "音乐流媒体与 AI 播客。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1639920",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1737806,
+   "ticker": "PDD",
+   "name": "Pinduoduo",
+   "sector": "Communication Services",
+   "industry": "Commerce",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "拼多多/Temu 电商。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1737806",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1467373,
+   "ticker": "ACN",
+   "name": "Accenture",
+   "sector": "Technology",
+   "industry": "IT Svc",
+   "layer": "app",
+   "segment": "IT 服务与集成",
+   "description": "IT 咨询与实施，企业 AI 落地。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1467373",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1067491,
+   "ticker": "INFY",
+   "name": "Infosys",
+   "sector": "Technology",
+   "industry": "IT Svc",
+   "layer": "app",
+   "segment": "IT 服务与集成",
+   "description": "IT 服务外包，AI 转型交付。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1067491",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1352010,
+   "ticker": "EPAM",
+   "name": "EPAM Systems",
+   "sector": "Technology",
+   "industry": "IT Svc",
+   "layer": "app",
+   "segment": "IT 服务与集成",
+   "description": "软件工程服务，AI 工程能力。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1352010",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 51143,
+   "ticker": "IBM",
+   "name": "IBM",
+   "sector": "Technology",
+   "industry": "IT Svc",
+   "layer": "app",
+   "segment": "IT 服务与集成",
+   "description": "混合云、watsonx 与 AI 咨询。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=51143",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 796343,
+   "ticker": "ADBE",
+   "name": "Adobe",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "垂直 SaaS AI",
+   "description": "Creative Cloud、Firefly 生成式 AI 与企业内容工作流。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=796343",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 896878,
+   "ticker": "INTU",
+   "name": "Intuit",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "金融 AI",
+   "description": "财税与小企业软件，使用生成式 AI 提供专家助手。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=896878",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1327811,
+   "ticker": "WDAY",
+   "name": "Workday",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "垂直 SaaS AI",
+   "description": "人力与财务 SaaS，加入 AI 代理和人才智能。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1327811",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1477720,
+   "ticker": "ASAN",
+   "name": "Asana",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "垂直 SaaS AI",
+   "description": "项目管理与工作流软件，提供 AI teammate。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1477720",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1447669,
+   "ticker": "TWLO",
+   "name": "Twilio",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "客服与联络中心 AI",
+   "description": "云通信和客户数据平台，提供 AI 客服与语音能力。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1447669",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1786352,
+   "ticker": "BILL",
+   "name": "BILL Holdings",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "金融 AI",
+   "description": "中小企业财务自动化平台，使用 AI 处理支付和账单。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1786352",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1717115,
+   "ticker": "TEM",
+   "name": "Tempus AI",
+   "sector": "Health Care",
+   "industry": "Health Information Services",
+   "layer": "app",
+   "segment": "医疗 AI 与计算生物",
+   "description": "临床数据与精准医疗 AI 平台。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1717115",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1601830,
+   "ticker": "RXRX",
+   "name": "Recursion Pharmaceuticals",
+   "sector": "Health Care",
+   "industry": "Biotechnology",
+   "layer": "app",
+   "segment": "医疗 AI 与计算生物",
+   "description": "用机器学习和自动化实验进行药物发现。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1601830",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1490978,
+   "ticker": "SDGR",
+   "name": "Schrodinger",
+   "sector": "Health Care",
+   "industry": "Biotechnology",
+   "layer": "app",
+   "segment": "医疗 AI 与计算生物",
+   "description": "计算化学和机器学习药物研发平台。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1490978",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1836981,
+   "ticker": "BBAI",
+   "name": "BigBear.ai",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "国防与政府 AI",
+   "description": "国防、供应链和决策智能 AI 软件。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1836981",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1615165,
+   "ticker": "VERI",
+   "name": "Veritone",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "客服与联络中心 AI",
+   "description": "企业 AI 运营平台和语音、视频智能。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1615165",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1842566,
+   "ticker": "AISP",
+   "name": "Airship AI",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "国防与政府 AI",
+   "description": "面向公共安全和国防的视频分析 AI。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1842566",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1111485,
+   "ticker": "RXST",
+   "name": "RxSight",
+   "sector": "Health Care",
+   "industry": "Medical Devices",
+   "layer": "app",
+   "segment": "医疗 AI 与计算生物",
+   "description": "眼科医疗设备公司，将 AI 辅助规划用于个性化治疗。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1111485",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1834489,
+   "ticker": "GENI",
+   "name": "Genius Sports",
+   "sector": "Communication Services",
+   "industry": "Interactive Media",
+   "layer": "app",
+   "segment": "广告与营销 AI",
+   "description": "体育数据与媒体技术，使用 AI 做内容和广告编排。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1834489",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1820953,
+   "ticker": "AFRM",
+   "name": "Affirm",
+   "sector": "Technology",
+   "industry": "Consumer Finance",
+   "layer": "app",
+   "segment": "金融 AI",
+   "description": "数字消费金融平台，用机器学习进行授信和风控。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1820953",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1647639,
+   "ticker": "UPST",
+   "name": "Upstart",
+   "sector": "Technology",
+   "industry": "Consumer Finance",
+   "layer": "app",
+   "segment": "金融 AI",
+   "description": "AI 信贷决策平台，向银行提供机器学习承保。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1647639",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1370637,
+   "ticker": "ETSY",
+   "name": "Etsy",
+   "sector": "Consumer Discretionary",
+   "industry": "Commerce",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "创意电商平台，使用 AI 做搜索、推荐和卖家工具。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1370637",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1428439,
+   "ticker": "ROKU",
+   "name": "Roku",
+   "sector": "Communication Services",
+   "industry": "Entertainment",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "流媒体平台，使用 AI 做内容推荐和广告投放。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1428439",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1762301,
+   "ticker": "FVRR",
+   "name": "Fiverr",
+   "sector": "Consumer Discretionary",
+   "industry": "Interactive Media",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "自由职业平台，提供 AI 服务目录和智能匹配。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1762301",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1269238,
+   "ticker": "TCOM",
+   "name": "Trip.com Group",
+   "sector": "Consumer Discretionary",
+   "industry": "Hotels & Travel",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "在线旅行平台，使用 AI 做行程规划和个性化推荐。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1269238",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1110646,
+   "ticker": "NTES",
+   "name": "NetEase",
+   "sector": "Communication Services",
+   "industry": "Interactive Media",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "游戏与内容平台，使用生成式 AI 辅助研发和运营。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1110646",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1723690,
+   "ticker": "BILI",
+   "name": "Bilibili",
+   "sector": "Communication Services",
+   "industry": "Interactive Media",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "视频与社区平台，使用 AI 推荐、审核和内容生成。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1723690",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1595761,
+   "ticker": "WB",
+   "name": "Weibo",
+   "sector": "Communication Services",
+   "industry": "Interactive Media",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "社交媒体平台，使用 AI 做内容推荐、广告和审核。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1595761",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1583708,
+   "ticker": "S",
+   "name": "SentinelOne",
+   "sector": "Technology",
+   "industry": "IT Svc",
+   "layer": "app",
+   "segment": "安全与身份",
+   "description": "端点安全平台，以 AI 检测和响应网络威胁。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1583708",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1660280,
+   "ticker": "TENB",
+   "name": "Tenable Holdings",
+   "sector": "Technology",
+   "industry": "IT Svc",
+   "layer": "app",
+   "segment": "安全与身份",
+   "description": "暴露面管理和云安全平台，使用机器学习识别风险。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1660280",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1560327,
+   "ticker": "RPD",
+   "name": "Rapid7",
+   "sector": "Technology",
+   "industry": "IT Svc",
+   "layer": "app",
+   "segment": "安全与身份",
+   "description": "安全运营与漏洞管理软件，提供 AI 辅助检测和响应。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1560327",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1015922,
+   "ticker": "CHKP",
+   "name": "Check Point Software",
+   "sector": "Technology",
+   "industry": "IT Svc",
+   "layer": "app",
+   "segment": "安全与身份",
+   "description": "网络安全平台，将 AI 用于威胁预防和云防护。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1015922",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1812364,
+   "ticker": "RLAY",
+   "name": "Relay Therapeutics",
+   "sector": "Health Care",
+   "industry": "Biotechnology",
+   "layer": "app",
+   "segment": "医疗 AI 与计算生物",
+   "description": "计算结构生物学和机器学习药物发现公司。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1812364",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1703057,
+   "ticker": "ABCL",
+   "name": "AbCellera Biologics",
+   "sector": "Health Care",
+   "industry": "Biotechnology",
+   "layer": "app",
+   "segment": "医疗 AI 与计算生物",
+   "description": "抗体发现平台，结合机器学习和自动化实验筛选药物。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1703057",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1691421,
+   "ticker": "LMND",
+   "name": "Lemonade",
+   "sector": "Financials",
+   "industry": "Insurance",
+   "layer": "app",
+   "segment": "金融 AI",
+   "description": "数字保险平台，以机器学习进行定价、核保和理赔自动化。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1691421",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1788882,
+   "ticker": "ROOT",
+   "name": "Root",
+   "sector": "Financials",
+   "industry": "Insurance",
+   "layer": "app",
+   "segment": "金融 AI",
+   "description": "按驾驶行为定价的数字汽车保险，使用数据和机器学习承保。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1788882",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1818874,
+   "ticker": "SOFI",
+   "name": "SoFi Technologies",
+   "sector": "Financials",
+   "industry": "Consumer Finance",
+   "layer": "app",
+   "segment": "金融 AI",
+   "description": "数字金融平台，将数据和自动化用于贷款、风控和个性化服务。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1818874",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1576280,
+   "ticker": "GH",
+   "name": "Guardant Health",
+   "sector": "Health Care",
+   "industry": "Health Information Services",
+   "layer": "app",
+   "segment": "医疗 AI 与计算生物",
+   "description": "液体活检和精准肿瘤学平台，利用算法辅助癌症检测和治疗决策。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1576280",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1384905,
+   "ticker": "RNG",
+   "name": "RingCentral",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "客服与联络中心 AI",
+   "description": "云通信和联络中心平台，提供 AI 会议、转录与客服自动化。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1384905",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1288847,
+   "ticker": "FIVN",
+   "name": "Five9",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "客服与联络中心 AI",
+   "description": "云联络中心软件，提供 AI 语音、质检和客服代理。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1288847",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1569345,
+   "ticker": "CXM",
+   "name": "Sprinklr",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "客服与联络中心 AI",
+   "description": "统一客户体验管理平台，使用 AI 处理社交、客服和营销对话。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1569345",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1800667,
+   "ticker": "FROG",
+   "name": "JFrog",
+   "sector": "Technology",
+   "industry": "System Software",
+   "layer": "app",
+   "segment": "AI 开发工具",
+   "description": "DevOps 和软件供应链平台，支持 AI 模型与应用的构建部署。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1800667",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1372612,
+   "ticker": "BOX",
+   "name": "Box",
+   "sector": "Technology",
+   "industry": "Data & Application Svc",
+   "layer": "app",
+   "segment": "AI 开发工具",
+   "description": "企业内容云与 Box AI，帮助团队检索、生成和治理企业知识。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1372612",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1650372,
+   "ticker": "TEAM",
+   "name": "Atlassian",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "AI 开发工具",
+   "description": "软件研发协作平台，提供 Jira、Confluence 与 Rovo AI 工具。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1650372",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1625641,
+   "ticker": "LAW",
+   "name": "CS Disco",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "法律科技 AI",
+   "description": "法律诉讼管理平台，使用 AI 做文档审阅、检索和案件协作。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1625641",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1075124,
+   "ticker": "TRI",
+   "name": "Thomson Reuters",
+   "sector": "Communication Services",
+   "industry": "Publishing",
+   "layer": "app",
+   "segment": "法律科技 AI",
+   "description": "法律、税务和专业信息服务，提供 CoCounsel 生成式 AI。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1075124",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1393052,
+   "ticker": "VEEV",
+   "name": "Veeva Systems",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "垂直 SaaS AI",
+   "description": "生命科学行业 SaaS，使用 AI 优化临床、质量和商业流程。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1393052",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1057352,
+   "ticker": "CSGP",
+   "name": "CoStar Group",
+   "sector": "Technology",
+   "industry": "Data & Application Svc",
+   "layer": "app",
+   "segment": "垂直 SaaS AI",
+   "description": "商业地产数据和软件平台，使用 AI 做估值、搜索和营销。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1057352",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1650164,
+   "ticker": "TOST",
+   "name": "Toast",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "垂直 SaaS AI",
+   "description": "餐饮行业 SaaS 和支付平台，使用 AI 做经营分析与客户营销。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1650164",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1336920,
+   "ticker": "LDOS",
+   "name": "Leidos Holdings",
+   "sector": "Industrials",
+   "industry": "IT Svc",
+   "layer": "app",
+   "segment": "国防与政府 AI",
+   "description": "国防、情报和政府 IT 服务商，提供任务分析与 AI 决策系统。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1336920",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1443646,
+   "ticker": "BAH",
+   "name": "Booz Allen Hamilton",
+   "sector": "Industrials",
+   "industry": "IT Svc",
+   "layer": "app",
+   "segment": "国防与政府 AI",
+   "description": "政府和国防技术咨询商，为联邦客户部署 AI 与数据平台。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1443646",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1069258,
+   "ticker": "KTOS",
+   "name": "Kratos Defense & Security Solutions",
+   "sector": "Industrials",
+   "industry": "Aerospace & Defense",
+   "layer": "app",
+   "segment": "国防与政府 AI",
+   "description": "无人系统、高超声速和国防电子，推动自主系统与 AI 感知。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1069258",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1368622,
+   "ticker": "AVAV",
+   "name": "AeroVironment",
+   "sector": "Industrials",
+   "industry": "Aerospace & Defense",
+   "layer": "app",
+   "segment": "国防与政府 AI",
+   "description": "无人机和自主系统供应商，提供 AI 辅助侦察与打击平台。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1368622",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 1049521,
+   "ticker": "MRCY",
+   "name": "Mercury Systems",
+   "sector": "Industrials",
+   "industry": "Aerospace & Defense",
+   "layer": "app",
+   "segment": "国防与政府 AI",
+   "description": "国防计算和传感器系统，为任务关键型 AI 提供硬件平台。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1049521",
+   "layer_name": "AI 软件与应用"
+  },
+  {
+   "id": 320193,
+   "ticker": "AAPL",
+   "name": "Apple",
+   "sector": "Technology",
+   "industry": "Consumer Electronics",
+   "layer": "edge",
+   "segment": "端侧设备",
+   "description": "iOS 生态、Mac 与 Apple Intelligence。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=320193",
+   "layer_name": "终端与具身智能"
   },
   {
    "id": 47217,
@@ -752,52 +2486,294 @@ window.__FDC_DATA__["graph"] = {
    "name": "HP Inc",
    "sector": "Technology",
    "industry": "Technology Hardware",
-   "description": "PC 与企业计算硬件。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=47217",
    "layer": "edge",
    "segment": "端侧设备",
+   "description": "PC 与企业计算硬件。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=47217",
    "layer_name": "终端与具身智能"
   },
   {
-   "id": 1133421,
-   "ticker": "NOC",
-   "name": "Nokia",
-   "sector": "Technology",
-   "industry": "Communication Equipment",
-   "description": "网络设备，5G 与数据中心交换。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1133421"
-  },
-  {
-   "id": 1840856,
-   "ticker": "SOUN",
+   "id": 1314727,
+   "ticker": "SONO",
    "name": "Sonos",
    "sector": "Technology",
    "industry": "Consumer Electronics",
+   "layer": "edge",
+   "segment": "端侧设备",
    "description": "智能音箱与音频产品。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1840856",
-   "layer": "app",
-   "segment": "企业软件与 Agent",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1314727",
+   "layer_name": "终端与具身智能"
+  },
+  {
+   "id": 1318605,
+   "ticker": "TSLA",
+   "name": "Tesla",
+   "sector": "Consumer Discretionary",
+   "industry": "Auto",
+   "layer": "edge",
+   "segment": "自动驾驶与机器人",
+   "description": "电动车与自动驾驶、机器人 Optimus。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1318605",
+   "layer_name": "终端与具身智能",
+   "also_in": [
+    "power"
+   ]
+  },
+  {
+   "id": 1910139,
+   "ticker": "MBLY",
+   "name": "Mobileye",
+   "sector": "Consumer Discretionary",
+   "industry": "Auto",
+   "layer": "edge",
+   "segment": "自动驾驶与机器人",
+   "description": "ADAS/自动驾驶芯片与算法。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1910139",
+   "layer_name": "终端与具身智能"
+  },
+  {
+   "id": 1736541,
+   "ticker": "NIO",
+   "name": "NIO",
+   "sector": "Consumer Discretionary",
+   "industry": "Auto",
+   "layer": "edge",
+   "segment": "自动驾驶与机器人",
+   "description": "智能电动车与辅助驾驶软件，持续部署端侧 AI。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1736541",
+   "layer_name": "终端与具身智能"
+  },
+  {
+   "id": 1791706,
+   "ticker": "LI",
+   "name": "Li Auto",
+   "sector": "Consumer Discretionary",
+   "industry": "Auto",
+   "layer": "edge",
+   "segment": "自动驾驶与机器人",
+   "description": "智能电动车和辅助驾驶系统，使用 AI 做感知与座舱交互。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1791706",
+   "layer_name": "终端与具身智能"
+  },
+  {
+   "id": 1810997,
+   "ticker": "XPEV",
+   "name": "XPeng",
+   "sector": "Consumer Discretionary",
+   "industry": "Auto",
+   "layer": "edge",
+   "segment": "自动驾驶与机器人",
+   "description": "智能汽车与自动驾驶软件，推进端到端 AI 辅助驾驶。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1810997",
+   "layer_name": "终端与具身智能"
+  },
+  {
+   "id": 1828108,
+   "ticker": "AUR",
+   "name": "Aurora Innovation",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "edge",
+   "segment": "自动驾驶与机器人",
+   "description": "自动驾驶卡车和软件平台，专注感知、规划与车队运营 AI。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1828108",
+   "layer_name": "终端与具身智能"
+  },
+  {
+   "id": 1832483,
+   "ticker": "SERV",
+   "name": "Serve Robotics",
+   "sector": "Industrials",
+   "industry": "Machinery",
+   "layer": "edge",
+   "segment": "自动驾驶与机器人",
+   "description": "人行道配送机器人，使用视觉和导航 AI 实现无人配送。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1832483",
+   "layer_name": "终端与具身智能"
+  },
+  {
+   "id": 1837240,
+   "ticker": "SYM",
+   "name": "Symbotic",
+   "sector": "Industrials",
+   "industry": "Machinery",
+   "layer": "edge",
+   "segment": "自动驾驶与机器人",
+   "description": "仓储自动化机器人和软件，使用 AI 优化物流编排。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1837240",
+   "layer_name": "终端与具身智能"
+  },
+  {
+   "id": 1035267,
+   "ticker": "ISRG",
+   "name": "Intuitive Surgical",
+   "sector": "Health Care",
+   "industry": "Medical Devices",
+   "layer": "edge",
+   "segment": "自动驾驶与机器人",
+   "description": "手术机器人平台，结合计算机视觉和智能辅助手术。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1035267",
+   "layer_name": "终端与具身智能"
   }
  ],
  "links": [
   {
-   "source": 937966,
-   "target": 2488,
+   "source": 1551182,
+   "target": 1674101,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Electrical Equipment（Industrials）"
+  },
+  {
+   "source": 1013871,
+   "target": 1868275,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Power Generation（Utilities）"
+  },
+  {
+   "source": 1622536,
+   "target": 1868275,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Power Generation（Utilities）"
+  },
+  {
+   "source": 1692819,
+   "target": 1868275,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Power Generation（Utilities）"
+  },
+  {
+   "source": 1013871,
+   "target": 1622536,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Power Generation（Utilities）"
+  },
+  {
+   "source": 1013871,
+   "target": 1692819,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Power Generation（Utilities）"
+  },
+  {
+   "source": 1622536,
+   "target": 1692819,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Power Generation（Utilities）"
+  },
+  {
+   "source": 4904,
+   "target": 1326160,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Electric Utilities（Utilities）"
+  },
+  {
+   "source": 4904,
+   "target": 827052,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Electric Utilities（Utilities）"
+  },
+  {
+   "source": 4904,
+   "target": 753308,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Electric Utilities（Utilities）"
+  },
+  {
+   "source": 827052,
+   "target": 1326160,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Electric Utilities（Utilities）"
+  },
+  {
+   "source": 753308,
+   "target": 1326160,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Electric Utilities（Utilities）"
+  },
+  {
+   "source": 92122,
+   "target": 1326160,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Electric Utilities（Utilities）"
+  },
+  {
+   "source": 753308,
+   "target": 827052,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Electric Utilities（Utilities）"
+  },
+  {
+   "source": 92122,
+   "target": 827052,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Electric Utilities（Utilities）"
+  },
+  {
+   "source": 72903,
+   "target": 827052,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Electric Utilities（Utilities）"
+  },
+  {
+   "source": 92122,
+   "target": 753308,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Electric Utilities（Utilities）"
+  },
+  {
+   "source": 72903,
+   "target": 753308,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Electric Utilities（Utilities）"
+  },
+  {
+   "source": 72903,
+   "target": 92122,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Electric Utilities（Utilities）"
+  },
+  {
+   "source": 2488,
+   "target": 1122411,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Semiconductors（Technology）"
   },
   {
-   "source": 937966,
-   "target": 6281,
+   "source": 1047127,
+   "target": 1122411,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Semiconductors（Technology）"
   },
   {
-   "source": 937966,
-   "target": 1973239,
+   "source": 6281,
+   "target": 1122411,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 2488,
+   "target": 1047127,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Semiconductors（Technology）"
@@ -817,7 +2793,21 @@ window.__FDC_DATA__["graph"] = {
    "desc": "同 GICS 子行业：Semiconductors（Technology）"
   },
   {
-   "source": 2488,
+   "source": 6281,
+   "target": 1047127,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 1047127,
+   "target": 1973239,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 1047127,
    "target": 1736297,
    "type": "industry",
    "weight": 1,
@@ -845,85 +2835,134 @@ window.__FDC_DATA__["graph"] = {
    "desc": "同 GICS 子行业：Semiconductors（Technology）"
   },
   {
-   "source": 1973239,
+   "source": 1736297,
+   "target": 1973239,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 1730168,
+   "target": 1973239,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 1807794,
+   "target": 1973239,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 1730168,
    "target": 1736297,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Semiconductors（Technology）"
   },
   {
-   "source": 1973239,
+   "source": 1736297,
+   "target": 1807794,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 29002,
+   "target": 1736297,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 1730168,
+   "target": 1807794,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 29002,
    "target": 1730168,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Semiconductors（Technology）"
   },
   {
-   "source": 1973239,
-   "target": 1807794,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Semiconductors（Technology）"
-  },
-  {
-   "source": 1736297,
+   "source": 1709048,
    "target": 1730168,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Semiconductors（Technology）"
   },
   {
-   "source": 1736297,
+   "source": 29002,
    "target": 1807794,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Semiconductors（Technology）"
   },
   {
-   "source": 1736297,
-   "target": 50863,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Semiconductors（Technology）"
-  },
-  {
-   "source": 1730168,
+   "source": 1709048,
    "target": 1807794,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Semiconductors（Technology）"
   },
   {
-   "source": 1730168,
+   "source": 50863,
+   "target": 1807794,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 29002,
+   "target": 1709048,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 29002,
    "target": 50863,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Semiconductors（Technology）"
   },
   {
-   "source": 1730168,
+   "source": 29002,
+   "target": 855658,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 50863,
+   "target": 1709048,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 855658,
+   "target": 1709048,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 1709048,
    "target": 1835632,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Semiconductors（Technology）"
   },
   {
-   "source": 1807794,
-   "target": 50863,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Semiconductors（Technology）"
-  },
-  {
-   "source": 1807794,
-   "target": 1835632,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Semiconductors（Technology）"
-  },
-  {
-   "source": 1807794,
-   "target": 723125,
+   "source": 50863,
+   "target": 855658,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Semiconductors（Technology）"
@@ -937,35 +2976,77 @@ window.__FDC_DATA__["graph"] = {
   },
   {
    "source": 50863,
-   "target": 723125,
+   "target": 827054,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Semiconductors（Technology）"
   },
   {
-   "source": 50863,
+   "source": 855658,
+   "target": 1835632,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 827054,
+   "target": 855658,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 723125,
+   "target": 855658,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 827054,
+   "target": 1835632,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 723125,
+   "target": 1835632,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 1280452,
+   "target": 1835632,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 723125,
+   "target": 827054,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 827054,
+   "target": 1280452,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 827054,
    "target": 1045810,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Semiconductors（Technology）"
   },
   {
-   "source": 1835632,
-   "target": 723125,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Semiconductors（Technology）"
-  },
-  {
-   "source": 1835632,
-   "target": 1045810,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Semiconductors（Technology）"
-  },
-  {
-   "source": 1835632,
-   "target": 804328,
+   "source": 723125,
+   "target": 1280452,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Semiconductors（Technology）"
@@ -979,35 +3060,119 @@ window.__FDC_DATA__["graph"] = {
   },
   {
    "source": 723125,
-   "target": 804328,
+   "target": 1413447,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Semiconductors（Technology）"
   },
   {
-   "source": 723125,
+   "source": 1045810,
+   "target": 1280452,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 1280452,
+   "target": 1413447,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 1097864,
+   "target": 1280452,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 1045810,
+   "target": 1413447,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 1045810,
+   "target": 1097864,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 1045810,
+   "target": 1604778,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 1097864,
+   "target": 1413447,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 1413447,
+   "target": 1604778,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 804328,
+   "target": 1413447,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 1097864,
+   "target": 1604778,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 804328,
+   "target": 1097864,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 932787,
+   "target": 1097864,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 804328,
+   "target": 1604778,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 932787,
+   "target": 1604778,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 1604778,
    "target": 2023554,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Semiconductors（Technology）"
   },
   {
-   "source": 1045810,
-   "target": 804328,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Semiconductors（Technology）"
-  },
-  {
-   "source": 1045810,
-   "target": 2023554,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Semiconductors（Technology）"
-  },
-  {
-   "source": 1045810,
-   "target": 1046179,
+   "source": 804328,
+   "target": 932787,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Semiconductors（Technology）"
@@ -1020,25 +3185,683 @@ window.__FDC_DATA__["graph"] = {
    "desc": "同 GICS 子行业：Semiconductors（Technology）"
   },
   {
-   "source": 804328,
+   "source": 88941,
+   "target": 804328,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 932787,
+   "target": 2023554,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 88941,
+   "target": 932787,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 932787,
+   "target": 1329394,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 88941,
+   "target": 2023554,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 1329394,
+   "target": 2023554,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 4127,
+   "target": 2023554,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 88941,
+   "target": 1329394,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 4127,
+   "target": 88941,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 88941,
    "target": 1046179,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Semiconductors（Technology）"
   },
   {
-   "source": 2023554,
+   "source": 4127,
+   "target": 1329394,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 1046179,
+   "target": 1329394,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 97476,
+   "target": 1329394,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 4127,
    "target": 1046179,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Semiconductors（Technology）"
   },
   {
-   "source": 320193,
-   "target": 1840856,
+   "source": 4127,
+   "target": 97476,
    "type": "industry",
    "weight": 1,
-   "desc": "同 GICS 子行业：Consumer Electronics（Technology）"
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 4127,
+   "target": 1033767,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 97476,
+   "target": 1046179,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 1033767,
+   "target": 1046179,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 895419,
+   "target": 1046179,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 97476,
+   "target": 1033767,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 97476,
+   "target": 895419,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 895419,
+   "target": 1033767,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductors（Technology）"
+  },
+  {
+   "source": 866374,
+   "target": 1571996,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Technology Hardware（Technology）"
+  },
+  {
+   "source": 47217,
+   "target": 1571996,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Technology Hardware（Technology）"
+  },
+  {
+   "source": 1571996,
+   "target": 1645590,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Technology Hardware（Technology）"
+  },
+  {
+   "source": 47217,
+   "target": 866374,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Technology Hardware（Technology）"
+  },
+  {
+   "source": 866374,
+   "target": 1645590,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Technology Hardware（Technology）"
+  },
+  {
+   "source": 866374,
+   "target": 1002047,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Technology Hardware（Technology）"
+  },
+  {
+   "source": 47217,
+   "target": 1645590,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Technology Hardware（Technology）"
+  },
+  {
+   "source": 47217,
+   "target": 1002047,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Technology Hardware（Technology）"
+  },
+  {
+   "source": 47217,
+   "target": 1137789,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Technology Hardware（Technology）"
+  },
+  {
+   "source": 1002047,
+   "target": 1645590,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Technology Hardware（Technology）"
+  },
+  {
+   "source": 1137789,
+   "target": 1645590,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Technology Hardware（Technology）"
+  },
+  {
+   "source": 1375365,
+   "target": 1645590,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Technology Hardware（Technology）"
+  },
+  {
+   "source": 1002047,
+   "target": 1137789,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Technology Hardware（Technology）"
+  },
+  {
+   "source": 1002047,
+   "target": 1375365,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Technology Hardware（Technology）"
+  },
+  {
+   "source": 106040,
+   "target": 1002047,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Technology Hardware（Technology）"
+  },
+  {
+   "source": 1137789,
+   "target": 1375365,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Technology Hardware（Technology）"
+  },
+  {
+   "source": 106040,
+   "target": 1137789,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Technology Hardware（Technology）"
+  },
+  {
+   "source": 106040,
+   "target": 1375365,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Technology Hardware（Technology）"
+  },
+  {
+   "source": 937966,
+   "target": 1040470,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 6951,
+   "target": 937966,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 937966,
+   "target": 1113232,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 6951,
+   "target": 1040470,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 1040470,
+   "target": 1113232,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 1040470,
+   "target": 1109138,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 6951,
+   "target": 1113232,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 6951,
+   "target": 1109138,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 6951,
+   "target": 1101302,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 1109138,
+   "target": 1113232,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 1101302,
+   "target": 1113232,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 1039399,
+   "target": 1113232,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 1101302,
+   "target": 1109138,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 1039399,
+   "target": 1109138,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 1109138,
+   "target": 1652535,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 1039399,
+   "target": 1101302,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 1101302,
+   "target": 1652535,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 319201,
+   "target": 1101302,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 1039399,
+   "target": 1652535,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 319201,
+   "target": 1039399,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 707549,
+   "target": 1039399,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 319201,
+   "target": 1652535,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 707549,
+   "target": 1652535,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 704532,
+   "target": 1652535,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 319201,
+   "target": 707549,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 319201,
+   "target": 704532,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 319201,
+   "target": 810136,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 704532,
+   "target": 707549,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 707549,
+   "target": 810136,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 97210,
+   "target": 707549,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 704532,
+   "target": 810136,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 97210,
+   "target": 704532,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 704532,
+   "target": 1275014,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 97210,
+   "target": 810136,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 810136,
+   "target": 1275014,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 97210,
+   "target": 1275014,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Semiconductor Equipment（Technology）"
+  },
+  {
+   "source": 813672,
+   "target": 1653482,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：System Software（Technology）"
+  },
+  {
+   "source": 813672,
+   "target": 1800667,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：System Software（Technology）"
+  },
+  {
+   "source": 789019,
+   "target": 813672,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：System Software（Technology）"
+  },
+  {
+   "source": 1653482,
+   "target": 1800667,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：System Software（Technology）"
+  },
+  {
+   "source": 789019,
+   "target": 1653482,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：System Software（Technology）"
+  },
+  {
+   "source": 883241,
+   "target": 1653482,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：System Software（Technology）"
+  },
+  {
+   "source": 789019,
+   "target": 1800667,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：System Software（Technology）"
+  },
+  {
+   "source": 883241,
+   "target": 1800667,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：System Software（Technology）"
+  },
+  {
+   "source": 789019,
+   "target": 883241,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：System Software（Technology）"
+  },
+  {
+   "source": 820313,
+   "target": 820318,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Electronic Components（Technology）"
+  },
+  {
+   "source": 24741,
+   "target": 820313,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Electronic Components（Technology）"
+  },
+  {
+   "source": 820313,
+   "target": 1408710,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Electronic Components（Technology）"
+  },
+  {
+   "source": 24741,
+   "target": 820318,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Electronic Components（Technology）"
+  },
+  {
+   "source": 820318,
+   "target": 1408710,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Electronic Components（Technology）"
+  },
+  {
+   "source": 820318,
+   "target": 1111928,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Electronic Components（Technology）"
+  },
+  {
+   "source": 24741,
+   "target": 1408710,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Electronic Components（Technology）"
+  },
+  {
+   "source": 24741,
+   "target": 1111928,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Electronic Components（Technology）"
+  },
+  {
+   "source": 24741,
+   "target": 1633978,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Electronic Components（Technology）"
+  },
+  {
+   "source": 1111928,
+   "target": 1408710,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Electronic Components（Technology）"
+  },
+  {
+   "source": 1408710,
+   "target": 1633978,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Electronic Components（Technology）"
+  },
+  {
+   "source": 1111928,
+   "target": 1633978,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Electronic Components（Technology）"
   },
   {
    "source": 1652044,
@@ -1048,22 +3871,78 @@ window.__FDC_DATA__["graph"] = {
    "desc": "同 GICS 子行业：Interactive Media（Communication Services）"
   },
   {
+   "source": 1329099,
+   "target": 1652044,
+   "type": "industry",
+   "weight": 2,
+   "desc": "同 GICS 子行业：Interactive Media（Communication Services）"
+  },
+  {
    "source": 1652044,
+   "target": 1723690,
+   "type": "industry",
+   "weight": 2,
+   "desc": "同 GICS 子行业：Interactive Media（Communication Services）"
+  },
+  {
+   "source": 1562088,
+   "target": 1652044,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Interactive Media（Communication Services）"
+  },
+  {
+   "source": 1329099,
+   "target": 1723690,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Interactive Media（Communication Services）"
+  },
+  {
+   "source": 1329099,
    "target": 1562088,
    "type": "industry",
-   "weight": 2,
+   "weight": 1,
    "desc": "同 GICS 子行业：Interactive Media（Communication Services）"
   },
   {
-   "source": 1652044,
-   "target": 1713445,
+   "source": 1329099,
+   "target": 1834489,
    "type": "industry",
-   "weight": 2,
+   "weight": 1,
    "desc": "同 GICS 子行业：Interactive Media（Communication Services）"
   },
   {
-   "source": 1652044,
-   "target": 1639920,
+   "source": 1562088,
+   "target": 1723690,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Interactive Media（Communication Services）"
+  },
+  {
+   "source": 1723690,
+   "target": 1834489,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Interactive Media（Communication Services）"
+  },
+  {
+   "source": 1110646,
+   "target": 1723690,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Interactive Media（Communication Services）"
+  },
+  {
+   "source": 1562088,
+   "target": 1834489,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Interactive Media（Communication Services）"
+  },
+  {
+   "source": 1110646,
+   "target": 1562088,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Interactive Media（Communication Services）"
@@ -1076,29 +3955,337 @@ window.__FDC_DATA__["graph"] = {
    "desc": "同 GICS 子行业：Interactive Media（Communication Services）"
   },
   {
-   "source": 1562088,
-   "target": 1639920,
+   "source": 1110646,
+   "target": 1834489,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Interactive Media（Communication Services）"
   },
   {
    "source": 1713445,
+   "target": 1834489,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Interactive Media（Communication Services）"
+  },
+  {
+   "source": 1639920,
+   "target": 1834489,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Interactive Media（Communication Services）"
+  },
+  {
+   "source": 1110646,
+   "target": 1713445,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Interactive Media（Communication Services）"
+  },
+  {
+   "source": 1110646,
    "target": 1639920,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Interactive Media（Communication Services）"
   },
   {
-   "source": 1477333,
-   "target": 1341439,
+   "source": 1110646,
+   "target": 1595761,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Interactive Media（Communication Services）"
+  },
+  {
+   "source": 1639920,
+   "target": 1713445,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Interactive Media（Communication Services）"
+  },
+  {
+   "source": 1595761,
+   "target": 1713445,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Interactive Media（Communication Services）"
+  },
+  {
+   "source": 1595761,
+   "target": 1639920,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Interactive Media（Communication Services）"
+  },
+  {
+   "source": 1018724,
+   "target": 1370637,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Commerce（Consumer Discretionary）"
+  },
+  {
+   "source": 1018724,
+   "target": 1549802,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Commerce（Consumer Discretionary）"
+  },
+  {
+   "source": 1370637,
+   "target": 1549802,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Commerce（Consumer Discretionary）"
+  },
+  {
+   "source": 1086222,
+   "target": 1144879,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1086222,
+   "target": 1372612,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1086222,
+   "target": 1477333,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1144879,
+   "target": 1372612,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1144879,
+   "target": 1477333,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1057352,
+   "target": 1144879,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1372612,
+   "target": 1477333,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1057352,
+   "target": 1372612,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1372612,
+   "target": 1839341,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1057352,
+   "target": 1477333,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
   },
   {
    "source": 1477333,
+   "target": 1839341,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1477333,
+   "target": 1769628,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1057352,
+   "target": 1839341,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1057352,
+   "target": 1769628,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1057352,
+   "target": 1526125,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1769628,
+   "target": 1839341,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1526125,
+   "target": 1839341,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1839341,
+   "target": 1964789,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1526125,
+   "target": 1769628,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1769628,
+   "target": 1964789,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1769628,
+   "target": 1878848,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1526125,
+   "target": 1964789,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1526125,
+   "target": 1878848,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1441816,
+   "target": 1526125,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1878848,
+   "target": 1964789,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1441816,
+   "target": 1964789,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1513845,
+   "target": 1964789,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1441816,
+   "target": 1878848,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1513845,
+   "target": 1878848,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1341439,
+   "target": 1878848,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1441816,
+   "target": 1513845,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1341439,
+   "target": 1441816,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1441816,
    "target": 1640147,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1341439,
+   "target": 1513845,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1513845,
+   "target": 1640147,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
+  },
+  {
+   "source": 1083301,
+   "target": 1513845,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
@@ -1111,235 +4298,39 @@ window.__FDC_DATA__["graph"] = {
    "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
   },
   {
-   "source": 1261333,
-   "target": 1707753,
+   "source": 1083301,
+   "target": 1341439,
    "type": "industry",
    "weight": 1,
-   "desc": "同 GICS 子行业：Application Svc（Technology）"
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
   },
   {
-   "source": 1261333,
-   "target": 1544522,
+   "source": 1341439,
+   "target": 1508475,
    "type": "industry",
    "weight": 1,
-   "desc": "同 GICS 子行业：Application Svc（Technology）"
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
   },
   {
-   "source": 1261333,
-   "target": 1321655,
+   "source": 1083301,
+   "target": 1640147,
    "type": "industry",
    "weight": 1,
-   "desc": "同 GICS 子行业：Application Svc（Technology）"
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
   },
   {
-   "source": 1707753,
-   "target": 1544522,
+   "source": 1508475,
+   "target": 1640147,
    "type": "industry",
    "weight": 1,
-   "desc": "同 GICS 子行业：Application Svc（Technology）"
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
   },
   {
-   "source": 1707753,
-   "target": 1321655,
+   "source": 1083301,
+   "target": 1508475,
    "type": "industry",
    "weight": 1,
-   "desc": "同 GICS 子行业：Application Svc（Technology）"
-  },
-  {
-   "source": 1707753,
-   "target": 1108524,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Application Svc（Technology）"
-  },
-  {
-   "source": 1544522,
-   "target": 1321655,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Application Svc（Technology）"
-  },
-  {
-   "source": 1544522,
-   "target": 1108524,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Application Svc（Technology）"
-  },
-  {
-   "source": 1544522,
-   "target": 1373715,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Application Svc（Technology）"
-  },
-  {
-   "source": 1321655,
-   "target": 1108524,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Application Svc（Technology）"
-  },
-  {
-   "source": 1321655,
-   "target": 1373715,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Application Svc（Technology）"
-  },
-  {
-   "source": 1321655,
-   "target": 1671933,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Application Svc（Technology）"
-  },
-  {
-   "source": 1108524,
-   "target": 1373715,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Application Svc（Technology）"
-  },
-  {
-   "source": 1108524,
-   "target": 1671933,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Application Svc（Technology）"
-  },
-  {
-   "source": 1108524,
-   "target": 1734722,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Application Svc（Technology）"
-  },
-  {
-   "source": 1373715,
-   "target": 1671933,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Application Svc（Technology）"
-  },
-  {
-   "source": 1373715,
-   "target": 1734722,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Application Svc（Technology）"
-  },
-  {
-   "source": 1373715,
-   "target": 1810806,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Application Svc（Technology）"
-  },
-  {
-   "source": 1671933,
-   "target": 1734722,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Application Svc（Technology）"
-  },
-  {
-   "source": 1671933,
-   "target": 1810806,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Application Svc（Technology）"
-  },
-  {
-   "source": 1671933,
-   "target": 1845338,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Application Svc（Technology）"
-  },
-  {
-   "source": 1734722,
-   "target": 1810806,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Application Svc（Technology）"
-  },
-  {
-   "source": 1734722,
-   "target": 1845338,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Application Svc（Technology）"
-  },
-  {
-   "source": 1810806,
-   "target": 1845338,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Application Svc（Technology）"
-  },
-  {
-   "source": 1535527,
-   "target": 1561550,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：IT Svc（Technology）"
-  },
-  {
-   "source": 1535527,
-   "target": 1660134,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：IT Svc（Technology）"
-  },
-  {
-   "source": 1535527,
-   "target": 1327567,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：IT Svc（Technology）"
-  },
-  {
-   "source": 1561550,
-   "target": 1660134,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：IT Svc（Technology）"
-  },
-  {
-   "source": 1561550,
-   "target": 1327567,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：IT Svc（Technology）"
-  },
-  {
-   "source": 1561550,
-   "target": 1713683,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：IT Svc（Technology）"
-  },
-  {
-   "source": 1660134,
-   "target": 1327567,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：IT Svc（Technology）"
-  },
-  {
-   "source": 1660134,
-   "target": 1713683,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：IT Svc（Technology）"
-  },
-  {
-   "source": 1327567,
-   "target": 1713683,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：IT Svc（Technology）"
+   "desc": "同 GICS 子行业：Data & Application Svc（Technology）"
   },
   {
    "source": 1577552,
@@ -1349,57 +4340,120 @@ window.__FDC_DATA__["graph"] = {
    "desc": "同 GICS 子行业：Commerce（Communication Services）"
   },
   {
-   "source": 1577552,
-   "target": 1543151,
+   "source": 1543151,
+   "target": 1577552,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Commerce（Communication Services）"
   },
   {
-   "source": 1737806,
-   "target": 1543151,
+   "source": 1543151,
+   "target": 1737806,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Commerce（Communication Services）"
   },
   {
-   "source": 1065280,
-   "target": 1315098,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Entertainment（Communication Services）"
-  },
-  {
-   "source": 1065280,
-   "target": 946581,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Entertainment（Communication Services）"
-  },
-  {
-   "source": 1315098,
-   "target": 946581,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Entertainment（Communication Services）"
-  },
-  {
-   "source": 1596532,
-   "target": 858877,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同 GICS 子行业：Communication Equipment（Technology）"
-  },
-  {
-   "source": 1596532,
-   "target": 1133421,
+   "source": 936395,
+   "target": 1596532,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Communication Equipment（Technology）"
   },
   {
    "source": 858877,
-   "target": 1133421,
+   "target": 1596532,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Communication Equipment（Technology）"
+  },
+  {
+   "source": 717826,
+   "target": 1596532,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Communication Equipment（Technology）"
+  },
+  {
+   "source": 858877,
+   "target": 936395,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Communication Equipment（Technology）"
+  },
+  {
+   "source": 717826,
+   "target": 936395,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Communication Equipment（Technology）"
+  },
+  {
+   "source": 936395,
+   "target": 1048695,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Communication Equipment（Technology）"
+  },
+  {
+   "source": 717826,
+   "target": 858877,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Communication Equipment（Technology）"
+  },
+  {
+   "source": 858877,
+   "target": 1048695,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Communication Equipment（Technology）"
+  },
+  {
+   "source": 858877,
+   "target": 924613,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Communication Equipment（Technology）"
+  },
+  {
+   "source": 717826,
+   "target": 1048695,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Communication Equipment（Technology）"
+  },
+  {
+   "source": 717826,
+   "target": 924613,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Communication Equipment（Technology）"
+  },
+  {
+   "source": 717826,
+   "target": 1708055,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Communication Equipment（Technology）"
+  },
+  {
+   "source": 924613,
+   "target": 1048695,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Communication Equipment（Technology）"
+  },
+  {
+   "source": 1048695,
+   "target": 1708055,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Communication Equipment（Technology）"
+  },
+  {
+   "source": 924613,
+   "target": 1708055,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Communication Equipment（Technology）"
@@ -1412,6 +4466,13 @@ window.__FDC_DATA__["graph"] = {
    "desc": "同 GICS 子行业：Telecom Services（Communication Services）"
   },
   {
+   "source": 18926,
+   "target": 732717,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Telecom Services（Communication Services）"
+  },
+  {
    "source": 732717,
    "target": 1283699,
    "type": "industry",
@@ -1419,8 +4480,8 @@ window.__FDC_DATA__["graph"] = {
    "desc": "同 GICS 子行业：Telecom Services（Communication Services）"
   },
   {
-   "source": 732717,
-   "target": 732712,
+   "source": 18926,
+   "target": 1091667,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Telecom Services（Communication Services）"
@@ -1433,60 +4494,1348 @@ window.__FDC_DATA__["graph"] = {
    "desc": "同 GICS 子行业：Telecom Services（Communication Services）"
   },
   {
-   "source": 1091667,
+   "source": 732712,
+   "target": 1091667,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Telecom Services（Communication Services）"
+  },
+  {
+   "source": 18926,
+   "target": 1283699,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Telecom Services（Communication Services）"
+  },
+  {
+   "source": 18926,
    "target": 732712,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Telecom Services（Communication Services）"
   },
   {
-   "source": 1283699,
-   "target": 732712,
+   "source": 732712,
+   "target": 1283699,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Telecom Services（Communication Services）"
   },
   {
-   "source": 1571996,
-   "target": 47217,
+   "source": 1053507,
+   "target": 1297996,
    "type": "industry",
    "weight": 1,
-   "desc": "同 GICS 子行业：Technology Hardware（Technology）"
+   "desc": "同 GICS 子行业：REITs（Real Estate）"
   },
   {
-   "source": 1571996,
-   "target": 1645590,
+   "source": 1053507,
+   "target": 1101239,
    "type": "industry",
    "weight": 1,
-   "desc": "同 GICS 子行业：Technology Hardware（Technology）"
+   "desc": "同 GICS 子行业：REITs（Real Estate）"
   },
   {
-   "source": 1571996,
-   "target": 1375365,
+   "source": 1101239,
+   "target": 1297996,
    "type": "industry",
    "weight": 1,
-   "desc": "同 GICS 子行业：Technology Hardware（Technology）"
+   "desc": "同 GICS 子行业：REITs（Real Estate）"
   },
   {
-   "source": 47217,
-   "target": 1645590,
+   "source": 1015922,
+   "target": 1467373,
    "type": "industry",
    "weight": 1,
-   "desc": "同 GICS 子行业：Technology Hardware（Technology）"
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
   },
   {
-   "source": 47217,
-   "target": 1375365,
+   "source": 1467373,
+   "target": 1535527,
    "type": "industry",
    "weight": 1,
-   "desc": "同 GICS 子行业：Technology Hardware（Technology）"
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
   },
   {
-   "source": 1645590,
-   "target": 1375365,
+   "source": 1467373,
+   "target": 1561550,
    "type": "industry",
    "weight": 1,
-   "desc": "同 GICS 子行业：Technology Hardware（Technology）"
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 1015922,
+   "target": 1535527,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 1015922,
+   "target": 1561550,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 1015922,
+   "target": 1352010,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 1535527,
+   "target": 1561550,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 1352010,
+   "target": 1535527,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 51143,
+   "target": 1535527,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 1352010,
+   "target": 1561550,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 51143,
+   "target": 1561550,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 1067491,
+   "target": 1561550,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 51143,
+   "target": 1352010,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 1067491,
+   "target": 1352010,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 1352010,
+   "target": 1867072,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 51143,
+   "target": 1067491,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 51143,
+   "target": 1867072,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 51143,
+   "target": 1660134,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 1067491,
+   "target": 1867072,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 1067491,
+   "target": 1660134,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 1067491,
+   "target": 1327567,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 1660134,
+   "target": 1867072,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 1327567,
+   "target": 1867072,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 1810019,
+   "target": 1867072,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 1327567,
+   "target": 1660134,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 1660134,
+   "target": 1810019,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 1560327,
+   "target": 1660134,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 1327567,
+   "target": 1810019,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 1327567,
+   "target": 1560327,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 1327567,
+   "target": 1583708,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 1560327,
+   "target": 1810019,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 1583708,
+   "target": 1810019,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 1660280,
+   "target": 1810019,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 1560327,
+   "target": 1583708,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 1560327,
+   "target": 1660280,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 1560327,
+   "target": 1713683,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 1583708,
+   "target": 1660280,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 1583708,
+   "target": 1713683,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 1660280,
+   "target": 1713683,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Technology）"
+  },
+  {
+   "source": 796343,
+   "target": 1842566,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 796343,
+   "target": 1477720,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 796343,
+   "target": 1650372,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1477720,
+   "target": 1842566,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1650372,
+   "target": 1842566,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1828108,
+   "target": 1842566,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1477720,
+   "target": 1650372,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1477720,
+   "target": 1828108,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1477720,
+   "target": 1786352,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1650372,
+   "target": 1828108,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1650372,
+   "target": 1786352,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1650372,
+   "target": 1836981,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1786352,
+   "target": 1828108,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1828108,
+   "target": 1836981,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1577526,
+   "target": 1828108,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1786352,
+   "target": 1836981,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1577526,
+   "target": 1786352,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1625641,
+   "target": 1786352,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1577526,
+   "target": 1836981,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1625641,
+   "target": 1836981,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1261333,
+   "target": 1836981,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1577526,
+   "target": 1625641,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1261333,
+   "target": 1577526,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1577526,
+   "target": 1707753,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1261333,
+   "target": 1625641,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1625641,
+   "target": 1707753,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1288847,
+   "target": 1625641,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1261333,
+   "target": 1707753,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1261333,
+   "target": 1288847,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1261333,
+   "target": 1544522,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1288847,
+   "target": 1707753,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1544522,
+   "target": 1707753,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1404655,
+   "target": 1707753,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1288847,
+   "target": 1544522,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1288847,
+   "target": 1404655,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 896878,
+   "target": 1288847,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1404655,
+   "target": 1544522,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 896878,
+   "target": 1544522,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1321655,
+   "target": 1544522,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 896878,
+   "target": 1404655,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1321655,
+   "target": 1404655,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1384905,
+   "target": 1404655,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 896878,
+   "target": 1321655,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 896878,
+   "target": 1384905,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 896878,
+   "target": 1000184,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1321655,
+   "target": 1384905,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1000184,
+   "target": 1321655,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1108524,
+   "target": 1321655,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1000184,
+   "target": 1384905,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1108524,
+   "target": 1384905,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1373715,
+   "target": 1384905,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1000184,
+   "target": 1108524,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1000184,
+   "target": 1373715,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1000184,
+   "target": 1840856,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1108524,
+   "target": 1373715,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1108524,
+   "target": 1840856,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1108524,
+   "target": 1569345,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1373715,
+   "target": 1840856,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1373715,
+   "target": 1569345,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1373715,
+   "target": 1671933,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1569345,
+   "target": 1840856,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1671933,
+   "target": 1840856,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1650164,
+   "target": 1840856,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1569345,
+   "target": 1671933,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1569345,
+   "target": 1650164,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1447669,
+   "target": 1569345,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1650164,
+   "target": 1671933,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1447669,
+   "target": 1671933,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1671933,
+   "target": 1734722,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1447669,
+   "target": 1650164,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1650164,
+   "target": 1734722,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1650164,
+   "target": 1810806,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1447669,
+   "target": 1734722,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1447669,
+   "target": 1810806,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1393052,
+   "target": 1447669,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1734722,
+   "target": 1810806,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1393052,
+   "target": 1734722,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1615165,
+   "target": 1734722,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1393052,
+   "target": 1810806,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1615165,
+   "target": 1810806,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1327811,
+   "target": 1810806,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1393052,
+   "target": 1615165,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1327811,
+   "target": 1393052,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1393052,
+   "target": 1585521,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1327811,
+   "target": 1615165,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1585521,
+   "target": 1615165,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1615165,
+   "target": 1845338,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1327811,
+   "target": 1585521,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1327811,
+   "target": 1845338,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1585521,
+   "target": 1845338,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1065280,
+   "target": 1315098,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Entertainment（Communication Services）"
+  },
+  {
+   "source": 1065280,
+   "target": 1428439,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Entertainment（Communication Services）"
+  },
+  {
+   "source": 946581,
+   "target": 1065280,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Entertainment（Communication Services）"
+  },
+  {
+   "source": 1315098,
+   "target": 1428439,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Entertainment（Communication Services）"
+  },
+  {
+   "source": 946581,
+   "target": 1315098,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Entertainment（Communication Services）"
+  },
+  {
+   "source": 946581,
+   "target": 1428439,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Entertainment（Communication Services）"
+  },
+  {
+   "source": 1576280,
+   "target": 1717115,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Health Information Services（Health Care）"
+  },
+  {
+   "source": 1601830,
+   "target": 1703057,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Biotechnology（Health Care）"
+  },
+  {
+   "source": 1703057,
+   "target": 1812364,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Biotechnology（Health Care）"
+  },
+  {
+   "source": 1490978,
+   "target": 1703057,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Biotechnology（Health Care）"
+  },
+  {
+   "source": 1601830,
+   "target": 1812364,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Biotechnology（Health Care）"
+  },
+  {
+   "source": 1490978,
+   "target": 1601830,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Biotechnology（Health Care）"
+  },
+  {
+   "source": 1490978,
+   "target": 1812364,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Biotechnology（Health Care）"
+  },
+  {
+   "source": 1035267,
+   "target": 1111485,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Medical Devices（Health Care）"
+  },
+  {
+   "source": 1647639,
+   "target": 1820953,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Consumer Finance（Technology）"
+  },
+  {
+   "source": 1691421,
+   "target": 1788882,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Insurance（Financials）"
+  },
+  {
+   "source": 1336920,
+   "target": 1443646,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：IT Svc（Industrials）"
+  },
+  {
+   "source": 1069258,
+   "target": 1368622,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Aerospace & Defense（Industrials）"
+  },
+  {
+   "source": 1049521,
+   "target": 1368622,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Aerospace & Defense（Industrials）"
+  },
+  {
+   "source": 1049521,
+   "target": 1069258,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Aerospace & Defense（Industrials）"
+  },
+  {
+   "source": 320193,
+   "target": 1314727,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Consumer Electronics（Technology）"
+  },
+  {
+   "source": 1791706,
+   "target": 1910139,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Auto（Consumer Discretionary）"
+  },
+  {
+   "source": 1736541,
+   "target": 1791706,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Auto（Consumer Discretionary）"
+  },
+  {
+   "source": 1318605,
+   "target": 1791706,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Auto（Consumer Discretionary）"
+  },
+  {
+   "source": 1736541,
+   "target": 1910139,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Auto（Consumer Discretionary）"
+  },
+  {
+   "source": 1318605,
+   "target": 1910139,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Auto（Consumer Discretionary）"
+  },
+  {
+   "source": 1810997,
+   "target": 1910139,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Auto（Consumer Discretionary）"
+  },
+  {
+   "source": 1318605,
+   "target": 1736541,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Auto（Consumer Discretionary）"
+  },
+  {
+   "source": 1736541,
+   "target": 1810997,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Auto（Consumer Discretionary）"
+  },
+  {
+   "source": 1318605,
+   "target": 1810997,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Auto（Consumer Discretionary）"
+  },
+  {
+   "source": 1832483,
+   "target": 1837240,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Machinery（Industrials）"
+  },
+  {
+   "source": 874761,
+   "target": 1996810,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同分层环节：发电与核电（能源与电力）"
+  },
+  {
+   "source": 1050915,
+   "target": 1130310,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同分层环节：电网与工程（能源与电力）"
+  },
+  {
+   "source": 1594805,
+   "target": 1762301,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同分层环节：消费与内容应用（AI 软件与应用）"
+  },
+  {
+   "source": 1269238,
+   "target": 1762301,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同分层环节：消费与内容应用（AI 软件与应用）"
+  },
+  {
+   "source": 1269238,
+   "target": 1594805,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同分层环节：消费与内容应用（AI 软件与应用）"
+  },
+  {
+   "source": 1751008,
+   "target": 1818874,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同分层：AI 软件与应用"
+  },
+  {
+   "source": 1075124,
+   "target": 1751008,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同分层：AI 软件与应用"
+  },
+  {
+   "source": 1075124,
+   "target": 1818874,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同分层：AI 软件与应用"
+  },
+  {
+   "source": 707549,
+   "target": 1601046,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同分层环节：半导体设备与材料（芯片与半导体）"
+  },
+  {
+   "source": 704532,
+   "target": 1601046,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同分层环节：半导体设备与材料（芯片与半导体）"
+  },
+  {
+   "source": 810136,
+   "target": 1601046,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同分层环节：半导体设备与材料（芯片与半导体）"
+  },
+  {
+   "source": 1326801,
+   "target": 1441816,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同分层：模型与数据平台"
+  },
+  {
+   "source": 1000184,
+   "target": 1326801,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同分层：模型与数据平台"
+  },
+  {
+   "source": 1326801,
+   "target": 1640147,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同分层：模型与数据平台"
+  },
+  {
+   "source": 1013871,
+   "target": 1996810,
+   "type": "crossref",
+   "weight": 2,
+   "desc": "申报文件互提及：NRG 的 10-K 提及 GEV 2 次"
+  },
+  {
+   "source": 1384905,
+   "target": 1692819,
+   "type": "crossref",
+   "weight": 4,
+   "desc": "申报文件互提及：RNG 的 10-K 提及 VST 4 次"
+  },
+  {
+   "source": 72903,
+   "target": 1013871,
+   "type": "crossref",
+   "weight": 6,
+   "desc": "申报文件互提及：XEL 的 10-K 提及 NRG 6 次"
+  },
+  {
+   "source": 804328,
+   "target": 866374,
+   "type": "crossref",
+   "weight": 2,
+   "desc": "申报文件互提及：FLEX 的 10-K 提及 QCOM 2 次"
+  },
+  {
+   "source": 106040,
+   "target": 2023554,
+   "type": "crossref",
+   "weight": 4,
+   "desc": "申报文件互提及：SNDK 的 10-K 提及 WDC 3 次；WDC 的 10-K 提及 SNDK 1 次"
+  },
+  {
+   "source": 88941,
+   "target": 1280452,
+   "type": "crossref",
+   "weight": 6,
+   "desc": "申报文件互提及：SMTC 的 10-K 提及 MPWR 6 次"
+  },
+  {
+   "source": 1097864,
+   "target": 1326160,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：DUK 的 10-K 提及 ON 1 次"
+  },
+  {
+   "source": 2488,
+   "target": 1709048,
+   "type": "crossref",
+   "weight": 2,
+   "desc": "申报文件互提及：AMD 的 10-K 提及 GFS 2 次"
+  },
+  {
+   "source": 937966,
+   "target": 1413447,
+   "type": "crossref",
+   "weight": 2,
+   "desc": "申报文件互提及：NXPI 的 10-K 提及 ASML 2 次"
+  },
+  {
+   "source": 937966,
+   "target": 1652535,
+   "type": "crossref",
+   "weight": 5,
+   "desc": "申报文件互提及：ICHR 的 10-K 提及 ASML 5 次"
+  },
+  {
+   "source": 937966,
+   "target": 1297996,
+   "type": "crossref",
+   "weight": 28,
+   "desc": "申报文件互提及：DLR 的 10-K 提及 ASML 28 次"
   },
   {
    "source": 50863,
@@ -1496,6 +5845,398 @@ window.__FDC_DATA__["graph"] = {
    "desc": "申报文件互提及：INTC 的 10-K 提及 ASML 9 次"
   },
   {
+   "source": 937966,
+   "target": 1101302,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：ENTG 的 10-K 提及 ASML 1 次"
+  },
+  {
+   "source": 937966,
+   "target": 1111928,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：IPGP 的 10-K 提及 ASML 1 次"
+  },
+  {
+   "source": 6951,
+   "target": 1652535,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：ICHR 的 10-K 提及 AMAT 1 次"
+  },
+  {
+   "source": 319201,
+   "target": 1040470,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：AEHR 的 10-K 提及 KLAC 1 次"
+  },
+  {
+   "source": 29002,
+   "target": 97210,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：DIOD 的 10-K 提及 TER 1 次"
+  },
+  {
+   "source": 732712,
+   "target": 813672,
+   "type": "crossref",
+   "weight": 2,
+   "desc": "申报文件互提及：VZ 的 10-K 提及 CDNS 2 次"
+  },
+  {
+   "source": 820318,
+   "target": 1832483,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：SERV 的 10-K 提及 COHR 1 次"
+  },
+  {
+   "source": 29002,
+   "target": 1633978,
+   "type": "crossref",
+   "weight": 8,
+   "desc": "申报文件互提及：DIOD 的 10-K 提及 LITE 8 次"
+  },
+  {
+   "source": 855658,
+   "target": 1033767,
+   "type": "crossref",
+   "weight": 10,
+   "desc": "申报文件互提及：LSCC 的 10-K 提及 UMC 10 次"
+  },
+  {
+   "source": 810136,
+   "target": 1033767,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：PLAB 的 10-K 提及 UMC 1 次"
+  },
+  {
+   "source": 29002,
+   "target": 827054,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：DIOD 的 10-K 提及 MCHP 1 次"
+  },
+  {
+   "source": 1039399,
+   "target": 1108524,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：CRM 的 10-K 提及 FORM 1 次"
+  },
+  {
+   "source": 4127,
+   "target": 1604778,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：QRVO 的 10-K 提及 SWKS 1 次"
+  },
+  {
+   "source": 1329394,
+   "target": 1594805,
+   "type": "crossref",
+   "weight": 4,
+   "desc": "申报文件互提及：SHOP 的 10-K 提及 SIMO 4 次"
+  },
+  {
+   "source": 804328,
+   "target": 1109138,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：QCOM 的 10-K 提及 CAMT 1 次"
+  },
+  {
+   "source": 1109138,
+   "target": 1730168,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：AVGO 的 10-K 提及 CAMT 1 次"
+  },
+  {
+   "source": 106040,
+   "target": 1109138,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：WDC 的 10-K 提及 CAMT 1 次"
+  },
+  {
+   "source": 1109138,
+   "target": 1130310,
+   "type": "crossref",
+   "weight": 2,
+   "desc": "申报文件互提及：CNP 的 10-K 提及 CAMT 2 次"
+  },
+  {
+   "source": 1109138,
+   "target": 1326801,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：META 的 10-K 提及 CAMT 1 次"
+  },
+  {
+   "source": 4127,
+   "target": 1109138,
+   "type": "crossref",
+   "weight": 3,
+   "desc": "申报文件互提及：SWKS 的 10-K 提及 CAMT 3 次"
+  },
+  {
+   "source": 946581,
+   "target": 1109138,
+   "type": "crossref",
+   "weight": 4,
+   "desc": "申报文件互提及：TTWO 的 10-K 提及 CAMT 4 次"
+  },
+  {
+   "source": 1109138,
+   "target": 2023554,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：SNDK 的 10-K 提及 CAMT 1 次"
+  },
+  {
+   "source": 319201,
+   "target": 1109138,
+   "type": "crossref",
+   "weight": 3,
+   "desc": "申报文件互提及：KLAC 的 10-K 提及 CAMT 3 次"
+  },
+  {
+   "source": 1013871,
+   "target": 1109138,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：NRG 的 10-K 提及 CAMT 1 次"
+  },
+  {
+   "source": 820313,
+   "target": 1109138,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：APH 的 10-K 提及 CAMT 1 次"
+  },
+  {
+   "source": 1652044,
+   "target": 1674101,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：VRT 的 10-K 提及 GOOG 1 次"
+  },
+  {
+   "source": 1341439,
+   "target": 1467373,
+   "type": "crossref",
+   "weight": 2,
+   "desc": "申报文件互提及：ACN 的 10-K 提及 ORCL 2 次"
+  },
+  {
+   "source": 1571996,
+   "target": 1878848,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：IREN 的 10-K 提及 DELL 1 次"
+  },
+  {
+   "source": 1645590,
+   "target": 1786352,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：BILL 的 10-K 提及 HPE 1 次"
+  },
+  {
+   "source": 858877,
+   "target": 1467373,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：ACN 的 10-K 提及 CSCO 1 次"
+  },
+  {
+   "source": 732712,
+   "target": 1692819,
+   "type": "crossref",
+   "weight": 20,
+   "desc": "申报文件互提及：VST 的 10-K 提及 VZ 20 次"
+  },
+  {
+   "source": 1101239,
+   "target": 1144879,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：APLD 的 10-K 提及 EQIX 1 次"
+  },
+  {
+   "source": 1144879,
+   "target": 1878848,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：APLD 的 10-K 提及 IREN 1 次"
+  },
+  {
+   "source": 1083301,
+   "target": 1878848,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：WULF 的 10-K 提及 IREN 1 次"
+  },
+  {
+   "source": 1839341,
+   "target": 1878848,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：CORZ 的 10-K 提及 IREN 1 次"
+  },
+  {
+   "source": 1144879,
+   "target": 1839341,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：APLD 的 10-K 提及 CORZ 1 次"
+  },
+  {
+   "source": 1048695,
+   "target": 1818874,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：SOFI 的 10-K 提及 FFIV 1 次"
+  },
+  {
+   "source": 717826,
+   "target": 1577526,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：AI 的 10-K 提及 ERIC 1 次"
+  },
+  {
+   "source": 717826,
+   "target": 1652044,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：GOOG 的 10-K 提及 ERIC 1 次"
+  },
+  {
+   "source": 796343,
+   "target": 1867072,
+   "type": "crossref",
+   "weight": 2,
+   "desc": "申报文件互提及：ADBE 的 10-K 提及 KD 2 次"
+  },
+  {
+   "source": 1577526,
+   "target": 1842566,
+   "type": "crossref",
+   "weight": 3,
+   "desc": "申报文件互提及：AISP 的 10-K 提及 AI 3 次"
+  },
+  {
+   "source": 1577526,
+   "target": 1878848,
+   "type": "crossref",
+   "weight": 2,
+   "desc": "申报文件互提及：IREN 的 10-K 提及 AI 2 次"
+  },
+  {
+   "source": 789019,
+   "target": 1577526,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：MSFT 的 10-K 提及 AI 1 次"
+  },
+  {
+   "source": 1577526,
+   "target": 1840856,
+   "type": "crossref",
+   "weight": 5,
+   "desc": "申报文件互提及：SOUN 的 10-K 提及 AI 5 次"
+  },
+  {
+   "source": 2488,
+   "target": 1577526,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：AMD 的 10-K 提及 AI 1 次"
+  },
+  {
+   "source": 1327567,
+   "target": 1577526,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：PANW 的 10-K 提及 AI 1 次"
+  },
+  {
+   "source": 1577526,
+   "target": 1615165,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：VERI 的 10-K 提及 AI 1 次"
+  },
+  {
+   "source": 1045810,
+   "target": 1577526,
+   "type": "crossref",
+   "weight": 2,
+   "desc": "申报文件互提及：NVDA 的 10-K 提及 AI 2 次"
+  },
+  {
+   "source": 1569345,
+   "target": 1577526,
+   "type": "crossref",
+   "weight": 2,
+   "desc": "申报文件互提及：CXM 的 10-K 提及 AI 2 次"
+  },
+  {
+   "source": 1577526,
+   "target": 1713683,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：ZS 的 10-K 提及 AI 1 次"
+  },
+  {
+   "source": 1000184,
+   "target": 1341439,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：ORCL 的 10-K 提及 SAP 1 次"
+  },
+  {
+   "source": 1101239,
+   "target": 1404655,
+   "type": "crossref",
+   "weight": 3,
+   "desc": "申报文件互提及：EQIX 的 10-K 提及 HUBS 3 次"
+  },
+  {
+   "source": 732712,
+   "target": 1585521,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：VZ 的 10-K 提及 ZM 1 次"
+  },
+  {
+   "source": 1327567,
+   "target": 1585521,
+   "type": "crossref",
+   "weight": 3,
+   "desc": "申报文件互提及：PANW 的 10-K 提及 ZM 3 次"
+  },
+  {
+   "source": 1108524,
+   "target": 1393052,
+   "type": "crossref",
+   "weight": 5,
+   "desc": "申报文件互提及：VEEV 的 10-K 提及 CRM 5 次"
+  },
+  {
+   "source": 1108524,
+   "target": 1404655,
+   "type": "crossref",
+   "weight": 3,
+   "desc": "申报文件互提及：HUBS 的 10-K 提及 CRM 3 次"
+  },
+  {
    "source": 732717,
    "target": 1373715,
    "type": "crossref",
@@ -1503,32 +6244,18 @@ window.__FDC_DATA__["graph"] = {
    "desc": "申报文件互提及：T 的 10-K 提及 NOW 5 次"
   },
   {
-   "source": 1477333,
-   "target": 1660134,
+   "source": 29002,
+   "target": 1261333,
    "type": "crossref",
    "weight": 1,
-   "desc": "申报文件互提及：NET 的 10-K 提及 OKTA 1 次"
+   "desc": "申报文件互提及：DIOD 的 10-K 提及 DOCU 1 次"
   },
   {
-   "source": 789019,
-   "target": 1660134,
-   "type": "crossref",
-   "weight": 4,
-   "desc": "申报文件互提及：MSFT 的 10-K 提及 OKTA 4 次"
-  },
-  {
-   "source": 723125,
-   "target": 1639920,
+   "source": 1326160,
+   "target": 1734722,
    "type": "crossref",
    "weight": 1,
-   "desc": "申报文件互提及：MU 的 10-K 提及 SPOT 1 次"
-  },
-  {
-   "source": 1373715,
-   "target": 1543151,
-   "type": "crossref",
-   "weight": 2,
-   "desc": "申报文件互提及：NOW 的 10-K 提及 UBER 2 次"
+   "desc": "申报文件互提及：DUK 的 10-K 提及 PATH 1 次"
   },
   {
    "source": 1108524,
@@ -1538,11 +6265,270 @@ window.__FDC_DATA__["graph"] = {
    "desc": "申报文件互提及：CRM 的 10-K 提及 U 5 次"
   },
   {
+   "source": 855658,
+   "target": 1751008,
+   "type": "crossref",
+   "weight": 2,
+   "desc": "申报文件互提及：LSCC 的 10-K 提及 APP 2 次"
+  },
+  {
+   "source": 1477333,
+   "target": 1660134,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：NET 的 10-K 提及 OKTA 1 次"
+  },
+  {
+   "source": 1447669,
+   "target": 1660134,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：TWLO 的 10-K 提及 OKTA 1 次"
+  },
+  {
+   "source": 1372612,
+   "target": 1660134,
+   "type": "crossref",
+   "weight": 4,
+   "desc": "申报文件互提及：BOX 的 10-K 提及 OKTA 4 次"
+  },
+  {
+   "source": 789019,
+   "target": 1660134,
+   "type": "crossref",
+   "weight": 4,
+   "desc": "申报文件互提及：MSFT 的 10-K 提及 OKTA 4 次"
+  },
+  {
+   "source": 1384905,
+   "target": 1660134,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：RNG 的 10-K 提及 OKTA 1 次"
+  },
+  {
+   "source": 1543151,
+   "target": 1832483,
+   "type": "crossref",
+   "weight": 2,
+   "desc": "申报文件互提及：SERV 的 10-K 提及 UBER 2 次"
+  },
+  {
+   "source": 1543151,
+   "target": 1828108,
+   "type": "crossref",
+   "weight": 5,
+   "desc": "申报文件互提及：AUR 的 10-K 提及 UBER 5 次"
+  },
+  {
+   "source": 1373715,
+   "target": 1543151,
+   "type": "crossref",
+   "weight": 2,
+   "desc": "申报文件互提及：NOW 的 10-K 提及 UBER 2 次"
+  },
+  {
+   "source": 723125,
+   "target": 1639920,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：MU 的 10-K 提及 SPOT 1 次"
+  },
+  {
+   "source": 1384905,
+   "target": 1737806,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：RNG 的 10-K 提及 PDD 1 次"
+  },
+  {
    "source": 2488,
-   "target": 1045810,
+   "target": 51143,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：AMD 的 10-K 提及 IBM 1 次"
+  },
+  {
+   "source": 51143,
+   "target": 320193,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：AAPL 的 10-K 提及 IBM 1 次"
+  },
+  {
+   "source": 51143,
+   "target": 106040,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：WDC 的 10-K 提及 IBM 1 次"
+  },
+  {
+   "source": 24741,
+   "target": 1477720,
+   "type": "crossref",
+   "weight": 2,
+   "desc": "申报文件互提及：GLW 的 10-K 提及 ASAN 2 次"
+  },
+  {
+   "source": 804328,
+   "target": 1717115,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：QCOM 的 10-K 提及 TEM 1 次"
+  },
+  {
+   "source": 1352010,
+   "target": 1723690,
+   "type": "crossref",
+   "weight": 3,
+   "desc": "申报文件互提及：EPAM 的 10-K 提及 BILI 3 次"
+  },
+  {
+   "source": 1384905,
+   "target": 1583708,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：RNG 的 10-K 提及 S 1 次"
+  },
+  {
+   "source": 1535527,
+   "target": 1583708,
+   "type": "crossref",
+   "weight": 2,
+   "desc": "申报文件互提及：CRWD 的 10-K 提及 S 2 次"
+  },
+  {
+   "source": 1691421,
+   "target": 1818874,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：SOFI 的 10-K 提及 LMND 1 次"
+  },
+  {
+   "source": 866374,
+   "target": 1800667,
+   "type": "crossref",
+   "weight": 3,
+   "desc": "申报文件互提及：FLEX 的 10-K 提及 FROG 3 次"
+  },
+  {
+   "source": 946581,
+   "target": 1800667,
+   "type": "crossref",
+   "weight": 17,
+   "desc": "申报文件互提及：TTWO 的 10-K 提及 FROG 17 次"
+  },
+  {
+   "source": 1645590,
+   "target": 1650372,
+   "type": "crossref",
+   "weight": 5,
+   "desc": "申报文件互提及：HPE 的 10-K 提及 TEAM 5 次"
+  },
+  {
+   "source": 1625641,
+   "target": 1800667,
+   "type": "crossref",
+   "weight": 2,
+   "desc": "申报文件互提及：FROG 的 10-K 提及 LAW 2 次"
+  },
+  {
+   "source": 1057352,
+   "target": 1326160,
+   "type": "crossref",
+   "weight": 6,
+   "desc": "申报文件互提及：DUK 的 10-K 提及 CSGP 6 次"
+  },
+  {
+   "source": 1097864,
+   "target": 1336920,
+   "type": "crossref",
+   "weight": 9,
+   "desc": "申报文件互提及：ON 的 10-K 提及 LDOS 9 次"
+  },
+  {
+   "source": 47217,
+   "target": 1467373,
+   "type": "crossref",
+   "weight": 2,
+   "desc": "申报文件互提及：ACN 的 10-K 提及 HPQ 2 次"
+  },
+  {
+   "source": 50863,
+   "target": 1910139,
+   "type": "crossref",
+   "weight": 2,
+   "desc": "申报文件互提及：INTC 的 10-K 提及 MBLY 2 次"
+  },
+  {
+   "source": 97476,
+   "target": 1910139,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：TXN 的 10-K 提及 MBLY 1 次"
+  },
+  {
+   "source": 796343,
+   "target": 1791706,
+   "type": "crossref",
+   "weight": 2,
+   "desc": "申报文件互提及：ADBE 的 10-K 提及 LI 2 次"
+  },
+  {
+   "source": 2488,
+   "target": 1828108,
+   "type": "crossref",
+   "weight": 1,
+   "desc": "申报文件互提及：AMD 的 10-K 提及 AUR 1 次"
+  },
+  {
+   "source": 1674101,
+   "target": 1996810,
+   "type": "coholding",
+   "weight": 10,
+   "desc": "共同持仓：10 家机构在 13F 中同时持有 VRT 与 GEV"
+  },
+  {
+   "source": 820318,
+   "target": 1674101,
+   "type": "coholding",
+   "weight": 11,
+   "desc": "共同持仓：11 家机构在 13F 中同时持有 COHR 与 VRT"
+  },
+  {
+   "source": 1751008,
+   "target": 1996810,
+   "type": "coholding",
+   "weight": 9,
+   "desc": "共同持仓：9 家机构在 13F 中同时持有 APP 与 GEV"
+  },
+  {
+   "source": 1639920,
+   "target": 1996810,
    "type": "coholding",
    "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 AMD 与 NVDA"
+   "desc": "共同持仓：8 家机构在 13F 中同时持有 SPOT 与 GEV"
+  },
+  {
+   "source": 72903,
+   "target": 1013871,
+   "type": "coholding",
+   "weight": 8,
+   "desc": "共同持仓：8 家机构在 13F 中同时持有 XEL 与 NRG"
+  },
+  {
+   "source": 1013871,
+   "target": 1130310,
+   "type": "coholding",
+   "weight": 8,
+   "desc": "共同持仓：8 家机构在 13F 中同时持有 NRG 与 CNP"
+  },
+  {
+   "source": 72903,
+   "target": 1130310,
+   "type": "coholding",
+   "weight": 9,
+   "desc": "共同持仓：9 家机构在 13F 中同时持有 XEL 与 CNP"
   },
   {
    "source": 1045810,
@@ -1552,67 +6538,11 @@ window.__FDC_DATA__["graph"] = {
    "desc": "共同持仓：11 家机构在 13F 中同时持有 NVDA 与 AVGO"
   },
   {
-   "source": 937966,
-   "target": 1045810,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 ASML 与 NVDA"
-  },
-  {
-   "source": 6281,
-   "target": 1045810,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 ADI 与 NVDA"
-  },
-  {
-   "source": 1045810,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 NVDA 与 ARM"
-  },
-  {
-   "source": 1045810,
-   "target": 1807794,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 NVDA 与 CRDO"
-  },
-  {
-   "source": 1045810,
-   "target": 1736297,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 NVDA 与 ALAB"
-  },
-  {
-   "source": 320193,
-   "target": 1045810,
-   "type": "coholding",
-   "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 AAPL 与 NVDA"
-  },
-  {
    "source": 789019,
    "target": 1045810,
    "type": "coholding",
    "weight": 11,
    "desc": "共同持仓：11 家机构在 13F 中同时持有 MSFT 与 NVDA"
-  },
-  {
-   "source": 1045810,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 NVDA 与 GOOGL"
-  },
-  {
-   "source": 1045810,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 NVDA 与 GOOGL"
   },
   {
    "source": 1018724,
@@ -1629,417 +6559,11 @@ window.__FDC_DATA__["graph"] = {
    "desc": "共同持仓：14 家机构在 13F 中同时持有 NVDA 与 META"
   },
   {
-   "source": 1045810,
-   "target": 1318605,
-   "type": "coholding",
-   "weight": 10,
-   "desc": "共同持仓：10 家机构在 13F 中同时持有 NVDA 与 TSLA"
-  },
-  {
-   "source": 1045810,
-   "target": 1341439,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 NVDA 与 ORCL"
-  },
-  {
-   "source": 1045810,
-   "target": 1108524,
-   "type": "coholding",
-   "weight": 9,
-   "desc": "共同持仓：9 家机构在 13F 中同时持有 NVDA 与 CRM"
-  },
-  {
-   "source": 1045810,
-   "target": 1373715,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 NVDA 与 NOW"
-  },
-  {
-   "source": 1045810,
-   "target": 1321655,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 NVDA 与 PLTR"
-  },
-  {
-   "source": 1045810,
-   "target": 1640147,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 NVDA 与 SNOW"
-  },
-  {
-   "source": 1045810,
-   "target": 1535527,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 NVDA 与 CRWD"
-  },
-  {
-   "source": 1045810,
-   "target": 1327567,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 NVDA 与 PANW"
-  },
-  {
-   "source": 1045810,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 NVDA 与 ZS"
-  },
-  {
-   "source": 1045810,
-   "target": 1660134,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 NVDA 与 OKTA"
-  },
-  {
-   "source": 1045810,
-   "target": 1477333,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 NVDA 与 NET"
-  },
-  {
-   "source": 1045810,
-   "target": 1561550,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 NVDA 与 DDOG"
-  },
-  {
-   "source": 1045810,
-   "target": 1707753,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 NVDA 与 ESTC"
-  },
-  {
-   "source": 1045810,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 NVDA 与 APP"
-  },
-  {
-   "source": 1045810,
-   "target": 1594805,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 NVDA 与 SHOP"
-  },
-  {
-   "source": 1045810,
-   "target": 1577552,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 NVDA 与 BABA"
-  },
-  {
-   "source": 1045810,
-   "target": 1737806,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 NVDA 与 PDD"
-  },
-  {
-   "source": 1045810,
-   "target": 1065280,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 NVDA 与 NFLX"
-  },
-  {
-   "source": 1045810,
-   "target": 1639920,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 NVDA 与 SPOT"
-  },
-  {
-   "source": 1045810,
-   "target": 1315098,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 NVDA 与 RBLX"
-  },
-  {
-   "source": 1045810,
-   "target": 1543151,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 NVDA 与 UBER"
-  },
-  {
-   "source": 1045810,
-   "target": 1261333,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 NVDA 与 DOCU"
-  },
-  {
-   "source": 1045810,
-   "target": 1671933,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 NVDA 与 TTD"
-  },
-  {
-   "source": 946581,
-   "target": 1045810,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TTWO 与 NVDA"
-  },
-  {
-   "source": 1045810,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 NVDA 与 U"
-  },
-  {
-   "source": 1045810,
-   "target": 1734722,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 NVDA 与 PATH"
-  },
-  {
-   "source": 1045810,
-   "target": 1713445,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 NVDA 与 RDDT"
-  },
-  {
-   "source": 1045810,
-   "target": 1596532,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 NVDA 与 ANET"
-  },
-  {
-   "source": 858877,
-   "target": 1045810,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 CSCO 与 NVDA"
-  },
-  {
-   "source": 732717,
-   "target": 1045810,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 T 与 NVDA"
-  },
-  {
-   "source": 732712,
-   "target": 1045810,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 VZ 与 NVDA"
-  },
-  {
-   "source": 1045810,
-   "target": 1283699,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 NVDA 与 TMUS"
-  },
-  {
-   "source": 1045810,
-   "target": 1091667,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 NVDA 与 CHTR"
-  },
-  {
-   "source": 1045810,
-   "target": 1571996,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 NVDA 与 DELL"
-  },
-  {
-   "source": 1045810,
-   "target": 1645590,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 NVDA 与 HPE"
-  },
-  {
    "source": 2488,
    "target": 1730168,
    "type": "coholding",
    "weight": 12,
    "desc": "共同持仓：12 家机构在 13F 中同时持有 AMD 与 AVGO"
-  },
-  {
-   "source": 2488,
-   "target": 723125,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 AMD 与 MU"
-  },
-  {
-   "source": 2488,
-   "target": 804328,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 AMD 与 QCOM"
-  },
-  {
-   "source": 2488,
-   "target": 50863,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 AMD 与 INTC"
-  },
-  {
-   "source": 2488,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 AMD 与 MRVL"
-  },
-  {
-   "source": 2488,
-   "target": 320193,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 AMD 与 AAPL"
-  },
-  {
-   "source": 2488,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 AMD 与 GOOGL"
-  },
-  {
-   "source": 2488,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 AMD 与 GOOGL"
-  },
-  {
-   "source": 2488,
-   "target": 1018724,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 AMD 与 AMZN"
-  },
-  {
-   "source": 2488,
-   "target": 1326801,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 AMD 与 META"
-  },
-  {
-   "source": 2488,
-   "target": 1318605,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 AMD 与 TSLA"
-  },
-  {
-   "source": 2488,
-   "target": 1341439,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 AMD 与 ORCL"
-  },
-  {
-   "source": 2488,
-   "target": 1108524,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 AMD 与 CRM"
-  },
-  {
-   "source": 2488,
-   "target": 1373715,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 AMD 与 NOW"
-  },
-  {
-   "source": 2488,
-   "target": 1321655,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 AMD 与 PLTR"
-  },
-  {
-   "source": 2488,
-   "target": 1640147,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 AMD 与 SNOW"
-  },
-  {
-   "source": 2488,
-   "target": 1535527,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 AMD 与 CRWD"
-  },
-  {
-   "source": 2488,
-   "target": 1327567,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 AMD 与 PANW"
-  },
-  {
-   "source": 2488,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 AMD 与 ZS"
-  },
-  {
-   "source": 2488,
-   "target": 1660134,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 AMD 与 OKTA"
-  },
-  {
-   "source": 2488,
-   "target": 1561550,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 AMD 与 DDOG"
-  },
-  {
-   "source": 2488,
-   "target": 1594805,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 AMD 与 SHOP"
-  },
-  {
-   "source": 2488,
-   "target": 1065280,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 AMD 与 NFLX"
-  },
-  {
-   "source": 2488,
-   "target": 1315098,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 AMD 与 RBLX"
   },
   {
    "source": 2488,
@@ -2049,102 +6573,11 @@ window.__FDC_DATA__["graph"] = {
    "desc": "共同持仓：10 家机构在 13F 中同时持有 AMD 与 UBER"
   },
   {
-   "source": 2488,
-   "target": 1261333,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 AMD 与 DOCU"
-  },
-  {
-   "source": 2488,
-   "target": 1671933,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 AMD 与 TTD"
-  },
-  {
-   "source": 2488,
-   "target": 946581,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 AMD 与 TTWO"
-  },
-  {
-   "source": 2488,
-   "target": 1596532,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 AMD 与 ANET"
-  },
-  {
-   "source": 2488,
-   "target": 1571996,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 AMD 与 DELL"
-  },
-  {
-   "source": 937966,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 ASML 与 AVGO"
-  },
-  {
    "source": 723125,
    "target": 1730168,
    "type": "coholding",
    "weight": 11,
    "desc": "共同持仓：11 家机构在 13F 中同时持有 MU 与 AVGO"
-  },
-  {
-   "source": 804328,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 9,
-   "desc": "共同持仓：9 家机构在 13F 中同时持有 QCOM 与 AVGO"
-  },
-  {
-   "source": 1730168,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 AVGO 与 SNDK"
-  },
-  {
-   "source": 320193,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 AAPL 与 AVGO"
-  },
-  {
-   "source": 789019,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 MSFT 与 AVGO"
-  },
-  {
-   "source": 1652044,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 GOOGL 与 AVGO"
-  },
-  {
-   "source": 1652044,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 GOOGL 与 AVGO"
-  },
-  {
-   "source": 1018724,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 10,
-   "desc": "共同持仓：10 家机构在 13F 中同时持有 AMZN 与 AVGO"
   },
   {
    "source": 1326801,
@@ -2154,1103 +6587,18 @@ window.__FDC_DATA__["graph"] = {
    "desc": "共同持仓：12 家机构在 13F 中同时持有 META 与 AVGO"
   },
   {
-   "source": 1318605,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 TSLA 与 AVGO"
-  },
-  {
-   "source": 1341439,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 9,
-   "desc": "共同持仓：9 家机构在 13F 中同时持有 ORCL 与 AVGO"
-  },
-  {
-   "source": 1108524,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 11,
-   "desc": "共同持仓：11 家机构在 13F 中同时持有 CRM 与 AVGO"
-  },
-  {
-   "source": 1373715,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 NOW 与 AVGO"
-  },
-  {
-   "source": 1321655,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 9,
-   "desc": "共同持仓：9 家机构在 13F 中同时持有 PLTR 与 AVGO"
-  },
-  {
-   "source": 1640147,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 SNOW 与 AVGO"
-  },
-  {
-   "source": 1535527,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 CRWD 与 AVGO"
-  },
-  {
-   "source": 1327567,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 PANW 与 AVGO"
-  },
-  {
-   "source": 1713683,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 ZS 与 AVGO"
-  },
-  {
-   "source": 1660134,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 OKTA 与 AVGO"
-  },
-  {
-   "source": 1477333,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 NET 与 AVGO"
-  },
-  {
-   "source": 1561550,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 DDOG 与 AVGO"
-  },
-  {
-   "source": 1707753,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 ESTC 与 AVGO"
-  },
-  {
-   "source": 1730168,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 AVGO 与 APP"
-  },
-  {
-   "source": 1594805,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 SHOP 与 AVGO"
-  },
-  {
-   "source": 1577552,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 BABA 与 AVGO"
-  },
-  {
-   "source": 1730168,
-   "target": 1737806,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 AVGO 与 PDD"
-  },
-  {
-   "source": 1065280,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 NFLX 与 AVGO"
-  },
-  {
-   "source": 1639920,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 SPOT 与 AVGO"
-  },
-  {
-   "source": 1315098,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 RBLX 与 AVGO"
-  },
-  {
    "source": 1543151,
    "target": 1730168,
    "type": "coholding",
-   "weight": 13,
-   "desc": "共同持仓：13 家机构在 13F 中同时持有 UBER 与 AVGO"
+   "weight": 12,
+   "desc": "共同持仓：12 家机构在 13F 中同时持有 UBER 与 AVGO"
   },
   {
-   "source": 1261333,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 9,
-   "desc": "共同持仓：9 家机构在 13F 中同时持有 DOCU 与 AVGO"
-  },
-  {
-   "source": 1671933,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 TTD 与 AVGO"
-  },
-  {
-   "source": 946581,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TTWO 与 AVGO"
-  },
-  {
-   "source": 1730168,
-   "target": 1734722,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 AVGO 与 PATH"
-  },
-  {
-   "source": 1713445,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 RDDT 与 AVGO"
-  },
-  {
-   "source": 1596532,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 ANET 与 AVGO"
-  },
-  {
-   "source": 858877,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 CSCO 与 AVGO"
-  },
-  {
-   "source": 732712,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 VZ 与 AVGO"
-  },
-  {
-   "source": 1283699,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 TMUS 与 AVGO"
-  },
-  {
-   "source": 1091667,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 CHTR 与 AVGO"
-  },
-  {
-   "source": 1571996,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 9,
-   "desc": "共同持仓：9 家机构在 13F 中同时持有 DELL 与 AVGO"
-  },
-  {
-   "source": 1645590,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 HPE 与 AVGO"
-  },
-  {
-   "source": 1375365,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 SMCI 与 AVGO"
-  },
-  {
-   "source": 47217,
-   "target": 1730168,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 HPQ 与 AVGO"
-  },
-  {
-   "source": 723125,
-   "target": 937966,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 MU 与 ASML"
-  },
-  {
-   "source": 804328,
-   "target": 937966,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 QCOM 与 ASML"
-  },
-  {
-   "source": 50863,
-   "target": 937966,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 INTC 与 ASML"
-  },
-  {
-   "source": 937966,
+   "source": 1137789,
    "target": 1835632,
    "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 ASML 与 MRVL"
-  },
-  {
-   "source": 937966,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 ASML 与 SNDK"
-  },
-  {
-   "source": 937966,
-   "target": 1807794,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 ASML 与 CRDO"
-  },
-  {
-   "source": 937966,
-   "target": 1736297,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 ASML 与 ALAB"
-  },
-  {
-   "source": 789019,
-   "target": 937966,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 MSFT 与 ASML"
-  },
-  {
-   "source": 937966,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 ASML 与 GOOGL"
-  },
-  {
-   "source": 937966,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 ASML 与 GOOGL"
-  },
-  {
-   "source": 937966,
-   "target": 1018724,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 ASML 与 AMZN"
-  },
-  {
-   "source": 937966,
-   "target": 1326801,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 ASML 与 META"
-  },
-  {
-   "source": 937966,
-   "target": 1341439,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 ASML 与 ORCL"
-  },
-  {
-   "source": 937966,
-   "target": 1108524,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 ASML 与 CRM"
-  },
-  {
-   "source": 937966,
-   "target": 1373715,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 ASML 与 NOW"
-  },
-  {
-   "source": 937966,
-   "target": 1321655,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 ASML 与 PLTR"
-  },
-  {
-   "source": 937966,
-   "target": 1640147,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 ASML 与 SNOW"
-  },
-  {
-   "source": 937966,
-   "target": 1535527,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 ASML 与 CRWD"
-  },
-  {
-   "source": 937966,
-   "target": 1327567,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 ASML 与 PANW"
-  },
-  {
-   "source": 937966,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 ASML 与 ZS"
-  },
-  {
-   "source": 937966,
-   "target": 1660134,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 ASML 与 OKTA"
-  },
-  {
-   "source": 937966,
-   "target": 1477333,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 ASML 与 NET"
-  },
-  {
-   "source": 937966,
-   "target": 1561550,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 ASML 与 DDOG"
-  },
-  {
-   "source": 937966,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 ASML 与 APP"
-  },
-  {
-   "source": 937966,
-   "target": 1594805,
-   "type": "coholding",
    "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 ASML 与 SHOP"
-  },
-  {
-   "source": 937966,
-   "target": 1577552,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 ASML 与 BABA"
-  },
-  {
-   "source": 937966,
-   "target": 1737806,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 ASML 与 PDD"
-  },
-  {
-   "source": 937966,
-   "target": 1065280,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 ASML 与 NFLX"
-  },
-  {
-   "source": 937966,
-   "target": 1639920,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 ASML 与 SPOT"
-  },
-  {
-   "source": 937966,
-   "target": 1315098,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 ASML 与 RBLX"
-  },
-  {
-   "source": 937966,
-   "target": 1543151,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 ASML 与 UBER"
-  },
-  {
-   "source": 937966,
-   "target": 1261333,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 ASML 与 DOCU"
-  },
-  {
-   "source": 937966,
-   "target": 1671933,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 ASML 与 TTD"
-  },
-  {
-   "source": 937966,
-   "target": 946581,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 ASML 与 TTWO"
-  },
-  {
-   "source": 937966,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 ASML 与 U"
-  },
-  {
-   "source": 937966,
-   "target": 1734722,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 ASML 与 PATH"
-  },
-  {
-   "source": 937966,
-   "target": 1713445,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 ASML 与 RDDT"
-  },
-  {
-   "source": 937966,
-   "target": 1596532,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 ASML 与 ANET"
-  },
-  {
-   "source": 937966,
-   "target": 1571996,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 ASML 与 DELL"
-  },
-  {
-   "source": 937966,
-   "target": 1375365,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 ASML 与 SMCI"
-  },
-  {
-   "source": 47217,
-   "target": 937966,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 HPQ 与 ASML"
-  },
-  {
-   "source": 937966,
-   "target": 1133421,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 ASML 与 NOC"
-  },
-  {
-   "source": 6281,
-   "target": 723125,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 ADI 与 MU"
-  },
-  {
-   "source": 723125,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 MU 与 ARM"
-  },
-  {
-   "source": 723125,
-   "target": 1736297,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 MU 与 ALAB"
-  },
-  {
-   "source": 320193,
-   "target": 723125,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 AAPL 与 MU"
-  },
-  {
-   "source": 723125,
-   "target": 789019,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 MU 与 MSFT"
-  },
-  {
-   "source": 723125,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 MU 与 GOOGL"
-  },
-  {
-   "source": 723125,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 MU 与 GOOGL"
-  },
-  {
-   "source": 723125,
-   "target": 1018724,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 MU 与 AMZN"
-  },
-  {
-   "source": 723125,
-   "target": 1326801,
-   "type": "coholding",
-   "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 MU 与 META"
-  },
-  {
-   "source": 723125,
-   "target": 1318605,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 MU 与 TSLA"
-  },
-  {
-   "source": 723125,
-   "target": 1341439,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 MU 与 ORCL"
-  },
-  {
-   "source": 723125,
-   "target": 1108524,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 MU 与 CRM"
-  },
-  {
-   "source": 723125,
-   "target": 1373715,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 MU 与 NOW"
-  },
-  {
-   "source": 723125,
-   "target": 1321655,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 MU 与 PLTR"
-  },
-  {
-   "source": 723125,
-   "target": 1640147,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 MU 与 SNOW"
-  },
-  {
-   "source": 723125,
-   "target": 1562088,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 MU 与 DUOL"
-  },
-  {
-   "source": 723125,
-   "target": 1535527,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 MU 与 CRWD"
-  },
-  {
-   "source": 723125,
-   "target": 1327567,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 MU 与 PANW"
-  },
-  {
-   "source": 723125,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 MU 与 ZS"
-  },
-  {
-   "source": 723125,
-   "target": 1660134,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 MU 与 OKTA"
-  },
-  {
-   "source": 723125,
-   "target": 1561550,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 MU 与 DDOG"
-  },
-  {
-   "source": 723125,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 MU 与 APP"
-  },
-  {
-   "source": 723125,
-   "target": 1594805,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 MU 与 SHOP"
-  },
-  {
-   "source": 723125,
-   "target": 1577552,
-   "type": "coholding",
-   "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 MU 与 BABA"
-  },
-  {
-   "source": 723125,
-   "target": 1737806,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 MU 与 PDD"
-  },
-  {
-   "source": 723125,
-   "target": 1065280,
-   "type": "coholding",
-   "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 MU 与 NFLX"
-  },
-  {
-   "source": 723125,
-   "target": 1639920,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 MU 与 SPOT"
-  },
-  {
-   "source": 723125,
-   "target": 1315098,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 MU 与 RBLX"
-  },
-  {
-   "source": 723125,
-   "target": 1543151,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 MU 与 UBER"
-  },
-  {
-   "source": 723125,
-   "target": 1261333,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 MU 与 DOCU"
-  },
-  {
-   "source": 723125,
-   "target": 1671933,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 MU 与 TTD"
-  },
-  {
-   "source": 723125,
-   "target": 946581,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 MU 与 TTWO"
-  },
-  {
-   "source": 723125,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 MU 与 U"
-  },
-  {
-   "source": 723125,
-   "target": 1734722,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 MU 与 PATH"
-  },
-  {
-   "source": 723125,
-   "target": 1713445,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 MU 与 RDDT"
-  },
-  {
-   "source": 723125,
-   "target": 1596532,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 MU 与 ANET"
-  },
-  {
-   "source": 723125,
-   "target": 858877,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 MU 与 CSCO"
-  },
-  {
-   "source": 723125,
-   "target": 732717,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 MU 与 T"
-  },
-  {
-   "source": 723125,
-   "target": 732712,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 MU 与 VZ"
-  },
-  {
-   "source": 723125,
-   "target": 1283699,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 MU 与 TMUS"
-  },
-  {
-   "source": 723125,
-   "target": 1091667,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 MU 与 CHTR"
-  },
-  {
-   "source": 723125,
-   "target": 1571996,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 MU 与 DELL"
-  },
-  {
-   "source": 723125,
-   "target": 1645590,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 MU 与 HPE"
-  },
-  {
-   "source": 723125,
-   "target": 1375365,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 MU 与 SMCI"
-  },
-  {
-   "source": 723125,
-   "target": 1133421,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 MU 与 NOC"
-  },
-  {
-   "source": 723125,
-   "target": 1840856,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 MU 与 SOUN"
-  },
-  {
-   "source": 50863,
-   "target": 804328,
-   "type": "coholding",
-   "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 INTC 与 QCOM"
-  },
-  {
-   "source": 6281,
-   "target": 804328,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 ADI 与 QCOM"
-  },
-  {
-   "source": 804328,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 QCOM 与 ARM"
-  },
-  {
-   "source": 789019,
-   "target": 804328,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 MSFT 与 QCOM"
-  },
-  {
-   "source": 804328,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 QCOM 与 GOOGL"
-  },
-  {
-   "source": 804328,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 QCOM 与 GOOGL"
-  },
-  {
-   "source": 804328,
-   "target": 1018724,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 QCOM 与 AMZN"
-  },
-  {
-   "source": 804328,
-   "target": 1326801,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 QCOM 与 META"
-  },
-  {
-   "source": 804328,
-   "target": 1318605,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 QCOM 与 TSLA"
-  },
-  {
-   "source": 804328,
-   "target": 1341439,
-   "type": "coholding",
-   "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 QCOM 与 ORCL"
-  },
-  {
-   "source": 804328,
-   "target": 1108524,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 QCOM 与 CRM"
-  },
-  {
-   "source": 804328,
-   "target": 1373715,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 QCOM 与 NOW"
-  },
-  {
-   "source": 804328,
-   "target": 1640147,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 QCOM 与 SNOW"
-  },
-  {
-   "source": 804328,
-   "target": 1535527,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 QCOM 与 CRWD"
-  },
-  {
-   "source": 804328,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 QCOM 与 ZS"
-  },
-  {
-   "source": 804328,
-   "target": 1660134,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 QCOM 与 OKTA"
-  },
-  {
-   "source": 804328,
-   "target": 1561550,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 QCOM 与 DDOG"
-  },
-  {
-   "source": 804328,
-   "target": 1594805,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 QCOM 与 SHOP"
-  },
-  {
-   "source": 804328,
-   "target": 1577552,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 QCOM 与 BABA"
-  },
-  {
-   "source": 804328,
-   "target": 1737806,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 QCOM 与 PDD"
-  },
-  {
-   "source": 804328,
-   "target": 1065280,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 QCOM 与 NFLX"
-  },
-  {
-   "source": 804328,
-   "target": 1315098,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 QCOM 与 RBLX"
-  },
-  {
-   "source": 804328,
-   "target": 1543151,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 QCOM 与 UBER"
-  },
-  {
-   "source": 804328,
-   "target": 1261333,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 QCOM 与 DOCU"
-  },
-  {
-   "source": 804328,
-   "target": 946581,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 QCOM 与 TTWO"
-  },
-  {
-   "source": 804328,
-   "target": 1596532,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 QCOM 与 ANET"
-  },
-  {
-   "source": 804328,
-   "target": 858877,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 QCOM 与 CSCO"
-  },
-  {
-   "source": 732717,
-   "target": 804328,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 T 与 QCOM"
-  },
-  {
-   "source": 732712,
-   "target": 804328,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 VZ 与 QCOM"
-  },
-  {
-   "source": 804328,
-   "target": 1571996,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 QCOM 与 DELL"
-  },
-  {
-   "source": 6281,
-   "target": 50863,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 ADI 与 INTC"
-  },
-  {
-   "source": 50863,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 INTC 与 ARM"
-  },
-  {
-   "source": 50863,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 INTC 与 SNDK"
-  },
-  {
-   "source": 50863,
-   "target": 320193,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 INTC 与 AAPL"
+   "desc": "共同持仓：8 家机构在 13F 中同时持有 STX 与 MRVL"
   },
   {
    "source": 50863,
@@ -3261,206 +6609,10 @@ window.__FDC_DATA__["graph"] = {
   },
   {
    "source": 50863,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 INTC 与 GOOGL"
-  },
-  {
-   "source": 50863,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 INTC 与 GOOGL"
-  },
-  {
-   "source": 50863,
-   "target": 1018724,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 INTC 与 AMZN"
-  },
-  {
-   "source": 50863,
-   "target": 1326801,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 INTC 与 META"
-  },
-  {
-   "source": 50863,
-   "target": 1318605,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 INTC 与 TSLA"
-  },
-  {
-   "source": 50863,
    "target": 1341439,
    "type": "coholding",
    "weight": 9,
    "desc": "共同持仓：9 家机构在 13F 中同时持有 INTC 与 ORCL"
-  },
-  {
-   "source": 50863,
-   "target": 1108524,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 INTC 与 CRM"
-  },
-  {
-   "source": 50863,
-   "target": 1373715,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 INTC 与 NOW"
-  },
-  {
-   "source": 50863,
-   "target": 1640147,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 INTC 与 SNOW"
-  },
-  {
-   "source": 50863,
-   "target": 1535527,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 INTC 与 CRWD"
-  },
-  {
-   "source": 50863,
-   "target": 1327567,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 INTC 与 PANW"
-  },
-  {
-   "source": 50863,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 INTC 与 ZS"
-  },
-  {
-   "source": 50863,
-   "target": 1660134,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 INTC 与 OKTA"
-  },
-  {
-   "source": 50863,
-   "target": 1561550,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 INTC 与 DDOG"
-  },
-  {
-   "source": 50863,
-   "target": 1707753,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 INTC 与 ESTC"
-  },
-  {
-   "source": 50863,
-   "target": 1544522,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 INTC 与 FRSH"
-  },
-  {
-   "source": 50863,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 INTC 与 APP"
-  },
-  {
-   "source": 50863,
-   "target": 1594805,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 INTC 与 SHOP"
-  },
-  {
-   "source": 50863,
-   "target": 1577552,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 INTC 与 BABA"
-  },
-  {
-   "source": 50863,
-   "target": 1737806,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 INTC 与 PDD"
-  },
-  {
-   "source": 50863,
-   "target": 1065280,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 INTC 与 NFLX"
-  },
-  {
-   "source": 50863,
-   "target": 1639920,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 INTC 与 SPOT"
-  },
-  {
-   "source": 50863,
-   "target": 1315098,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 INTC 与 RBLX"
-  },
-  {
-   "source": 50863,
-   "target": 1543151,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 INTC 与 UBER"
-  },
-  {
-   "source": 50863,
-   "target": 1261333,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 INTC 与 DOCU"
-  },
-  {
-   "source": 50863,
-   "target": 1671933,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 INTC 与 TTD"
-  },
-  {
-   "source": 50863,
-   "target": 946581,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 INTC 与 TTWO"
-  },
-  {
-   "source": 50863,
-   "target": 1713445,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 INTC 与 RDDT"
-  },
-  {
-   "source": 50863,
-   "target": 1596532,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 INTC 与 ANET"
   },
   {
    "source": 50863,
@@ -3471,13 +6623,6 @@ window.__FDC_DATA__["graph"] = {
   },
   {
    "source": 50863,
-   "target": 732717,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 INTC 与 T"
-  },
-  {
-   "source": 50863,
    "target": 732712,
    "type": "coholding",
    "weight": 9,
@@ -3485,829 +6630,52 @@ window.__FDC_DATA__["graph"] = {
   },
   {
    "source": 50863,
-   "target": 1283699,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 INTC 与 TMUS"
-  },
-  {
-   "source": 50863,
-   "target": 1091667,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 INTC 与 CHTR"
-  },
-  {
-   "source": 50863,
-   "target": 1571996,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 INTC 与 DELL"
-  },
-  {
-   "source": 50863,
-   "target": 1133421,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 INTC 与 NOC"
-  },
-  {
-   "source": 50863,
-   "target": 1840856,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 INTC 与 SOUN"
-  },
-  {
-   "source": 6281,
-   "target": 1807794,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 ADI 与 CRDO"
-  },
-  {
-   "source": 6281,
-   "target": 789019,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 ADI 与 MSFT"
-  },
-  {
-   "source": 6281,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 ADI 与 GOOGL"
-  },
-  {
-   "source": 6281,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 ADI 与 GOOGL"
-  },
-  {
-   "source": 6281,
-   "target": 1018724,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 ADI 与 AMZN"
-  },
-  {
-   "source": 6281,
-   "target": 1341439,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 ADI 与 ORCL"
-  },
-  {
-   "source": 6281,
-   "target": 1577552,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 ADI 与 BABA"
-  },
-  {
-   "source": 6281,
-   "target": 1639920,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 ADI 与 SPOT"
-  },
-  {
-   "source": 6281,
-   "target": 1315098,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 ADI 与 RBLX"
-  },
-  {
-   "source": 6281,
-   "target": 1543151,
+   "target": 796343,
    "type": "coholding",
    "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 ADI 与 UBER"
+   "desc": "共同持仓：8 家机构在 13F 中同时持有 INTC 与 ADBE"
   },
   {
-   "source": 6281,
-   "target": 858877,
+   "source": 723125,
+   "target": 1097864,
    "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 ADI 与 CSCO"
+   "weight": 8,
+   "desc": "共同持仓：8 家机构在 13F 中同时持有 MU 与 ON"
   },
   {
-   "source": 6281,
-   "target": 732712,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 ADI 与 VZ"
-  },
-  {
-   "source": 6281,
-   "target": 1283699,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 ADI 与 TMUS"
-  },
-  {
-   "source": 6281,
-   "target": 1571996,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 ADI 与 DELL"
-  },
-  {
-   "source": 1835632,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 MRVL 与 ARM"
-  },
-  {
-   "source": 1835632,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 MRVL 与 SNDK"
-  },
-  {
-   "source": 1736297,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 ALAB 与 MRVL"
-  },
-  {
-   "source": 320193,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 AAPL 与 MRVL"
-  },
-  {
-   "source": 1018724,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 AMZN 与 MRVL"
-  },
-  {
-   "source": 1326801,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 META 与 MRVL"
-  },
-  {
-   "source": 1108524,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 CRM 与 MRVL"
-  },
-  {
-   "source": 1373715,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 NOW 与 MRVL"
-  },
-  {
-   "source": 1321655,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 PLTR 与 MRVL"
-  },
-  {
-   "source": 1640147,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 SNOW 与 MRVL"
-  },
-  {
-   "source": 1535527,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 CRWD 与 MRVL"
-  },
-  {
-   "source": 1327567,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 PANW 与 MRVL"
-  },
-  {
-   "source": 1713683,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 ZS 与 MRVL"
-  },
-  {
-   "source": 1660134,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 OKTA 与 MRVL"
-  },
-  {
-   "source": 1477333,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 NET 与 MRVL"
-  },
-  {
-   "source": 1561550,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 DDOG 与 MRVL"
-  },
-  {
-   "source": 1707753,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 ESTC 与 MRVL"
-  },
-  {
-   "source": 1751008,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 APP 与 MRVL"
-  },
-  {
-   "source": 1594805,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 SHOP 与 MRVL"
-  },
-  {
-   "source": 1577552,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 BABA 与 MRVL"
-  },
-  {
-   "source": 1737806,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 PDD 与 MRVL"
-  },
-  {
-   "source": 1065280,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 NFLX 与 MRVL"
-  },
-  {
-   "source": 1639920,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 SPOT 与 MRVL"
-  },
-  {
-   "source": 1315098,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 RBLX 与 MRVL"
-  },
-  {
-   "source": 1543151,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 UBER 与 MRVL"
-  },
-  {
-   "source": 1261333,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 DOCU 与 MRVL"
-  },
-  {
-   "source": 1671933,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TTD 与 MRVL"
-  },
-  {
-   "source": 946581,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 TTWO 与 MRVL"
-  },
-  {
-   "source": 1810806,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 U 与 MRVL"
-  },
-  {
-   "source": 1713445,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 RDDT 与 MRVL"
-  },
-  {
-   "source": 1596532,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 ANET 与 MRVL"
-  },
-  {
-   "source": 732717,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 T 与 MRVL"
-  },
-  {
-   "source": 732712,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 VZ 与 MRVL"
-  },
-  {
-   "source": 1283699,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TMUS 与 MRVL"
-  },
-  {
-   "source": 1571996,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 DELL 与 MRVL"
-  },
-  {
-   "source": 1645590,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 HPE 与 MRVL"
-  },
-  {
-   "source": 1375365,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 SMCI 与 MRVL"
-  },
-  {
-   "source": 47217,
-   "target": 1835632,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 HPQ 与 MRVL"
-  },
-  {
-   "source": 1835632,
-   "target": 1840856,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 MRVL 与 SOUN"
-  },
-  {
-   "source": 1973239,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 ARM 与 SNDK"
-  },
-  {
-   "source": 1652044,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 GOOGL 与 ARM"
-  },
-  {
-   "source": 1652044,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 GOOGL 与 ARM"
-  },
-  {
-   "source": 1018724,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 AMZN 与 ARM"
-  },
-  {
-   "source": 1326801,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 META 与 ARM"
-  },
-  {
-   "source": 1318605,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 TSLA 与 ARM"
-  },
-  {
-   "source": 1108524,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 CRM 与 ARM"
-  },
-  {
-   "source": 1373715,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 NOW 与 ARM"
-  },
-  {
-   "source": 1321655,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 PLTR 与 ARM"
-  },
-  {
-   "source": 1640147,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 SNOW 与 ARM"
-  },
-  {
-   "source": 1562088,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 DUOL 与 ARM"
-  },
-  {
-   "source": 1535527,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 CRWD 与 ARM"
-  },
-  {
-   "source": 1327567,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 PANW 与 ARM"
-  },
-  {
-   "source": 1713683,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 ZS 与 ARM"
-  },
-  {
-   "source": 1660134,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 OKTA 与 ARM"
-  },
-  {
-   "source": 1477333,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 NET 与 ARM"
-  },
-  {
-   "source": 1561550,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 DDOG 与 ARM"
-  },
-  {
-   "source": 1707753,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 ESTC 与 ARM"
-  },
-  {
-   "source": 1751008,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 APP 与 ARM"
-  },
-  {
-   "source": 1594805,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 SHOP 与 ARM"
-  },
-  {
-   "source": 1577552,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 BABA 与 ARM"
-  },
-  {
-   "source": 1737806,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 PDD 与 ARM"
-  },
-  {
-   "source": 1065280,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 NFLX 与 ARM"
-  },
-  {
-   "source": 1639920,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 SPOT 与 ARM"
-  },
-  {
-   "source": 1315098,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 RBLX 与 ARM"
-  },
-  {
-   "source": 1543151,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 UBER 与 ARM"
-  },
-  {
-   "source": 1261333,
-   "target": 1973239,
+   "source": 707549,
+   "target": 723125,
    "type": "coholding",
    "weight": 9,
-   "desc": "共同持仓：9 家机构在 13F 中同时持有 DOCU 与 ARM"
+   "desc": "共同持仓：9 家机构在 13F 中同时持有 LRCX 与 MU"
   },
   {
-   "source": 1671933,
-   "target": 1973239,
+   "source": 723125,
+   "target": 1065280,
    "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 TTD 与 ARM"
+   "weight": 8,
+   "desc": "共同持仓：8 家机构在 13F 中同时持有 MU 与 NFLX"
   },
   {
-   "source": 946581,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 TTWO 与 ARM"
-  },
-  {
-   "source": 1810806,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 U 与 ARM"
-  },
-  {
-   "source": 1734722,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 PATH 与 ARM"
-  },
-  {
-   "source": 1713445,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 RDDT 与 ARM"
-  },
-  {
-   "source": 1596532,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 ANET 与 ARM"
-  },
-  {
-   "source": 1283699,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TMUS 与 ARM"
-  },
-  {
-   "source": 1091667,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 CHTR 与 ARM"
-  },
-  {
-   "source": 1571996,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 DELL 与 ARM"
-  },
-  {
-   "source": 1375365,
-   "target": 1973239,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 SMCI 与 ARM"
-  },
-  {
-   "source": 1736297,
+   "source": 106040,
    "target": 2023554,
    "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 ALAB 与 SNDK"
+   "weight": 9,
+   "desc": "共同持仓：9 家机构在 13F 中同时持有 WDC 与 SNDK"
   },
   {
-   "source": 789019,
+   "source": 97210,
    "target": 2023554,
    "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 MSFT 与 SNDK"
+   "weight": 8,
+   "desc": "共同持仓：8 家机构在 13F 中同时持有 TER 与 SNDK"
   },
   {
-   "source": 1018724,
+   "source": 1329099,
    "target": 2023554,
    "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 AMZN 与 SNDK"
-  },
-  {
-   "source": 1326801,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 META 与 SNDK"
-  },
-  {
-   "source": 1108524,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 CRM 与 SNDK"
-  },
-  {
-   "source": 1373715,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 NOW 与 SNDK"
-  },
-  {
-   "source": 1321655,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 PLTR 与 SNDK"
-  },
-  {
-   "source": 1640147,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 SNOW 与 SNDK"
-  },
-  {
-   "source": 1535527,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 CRWD 与 SNDK"
-  },
-  {
-   "source": 1327567,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 PANW 与 SNDK"
-  },
-  {
-   "source": 1660134,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 OKTA 与 SNDK"
-  },
-  {
-   "source": 1477333,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 NET 与 SNDK"
-  },
-  {
-   "source": 1561550,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 DDOG 与 SNDK"
-  },
-  {
-   "source": 1707753,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 ESTC 与 SNDK"
-  },
-  {
-   "source": 1751008,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 APP 与 SNDK"
-  },
-  {
-   "source": 1594805,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 SHOP 与 SNDK"
-  },
-  {
-   "source": 1577552,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 BABA 与 SNDK"
-  },
-  {
-   "source": 1737806,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 PDD 与 SNDK"
-  },
-  {
-   "source": 1065280,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 NFLX 与 SNDK"
-  },
-  {
-   "source": 1315098,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 RBLX 与 SNDK"
-  },
-  {
-   "source": 1543151,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 UBER 与 SNDK"
-  },
-  {
-   "source": 1261333,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 DOCU 与 SNDK"
-  },
-  {
-   "source": 1671933,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TTD 与 SNDK"
+   "weight": 8,
+   "desc": "共同持仓：8 家机构在 13F 中同时持有 BIDU 与 SNDK"
   },
   {
    "source": 946581,
@@ -4317,438 +6685,116 @@ window.__FDC_DATA__["graph"] = {
    "desc": "共同持仓：8 家机构在 13F 中同时持有 TTWO 与 SNDK"
   },
   {
-   "source": 1810806,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 U 与 SNDK"
-  },
-  {
-   "source": 1713445,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 RDDT 与 SNDK"
-  },
-  {
-   "source": 858877,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 CSCO 与 SNDK"
-  },
-  {
-   "source": 732712,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 VZ 与 SNDK"
-  },
-  {
-   "source": 1283699,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TMUS 与 SNDK"
-  },
-  {
-   "source": 1091667,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 CHTR 与 SNDK"
-  },
-  {
-   "source": 1571996,
-   "target": 2023554,
+   "source": 106040,
+   "target": 707549,
    "type": "coholding",
    "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 DELL 与 SNDK"
+   "desc": "共同持仓：8 家机构在 13F 中同时持有 WDC 与 LRCX"
   },
   {
-   "source": 1645590,
-   "target": 2023554,
+   "source": 106040,
+   "target": 1144879,
    "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 HPE 与 SNDK"
+   "weight": 10,
+   "desc": "共同持仓：10 家机构在 13F 中同时持有 WDC 与 APLD"
   },
   {
-   "source": 1375365,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 SMCI 与 SNDK"
-  },
-  {
-   "source": 47217,
-   "target": 2023554,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 HPQ 与 SNDK"
-  },
-  {
-   "source": 1108524,
-   "target": 1807794,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 CRM 与 CRDO"
-  },
-  {
-   "source": 1373715,
-   "target": 1807794,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 NOW 与 CRDO"
-  },
-  {
-   "source": 1640147,
-   "target": 1807794,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 SNOW 与 CRDO"
-  },
-  {
-   "source": 1562088,
-   "target": 1807794,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 DUOL 与 CRDO"
-  },
-  {
-   "source": 1535527,
-   "target": 1807794,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 CRWD 与 CRDO"
-  },
-  {
-   "source": 1327567,
-   "target": 1807794,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 PANW 与 CRDO"
-  },
-  {
-   "source": 1713683,
-   "target": 1807794,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 ZS 与 CRDO"
-  },
-  {
-   "source": 1660134,
-   "target": 1807794,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 OKTA 与 CRDO"
-  },
-  {
-   "source": 1477333,
-   "target": 1807794,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 NET 与 CRDO"
-  },
-  {
-   "source": 1561550,
-   "target": 1807794,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 DDOG 与 CRDO"
-  },
-  {
-   "source": 1707753,
-   "target": 1807794,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 ESTC 与 CRDO"
-  },
-  {
-   "source": 1544522,
-   "target": 1807794,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 FRSH 与 CRDO"
-  },
-  {
-   "source": 1751008,
-   "target": 1807794,
+   "source": 6281,
+   "target": 1543151,
    "type": "coholding",
    "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 APP 与 CRDO"
+   "desc": "共同持仓：8 家机构在 13F 中同时持有 ADI 与 UBER"
   },
   {
-   "source": 1594805,
-   "target": 1807794,
+   "source": 707549,
+   "target": 1097864,
    "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 SHOP 与 CRDO"
+   "weight": 9,
+   "desc": "共同持仓：9 家机构在 13F 中同时持有 LRCX 与 ON"
   },
   {
-   "source": 1737806,
-   "target": 1807794,
+   "source": 855658,
+   "target": 1097864,
    "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 PDD 与 CRDO"
+   "weight": 9,
+   "desc": "共同持仓：9 家机构在 13F 中同时持有 LSCC 与 ON"
   },
   {
-   "source": 1639920,
-   "target": 1807794,
+   "source": 4127,
+   "target": 1097864,
    "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 SPOT 与 CRDO"
+   "weight": 10,
+   "desc": "共同持仓：10 家机构在 13F 中同时持有 SWKS 与 ON"
   },
   {
-   "source": 1315098,
-   "target": 1807794,
+   "source": 1097864,
+   "target": 1144879,
    "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 RBLX 与 CRDO"
+   "weight": 10,
+   "desc": "共同持仓：10 家机构在 13F 中同时持有 ON 与 APLD"
   },
   {
-   "source": 1543151,
-   "target": 1807794,
+   "source": 97476,
+   "target": 1571996,
    "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 UBER 与 CRDO"
+   "weight": 8,
+   "desc": "共同持仓：8 家机构在 13F 中同时持有 TXN 与 DELL"
   },
   {
-   "source": 1261333,
-   "target": 1807794,
+   "source": 707549,
+   "target": 937966,
    "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 DOCU 与 CRDO"
+   "weight": 8,
+   "desc": "共同持仓：8 家机构在 13F 中同时持有 LRCX 与 ASML"
   },
   {
-   "source": 1671933,
-   "target": 1807794,
+   "source": 937966,
+   "target": 1973239,
    "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 TTD 与 CRDO"
+   "weight": 9,
+   "desc": "共同持仓：9 家机构在 13F 中同时持有 ASML 与 ARM"
   },
   {
-   "source": 946581,
-   "target": 1807794,
+   "source": 937966,
+   "target": 1594805,
    "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TTWO 与 CRDO"
+   "weight": 8,
+   "desc": "共同持仓：8 家机构在 13F 中同时持有 ASML 与 SHOP"
+  },
+  {
+   "source": 97210,
+   "target": 936395,
+   "type": "coholding",
+   "weight": 9,
+   "desc": "共同持仓：9 家机构在 13F 中同时持有 TER 与 CIEN"
+  },
+  {
+   "source": 97210,
+   "target": 1002047,
+   "type": "coholding",
+   "weight": 8,
+   "desc": "共同持仓：8 家机构在 13F 中同时持有 TER 与 NTAP"
   },
   {
    "source": 1807794,
-   "target": 1810806,
+   "target": 1878848,
    "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 CRDO 与 U"
+   "weight": 9,
+   "desc": "共同持仓：9 家机构在 13F 中同时持有 CRDO 与 IREN"
   },
   {
-   "source": 1807794,
-   "target": 1845338,
+   "source": 1736297,
+   "target": 1769628,
    "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 CRDO 与 MNDY"
+   "weight": 10,
+   "desc": "共同持仓：10 家机构在 13F 中同时持有 ALAB 与 CRWV"
   },
   {
-   "source": 1734722,
-   "target": 1807794,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 PATH 与 CRDO"
-  },
-  {
-   "source": 1713445,
-   "target": 1807794,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 RDDT 与 CRDO"
-  },
-  {
-   "source": 1596532,
-   "target": 1807794,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 ANET 与 CRDO"
-  },
-  {
-   "source": 1283699,
-   "target": 1807794,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 TMUS 与 CRDO"
-  },
-  {
-   "source": 1375365,
-   "target": 1807794,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 SMCI 与 CRDO"
-  },
-  {
-   "source": 1318605,
-   "target": 1736297,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TSLA 与 ALAB"
-  },
-  {
-   "source": 1108524,
-   "target": 1736297,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 CRM 与 ALAB"
-  },
-  {
-   "source": 1373715,
-   "target": 1736297,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 NOW 与 ALAB"
-  },
-  {
-   "source": 1321655,
-   "target": 1736297,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 PLTR 与 ALAB"
-  },
-  {
-   "source": 1640147,
-   "target": 1736297,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 SNOW 与 ALAB"
-  },
-  {
-   "source": 1562088,
-   "target": 1736297,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 DUOL 与 ALAB"
-  },
-  {
-   "source": 1327567,
-   "target": 1736297,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 PANW 与 ALAB"
-  },
-  {
-   "source": 1713683,
-   "target": 1736297,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 ZS 与 ALAB"
-  },
-  {
-   "source": 1660134,
-   "target": 1736297,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 OKTA 与 ALAB"
-  },
-  {
-   "source": 1477333,
+   "source": 1513845,
    "target": 1736297,
    "type": "coholding",
    "weight": 9,
-   "desc": "共同持仓：9 家机构在 13F 中同时持有 NET 与 ALAB"
-  },
-  {
-   "source": 1561550,
-   "target": 1736297,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 DDOG 与 ALAB"
-  },
-  {
-   "source": 1707753,
-   "target": 1736297,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 ESTC 与 ALAB"
-  },
-  {
-   "source": 1544522,
-   "target": 1736297,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 FRSH 与 ALAB"
-  },
-  {
-   "source": 1736297,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 ALAB 与 APP"
-  },
-  {
-   "source": 1594805,
-   "target": 1736297,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 SHOP 与 ALAB"
-  },
-  {
-   "source": 1577552,
-   "target": 1736297,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 BABA 与 ALAB"
-  },
-  {
-   "source": 1736297,
-   "target": 1737806,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 ALAB 与 PDD"
-  },
-  {
-   "source": 1639920,
-   "target": 1736297,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 SPOT 与 ALAB"
-  },
-  {
-   "source": 1315098,
-   "target": 1736297,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 RBLX 与 ALAB"
-  },
-  {
-   "source": 1543151,
-   "target": 1736297,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 UBER 与 ALAB"
-  },
-  {
-   "source": 1261333,
-   "target": 1736297,
-   "type": "coholding",
-   "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 DOCU 与 ALAB"
-  },
-  {
-   "source": 1671933,
-   "target": 1736297,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 TTD 与 ALAB"
-  },
-  {
-   "source": 946581,
-   "target": 1736297,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 TTWO 与 ALAB"
-  },
-  {
-   "source": 1736297,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 ALAB 与 U"
+   "desc": "共同持仓：9 家机构在 13F 中同时持有 NBIS 与 ALAB"
   },
   {
    "source": 1713445,
@@ -4758,137 +6804,95 @@ window.__FDC_DATA__["graph"] = {
    "desc": "共同持仓：10 家机构在 13F 中同时持有 RDDT 与 ALAB"
   },
   {
-   "source": 1596532,
-   "target": 1736297,
+   "source": 820318,
+   "target": 1633978,
    "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 ANET 与 ALAB"
+   "weight": 8,
+   "desc": "共同持仓：8 家机构在 13F 中同时持有 COHR 与 LITE"
   },
   {
-   "source": 1283699,
-   "target": 1736297,
+   "source": 820318,
+   "target": 1513845,
    "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TMUS 与 ALAB"
+   "weight": 8,
+   "desc": "共同持仓：8 家机构在 13F 中同时持有 COHR 与 NBIS"
   },
   {
-   "source": 1571996,
-   "target": 1736297,
+   "source": 820318,
+   "target": 1596532,
    "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 DELL 与 ALAB"
+   "weight": 11,
+   "desc": "共同持仓：11 家机构在 13F 中同时持有 COHR 与 ANET"
   },
   {
-   "source": 1375365,
-   "target": 1736297,
+   "source": 820318,
+   "target": 1144879,
    "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 SMCI 与 ALAB"
+   "weight": 11,
+   "desc": "共同持仓：11 家机构在 13F 中同时持有 COHR 与 APLD"
   },
   {
-   "source": 1736297,
-   "target": 1840856,
+   "source": 936395,
+   "target": 1633978,
    "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 ALAB 与 SOUN"
+   "weight": 10,
+   "desc": "共同持仓：10 家机构在 13F 中同时持有 CIEN 与 LITE"
   },
   {
-   "source": 320193,
-   "target": 789019,
+   "source": 1086222,
+   "target": 1633978,
    "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 AAPL 与 MSFT"
+   "weight": 9,
+   "desc": "共同持仓：9 家机构在 13F 中同时持有 AKAM 与 LITE"
   },
   {
-   "source": 320193,
-   "target": 1018724,
+   "source": 1370637,
+   "target": 1633978,
    "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 AAPL 与 AMZN"
+   "weight": 8,
+   "desc": "共同持仓：8 家机构在 13F 中同时持有 ETSY 与 LITE"
   },
   {
-   "source": 320193,
-   "target": 1326801,
+   "source": 88941,
+   "target": 855658,
    "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 AAPL 与 META"
+   "weight": 8,
+   "desc": "共同持仓：8 家机构在 13F 中同时持有 SMTC 与 LSCC"
   },
   {
-   "source": 320193,
-   "target": 1318605,
+   "source": 88941,
+   "target": 1047127,
    "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 AAPL 与 TSLA"
+   "weight": 8,
+   "desc": "共同持仓：8 家机构在 13F 中同时持有 SMTC 与 AMKR"
   },
   {
-   "source": 320193,
-   "target": 1341439,
+   "source": 4127,
+   "target": 827054,
    "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 AAPL 与 ORCL"
+   "weight": 8,
+   "desc": "共同持仓：8 家机构在 13F 中同时持有 SWKS 与 MCHP"
   },
   {
-   "source": 320193,
-   "target": 1108524,
+   "source": 827054,
+   "target": 1373715,
    "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 AAPL 与 CRM"
+   "weight": 8,
+   "desc": "共同持仓：8 家机构在 13F 中同时持有 MCHP 与 NOW"
   },
   {
-   "source": 320193,
-   "target": 1535527,
+   "source": 932787,
+   "target": 1047127,
    "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 AAPL 与 CRWD"
+   "weight": 8,
+   "desc": "共同持仓：8 家机构在 13F 中同时持有 STM 与 AMKR"
   },
   {
-   "source": 320193,
-   "target": 1327567,
+   "source": 4127,
+   "target": 1810019,
    "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 AAPL 与 PANW"
-  },
-  {
-   "source": 320193,
-   "target": 1065280,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 AAPL 与 NFLX"
-  },
-  {
-   "source": 320193,
-   "target": 946581,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 AAPL 与 TTWO"
-  },
-  {
-   "source": 320193,
-   "target": 858877,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 AAPL 与 CSCO"
-  },
-  {
-   "source": 320193,
-   "target": 732712,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 AAPL 与 VZ"
-  },
-  {
-   "source": 789019,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 MSFT 与 GOOGL"
-  },
-  {
-   "source": 789019,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 MSFT 与 GOOGL"
+   "weight": 8,
+   "desc": "共同持仓：8 家机构在 13F 中同时持有 SWKS 与 RXT"
   },
   {
    "source": 789019,
@@ -4899,507 +6903,17 @@ window.__FDC_DATA__["graph"] = {
   },
   {
    "source": 789019,
-   "target": 1326801,
-   "type": "coholding",
-   "weight": 10,
-   "desc": "共同持仓：10 家机构在 13F 中同时持有 MSFT 与 META"
-  },
-  {
-   "source": 789019,
-   "target": 1318605,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 MSFT 与 TSLA"
-  },
-  {
-   "source": 789019,
-   "target": 1341439,
-   "type": "coholding",
-   "weight": 9,
-   "desc": "共同持仓：9 家机构在 13F 中同时持有 MSFT 与 ORCL"
-  },
-  {
-   "source": 789019,
-   "target": 1108524,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 MSFT 与 CRM"
-  },
-  {
-   "source": 789019,
-   "target": 1373715,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 MSFT 与 NOW"
-  },
-  {
-   "source": 789019,
-   "target": 1321655,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 MSFT 与 PLTR"
-  },
-  {
-   "source": 789019,
-   "target": 1640147,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 MSFT 与 SNOW"
-  },
-  {
-   "source": 789019,
-   "target": 1535527,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 MSFT 与 CRWD"
-  },
-  {
-   "source": 789019,
-   "target": 1327567,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 MSFT 与 PANW"
-  },
-  {
-   "source": 789019,
-   "target": 1561550,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 MSFT 与 DDOG"
-  },
-  {
-   "source": 789019,
-   "target": 1594805,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 MSFT 与 SHOP"
-  },
-  {
-   "source": 789019,
-   "target": 1065280,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 MSFT 与 NFLX"
-  },
-  {
-   "source": 789019,
-   "target": 1671933,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 MSFT 与 TTD"
-  },
-  {
-   "source": 789019,
    "target": 858877,
    "type": "coholding",
    "weight": 11,
    "desc": "共同持仓：11 家机构在 13F 中同时持有 MSFT 与 CSCO"
   },
   {
-   "source": 732717,
-   "target": 789019,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 T 与 MSFT"
-  },
-  {
-   "source": 732712,
-   "target": 789019,
-   "type": "coholding",
-   "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 VZ 与 MSFT"
-  },
-  {
    "source": 789019,
-   "target": 1571996,
+   "target": 1326801,
    "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 MSFT 与 DELL"
-  },
-  {
-   "source": 789019,
-   "target": 1133421,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 MSFT 与 NOC"
-  },
-  {
-   "source": 1018724,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 AMZN 与 GOOGL"
-  },
-  {
-   "source": 1326801,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 META 与 GOOGL"
-  },
-  {
-   "source": 1341439,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 ORCL 与 GOOGL"
-  },
-  {
-   "source": 1108524,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 CRM 与 GOOGL"
-  },
-  {
-   "source": 1373715,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 NOW 与 GOOGL"
-  },
-  {
-   "source": 1321655,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 PLTR 与 GOOGL"
-  },
-  {
-   "source": 1640147,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 SNOW 与 GOOGL"
-  },
-  {
-   "source": 1535527,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 CRWD 与 GOOGL"
-  },
-  {
-   "source": 1327567,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 PANW 与 GOOGL"
-  },
-  {
-   "source": 1652044,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 GOOGL 与 ZS"
-  },
-  {
-   "source": 1652044,
-   "target": 1660134,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 GOOGL 与 OKTA"
-  },
-  {
-   "source": 1561550,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 DDOG 与 GOOGL"
-  },
-  {
-   "source": 1652044,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 GOOGL 与 APP"
-  },
-  {
-   "source": 1594805,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 SHOP 与 GOOGL"
-  },
-  {
-   "source": 1577552,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 BABA 与 GOOGL"
-  },
-  {
-   "source": 1652044,
-   "target": 1737806,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 GOOGL 与 PDD"
-  },
-  {
-   "source": 1065280,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 NFLX 与 GOOGL"
-  },
-  {
-   "source": 1315098,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 RBLX 与 GOOGL"
-  },
-  {
-   "source": 1543151,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 UBER 与 GOOGL"
-  },
-  {
-   "source": 1261333,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 DOCU 与 GOOGL"
-  },
-  {
-   "source": 1652044,
-   "target": 1671933,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 GOOGL 与 TTD"
-  },
-  {
-   "source": 946581,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 TTWO 与 GOOGL"
-  },
-  {
-   "source": 1652044,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 GOOGL 与 U"
-  },
-  {
-   "source": 1596532,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 ANET 与 GOOGL"
-  },
-  {
-   "source": 1283699,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 TMUS 与 GOOGL"
-  },
-  {
-   "source": 1571996,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 DELL 与 GOOGL"
-  },
-  {
-   "source": 1645590,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 HPE 与 GOOGL"
-  },
-  {
-   "source": 1018724,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 AMZN 与 GOOGL"
-  },
-  {
-   "source": 1326801,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 META 与 GOOGL"
-  },
-  {
-   "source": 1341439,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 ORCL 与 GOOGL"
-  },
-  {
-   "source": 1108524,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 CRM 与 GOOGL"
-  },
-  {
-   "source": 1373715,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 NOW 与 GOOGL"
-  },
-  {
-   "source": 1321655,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 PLTR 与 GOOGL"
-  },
-  {
-   "source": 1640147,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 SNOW 与 GOOGL"
-  },
-  {
-   "source": 1535527,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 CRWD 与 GOOGL"
-  },
-  {
-   "source": 1327567,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 PANW 与 GOOGL"
-  },
-  {
-   "source": 1652044,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 GOOGL 与 ZS"
-  },
-  {
-   "source": 1652044,
-   "target": 1660134,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 GOOGL 与 OKTA"
-  },
-  {
-   "source": 1561550,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 DDOG 与 GOOGL"
-  },
-  {
-   "source": 1652044,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 GOOGL 与 APP"
-  },
-  {
-   "source": 1594805,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 SHOP 与 GOOGL"
-  },
-  {
-   "source": 1577552,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 BABA 与 GOOGL"
-  },
-  {
-   "source": 1652044,
-   "target": 1737806,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 GOOGL 与 PDD"
-  },
-  {
-   "source": 1065280,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 NFLX 与 GOOGL"
-  },
-  {
-   "source": 1315098,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 RBLX 与 GOOGL"
-  },
-  {
-   "source": 1543151,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 UBER 与 GOOGL"
-  },
-  {
-   "source": 1261333,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 DOCU 与 GOOGL"
-  },
-  {
-   "source": 1652044,
-   "target": 1671933,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 GOOGL 与 TTD"
-  },
-  {
-   "source": 946581,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 TTWO 与 GOOGL"
-  },
-  {
-   "source": 1652044,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 GOOGL 与 U"
-  },
-  {
-   "source": 1596532,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 ANET 与 GOOGL"
-  },
-  {
-   "source": 1283699,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 TMUS 与 GOOGL"
-  },
-  {
-   "source": 1571996,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 DELL 与 GOOGL"
-  },
-  {
-   "source": 1645590,
-   "target": 1652044,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 HPE 与 GOOGL"
+   "weight": 10,
+   "desc": "共同持仓：10 家机构在 13F 中同时持有 MSFT 与 META"
   },
   {
    "source": 1018724,
@@ -5416,622 +6930,6 @@ window.__FDC_DATA__["graph"] = {
    "desc": "共同持仓：9 家机构在 13F 中同时持有 AMZN 与 TSLA"
   },
   {
-   "source": 1018724,
-   "target": 1341439,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 AMZN 与 ORCL"
-  },
-  {
-   "source": 1018724,
-   "target": 1108524,
-   "type": "coholding",
-   "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 AMZN 与 CRM"
-  },
-  {
-   "source": 1018724,
-   "target": 1373715,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 AMZN 与 NOW"
-  },
-  {
-   "source": 1018724,
-   "target": 1321655,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 AMZN 与 PLTR"
-  },
-  {
-   "source": 1018724,
-   "target": 1640147,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 AMZN 与 SNOW"
-  },
-  {
-   "source": 1018724,
-   "target": 1535527,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 AMZN 与 CRWD"
-  },
-  {
-   "source": 1018724,
-   "target": 1327567,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 AMZN 与 PANW"
-  },
-  {
-   "source": 1018724,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 AMZN 与 ZS"
-  },
-  {
-   "source": 1018724,
-   "target": 1660134,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 AMZN 与 OKTA"
-  },
-  {
-   "source": 1018724,
-   "target": 1561550,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 AMZN 与 DDOG"
-  },
-  {
-   "source": 1018724,
-   "target": 1707753,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 AMZN 与 ESTC"
-  },
-  {
-   "source": 1018724,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 AMZN 与 APP"
-  },
-  {
-   "source": 1018724,
-   "target": 1594805,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 AMZN 与 SHOP"
-  },
-  {
-   "source": 1018724,
-   "target": 1577552,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 AMZN 与 BABA"
-  },
-  {
-   "source": 1018724,
-   "target": 1737806,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 AMZN 与 PDD"
-  },
-  {
-   "source": 1018724,
-   "target": 1065280,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 AMZN 与 NFLX"
-  },
-  {
-   "source": 1018724,
-   "target": 1639920,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 AMZN 与 SPOT"
-  },
-  {
-   "source": 1018724,
-   "target": 1315098,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 AMZN 与 RBLX"
-  },
-  {
-   "source": 1018724,
-   "target": 1543151,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 AMZN 与 UBER"
-  },
-  {
-   "source": 1018724,
-   "target": 1261333,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 AMZN 与 DOCU"
-  },
-  {
-   "source": 1018724,
-   "target": 1671933,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 AMZN 与 TTD"
-  },
-  {
-   "source": 946581,
-   "target": 1018724,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TTWO 与 AMZN"
-  },
-  {
-   "source": 1018724,
-   "target": 1734722,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 AMZN 与 PATH"
-  },
-  {
-   "source": 1018724,
-   "target": 1596532,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 AMZN 与 ANET"
-  },
-  {
-   "source": 732712,
-   "target": 1018724,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 VZ 与 AMZN"
-  },
-  {
-   "source": 1018724,
-   "target": 1283699,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 AMZN 与 TMUS"
-  },
-  {
-   "source": 1018724,
-   "target": 1571996,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 AMZN 与 DELL"
-  },
-  {
-   "source": 1018724,
-   "target": 1645590,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 AMZN 与 HPE"
-  },
-  {
-   "source": 1318605,
-   "target": 1326801,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 TSLA 与 META"
-  },
-  {
-   "source": 1326801,
-   "target": 1341439,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 META 与 ORCL"
-  },
-  {
-   "source": 1108524,
-   "target": 1326801,
-   "type": "coholding",
-   "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 CRM 与 META"
-  },
-  {
-   "source": 1326801,
-   "target": 1373715,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 META 与 NOW"
-  },
-  {
-   "source": 1321655,
-   "target": 1326801,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 PLTR 与 META"
-  },
-  {
-   "source": 1326801,
-   "target": 1640147,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 META 与 SNOW"
-  },
-  {
-   "source": 1326801,
-   "target": 1535527,
-   "type": "coholding",
-   "weight": 9,
-   "desc": "共同持仓：9 家机构在 13F 中同时持有 META 与 CRWD"
-  },
-  {
-   "source": 1326801,
-   "target": 1327567,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 META 与 PANW"
-  },
-  {
-   "source": 1326801,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 META 与 ZS"
-  },
-  {
-   "source": 1326801,
-   "target": 1660134,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 META 与 OKTA"
-  },
-  {
-   "source": 1326801,
-   "target": 1561550,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 META 与 DDOG"
-  },
-  {
-   "source": 1326801,
-   "target": 1707753,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 META 与 ESTC"
-  },
-  {
-   "source": 1326801,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 META 与 APP"
-  },
-  {
-   "source": 1326801,
-   "target": 1594805,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 META 与 SHOP"
-  },
-  {
-   "source": 1326801,
-   "target": 1577552,
-   "type": "coholding",
-   "weight": 9,
-   "desc": "共同持仓：9 家机构在 13F 中同时持有 META 与 BABA"
-  },
-  {
-   "source": 1326801,
-   "target": 1737806,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 META 与 PDD"
-  },
-  {
-   "source": 1065280,
-   "target": 1326801,
-   "type": "coholding",
-   "weight": 10,
-   "desc": "共同持仓：10 家机构在 13F 中同时持有 NFLX 与 META"
-  },
-  {
-   "source": 1326801,
-   "target": 1639920,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 META 与 SPOT"
-  },
-  {
-   "source": 1315098,
-   "target": 1326801,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 RBLX 与 META"
-  },
-  {
-   "source": 1326801,
-   "target": 1543151,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 META 与 UBER"
-  },
-  {
-   "source": 1261333,
-   "target": 1326801,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 DOCU 与 META"
-  },
-  {
-   "source": 1326801,
-   "target": 1671933,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 META 与 TTD"
-  },
-  {
-   "source": 946581,
-   "target": 1326801,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 TTWO 与 META"
-  },
-  {
-   "source": 1326801,
-   "target": 1734722,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 META 与 PATH"
-  },
-  {
-   "source": 1326801,
-   "target": 1713445,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 META 与 RDDT"
-  },
-  {
-   "source": 1326801,
-   "target": 1596532,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 META 与 ANET"
-  },
-  {
-   "source": 732712,
-   "target": 1326801,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 VZ 与 META"
-  },
-  {
-   "source": 1283699,
-   "target": 1326801,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TMUS 与 META"
-  },
-  {
-   "source": 1326801,
-   "target": 1571996,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 META 与 DELL"
-  },
-  {
-   "source": 1108524,
-   "target": 1318605,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 CRM 与 TSLA"
-  },
-  {
-   "source": 1318605,
-   "target": 1373715,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 TSLA 与 NOW"
-  },
-  {
-   "source": 1318605,
-   "target": 1321655,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 TSLA 与 PLTR"
-  },
-  {
-   "source": 1318605,
-   "target": 1640147,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 TSLA 与 SNOW"
-  },
-  {
-   "source": 1318605,
-   "target": 1535527,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TSLA 与 CRWD"
-  },
-  {
-   "source": 1318605,
-   "target": 1327567,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TSLA 与 PANW"
-  },
-  {
-   "source": 1318605,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TSLA 与 ZS"
-  },
-  {
-   "source": 1318605,
-   "target": 1477333,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 TSLA 与 NET"
-  },
-  {
-   "source": 1318605,
-   "target": 1561550,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 TSLA 与 DDOG"
-  },
-  {
-   "source": 1318605,
-   "target": 1707753,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 TSLA 与 ESTC"
-  },
-  {
-   "source": 1318605,
-   "target": 1594805,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 TSLA 与 SHOP"
-  },
-  {
-   "source": 1318605,
-   "target": 1577552,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 TSLA 与 BABA"
-  },
-  {
-   "source": 1318605,
-   "target": 1737806,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 TSLA 与 PDD"
-  },
-  {
-   "source": 1065280,
-   "target": 1318605,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 NFLX 与 TSLA"
-  },
-  {
-   "source": 1318605,
-   "target": 1639920,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 TSLA 与 SPOT"
-  },
-  {
-   "source": 1315098,
-   "target": 1318605,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 RBLX 与 TSLA"
-  },
-  {
-   "source": 1318605,
-   "target": 1543151,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 TSLA 与 UBER"
-  },
-  {
-   "source": 1261333,
-   "target": 1318605,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 DOCU 与 TSLA"
-  },
-  {
-   "source": 1318605,
-   "target": 1671933,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TSLA 与 TTD"
-  },
-  {
-   "source": 1318605,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 TSLA 与 U"
-  },
-  {
-   "source": 1318605,
-   "target": 1713445,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TSLA 与 RDDT"
-  },
-  {
-   "source": 1318605,
-   "target": 1596532,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 TSLA 与 ANET"
-  },
-  {
-   "source": 732712,
-   "target": 1318605,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 VZ 与 TSLA"
-  },
-  {
-   "source": 1108524,
-   "target": 1341439,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 CRM 与 ORCL"
-  },
-  {
-   "source": 1341439,
-   "target": 1373715,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 ORCL 与 NOW"
-  },
-  {
-   "source": 1341439,
-   "target": 1535527,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 ORCL 与 CRWD"
-  },
-  {
-   "source": 1327567,
-   "target": 1341439,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 PANW 与 ORCL"
-  },
-  {
-   "source": 1341439,
-   "target": 1561550,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 ORCL 与 DDOG"
-  },
-  {
-   "source": 1341439,
-   "target": 1577552,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 ORCL 与 BABA"
-  },
-  {
-   "source": 1065280,
-   "target": 1341439,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 NFLX 与 ORCL"
-  },
-  {
-   "source": 1341439,
-   "target": 1543151,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 ORCL 与 UBER"
-  },
-  {
    "source": 858877,
    "target": 1341439,
    "type": "coholding",
@@ -6039,2167 +6937,25 @@ window.__FDC_DATA__["graph"] = {
    "desc": "共同持仓：11 家机构在 13F 中同时持有 CSCO 与 ORCL"
   },
   {
-   "source": 732717,
+   "source": 796343,
    "target": 1341439,
    "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 T 与 ORCL"
+   "weight": 9,
+   "desc": "共同持仓：9 家机构在 13F 中同时持有 ADBE 与 ORCL"
   },
   {
-   "source": 732712,
-   "target": 1341439,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 VZ 与 ORCL"
-  },
-  {
-   "source": 1341439,
-   "target": 1571996,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 ORCL 与 DELL"
-  },
-  {
-   "source": 1133421,
-   "target": 1341439,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 NOC 与 ORCL"
-  },
-  {
-   "source": 1108524,
-   "target": 1640147,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 CRM 与 SNOW"
-  },
-  {
-   "source": 1108524,
-   "target": 1535527,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 CRM 与 CRWD"
-  },
-  {
-   "source": 1108524,
-   "target": 1327567,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 CRM 与 PANW"
-  },
-  {
-   "source": 1108524,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 CRM 与 ZS"
-  },
-  {
-   "source": 1108524,
-   "target": 1660134,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 CRM 与 OKTA"
-  },
-  {
-   "source": 1108524,
-   "target": 1477333,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 CRM 与 NET"
-  },
-  {
-   "source": 1108524,
-   "target": 1561550,
-   "type": "coholding",
-   "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 CRM 与 DDOG"
-  },
-  {
-   "source": 1108524,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 CRM 与 APP"
-  },
-  {
-   "source": 1108524,
-   "target": 1594805,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 CRM 与 SHOP"
-  },
-  {
-   "source": 1108524,
+   "source": 1329099,
    "target": 1577552,
    "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 CRM 与 BABA"
-  },
-  {
-   "source": 1108524,
-   "target": 1737806,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 CRM 与 PDD"
-  },
-  {
-   "source": 1065280,
-   "target": 1108524,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 NFLX 与 CRM"
-  },
-  {
-   "source": 1108524,
-   "target": 1639920,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 CRM 与 SPOT"
-  },
-  {
-   "source": 1108524,
-   "target": 1315098,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 CRM 与 RBLX"
-  },
-  {
-   "source": 1108524,
-   "target": 1543151,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 CRM 与 UBER"
-  },
-  {
-   "source": 1108524,
-   "target": 1261333,
-   "type": "coholding",
    "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 CRM 与 DOCU"
+   "desc": "共同持仓：8 家机构在 13F 中同时持有 BIDU 与 BABA"
   },
   {
-   "source": 946581,
-   "target": 1108524,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 TTWO 与 CRM"
-  },
-  {
-   "source": 1108524,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 CRM 与 U"
-  },
-  {
-   "source": 1108524,
-   "target": 1713445,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 CRM 与 RDDT"
-  },
-  {
-   "source": 1108524,
-   "target": 1596532,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 CRM 与 ANET"
-  },
-  {
-   "source": 732712,
-   "target": 1108524,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 VZ 与 CRM"
-  },
-  {
-   "source": 1108524,
-   "target": 1283699,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 CRM 与 TMUS"
-  },
-  {
-   "source": 1108524,
-   "target": 1571996,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 CRM 与 DELL"
-  },
-  {
-   "source": 1108524,
-   "target": 1645590,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 CRM 与 HPE"
-  },
-  {
-   "source": 1108524,
-   "target": 1375365,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 CRM 与 SMCI"
-  },
-  {
-   "source": 47217,
-   "target": 1108524,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 HPQ 与 CRM"
-  },
-  {
-   "source": 1373715,
-   "target": 1640147,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 NOW 与 SNOW"
-  },
-  {
-   "source": 1373715,
-   "target": 1562088,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 NOW 与 DUOL"
-  },
-  {
-   "source": 1373715,
-   "target": 1535527,
-   "type": "coholding",
-   "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 NOW 与 CRWD"
-  },
-  {
-   "source": 1327567,
-   "target": 1373715,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 PANW 与 NOW"
-  },
-  {
-   "source": 1373715,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 NOW 与 ZS"
-  },
-  {
-   "source": 1373715,
-   "target": 1660134,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 NOW 与 OKTA"
-  },
-  {
-   "source": 1373715,
-   "target": 1477333,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 NOW 与 NET"
-  },
-  {
-   "source": 1373715,
-   "target": 1561550,
-   "type": "coholding",
-   "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 NOW 与 DDOG"
-  },
-  {
-   "source": 1373715,
-   "target": 1707753,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 NOW 与 ESTC"
-  },
-  {
-   "source": 1373715,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 NOW 与 APP"
-  },
-  {
-   "source": 1373715,
-   "target": 1594805,
-   "type": "coholding",
-   "weight": 9,
-   "desc": "共同持仓：9 家机构在 13F 中同时持有 NOW 与 SHOP"
-  },
-  {
-   "source": 1373715,
+   "source": 1549802,
    "target": 1577552,
    "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 NOW 与 BABA"
-  },
-  {
-   "source": 1373715,
-   "target": 1737806,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 NOW 与 PDD"
-  },
-  {
-   "source": 1065280,
-   "target": 1373715,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 NFLX 与 NOW"
-  },
-  {
-   "source": 1373715,
-   "target": 1639920,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 NOW 与 SPOT"
-  },
-  {
-   "source": 1315098,
-   "target": 1373715,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 RBLX 与 NOW"
-  },
-  {
-   "source": 1373715,
-   "target": 1543151,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 NOW 与 UBER"
-  },
-  {
-   "source": 1261333,
-   "target": 1373715,
-   "type": "coholding",
    "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 DOCU 与 NOW"
-  },
-  {
-   "source": 946581,
-   "target": 1373715,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TTWO 与 NOW"
-  },
-  {
-   "source": 1373715,
-   "target": 1713445,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 NOW 与 RDDT"
-  },
-  {
-   "source": 1373715,
-   "target": 1596532,
-   "type": "coholding",
-   "weight": 10,
-   "desc": "共同持仓：10 家机构在 13F 中同时持有 NOW 与 ANET"
-  },
-  {
-   "source": 1283699,
-   "target": 1373715,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 TMUS 与 NOW"
-  },
-  {
-   "source": 1091667,
-   "target": 1373715,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 CHTR 与 NOW"
-  },
-  {
-   "source": 1373715,
-   "target": 1571996,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 NOW 与 DELL"
-  },
-  {
-   "source": 1373715,
-   "target": 1645590,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 NOW 与 HPE"
-  },
-  {
-   "source": 1373715,
-   "target": 1840856,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 NOW 与 SOUN"
-  },
-  {
-   "source": 1321655,
-   "target": 1640147,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 PLTR 与 SNOW"
-  },
-  {
-   "source": 1321655,
-   "target": 1535527,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 PLTR 与 CRWD"
-  },
-  {
-   "source": 1321655,
-   "target": 1327567,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 PLTR 与 PANW"
-  },
-  {
-   "source": 1321655,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 PLTR 与 ZS"
-  },
-  {
-   "source": 1321655,
-   "target": 1660134,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 PLTR 与 OKTA"
-  },
-  {
-   "source": 1321655,
-   "target": 1477333,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 PLTR 与 NET"
-  },
-  {
-   "source": 1321655,
-   "target": 1561550,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 PLTR 与 DDOG"
-  },
-  {
-   "source": 1321655,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 PLTR 与 APP"
-  },
-  {
-   "source": 1321655,
-   "target": 1594805,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 PLTR 与 SHOP"
-  },
-  {
-   "source": 1321655,
-   "target": 1577552,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 PLTR 与 BABA"
-  },
-  {
-   "source": 1321655,
-   "target": 1737806,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 PLTR 与 PDD"
-  },
-  {
-   "source": 1065280,
-   "target": 1321655,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 NFLX 与 PLTR"
-  },
-  {
-   "source": 1321655,
-   "target": 1639920,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 PLTR 与 SPOT"
-  },
-  {
-   "source": 1315098,
-   "target": 1321655,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 RBLX 与 PLTR"
-  },
-  {
-   "source": 1321655,
-   "target": 1543151,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 PLTR 与 UBER"
-  },
-  {
-   "source": 946581,
-   "target": 1321655,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TTWO 与 PLTR"
-  },
-  {
-   "source": 1321655,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 PLTR 与 U"
-  },
-  {
-   "source": 1321655,
-   "target": 1713445,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 PLTR 与 RDDT"
-  },
-  {
-   "source": 1321655,
-   "target": 1596532,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 PLTR 与 ANET"
-  },
-  {
-   "source": 1283699,
-   "target": 1321655,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 TMUS 与 PLTR"
-  },
-  {
-   "source": 1321655,
-   "target": 1571996,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 PLTR 与 DELL"
-  },
-  {
-   "source": 1321655,
-   "target": 1375365,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 PLTR 与 SMCI"
-  },
-  {
-   "source": 1562088,
-   "target": 1640147,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 DUOL 与 SNOW"
-  },
-  {
-   "source": 1535527,
-   "target": 1640147,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 CRWD 与 SNOW"
-  },
-  {
-   "source": 1327567,
-   "target": 1640147,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 PANW 与 SNOW"
-  },
-  {
-   "source": 1640147,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 SNOW 与 ZS"
-  },
-  {
-   "source": 1640147,
-   "target": 1660134,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 SNOW 与 OKTA"
-  },
-  {
-   "source": 1561550,
-   "target": 1640147,
-   "type": "coholding",
-   "weight": 9,
-   "desc": "共同持仓：9 家机构在 13F 中同时持有 DDOG 与 SNOW"
-  },
-  {
-   "source": 1640147,
-   "target": 1707753,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 SNOW 与 ESTC"
-  },
-  {
-   "source": 1544522,
-   "target": 1640147,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 FRSH 与 SNOW"
-  },
-  {
-   "source": 1640147,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 SNOW 与 APP"
-  },
-  {
-   "source": 1594805,
-   "target": 1640147,
-   "type": "coholding",
-   "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 SHOP 与 SNOW"
-  },
-  {
-   "source": 1577552,
-   "target": 1640147,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 BABA 与 SNOW"
-  },
-  {
-   "source": 1640147,
-   "target": 1737806,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 SNOW 与 PDD"
-  },
-  {
-   "source": 1065280,
-   "target": 1640147,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 NFLX 与 SNOW"
-  },
-  {
-   "source": 1639920,
-   "target": 1640147,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 SPOT 与 SNOW"
-  },
-  {
-   "source": 1315098,
-   "target": 1640147,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 RBLX 与 SNOW"
-  },
-  {
-   "source": 1543151,
-   "target": 1640147,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 UBER 与 SNOW"
-  },
-  {
-   "source": 1261333,
-   "target": 1640147,
-   "type": "coholding",
-   "weight": 10,
-   "desc": "共同持仓：10 家机构在 13F 中同时持有 DOCU 与 SNOW"
-  },
-  {
-   "source": 1640147,
-   "target": 1671933,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 SNOW 与 TTD"
-  },
-  {
-   "source": 946581,
-   "target": 1640147,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TTWO 与 SNOW"
-  },
-  {
-   "source": 1640147,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 SNOW 与 U"
-  },
-  {
-   "source": 1640147,
-   "target": 1734722,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 SNOW 与 PATH"
-  },
-  {
-   "source": 1640147,
-   "target": 1713445,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 SNOW 与 RDDT"
-  },
-  {
-   "source": 1596532,
-   "target": 1640147,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 ANET 与 SNOW"
-  },
-  {
-   "source": 1283699,
-   "target": 1640147,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 TMUS 与 SNOW"
-  },
-  {
-   "source": 1571996,
-   "target": 1640147,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 DELL 与 SNOW"
-  },
-  {
-   "source": 1375365,
-   "target": 1640147,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 SMCI 与 SNOW"
-  },
-  {
-   "source": 1562088,
-   "target": 1660134,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 DUOL 与 OKTA"
-  },
-  {
-   "source": 1477333,
-   "target": 1562088,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 NET 与 DUOL"
-  },
-  {
-   "source": 1561550,
-   "target": 1562088,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 DDOG 与 DUOL"
-  },
-  {
-   "source": 1562088,
-   "target": 1707753,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 DUOL 与 ESTC"
-  },
-  {
-   "source": 1544522,
-   "target": 1562088,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 FRSH 与 DUOL"
-  },
-  {
-   "source": 1562088,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 DUOL 与 APP"
-  },
-  {
-   "source": 1562088,
-   "target": 1594805,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 DUOL 与 SHOP"
-  },
-  {
-   "source": 1315098,
-   "target": 1562088,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 RBLX 与 DUOL"
-  },
-  {
-   "source": 1261333,
-   "target": 1562088,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 DOCU 与 DUOL"
-  },
-  {
-   "source": 1562088,
-   "target": 1671933,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 DUOL 与 TTD"
-  },
-  {
-   "source": 946581,
-   "target": 1562088,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 TTWO 与 DUOL"
-  },
-  {
-   "source": 1562088,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 DUOL 与 U"
-  },
-  {
-   "source": 1562088,
-   "target": 1845338,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 DUOL 与 MNDY"
-  },
-  {
-   "source": 1562088,
-   "target": 1734722,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 DUOL 与 PATH"
-  },
-  {
-   "source": 1562088,
-   "target": 1596532,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 DUOL 与 ANET"
-  },
-  {
-   "source": 1283699,
-   "target": 1562088,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 TMUS 与 DUOL"
-  },
-  {
-   "source": 1375365,
-   "target": 1562088,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 SMCI 与 DUOL"
-  },
-  {
-   "source": 1562088,
-   "target": 1840856,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 DUOL 与 SOUN"
-  },
-  {
-   "source": 1477333,
-   "target": 1535527,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 NET 与 CRWD"
-  },
-  {
-   "source": 1535527,
-   "target": 1544522,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 CRWD 与 FRSH"
-  },
-  {
-   "source": 1535527,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 CRWD 与 APP"
-  },
-  {
-   "source": 1535527,
-   "target": 1594805,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 CRWD 与 SHOP"
-  },
-  {
-   "source": 1535527,
-   "target": 1577552,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 CRWD 与 BABA"
-  },
-  {
-   "source": 1535527,
-   "target": 1737806,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 CRWD 与 PDD"
-  },
-  {
-   "source": 1065280,
-   "target": 1535527,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 NFLX 与 CRWD"
-  },
-  {
-   "source": 1535527,
-   "target": 1639920,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 CRWD 与 SPOT"
-  },
-  {
-   "source": 1315098,
-   "target": 1535527,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 RBLX 与 CRWD"
-  },
-  {
-   "source": 1535527,
-   "target": 1543151,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 CRWD 与 UBER"
-  },
-  {
-   "source": 1261333,
-   "target": 1535527,
-   "type": "coholding",
-   "weight": 9,
-   "desc": "共同持仓：9 家机构在 13F 中同时持有 DOCU 与 CRWD"
-  },
-  {
-   "source": 1535527,
-   "target": 1671933,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 CRWD 与 TTD"
-  },
-  {
-   "source": 1535527,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 CRWD 与 U"
-  },
-  {
-   "source": 1535527,
-   "target": 1734722,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 CRWD 与 PATH"
-  },
-  {
-   "source": 1535527,
-   "target": 1596532,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 CRWD 与 ANET"
-  },
-  {
-   "source": 1535527,
-   "target": 1571996,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 CRWD 与 DELL"
-  },
-  {
-   "source": 1375365,
-   "target": 1535527,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 SMCI 与 CRWD"
-  },
-  {
-   "source": 1327567,
-   "target": 1477333,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 PANW 与 NET"
-  },
-  {
-   "source": 1327567,
-   "target": 1707753,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 PANW 与 ESTC"
-  },
-  {
-   "source": 1327567,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 PANW 与 APP"
-  },
-  {
-   "source": 1327567,
-   "target": 1594805,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 PANW 与 SHOP"
-  },
-  {
-   "source": 1327567,
-   "target": 1577552,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 PANW 与 BABA"
-  },
-  {
-   "source": 1327567,
-   "target": 1737806,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 PANW 与 PDD"
-  },
-  {
-   "source": 1065280,
-   "target": 1327567,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 NFLX 与 PANW"
-  },
-  {
-   "source": 1327567,
-   "target": 1639920,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 PANW 与 SPOT"
-  },
-  {
-   "source": 1315098,
-   "target": 1327567,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 RBLX 与 PANW"
-  },
-  {
-   "source": 1327567,
-   "target": 1543151,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 PANW 与 UBER"
-  },
-  {
-   "source": 1261333,
-   "target": 1327567,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 DOCU 与 PANW"
-  },
-  {
-   "source": 1327567,
-   "target": 1671933,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 PANW 与 TTD"
-  },
-  {
-   "source": 946581,
-   "target": 1327567,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TTWO 与 PANW"
-  },
-  {
-   "source": 1327567,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 PANW 与 U"
-  },
-  {
-   "source": 1327567,
-   "target": 1734722,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 PANW 与 PATH"
-  },
-  {
-   "source": 1327567,
-   "target": 1596532,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 PANW 与 ANET"
-  },
-  {
-   "source": 858877,
-   "target": 1327567,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 CSCO 与 PANW"
-  },
-  {
-   "source": 732712,
-   "target": 1327567,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 VZ 与 PANW"
-  },
-  {
-   "source": 1091667,
-   "target": 1327567,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 CHTR 与 PANW"
-  },
-  {
-   "source": 1327567,
-   "target": 1571996,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 PANW 与 DELL"
-  },
-  {
-   "source": 1477333,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 NET 与 ZS"
-  },
-  {
-   "source": 1707753,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 ESTC 与 ZS"
-  },
-  {
-   "source": 1713683,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 ZS 与 APP"
-  },
-  {
-   "source": 1594805,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 SHOP 与 ZS"
-  },
-  {
-   "source": 1577552,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 BABA 与 ZS"
-  },
-  {
-   "source": 1713683,
-   "target": 1737806,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 ZS 与 PDD"
-  },
-  {
-   "source": 1065280,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 NFLX 与 ZS"
-  },
-  {
-   "source": 1315098,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 RBLX 与 ZS"
-  },
-  {
-   "source": 1543151,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 UBER 与 ZS"
-  },
-  {
-   "source": 1261333,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 9,
-   "desc": "共同持仓：9 家机构在 13F 中同时持有 DOCU 与 ZS"
-  },
-  {
-   "source": 1671933,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 TTD 与 ZS"
-  },
-  {
-   "source": 946581,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TTWO 与 ZS"
-  },
-  {
-   "source": 1713683,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 ZS 与 U"
-  },
-  {
-   "source": 1713683,
-   "target": 1734722,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 ZS 与 PATH"
-  },
-  {
-   "source": 1713445,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 RDDT 与 ZS"
-  },
-  {
-   "source": 1596532,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 10,
-   "desc": "共同持仓：10 家机构在 13F 中同时持有 ANET 与 ZS"
-  },
-  {
-   "source": 1283699,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 TMUS 与 ZS"
-  },
-  {
-   "source": 1571996,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 DELL 与 ZS"
-  },
-  {
-   "source": 1645590,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 HPE 与 ZS"
-  },
-  {
-   "source": 1375365,
-   "target": 1713683,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 SMCI 与 ZS"
-  },
-  {
-   "source": 1713683,
-   "target": 1840856,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 ZS 与 SOUN"
-  },
-  {
-   "source": 1477333,
-   "target": 1660134,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 NET 与 OKTA"
-  },
-  {
-   "source": 1660134,
-   "target": 1707753,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 OKTA 与 ESTC"
-  },
-  {
-   "source": 1544522,
-   "target": 1660134,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 FRSH 与 OKTA"
-  },
-  {
-   "source": 1660134,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 OKTA 与 APP"
-  },
-  {
-   "source": 1594805,
-   "target": 1660134,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 SHOP 与 OKTA"
-  },
-  {
-   "source": 1577552,
-   "target": 1660134,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 BABA 与 OKTA"
-  },
-  {
-   "source": 1660134,
-   "target": 1737806,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 OKTA 与 PDD"
-  },
-  {
-   "source": 1065280,
-   "target": 1660134,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 NFLX 与 OKTA"
-  },
-  {
-   "source": 1639920,
-   "target": 1660134,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 SPOT 与 OKTA"
-  },
-  {
-   "source": 1315098,
-   "target": 1660134,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 RBLX 与 OKTA"
-  },
-  {
-   "source": 1543151,
-   "target": 1660134,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 UBER 与 OKTA"
-  },
-  {
-   "source": 1261333,
-   "target": 1660134,
-   "type": "coholding",
-   "weight": 11,
-   "desc": "共同持仓：11 家机构在 13F 中同时持有 DOCU 与 OKTA"
-  },
-  {
-   "source": 1660134,
-   "target": 1671933,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 OKTA 与 TTD"
-  },
-  {
-   "source": 946581,
-   "target": 1660134,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 TTWO 与 OKTA"
-  },
-  {
-   "source": 1660134,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 OKTA 与 U"
-  },
-  {
-   "source": 1660134,
-   "target": 1734722,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 OKTA 与 PATH"
-  },
-  {
-   "source": 1660134,
-   "target": 1713445,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 OKTA 与 RDDT"
-  },
-  {
-   "source": 1596532,
-   "target": 1660134,
-   "type": "coholding",
-   "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 ANET 与 OKTA"
-  },
-  {
-   "source": 1283699,
-   "target": 1660134,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 TMUS 与 OKTA"
-  },
-  {
-   "source": 1091667,
-   "target": 1660134,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 CHTR 与 OKTA"
-  },
-  {
-   "source": 1571996,
-   "target": 1660134,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 DELL 与 OKTA"
-  },
-  {
-   "source": 1375365,
-   "target": 1660134,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 SMCI 与 OKTA"
-  },
-  {
-   "source": 1660134,
-   "target": 1840856,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 OKTA 与 SOUN"
-  },
-  {
-   "source": 1477333,
-   "target": 1561550,
-   "type": "coholding",
-   "weight": 10,
-   "desc": "共同持仓：10 家机构在 13F 中同时持有 NET 与 DDOG"
-  },
-  {
-   "source": 1477333,
-   "target": 1707753,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 NET 与 ESTC"
-  },
-  {
-   "source": 1477333,
-   "target": 1544522,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 NET 与 FRSH"
-  },
-  {
-   "source": 1477333,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 NET 与 APP"
-  },
-  {
-   "source": 1477333,
-   "target": 1594805,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 NET 与 SHOP"
-  },
-  {
-   "source": 1477333,
-   "target": 1577552,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 NET 与 BABA"
-  },
-  {
-   "source": 1477333,
-   "target": 1737806,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 NET 与 PDD"
-  },
-  {
-   "source": 1065280,
-   "target": 1477333,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 NFLX 与 NET"
-  },
-  {
-   "source": 1477333,
-   "target": 1639920,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 NET 与 SPOT"
-  },
-  {
-   "source": 1315098,
-   "target": 1477333,
-   "type": "coholding",
-   "weight": 9,
-   "desc": "共同持仓：9 家机构在 13F 中同时持有 RBLX 与 NET"
-  },
-  {
-   "source": 1477333,
-   "target": 1543151,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 NET 与 UBER"
-  },
-  {
-   "source": 1261333,
-   "target": 1477333,
-   "type": "coholding",
-   "weight": 11,
-   "desc": "共同持仓：11 家机构在 13F 中同时持有 DOCU 与 NET"
-  },
-  {
-   "source": 1477333,
-   "target": 1671933,
-   "type": "coholding",
-   "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 NET 与 TTD"
-  },
-  {
-   "source": 946581,
-   "target": 1477333,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 TTWO 与 NET"
-  },
-  {
-   "source": 1477333,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 NET 与 U"
-  },
-  {
-   "source": 1477333,
-   "target": 1734722,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 NET 与 PATH"
-  },
-  {
-   "source": 1477333,
-   "target": 1713445,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 NET 与 RDDT"
-  },
-  {
-   "source": 1477333,
-   "target": 1596532,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 NET 与 ANET"
-  },
-  {
-   "source": 732712,
-   "target": 1477333,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 VZ 与 NET"
-  },
-  {
-   "source": 1283699,
-   "target": 1477333,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TMUS 与 NET"
-  },
-  {
-   "source": 1477333,
-   "target": 1571996,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 NET 与 DELL"
-  },
-  {
-   "source": 1477333,
-   "target": 1645590,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 NET 与 HPE"
-  },
-  {
-   "source": 1375365,
-   "target": 1477333,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 SMCI 与 NET"
-  },
-  {
-   "source": 1561550,
-   "target": 1707753,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 DDOG 与 ESTC"
-  },
-  {
-   "source": 1544522,
-   "target": 1561550,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 FRSH 与 DDOG"
-  },
-  {
-   "source": 1561550,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 DDOG 与 APP"
-  },
-  {
-   "source": 1561550,
-   "target": 1594805,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 DDOG 与 SHOP"
-  },
-  {
-   "source": 1561550,
-   "target": 1577552,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 DDOG 与 BABA"
-  },
-  {
-   "source": 1561550,
-   "target": 1737806,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 DDOG 与 PDD"
-  },
-  {
-   "source": 1065280,
-   "target": 1561550,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 NFLX 与 DDOG"
-  },
-  {
-   "source": 1561550,
-   "target": 1639920,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 DDOG 与 SPOT"
-  },
-  {
-   "source": 1315098,
-   "target": 1561550,
-   "type": "coholding",
-   "weight": 9,
-   "desc": "共同持仓：9 家机构在 13F 中同时持有 RBLX 与 DDOG"
-  },
-  {
-   "source": 1543151,
-   "target": 1561550,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 UBER 与 DDOG"
-  },
-  {
-   "source": 1261333,
-   "target": 1561550,
-   "type": "coholding",
-   "weight": 11,
-   "desc": "共同持仓：11 家机构在 13F 中同时持有 DOCU 与 DDOG"
-  },
-  {
-   "source": 1561550,
-   "target": 1671933,
-   "type": "coholding",
-   "weight": 9,
-   "desc": "共同持仓：9 家机构在 13F 中同时持有 DDOG 与 TTD"
-  },
-  {
-   "source": 946581,
-   "target": 1561550,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TTWO 与 DDOG"
-  },
-  {
-   "source": 1561550,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 DDOG 与 U"
-  },
-  {
-   "source": 1561550,
-   "target": 1734722,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 DDOG 与 PATH"
-  },
-  {
-   "source": 1561550,
-   "target": 1713445,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 DDOG 与 RDDT"
-  },
-  {
-   "source": 1561550,
-   "target": 1596532,
-   "type": "coholding",
-   "weight": 10,
-   "desc": "共同持仓：10 家机构在 13F 中同时持有 DDOG 与 ANET"
-  },
-  {
-   "source": 1283699,
-   "target": 1561550,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 TMUS 与 DDOG"
-  },
-  {
-   "source": 1091667,
-   "target": 1561550,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 CHTR 与 DDOG"
-  },
-  {
-   "source": 1561550,
-   "target": 1571996,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 DDOG 与 DELL"
-  },
-  {
-   "source": 1375365,
-   "target": 1561550,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 SMCI 与 DDOG"
-  },
-  {
-   "source": 1561550,
-   "target": 1840856,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 DDOG 与 SOUN"
-  },
-  {
-   "source": 1707753,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 ESTC 与 APP"
-  },
-  {
-   "source": 1594805,
-   "target": 1707753,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 SHOP 与 ESTC"
-  },
-  {
-   "source": 1577552,
-   "target": 1707753,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 BABA 与 ESTC"
-  },
-  {
-   "source": 1707753,
-   "target": 1737806,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 ESTC 与 PDD"
-  },
-  {
-   "source": 1315098,
-   "target": 1707753,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 RBLX 与 ESTC"
-  },
-  {
-   "source": 1543151,
-   "target": 1707753,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 UBER 与 ESTC"
-  },
-  {
-   "source": 1671933,
-   "target": 1707753,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TTD 与 ESTC"
-  },
-  {
-   "source": 946581,
-   "target": 1707753,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 TTWO 与 ESTC"
-  },
-  {
-   "source": 1707753,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 ESTC 与 U"
-  },
-  {
-   "source": 1707753,
-   "target": 1734722,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 ESTC 与 PATH"
-  },
-  {
-   "source": 1707753,
-   "target": 1713445,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 ESTC 与 RDDT"
-  },
-  {
-   "source": 1596532,
-   "target": 1707753,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 ANET 与 ESTC"
-  },
-  {
-   "source": 1375365,
-   "target": 1707753,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 SMCI 与 ESTC"
-  },
-  {
-   "source": 1707753,
-   "target": 1840856,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 ESTC 与 SOUN"
-  },
-  {
-   "source": 1544522,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 FRSH 与 APP"
-  },
-  {
-   "source": 1544522,
-   "target": 1594805,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 FRSH 与 SHOP"
-  },
-  {
-   "source": 1544522,
-   "target": 1639920,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 FRSH 与 SPOT"
-  },
-  {
-   "source": 1315098,
-   "target": 1544522,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 RBLX 与 FRSH"
-  },
-  {
-   "source": 1543151,
-   "target": 1544522,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 UBER 与 FRSH"
-  },
-  {
-   "source": 1544522,
-   "target": 1671933,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 FRSH 与 TTD"
-  },
-  {
-   "source": 946581,
-   "target": 1544522,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 TTWO 与 FRSH"
-  },
-  {
-   "source": 1544522,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 FRSH 与 U"
-  },
-  {
-   "source": 1544522,
-   "target": 1734722,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 FRSH 与 PATH"
-  },
-  {
-   "source": 1544522,
-   "target": 1713445,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 FRSH 与 RDDT"
-  },
-  {
-   "source": 1544522,
-   "target": 1596532,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 FRSH 与 ANET"
-  },
-  {
-   "source": 1283699,
-   "target": 1544522,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 TMUS 与 FRSH"
-  },
-  {
-   "source": 1544522,
-   "target": 1840856,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 FRSH 与 SOUN"
-  },
-  {
-   "source": 1594805,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 SHOP 与 APP"
-  },
-  {
-   "source": 1577552,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 BABA 与 APP"
-  },
-  {
-   "source": 1737806,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 PDD 与 APP"
-  },
-  {
-   "source": 1639920,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 SPOT 与 APP"
-  },
-  {
-   "source": 1315098,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 9,
-   "desc": "共同持仓：9 家机构在 13F 中同时持有 RBLX 与 APP"
-  },
-  {
-   "source": 1543151,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 UBER 与 APP"
-  },
-  {
-   "source": 1261333,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 DOCU 与 APP"
-  },
-  {
-   "source": 1671933,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 TTD 与 APP"
-  },
-  {
-   "source": 946581,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TTWO 与 APP"
-  },
-  {
-   "source": 1751008,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 APP 与 U"
-  },
-  {
-   "source": 1734722,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 PATH 与 APP"
-  },
-  {
-   "source": 1713445,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 10,
-   "desc": "共同持仓：10 家机构在 13F 中同时持有 RDDT 与 APP"
-  },
-  {
-   "source": 1596532,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 ANET 与 APP"
-  },
-  {
-   "source": 1283699,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 TMUS 与 APP"
-  },
-  {
-   "source": 1091667,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 CHTR 与 APP"
-  },
-  {
-   "source": 1571996,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 DELL 与 APP"
-  },
-  {
-   "source": 1645590,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 HPE 与 APP"
-  },
-  {
-   "source": 1375365,
-   "target": 1751008,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 SMCI 与 APP"
-  },
-  {
-   "source": 1577552,
-   "target": 1594805,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 BABA 与 SHOP"
-  },
-  {
-   "source": 1594805,
-   "target": 1737806,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 SHOP 与 PDD"
-  },
-  {
-   "source": 1065280,
-   "target": 1594805,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 NFLX 与 SHOP"
-  },
-  {
-   "source": 1594805,
-   "target": 1639920,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 SHOP 与 SPOT"
-  },
-  {
-   "source": 1315098,
-   "target": 1594805,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 RBLX 与 SHOP"
-  },
-  {
-   "source": 1543151,
-   "target": 1594805,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 UBER 与 SHOP"
-  },
-  {
-   "source": 1261333,
-   "target": 1594805,
-   "type": "coholding",
-   "weight": 12,
-   "desc": "共同持仓：12 家机构在 13F 中同时持有 DOCU 与 SHOP"
-  },
-  {
-   "source": 1594805,
-   "target": 1671933,
-   "type": "coholding",
-   "weight": 9,
-   "desc": "共同持仓：9 家机构在 13F 中同时持有 SHOP 与 TTD"
-  },
-  {
-   "source": 946581,
-   "target": 1594805,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 TTWO 与 SHOP"
-  },
-  {
-   "source": 1594805,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 SHOP 与 U"
-  },
-  {
-   "source": 1594805,
-   "target": 1734722,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 SHOP 与 PATH"
-  },
-  {
-   "source": 1594805,
-   "target": 1713445,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 SHOP 与 RDDT"
-  },
-  {
-   "source": 1594805,
-   "target": 1596532,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 SHOP 与 ANET"
-  },
-  {
-   "source": 1571996,
-   "target": 1594805,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 DELL 与 SHOP"
-  },
-  {
-   "source": 1594805,
-   "target": 1645590,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 SHOP 与 HPE"
-  },
-  {
-   "source": 1375365,
-   "target": 1594805,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 SMCI 与 SHOP"
+   "desc": "共同持仓：8 家机构在 13F 中同时持有 JD 与 BABA"
   },
   {
    "source": 1065280,
@@ -8209,809 +6965,74 @@ window.__FDC_DATA__["graph"] = {
    "desc": "共同持仓：8 家机构在 13F 中同时持有 NFLX 与 BABA"
   },
   {
-   "source": 1577552,
-   "target": 1639920,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 BABA 与 SPOT"
-  },
-  {
-   "source": 1315098,
-   "target": 1577552,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 RBLX 与 BABA"
-  },
-  {
-   "source": 1261333,
-   "target": 1577552,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 DOCU 与 BABA"
-  },
-  {
-   "source": 1577552,
-   "target": 1671933,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 BABA 与 TTD"
-  },
-  {
-   "source": 946581,
-   "target": 1577552,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 TTWO 与 BABA"
-  },
-  {
-   "source": 1577552,
-   "target": 1734722,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 BABA 与 PATH"
-  },
-  {
-   "source": 1577552,
-   "target": 1713445,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 BABA 与 RDDT"
-  },
-  {
-   "source": 1577552,
-   "target": 1596532,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 BABA 与 ANET"
-  },
-  {
-   "source": 732712,
-   "target": 1577552,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 VZ 与 BABA"
-  },
-  {
-   "source": 1283699,
-   "target": 1577552,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 TMUS 与 BABA"
-  },
-  {
-   "source": 1571996,
-   "target": 1577552,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 DELL 与 BABA"
-  },
-  {
-   "source": 1375365,
-   "target": 1577552,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 SMCI 与 BABA"
-  },
-  {
-   "source": 1065280,
-   "target": 1737806,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 NFLX 与 PDD"
-  },
-  {
-   "source": 1315098,
-   "target": 1737806,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 RBLX 与 PDD"
-  },
-  {
-   "source": 1261333,
-   "target": 1737806,
+   "source": 1513845,
+   "target": 1769628,
    "type": "coholding",
    "weight": 10,
-   "desc": "共同持仓：10 家机构在 13F 中同时持有 DOCU 与 PDD"
+   "desc": "共同持仓：10 家机构在 13F 中同时持有 NBIS 与 CRWV"
   },
   {
-   "source": 1671933,
-   "target": 1737806,
+   "source": 1083301,
+   "target": 1769628,
    "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 TTD 与 PDD"
-  },
-  {
-   "source": 946581,
-   "target": 1737806,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TTWO 与 PDD"
-  },
-  {
-   "source": 1737806,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 PDD 与 U"
-  },
-  {
-   "source": 1734722,
-   "target": 1737806,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 PATH 与 PDD"
+   "weight": 10,
+   "desc": "共同持仓：10 家机构在 13F 中同时持有 WULF 与 CRWV"
   },
   {
    "source": 1713445,
-   "target": 1737806,
+   "target": 1769628,
    "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 RDDT 与 PDD"
+   "weight": 10,
+   "desc": "共同持仓：10 家机构在 13F 中同时持有 RDDT 与 CRWV"
   },
   {
-   "source": 1596532,
-   "target": 1737806,
+   "source": 732717,
+   "target": 1571996,
    "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 ANET 与 PDD"
-  },
-  {
-   "source": 1571996,
-   "target": 1737806,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 DELL 与 PDD"
-  },
-  {
-   "source": 1375365,
-   "target": 1737806,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 SMCI 与 PDD"
-  },
-  {
-   "source": 1065280,
-   "target": 1639920,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 NFLX 与 SPOT"
-  },
-  {
-   "source": 1065280,
-   "target": 1543151,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 NFLX 与 UBER"
-  },
-  {
-   "source": 1065280,
-   "target": 1261333,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 NFLX 与 DOCU"
-  },
-  {
-   "source": 1065280,
-   "target": 1671933,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 NFLX 与 TTD"
-  },
-  {
-   "source": 1065280,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 NFLX 与 U"
-  },
-  {
-   "source": 1065280,
-   "target": 1713445,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 NFLX 与 RDDT"
-  },
-  {
-   "source": 1065280,
-   "target": 1596532,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 NFLX 与 ANET"
-  },
-  {
-   "source": 858877,
-   "target": 1065280,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 CSCO 与 NFLX"
+   "weight": 9,
+   "desc": "共同持仓：9 家机构在 13F 中同时持有 T 与 DELL"
   },
   {
    "source": 732712,
-   "target": 1065280,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 VZ 与 NFLX"
-  },
-  {
-   "source": 1065280,
-   "target": 1283699,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 NFLX 与 TMUS"
-  },
-  {
-   "source": 1065280,
    "target": 1571996,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 NFLX 与 DELL"
-  },
-  {
-   "source": 1065280,
-   "target": 1375365,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 NFLX 与 SMCI"
-  },
-  {
-   "source": 1315098,
-   "target": 1639920,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 RBLX 与 SPOT"
-  },
-  {
-   "source": 1543151,
-   "target": 1639920,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 UBER 与 SPOT"
-  },
-  {
-   "source": 1261333,
-   "target": 1639920,
-   "type": "coholding",
-   "weight": 9,
-   "desc": "共同持仓：9 家机构在 13F 中同时持有 DOCU 与 SPOT"
-  },
-  {
-   "source": 1639920,
-   "target": 1671933,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 SPOT 与 TTD"
-  },
-  {
-   "source": 946581,
-   "target": 1639920,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 TTWO 与 SPOT"
-  },
-  {
-   "source": 1639920,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 SPOT 与 U"
-  },
-  {
-   "source": 1639920,
-   "target": 1734722,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 SPOT 与 PATH"
-  },
-  {
-   "source": 1596532,
-   "target": 1639920,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 ANET 与 SPOT"
-  },
-  {
-   "source": 1283699,
-   "target": 1639920,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TMUS 与 SPOT"
-  },
-  {
-   "source": 1571996,
-   "target": 1639920,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 DELL 与 SPOT"
-  },
-  {
-   "source": 1639920,
-   "target": 1645590,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 SPOT 与 HPE"
-  },
-  {
-   "source": 1639920,
-   "target": 1840856,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 SPOT 与 SOUN"
-  },
-  {
-   "source": 1315098,
-   "target": 1543151,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 RBLX 与 UBER"
-  },
-  {
-   "source": 1261333,
-   "target": 1315098,
-   "type": "coholding",
-   "weight": 9,
-   "desc": "共同持仓：9 家机构在 13F 中同时持有 DOCU 与 RBLX"
-  },
-  {
-   "source": 1315098,
-   "target": 1671933,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 RBLX 与 TTD"
-  },
-  {
-   "source": 1315098,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 10,
-   "desc": "共同持仓：10 家机构在 13F 中同时持有 RBLX 与 U"
-  },
-  {
-   "source": 1315098,
-   "target": 1734722,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 RBLX 与 PATH"
-  },
-  {
-   "source": 1315098,
-   "target": 1713445,
-   "type": "coholding",
-   "weight": 9,
-   "desc": "共同持仓：9 家机构在 13F 中同时持有 RBLX 与 RDDT"
-  },
-  {
-   "source": 1315098,
-   "target": 1596532,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 RBLX 与 ANET"
-  },
-  {
-   "source": 1283699,
-   "target": 1315098,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 TMUS 与 RBLX"
-  },
-  {
-   "source": 1315098,
-   "target": 1571996,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 RBLX 与 DELL"
-  },
-  {
-   "source": 1315098,
-   "target": 1645590,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 RBLX 与 HPE"
-  },
-  {
-   "source": 1315098,
-   "target": 1375365,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 RBLX 与 SMCI"
-  },
-  {
-   "source": 1315098,
-   "target": 1840856,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 RBLX 与 SOUN"
-  },
-  {
-   "source": 1261333,
-   "target": 1543151,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 DOCU 与 UBER"
-  },
-  {
-   "source": 1543151,
-   "target": 1671933,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 UBER 与 TTD"
-  },
-  {
-   "source": 946581,
-   "target": 1543151,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 TTWO 与 UBER"
-  },
-  {
-   "source": 1543151,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 UBER 与 U"
-  },
-  {
-   "source": 1543151,
-   "target": 1734722,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 UBER 与 PATH"
-  },
-  {
-   "source": 1543151,
-   "target": 1596532,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 UBER 与 ANET"
-  },
-  {
-   "source": 1091667,
-   "target": 1543151,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 CHTR 与 UBER"
-  },
-  {
-   "source": 1543151,
-   "target": 1571996,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 UBER 与 DELL"
-  },
-  {
-   "source": 1375365,
-   "target": 1543151,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 SMCI 与 UBER"
-  },
-  {
-   "source": 1261333,
-   "target": 1671933,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 DOCU 与 TTD"
-  },
-  {
-   "source": 946581,
-   "target": 1261333,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 TTWO 与 DOCU"
-  },
-  {
-   "source": 1261333,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 DOCU 与 U"
-  },
-  {
-   "source": 1261333,
-   "target": 1734722,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 DOCU 与 PATH"
-  },
-  {
-   "source": 1261333,
-   "target": 1713445,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 DOCU 与 RDDT"
-  },
-  {
-   "source": 1261333,
-   "target": 1596532,
    "type": "coholding",
    "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 DOCU 与 ANET"
+   "desc": "共同持仓：8 家机构在 13F 中同时持有 VZ 与 DELL"
   },
   {
-   "source": 1261333,
-   "target": 1283699,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 DOCU 与 TMUS"
-  },
-  {
-   "source": 1261333,
+   "source": 796343,
    "target": 1571996,
    "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 DOCU 与 DELL"
+   "weight": 9,
+   "desc": "共同持仓：9 家机构在 13F 中同时持有 ADBE 与 DELL"
   },
   {
-   "source": 1261333,
-   "target": 1645590,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 DOCU 与 HPE"
-  },
-  {
-   "source": 1261333,
-   "target": 1375365,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 DOCU 与 SMCI"
-  },
-  {
-   "source": 1261333,
-   "target": 1840856,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 DOCU 与 SOUN"
-  },
-  {
-   "source": 946581,
-   "target": 1671933,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 TTWO 与 TTD"
-  },
-  {
-   "source": 1671933,
-   "target": 1713445,
-   "type": "coholding",
-   "weight": 7,
-   "desc": "共同持仓：7 家机构在 13F 中同时持有 TTD 与 RDDT"
-  },
-  {
-   "source": 1596532,
-   "target": 1671933,
+   "source": 1144879,
+   "target": 1596532,
    "type": "coholding",
    "weight": 10,
-   "desc": "共同持仓：10 家机构在 13F 中同时持有 ANET 与 TTD"
+   "desc": "共同持仓：10 家机构在 13F 中同时持有 APLD 与 ANET"
   },
   {
-   "source": 1283699,
-   "target": 1671933,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 TMUS 与 TTD"
-  },
-  {
-   "source": 1571996,
-   "target": 1671933,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 DELL 与 TTD"
-  },
-  {
-   "source": 1375365,
-   "target": 1671933,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 SMCI 与 TTD"
-  },
-  {
-   "source": 1671933,
-   "target": 1840856,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TTD 与 SOUN"
-  },
-  {
-   "source": 946581,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TTWO 与 U"
-  },
-  {
-   "source": 946581,
-   "target": 1713445,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TTWO 与 RDDT"
-  },
-  {
-   "source": 946581,
+   "source": 1561550,
    "target": 1596532,
    "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 TTWO 与 ANET"
+   "weight": 10,
+   "desc": "共同持仓：10 家机构在 13F 中同时持有 DDOG 与 ANET"
   },
   {
-   "source": 858877,
-   "target": 946581,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 CSCO 与 TTWO"
-  },
-  {
-   "source": 946581,
-   "target": 1283699,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 TTWO 与 TMUS"
-  },
-  {
-   "source": 946581,
-   "target": 1091667,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TTWO 与 CHTR"
-  },
-  {
-   "source": 946581,
-   "target": 1571996,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 TTWO 与 DELL"
-  },
-  {
-   "source": 946581,
-   "target": 1645590,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 TTWO 与 HPE"
-  },
-  {
-   "source": 47217,
-   "target": 946581,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 HPQ 与 TTWO"
-  },
-  {
-   "source": 946581,
-   "target": 1840856,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 TTWO 与 SOUN"
-  },
-  {
-   "source": 1713445,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 RDDT 与 U"
-  },
-  {
-   "source": 1596532,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 ANET 与 U"
-  },
-  {
-   "source": 1283699,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 TMUS 与 U"
-  },
-  {
-   "source": 1375365,
-   "target": 1810806,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 SMCI 与 U"
-  },
-  {
-   "source": 1713445,
-   "target": 1845338,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 RDDT 与 MNDY"
-  },
-  {
-   "source": 1713445,
-   "target": 1734722,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 RDDT 与 PATH"
-  },
-  {
-   "source": 1596532,
-   "target": 1734722,
-   "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 ANET 与 PATH"
-  },
-  {
-   "source": 1571996,
-   "target": 1734722,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 DELL 与 PATH"
-  },
-  {
-   "source": 1596532,
-   "target": 1713445,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 ANET 与 RDDT"
-  },
-  {
-   "source": 1283699,
-   "target": 1713445,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 TMUS 与 RDDT"
-  },
-  {
-   "source": 1571996,
-   "target": 1713445,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 DELL 与 RDDT"
-  },
-  {
-   "source": 1645590,
-   "target": 1713445,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 HPE 与 RDDT"
-  },
-  {
-   "source": 1375365,
-   "target": 1713445,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 SMCI 与 RDDT"
-  },
-  {
-   "source": 1713445,
-   "target": 1840856,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 RDDT 与 SOUN"
-  },
-  {
-   "source": 1283699,
+   "source": 1404655,
    "target": 1596532,
    "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 TMUS 与 ANET"
+   "weight": 10,
+   "desc": "共同持仓：10 家机构在 13F 中同时持有 HUBS 与 ANET"
   },
   {
-   "source": 1571996,
+   "source": 1373715,
    "target": 1596532,
    "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 DELL 与 ANET"
-  },
-  {
-   "source": 1596532,
-   "target": 1645590,
-   "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 ANET 与 HPE"
-  },
-  {
-   "source": 1375365,
-   "target": 1596532,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 SMCI 与 ANET"
-  },
-  {
-   "source": 1596532,
-   "target": 1840856,
-   "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 ANET 与 SOUN"
+   "weight": 10,
+   "desc": "共同持仓：10 家机构在 13F 中同时持有 NOW 与 ANET"
   },
   {
    "source": 732717,
@@ -9028,152 +7049,306 @@ window.__FDC_DATA__["graph"] = {
    "desc": "共同持仓：12 家机构在 13F 中同时持有 VZ 与 CSCO"
   },
   {
-   "source": 858877,
-   "target": 1091667,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 CSCO 与 CHTR"
-  },
-  {
-   "source": 858877,
-   "target": 1571996,
-   "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 CSCO 与 DELL"
-  },
-  {
-   "source": 732717,
-   "target": 1571996,
+   "source": 1110646,
+   "target": 1329099,
    "type": "coholding",
    "weight": 9,
-   "desc": "共同持仓：9 家机构在 13F 中同时持有 T 与 DELL"
+   "desc": "共同持仓：9 家机构在 13F 中同时持有 NTES 与 BIDU"
   },
   {
-   "source": 732717,
-   "target": 1645590,
+   "source": 1083301,
+   "target": 1878848,
    "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 T 与 HPE"
+   "weight": 16,
+   "desc": "共同持仓：16 家机构在 13F 中同时持有 WULF 与 IREN"
   },
   {
-   "source": 47217,
-   "target": 732717,
+   "source": 1083301,
+   "target": 1964789,
    "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 HPQ 与 T"
+   "weight": 17,
+   "desc": "共同持仓：17 家机构在 13F 中同时持有 WULF 与 HUT"
   },
   {
-   "source": 732717,
-   "target": 1133421,
+   "source": 1508475,
+   "target": 1526125,
    "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 T 与 NOC"
+   "weight": 10,
+   "desc": "共同持仓：10 家机构在 13F 中同时持有 VNET 与 GDS"
   },
   {
-   "source": 732712,
-   "target": 1571996,
+   "source": 1086222,
+   "target": 1370637,
+   "type": "coholding",
+   "weight": 10,
+   "desc": "共同持仓：10 家机构在 13F 中同时持有 AKAM 与 ETSY"
+  },
+  {
+   "source": 1065280,
+   "target": 1326801,
+   "type": "coholding",
+   "weight": 10,
+   "desc": "共同持仓：10 家机构在 13F 中同时持有 NFLX 与 META"
+  },
+  {
+   "source": 1585521,
+   "target": 1640147,
+   "type": "coholding",
+   "weight": 10,
+   "desc": "共同持仓：10 家机构在 13F 中同时持有 ZM 与 SNOW"
+  },
+  {
+   "source": 1477333,
+   "target": 1640147,
+   "type": "coholding",
+   "weight": 9,
+   "desc": "共同持仓：9 家机构在 13F 中同时持有 NET 与 SNOW"
+  },
+  {
+   "source": 1404655,
+   "target": 1441816,
+   "type": "coholding",
+   "weight": 9,
+   "desc": "共同持仓：9 家机构在 13F 中同时持有 HUBS 与 MDB"
+  },
+  {
+   "source": 1441816,
+   "target": 1671933,
+   "type": "coholding",
+   "weight": 9,
+   "desc": "共同持仓：9 家机构在 13F 中同时持有 MDB 与 TTD"
+  },
+  {
+   "source": 1441816,
+   "target": 1477333,
+   "type": "coholding",
+   "weight": 12,
+   "desc": "共同持仓：12 家机构在 13F 中同时持有 MDB 与 NET"
+  },
+  {
+   "source": 1441816,
+   "target": 1447669,
+   "type": "coholding",
+   "weight": 10,
+   "desc": "共同持仓：10 家机构在 13F 中同时持有 MDB 与 TWLO"
+  },
+  {
+   "source": 1561550,
+   "target": 1585521,
+   "type": "coholding",
+   "weight": 11,
+   "desc": "共同持仓：11 家机构在 13F 中同时持有 DDOG 与 ZM"
+  },
+  {
+   "source": 1261333,
+   "target": 1561550,
+   "type": "coholding",
+   "weight": 11,
+   "desc": "共同持仓：11 家机构在 13F 中同时持有 DOCU 与 DDOG"
+  },
+  {
+   "source": 1561550,
+   "target": 1660134,
+   "type": "coholding",
+   "weight": 10,
+   "desc": "共同持仓：10 家机构在 13F 中同时持有 DDOG 与 OKTA"
+  },
+  {
+   "source": 1477333,
+   "target": 1561550,
+   "type": "coholding",
+   "weight": 10,
+   "desc": "共同持仓：10 家机构在 13F 中同时持有 NET 与 DDOG"
+  },
+  {
+   "source": 1261333,
+   "target": 1585521,
+   "type": "coholding",
+   "weight": 19,
+   "desc": "共同持仓：19 家机构在 13F 中同时持有 DOCU 与 ZM"
+  },
+  {
+   "source": 1585521,
+   "target": 1594805,
+   "type": "coholding",
+   "weight": 10,
+   "desc": "共同持仓：10 家机构在 13F 中同时持有 ZM 与 SHOP"
+  },
+  {
+   "source": 1585521,
+   "target": 1737806,
+   "type": "coholding",
+   "weight": 13,
+   "desc": "共同持仓：13 家机构在 13F 中同时持有 ZM 与 PDD"
+  },
+  {
+   "source": 796343,
+   "target": 1108524,
    "type": "coholding",
    "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 VZ 与 DELL"
+   "desc": "共同持仓：8 家机构在 13F 中同时持有 ADBE 与 CRM"
   },
   {
-   "source": 732712,
-   "target": 1645590,
+   "source": 1373715,
+   "target": 1594805,
    "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 VZ 与 HPE"
+   "weight": 9,
+   "desc": "共同持仓：9 家机构在 13F 中同时持有 NOW 与 SHOP"
   },
   {
-   "source": 732712,
-   "target": 1133421,
+   "source": 1373715,
+   "target": 1447669,
    "type": "coholding",
-   "weight": 5,
-   "desc": "共同持仓：5 家机构在 13F 中同时持有 VZ 与 NOC"
+   "weight": 11,
+   "desc": "共同持仓：11 家机构在 13F 中同时持有 NOW 与 TWLO"
   },
   {
-   "source": 1283699,
-   "target": 1571996,
+   "source": 1261333,
+   "target": 1477333,
+   "type": "coholding",
+   "weight": 11,
+   "desc": "共同持仓：11 家机构在 13F 中同时持有 DOCU 与 NET"
+  },
+  {
+   "source": 1261333,
+   "target": 1594805,
+   "type": "coholding",
+   "weight": 12,
+   "desc": "共同持仓：12 家机构在 13F 中同时持有 DOCU 与 SHOP"
+  },
+  {
+   "source": 1261333,
+   "target": 1447669,
+   "type": "coholding",
+   "weight": 12,
+   "desc": "共同持仓：12 家机构在 13F 中同时持有 DOCU 与 TWLO"
+  },
+  {
+   "source": 1315098,
+   "target": 1810806,
+   "type": "coholding",
+   "weight": 10,
+   "desc": "共同持仓：10 家机构在 13F 中同时持有 RBLX 与 U"
+  },
+  {
+   "source": 1321655,
+   "target": 1428439,
+   "type": "coholding",
+   "weight": 9,
+   "desc": "共同持仓：9 家机构在 13F 中同时持有 PLTR 与 ROKU"
+  },
+  {
+   "source": 1832483,
+   "target": 1840856,
+   "type": "coholding",
+   "weight": 9,
+   "desc": "共同持仓：9 家机构在 13F 中同时持有 SERV 与 SOUN"
+  },
+  {
+   "source": 1713445,
+   "target": 1751008,
+   "type": "coholding",
+   "weight": 10,
+   "desc": "共同持仓：10 家机构在 13F 中同时持有 RDDT 与 APP"
+  },
+  {
+   "source": 1639920,
+   "target": 1751008,
    "type": "coholding",
    "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 TMUS 与 DELL"
+   "desc": "共同持仓：8 家机构在 13F 中同时持有 SPOT 与 APP"
   },
   {
-   "source": 1283699,
-   "target": 1645590,
+   "source": 1428439,
+   "target": 1671933,
    "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 TMUS 与 HPE"
+   "weight": 10,
+   "desc": "共同持仓：10 家机构在 13F 中同时持有 ROKU 与 TTD"
   },
   {
-   "source": 47217,
-   "target": 1283699,
+   "source": 1384905,
+   "target": 1660134,
    "type": "coholding",
-   "weight": 4,
-   "desc": "共同持仓：4 家机构在 13F 中同时持有 HPQ 与 TMUS"
+   "weight": 10,
+   "desc": "共同持仓：10 家机构在 13F 中同时持有 RNG 与 OKTA"
   },
   {
-   "source": 1283699,
-   "target": 1840856,
-   "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 TMUS 与 SOUN"
-  },
-  {
-   "source": 1091667,
-   "target": 1571996,
+   "source": 1288847,
+   "target": 1660134,
    "type": "coholding",
    "weight": 8,
-   "desc": "共同持仓：8 家机构在 13F 中同时持有 CHTR 与 DELL"
+   "desc": "共同持仓：8 家机构在 13F 中同时持有 FIVN 与 OKTA"
   },
   {
-   "source": 1091667,
-   "target": 1645590,
+   "source": 1315098,
+   "target": 1477333,
    "type": "coholding",
-   "weight": 3,
-   "desc": "共同持仓：3 家机构在 13F 中同时持有 CHTR 与 HPE"
+   "weight": 9,
+   "desc": "共同持仓：9 家机构在 13F 中同时持有 RBLX 与 NET"
   },
   {
-   "source": 1091667,
-   "target": 1133421,
+   "source": 1713445,
+   "target": 1820953,
    "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 CHTR 与 NOC"
+   "weight": 10,
+   "desc": "共同持仓：10 家机构在 13F 中同时持有 RDDT 与 AFRM"
   },
   {
-   "source": 1133421,
-   "target": 1571996,
+   "source": 1723690,
+   "target": 1737806,
    "type": "coholding",
-   "weight": 6,
-   "desc": "共同持仓：6 家机构在 13F 中同时持有 NOC 与 DELL"
+   "weight": 15,
+   "desc": "共同持仓：15 家机构在 13F 中同时持有 BILI 与 PDD"
   },
   {
-   "source": 1571996,
-   "target": 1840856,
+   "source": 1736541,
+   "target": 1737806,
    "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 DELL 与 SOUN"
+   "weight": 10,
+   "desc": "共同持仓：10 家机构在 13F 中同时持有 NIO 与 PDD"
   },
   {
-   "source": 1133421,
-   "target": 1645590,
+   "source": 1737806,
+   "target": 1791706,
    "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 NOC 与 HPE"
+   "weight": 11,
+   "desc": "共同持仓：11 家机构在 13F 中同时持有 PDD 与 LI"
   },
   {
-   "source": 1645590,
-   "target": 1840856,
+   "source": 1447669,
+   "target": 1650372,
    "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 HPE 与 SOUN"
+   "weight": 10,
+   "desc": "共同持仓：10 家机构在 13F 中同时持有 TWLO 与 TEAM"
   },
   {
-   "source": 1375365,
-   "target": 1840856,
+   "source": 1723690,
+   "target": 1736541,
    "type": "coholding",
-   "weight": 2,
-   "desc": "共同持仓：2 家机构在 13F 中同时持有 SMCI 与 SOUN"
+   "weight": 9,
+   "desc": "共同持仓：9 家机构在 13F 中同时持有 BILI 与 NIO"
+  },
+  {
+   "source": 1723690,
+   "target": 1791706,
+   "type": "coholding",
+   "weight": 11,
+   "desc": "共同持仓：11 家机构在 13F 中同时持有 BILI 与 LI"
+  },
+  {
+   "source": 1288847,
+   "target": 1384905,
+   "type": "coholding",
+   "weight": 11,
+   "desc": "共同持仓：11 家机构在 13F 中同时持有 FIVN 与 RNG"
+  },
+  {
+   "source": 1384905,
+   "target": 1650372,
+   "type": "coholding",
+   "weight": 9,
+   "desc": "共同持仓：9 家机构在 13F 中同时持有 RNG 与 TEAM"
   }
  ],
- "generated_at": "2026-09-21 20:48"
+ "generated_at": "2026-09-25 12:04"
 };
