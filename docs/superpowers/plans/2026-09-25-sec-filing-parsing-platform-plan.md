@@ -56,7 +56,7 @@
 - Produces `Settings.parser_version: str`, `Settings.edgartools_version: str | None`, `Settings.sec_root: str`, `Settings.database_url: str`.
 - Produces `get_engine() -> sqlalchemy.Engine`, `SessionLocal`, and `session_scope() -> Iterator[Session]`.
 
-- [ ] **Step 1: Write failing runtime tests**
+- [x] **Step 1: Write failing runtime tests**
 
 ```python
 def test_parser_settings_are_explicit(monkeypatch):
@@ -76,13 +76,14 @@ def test_session_scope_rolls_back_on_error(tmp_path, monkeypatch):
             raise RuntimeError("rollback")
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `pytest tests/unit/test_runtime.py -q`
 
 Expected: FAIL because parser settings and database helpers do not exist.
+Verified: `ModuleNotFoundError: No module named 'fdc.db'`.
 
-- [ ] **Step 3: Add dependencies and runtime helpers**
+- [x] **Step 3: Add dependencies and runtime helpers**
 
 Add `edgartools` with a pinned compatible release, plus `beautifulsoup4` and
 `lxml` if not already present. Add parser settings with defaults `./sec` and
@@ -90,13 +91,13 @@ Add `edgartools` with a pinned compatible release, plus `beautifulsoup4` and
 `pool_pre_ping=True`, SQLite compatibility for tests, and a context manager that
 commits on success and rolls back/closes on error.
 
-- [ ] **Step 4: Run tests and import checks**
+- [x] **Step 4: Run tests and import checks**
 
 Run: `uv sync && pytest tests/unit/test_runtime.py -q`
 
 Expected: PASS; importing `fdc.db` must not require a live PostgreSQL server.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add pyproject.toml uv.lock src/fdc/config.py src/fdc/db.py tests/unit/test_runtime.py

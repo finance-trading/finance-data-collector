@@ -17,6 +17,9 @@ class Settings(BaseSettings):
 
     database_url: str = "postgresql+psycopg://fdc:fdc@localhost:5432/fdc"
     raw_root: str = "./data/raw"
+    sec_root: str = "./sec"
+    parser_version: str = "filing-parser-v1"
+    edgartools_version: str | None = None
     sec_user_agent: str | None = None
     sec_timeout_seconds: float = 30.0
     retry_max_attempts: int = 3
