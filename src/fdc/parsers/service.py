@@ -39,10 +39,17 @@ _RUN_INFO_KEY = "fdc_parse_run_id"
 class ParseAttemptFailed(RuntimeError):
     """A parse attempt failed without changing an existing immutable result."""
 
-    def __init__(self, status: str, diagnostics: dict[str, Any]) -> None:
+    def __init__(
+        self,
+        status: str,
+        diagnostics: dict[str, Any],
+        *,
+        disposition_recorded: bool = False,
+    ) -> None:
         super().__init__(diagnostics.get("detail") or f"parse attempt ended {status}")
         self.status = status
         self.diagnostics = diagnostics
+        self.disposition_recorded = disposition_recorded
 
 
 def parser_modules_manifest() -> dict[str, str]:
@@ -387,6 +394,28 @@ def _finish_owned_run(
     run.finished_at = datetime.now(UTC)
 
 
+def _record_parent_run_failure(
+    run: ParseRun,
+    local_filing: LocalFiling,
+    status: str,
+    diagnostics: dict[str, Any],
+) -> None:
+    """Durably account for a failed child attempt in its still-running parent."""
+
+    summary = dict(run.error_summary or {})
+    errors = list(summary.get("errors", []))
+    errors.append(
+        {
+            "accession": local_filing.accession,
+            "status": status,
+            "diagnostics": diagnostics,
+        }
+    )
+    run.failure_count += 1
+    run.error_summary = {**summary, "errors": errors}
+    run.checkpoint_accession = local_filing.accession
+
+
 def parse_one_filing(
     session: Session,
     local_filing: LocalFiling,
@@ -433,8 +462,16 @@ def parse_one_filing(
             }
             if owns_run:
                 _finish_owned_run(run, local_filing, "failed", diagnostics)
+            else:
+                _record_parent_run_failure(
+                    run, local_filing, "failed", diagnostics
+                )
             session.commit()
-            raise ParseAttemptFailed("failed", diagnostics) from error
+            raise ParseAttemptFailed(
+                "failed",
+                diagnostics,
+                disposition_recorded=True,
+            ) from error
 
         session.rollback()
         run, owns_run = _run_for_filing(session, local_filing, settings)
@@ -493,8 +530,16 @@ def parse_one_filing(
         }
         if owns_run:
             _finish_owned_run(run, local_filing, overall_status, attempt_diagnostics)
+        else:
+            _record_parent_run_failure(
+                run, local_filing, overall_status, attempt_diagnostics
+            )
         session.commit()
-        raise ParseAttemptFailed(overall_status, attempt_diagnostics)
+        raise ParseAttemptFailed(
+            overall_status,
+            attempt_diagnostics,
+            disposition_recorded=True,
+        )
 
     try:
         with session.begin_nested():

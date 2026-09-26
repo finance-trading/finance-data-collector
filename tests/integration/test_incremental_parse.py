@@ -17,7 +17,7 @@ from fdc.contracts import (
     RowStatus,
     SectionDraft,
 )
-from fdc.models import FilingParse, FilingSection, XbrlFact
+from fdc.models import FilingParse, FilingSection, ParseRun, XbrlFact
 from fdc.parsers import service as parse_service
 from fdc.sync import parse_ticker, select_pending_filings
 
@@ -236,6 +236,54 @@ def test_forced_failure_preserves_current_result_and_continues_run(
         ).all()
         assert len(current) == 2
         assert {result.id: result.parse_run_id for result in current} == before
+
+
+def test_forced_failure_disposition_is_durable_before_sync_continues(
+    engine, session_factory, fixture_root, monkeypatch
+):
+    parse_ticker(session_factory, "MSFT", fixture_root)
+    from fdc.archive import scan_ticker_archive
+
+    filing = scan_ticker_archive(fixture_root, "MSFT").filings[0]
+    with session_factory() as session:
+        run = ParseRun(
+            scope_type="ticker",
+            scope_value="MSFT",
+            parser_version=get_settings().parser_version,
+            status="running",
+            input_count=2,
+            error_summary={"errors": []},
+            command_metadata={"force": True},
+        )
+        session.add(run)
+        session.commit()
+        run_id = run.id
+
+    def fail_at_service_boundary(*_args):
+        raise RuntimeError("boundary crash fixture")
+
+    monkeypatch.setattr(parse_service, "parse_html_document", fail_at_service_boundary)
+    with session_factory() as session:
+        session.info[parse_service._RUN_INFO_KEY] = run_id
+        with pytest.raises(parse_service.ParseAttemptFailed):
+            parse_service.parse_one_filing(
+                session,
+                filing,
+                get_settings(),
+                force=True,
+            )
+
+    # Simulate the process dying here: no parse_ticker continuation transaction
+    # runs. The attempt disposition must already be durable on the parent run.
+    with session_factory() as session:
+        stored = session.get(ParseRun, run_id)
+        assert stored.status == "running"
+        assert stored.failure_count == 1
+        assert stored.success_count == 0
+        assert stored.checkpoint_accession == filing.accession
+        assert stored.error_summary["errors"][0]["accession"] == filing.accession
+        assert stored.error_summary["errors"][0]["status"] == "failed"
+        assert "boundary crash fixture" in str(stored.error_summary)
 
 
 def test_historical_exact_success_is_reactivated_without_rewrite(

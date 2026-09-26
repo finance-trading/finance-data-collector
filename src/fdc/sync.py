@@ -91,6 +91,7 @@ def parse_ticker(
     for local_filing in pending:
         attempt_status: str
         attempt_diagnostics: dict | None
+        disposition_recorded = False
         with session_factory() as session:
             session.info[parser_service._RUN_INFO_KEY] = run_id
             try:
@@ -100,6 +101,7 @@ def parse_ticker(
             except parser_service.ParseAttemptFailed as error:
                 attempt_status = error.status
                 attempt_diagnostics = error.diagnostics
+                disposition_recorded = error.disposition_recorded
             else:
                 attempt_status = result.status
                 attempt_diagnostics = result.diagnostics
@@ -107,6 +109,8 @@ def parse_ticker(
             stored_run = session.get(ParseRun, run_id)
             if stored_run is None:  # pragma: no cover - referential integrity guard
                 raise RuntimeError(f"parse run {run_id} disappeared")
+            if disposition_recorded:
+                continue
             if attempt_status == "success":
                 stored_run.success_count += 1
             else:
