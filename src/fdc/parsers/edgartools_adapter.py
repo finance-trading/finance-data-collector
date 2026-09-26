@@ -15,8 +15,10 @@ always visible rather than silently degraded.
 from __future__ import annotations
 
 import importlib.metadata
+import json
 import os
 from collections.abc import Callable, Iterable, Mapping, Sequence
+from dataclasses import dataclass
 from datetime import date, datetime
 from math import isfinite
 from pathlib import Path
@@ -243,19 +245,41 @@ def _dimensions_of(raw_fact: Mapping[str, Any]) -> dict[str, str]:
     return dimensions
 
 
-def _fact_locator(raw_fact: Mapping[str, Any], concept: str) -> str:
+def _period_locator(start: date | None, end: date | None) -> str:
+    if start is not None and end is not None:
+        return f"duration_{start.isoformat()}_{end.isoformat()}"
+    if end is not None:
+        return f"instant_{end.isoformat()}"
+    return "unavailable"
+
+
+def _dimensions_locator(dimensions: Mapping[str, Any]) -> str:
+    return json.dumps(dimensions, sort_keys=True, separators=(",", ":"))
+
+
+def _fact_locator(
+    raw_fact: Mapping[str, Any],
+    concept: str,
+    *,
+    source_ambiguous: bool = False,
+) -> str:
     """Build a stable locator that distinguishes repeated concepts."""
 
     parts = [f"concept={concept}"]
     context_ref = _clean_str(raw_fact.get("context_ref"))
     fact_id = _clean_str(raw_fact.get("fact_id"))
     fact_key = _clean_str(raw_fact.get("fact_key"))
-    if context_ref is not None:
-        parts.append(f"context={context_ref}")
+    parts.append(f"context={context_ref or 'unavailable'}")
     if fact_id is not None:
         parts.append(f"fact={fact_id}")
     elif fact_key is not None:
         parts.append(f"fact_key={fact_key}")
+    start = _to_date(raw_fact.get("period_start"))
+    end = _to_date(raw_fact.get("period_end")) or _to_date(raw_fact.get("period_instant"))
+    parts.append(f"period={_period_locator(start, end)}")
+    parts.append(f"dimensions={_dimensions_locator(_dimensions_of(raw_fact))}")
+    if source_ambiguous:
+        parts.append("source=ambiguous")
     return ";".join(parts)
 
 
@@ -268,7 +292,7 @@ def _evidence_for(
 ) -> EvidenceDraft:
     """Build an XBRL-fact locator pointing at its source artifact."""
 
-    artifact = filing.primary_artifact
+    artifact = None
     if source_path is not None:
         artifact = next((item for item in filing.artifacts if item.path == source_path), None)
     return EvidenceDraft(
@@ -290,6 +314,7 @@ def normalize_fact(
     *,
     extraction_method: str = EDGARTOOLS_FACT_METHOD,
     evidence_path: Path | None = None,
+    source_catalog: _SourceCatalog | None = None,
 ) -> FactDraft | None:
     """Normalize one raw fact into a :class:`FactDraft`.
 
@@ -308,6 +333,9 @@ def normalize_fact(
     if numeric is None:
         numeric = _to_float(raw_fact.get("value")) if _unit_of(raw_fact) else None
     raw_value = _clean_str(raw_fact.get("value"))
+    resolution = _SourceResolution(path=evidence_path, context_ref=None, ambiguous=False)
+    if evidence_path is None and source_catalog is not None:
+        resolution = _resolve_source(filing, raw_fact, source_catalog)
 
     return FactDraft(
         concept=concept,
@@ -324,9 +352,13 @@ def normalize_fact(
         extraction_method=extraction_method,
         evidence=_evidence_for(
             filing,
-            locator_value=_fact_locator(raw_fact, concept),
+            locator_value=_fact_locator(
+                raw_fact,
+                concept,
+                source_ambiguous=resolution.ambiguous,
+            ),
             excerpt=raw_value,
-            source_path=evidence_path,
+            source_path=resolution.path,
         ),
     )
 
@@ -387,6 +419,7 @@ def normalize_statement_rows(
     filing: LocalFiling,
     parser_version: str,
     evidence_path: Path | None = None,
+    source_catalog: _SourceCatalog | None = None,
 ) -> list[StatementDraft]:
     """Expand presentation rows into one draft per valued period.
 
@@ -404,6 +437,10 @@ def normalize_statement_rows(
         if not isinstance(values, Mapping) or not values:
             continue
         units = row.get("units") if isinstance(row.get("units"), Mapping) else {}
+        decimals = row.get("decimals") if isinstance(row.get("decimals"), Mapping) else {}
+        context_refs = (
+            row.get("context_refs") if isinstance(row.get("context_refs"), Mapping) else {}
+        )
         concept = _normalize_concept_name(_clean_str(row.get("concept")))
         label = _clean_str(row.get("label"))
 
@@ -417,6 +454,33 @@ def normalize_statement_rows(
                 selected = period_dimensions.get(period_key)
                 if isinstance(selected, Mapping):
                     dimensions = _dimensions_of({"dimensions": selected})
+            raw_observation = {
+                "concept": concept,
+                "context_ref": context_refs.get(period_key),
+                "value": value,
+                "numeric_value": numeric_value,
+                "unit_ref": units.get(period_key),
+                "decimals": decimals.get(period_key),
+                "period_start": start,
+                "period_end": end,
+                "dimensions": dimensions,
+            }
+            resolution = _SourceResolution(
+                path=evidence_path,
+                context_ref=_clean_str(context_refs.get(period_key)),
+                ambiguous=False,
+            )
+            if evidence_path is None and source_catalog is not None:
+                resolution = _resolve_source(filing, raw_observation, source_catalog)
+            locator_parts = [
+                f"concept={concept or label or row_index}",
+                f"statement={statement_type}",
+                f"context={resolution.context_ref or 'unavailable'}",
+                f"period={period_key}",
+                f"dimensions={_dimensions_locator(dimensions)}",
+            ]
+            if resolution.ambiguous:
+                locator_parts.append("source=ambiguous")
             drafts.append(
                 StatementDraft(
                     statement_type=statement_type,
@@ -434,12 +498,9 @@ def normalize_statement_rows(
                     dimensions=dimensions,
                     evidence=_evidence_for(
                         filing,
-                        locator_value=(
-                            f"concept={concept or label or row_index};"
-                            f"statement={statement_type};period={period_key}"
-                        ),
+                        locator_value=";".join(locator_parts),
                         excerpt=str(value),
-                        source_path=evidence_path,
+                        source_path=resolution.path,
                     ),
                 )
             )
@@ -463,8 +524,37 @@ def _iter_elements(root):
             yield element, qname
 
 
+def _stable_typed_node(element) -> str:
+    """Serialize typed-dimension content independently of XML prefix spelling."""
+
+    qname = _xml_qname(element)
+    if qname is None:  # pragma: no cover - filtered by caller
+        return ""
+    name = f"{{{qname.namespace}}}{qname.localname}" if qname.namespace else qname.localname
+    children = [child for child in element if _xml_qname(child) is not None]
+    attributes = [
+        f"@{key}={' '.join(str(value).split())}"
+        for key, value in sorted(element.attrib.items())
+    ]
+    text = " ".join((element.text or "").split())
+    if not children and not attributes:
+        return f"{name}={text}"
+    parts = attributes
+    if text:
+        parts.append(f"#text={text}")
+    parts.extend(_stable_typed_node(child) for child in children)
+    return f"{name}[{'|'.join(parts)}]"
+
+
+def _stable_typed_member(typed_member) -> str | None:
+    children = [child for child in typed_member if _xml_qname(child) is not None]
+    if children:
+        return "|".join(_stable_typed_node(child) for child in children)
+    return _clean_str(" ".join(typed_member.itertext()))
+
+
 def _parse_contexts(root) -> dict[str, dict[str, Any]]:
-    """Map context ids to periods and explicit dimensions."""
+    """Map context ids to periods plus explicit and typed dimensions."""
 
     contexts: dict[str, dict[str, Any]] = {}
     for element, qname in _iter_elements(root):
@@ -486,6 +576,11 @@ def _parse_contexts(root) -> dict[str, dict[str, Any]]:
             elif child_qname.namespace == XBRLDI_NS and child_qname.localname == "explicitMember":
                 axis = _clean_str(child.get("dimension"))
                 member = _clean_str(child.text)
+                if axis is not None and member is not None:
+                    dimensions[axis] = member
+            elif child_qname.namespace == XBRLDI_NS and child_qname.localname == "typedMember":
+                axis = _clean_str(child.get("dimension"))
+                member = _stable_typed_member(child)
                 if axis is not None and member is not None:
                     dimensions[axis] = member
         contexts[context_id] = {
@@ -749,12 +844,12 @@ def _instance_priority(path: Path) -> tuple[int, str]:
     return (1 if is_inline else 0, path.as_posix())
 
 
-def _evidence_source_path(filing: LocalFiling) -> Path | None:
-    """Choose the local instance artifact that backs EdgarTools observations."""
+def _candidate_evidence_paths(filing: LocalFiling) -> tuple[Path, ...]:
+    """Return every plausible local source without guessing among peers."""
 
     instances = _find_instance_artifacts(filing)
     if instances:
-        return instances[0]
+        return tuple(instances)
     xbrl_artifacts = sorted(
         (
             artifact.path
@@ -766,7 +861,123 @@ def _evidence_source_path(filing: LocalFiling) -> Path | None:
         ),
         key=lambda path: path.as_posix(),
     )
-    return xbrl_artifacts[0] if xbrl_artifacts else None
+    return tuple(xbrl_artifacts)
+
+
+@dataclass(frozen=True, slots=True)
+class _SourceObservation:
+    path: Path
+    context_ref: str | None
+    fact_id: str | None
+
+
+@dataclass(frozen=True, slots=True)
+class _SourceCatalog:
+    candidates: tuple[Path, ...]
+    observations: Mapping[tuple[Any, ...], tuple[_SourceObservation, ...]]
+
+
+@dataclass(frozen=True, slots=True)
+class _SourceResolution:
+    path: Path | None
+    context_ref: str | None
+    ambiguous: bool
+
+
+def _raw_fact_identity(raw_fact: Mapping[str, Any]) -> tuple[Any, ...]:
+    concept = _clean_str(raw_fact.get("concept"))
+    numeric = _to_float(raw_fact.get("numeric_value"))
+    if numeric is None:
+        numeric = _to_float(raw_fact.get("value")) if _unit_of(raw_fact) else None
+    raw_value = _clean_str(raw_fact.get("value"))
+    start = _to_date(raw_fact.get("period_start"))
+    end = _to_date(raw_fact.get("period_end")) or _to_date(raw_fact.get("period_instant"))
+    return (
+        concept,
+        numeric,
+        None if numeric is not None else raw_value,
+        _unit_of(raw_fact),
+        _to_int(raw_fact.get("decimals")),
+        start,
+        end,
+        tuple(
+            sorted(
+                (str(axis), str(member))
+                for axis, member in _dimensions_of(raw_fact).items()
+            )
+        ),
+    )
+
+
+def _build_source_catalog(filing: LocalFiling) -> _SourceCatalog:
+    candidates = _candidate_evidence_paths(filing)
+    observations: dict[tuple[Any, ...], list[_SourceObservation]] = {}
+    for path in candidates:
+        try:
+            raw_facts = parse_xbrl_instance(path)
+        except ValueError:
+            continue
+        for raw_fact in raw_facts:
+            identity = _raw_fact_identity(raw_fact)
+            observations.setdefault(identity, []).append(
+                _SourceObservation(
+                    path=path,
+                    context_ref=_clean_str(raw_fact.get("context_ref")),
+                    fact_id=_clean_str(raw_fact.get("fact_id")),
+                )
+            )
+    return _SourceCatalog(
+        candidates=candidates,
+        observations={key: tuple(value) for key, value in observations.items()},
+    )
+
+
+def _metadata_source_path(
+    filing: LocalFiling,
+    raw_fact: Mapping[str, Any],
+) -> Path | None:
+    for key in ("source_path", "source_file", "document_path", "document"):
+        value = _clean_str(raw_fact.get(key))
+        if value is None:
+            continue
+        for artifact in filing.artifacts:
+            if value in {
+                str(artifact.path),
+                artifact.path.name,
+                artifact.relative_path,
+            }:
+                return artifact.path
+    return None
+
+
+def _resolve_source(
+    filing: LocalFiling,
+    raw_fact: Mapping[str, Any],
+    catalog: _SourceCatalog,
+) -> _SourceResolution:
+    context_ref = _clean_str(raw_fact.get("context_ref"))
+    direct_path = _metadata_source_path(filing, raw_fact)
+    if direct_path is not None:
+        return _SourceResolution(direct_path, context_ref, False)
+
+    matches = list(catalog.observations.get(_raw_fact_identity(raw_fact), ()))
+    fact_id = _clean_str(raw_fact.get("fact_id"))
+    if context_ref is not None:
+        context_matches = [item for item in matches if item.context_ref == context_ref]
+        if context_matches:
+            matches = context_matches
+    if fact_id is not None:
+        fact_matches = [item for item in matches if item.fact_id == fact_id]
+        if fact_matches:
+            matches = fact_matches
+
+    paths = {item.path for item in matches}
+    if len(paths) == 1:
+        match = matches[0]
+        return _SourceResolution(match.path, context_ref or match.context_ref, False)
+    if len(catalog.candidates) == 1 and not matches:
+        return _SourceResolution(catalog.candidates[0], context_ref, False)
+    return _SourceResolution(None, context_ref, True)
 
 
 def _fact_identity(draft: FactDraft) -> tuple[Any, ...]:
@@ -841,7 +1052,7 @@ class EdgarToolsAdapter:
             parse_mode=PARSE_MODE_EDGARTOOLS,
             edgartools_version=edgar_version,
         )
-        evidence_path = _evidence_source_path(filing)
+        source_catalog = _build_source_catalog(filing)
         seen_facts: set[tuple[Any, ...]] = set()
         facts_failed = False
 
@@ -866,7 +1077,7 @@ class EdgarToolsAdapter:
                 raw_fact,
                 filing,
                 self.parser_version,
-                evidence_path=evidence_path,
+                source_catalog=source_catalog,
             )
             if draft is None:
                 output.diagnostics.append(
@@ -884,7 +1095,7 @@ class EdgarToolsAdapter:
                         code=DiagnosticCode.FACT_MALFORMED,
                         detail=f"fact {draft.concept} carried no usable numeric value",
                         scope="facts",
-                        relative_path=filing.primary_relative_path,
+                        relative_path=draft.evidence.relative_path,
                         severity=DiagnosticSeverity.WARNING,
                     )
                 )
@@ -902,7 +1113,7 @@ class EdgarToolsAdapter:
                     statement_type=statement_type,
                     filing=filing,
                     parser_version=self.parser_version,
-                    evidence_path=evidence_path,
+                    source_catalog=source_catalog,
                 )
                 output.statements.extend(drafts)
             except Exception as error:

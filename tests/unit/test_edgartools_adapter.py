@@ -281,6 +281,8 @@ def test_every_fact_carries_source_and_fact_identity_evidence(fake_edgartools, l
         assert fact.evidence is not None
         assert fact.evidence.locator_type is LocatorType.XBRL_FACT
         assert fact.evidence.locator_value.startswith(f"concept={fact.concept};context=")
+        assert ";period=" in fact.evidence.locator_value
+        assert ";dimensions=" in fact.evidence.locator_value
         assert fact.evidence.relative_path == source.relative_path
         assert fact.evidence.content_sha256 == source.sha256
 
@@ -348,8 +350,10 @@ def test_statements_are_emitted_once_per_period_in_presentation_order(
     # Abstract presentation rows carry no value and are not stored.
     assert all(row.value_numeric is not None for row in income)
     assert income[0].evidence.locator_value.endswith(
-        ";period=duration_2024-01-01_2024-03-31"
+        ';dimensions={}'
     )
+    assert ";context=" in income[0].evidence.locator_value
+    assert ";period=duration_2024-01-01_2024-03-31;" in income[0].evidence.locator_value
 
 
 def test_statement_rows_preserve_all_dimensions_per_period(local_filing):
@@ -386,6 +390,107 @@ def test_statement_rows_preserve_all_dimensions_per_period(local_filing):
         }
         for row in revenue_rows
     )
+    assert '"srt:ProductOrServiceAxis":"acme:SubscriptionMember"' in (
+        revenue_rows[0].evidence.locator_value
+    )
+
+
+def test_edgartools_evidence_resolves_each_observation_source(tmp_path):
+    unique_instance = tmp_path / "unique-source.xml"
+    unique_instance.write_text(
+        """<?xml version="1.0" encoding="UTF-8"?>
+<xbrli:xbrl xmlns:xbrli="http://www.xbrl.org/2003/instance"
+  xmlns:us-gaap="http://fasb.org/us-gaap/2024"
+  xmlns:iso4217="http://www.xbrl.org/2003/iso4217">
+  <xbrli:context id="c-unique">
+    <xbrli:entity><xbrli:identifier scheme="test">1</xbrli:identifier></xbrli:entity>
+    <xbrli:period>
+      <xbrli:startDate>2024-01-01</xbrli:startDate>
+      <xbrli:endDate>2024-03-31</xbrli:endDate>
+    </xbrli:period>
+  </xbrli:context>
+  <xbrli:unit id="U_USD"><xbrli:measure>iso4217:USD</xbrli:measure></xbrli:unit>
+  <us-gaap:OperatingExpenses contextRef="c-unique" unitRef="U_USD" decimals="-6">
+    123000000
+  </us-gaap:OperatingExpenses>
+</xbrli:xbrl>"""
+    )
+    filing = write_local_filing(
+        tmp_path / "archive",
+        {
+            "base.xml": EDGAR_FIXTURES / "instance_sample.xml",
+            "unique.xml": unique_instance,
+        },
+    )
+    facts = [
+        {
+            "concept": "us-gaap:OperatingExpenses",
+            "context_ref": "c-unique",
+            "value": "123000000",
+            "numeric_value": 123000000.0,
+            "unit_ref": "U_USD",
+            "decimals": "-6",
+            "period_start": "2024-01-01",
+            "period_end": "2024-03-31",
+        }
+    ]
+    period = "duration_2024-01-01_2024-03-31"
+    statements = {
+        "IncomeStatement": [
+            {
+                "concept": "us-gaap_OperatingExpenses",
+                "label": "Operating expenses",
+                "level": 1,
+                "values": {period: 123000000.0},
+                "units": {period: "U_USD"},
+                "decimals": {period: -6},
+            }
+        ]
+    }
+    xbrl = FakeXbrl(facts, statements)
+
+    output = EdgarToolsAdapter(
+        statement_types=("IncomeStatement",), opener=lambda directory: xbrl
+    ).parse(filing)
+    fact = output.facts[0]
+    statement = output.statements[0]
+
+    assert fact.evidence.relative_path.endswith("unique.xml")
+    assert statement.evidence.relative_path.endswith("unique.xml")
+    assert ";context=c-unique;" in statement.evidence.locator_value
+    assert f";period={period};dimensions={{}}" in statement.evidence.locator_value
+
+
+def test_edgartools_evidence_marks_unresolvable_multi_instance_source_as_ambiguous(
+    tmp_path,
+):
+    filing = write_local_filing(
+        tmp_path,
+        {
+            "first.xml": EDGAR_FIXTURES / "instance_sample.xml",
+            "second.xml": EDGAR_FIXTURES / "inline_sample.xml",
+        },
+    )
+    facts = [
+        {
+            "concept": "us-gaap:InventoryNet",
+            "context_ref": "c-missing",
+            "value": "100",
+            "numeric_value": 100.0,
+            "unit_ref": "U_USD",
+            "decimals": "0",
+            "period_instant": "2024-03-31",
+        }
+    ]
+
+    output = EdgarToolsAdapter(
+        statement_types=(), opener=lambda directory: FakeXbrl(facts)
+    ).parse(filing)
+    fact = output.facts[0]
+
+    assert fact.evidence.relative_path is None
+    assert fact.evidence.content_sha256 is None
+    assert fact.evidence.locator_value.endswith(";source=ambiguous")
 
 
 def test_balance_sheet_rows_keep_instant_periods(fake_edgartools, local_filing):
@@ -618,6 +723,46 @@ def test_raw_xbrl_preserves_divisional_units(tmp_path):
     facts = parse_xbrl_instance(instance)
 
     assert facts[0]["unit_ref"] == "USD/xbrli:shares"
+
+
+def test_raw_xbrl_preserves_typed_dimensions_with_stable_values(tmp_path):
+    instance = tmp_path / "typed-dimension.xml"
+    instance.write_text(
+        """<?xml version="1.0" encoding="UTF-8"?>
+<xbrli:xbrl xmlns:xbrli="http://www.xbrl.org/2003/instance"
+  xmlns:xbrldi="http://xbrl.org/2006/xbrldi"
+  xmlns:us-gaap="http://fasb.org/us-gaap/2024"
+  xmlns:acme="http://www.acme.example/2024"
+  xmlns:iso4217="http://www.xbrl.org/2003/iso4217">
+  <xbrli:context id="typed-context">
+    <xbrli:entity>
+      <xbrli:identifier scheme="test">1</xbrli:identifier>
+      <xbrli:segment>
+        <xbrldi:explicitMember dimension="us-gaap:StatementBusinessSegmentsAxis">
+          acme:CloudMember
+        </xbrldi:explicitMember>
+        <xbrldi:typedMember dimension="acme:LegalEntityAxis">
+          <acme:LegalEntityDomain>  Cloud   Subsidiary  </acme:LegalEntityDomain>
+        </xbrldi:typedMember>
+      </xbrli:segment>
+    </xbrli:entity>
+    <xbrli:period><xbrli:instant>2024-03-31</xbrli:instant></xbrli:period>
+  </xbrli:context>
+  <xbrli:unit id="U_USD"><xbrli:measure>iso4217:USD</xbrli:measure></xbrli:unit>
+  <us-gaap:Assets contextRef="typed-context" unitRef="U_USD" decimals="-6">
+    1000000
+  </us-gaap:Assets>
+</xbrli:xbrl>"""
+    )
+
+    facts = parse_xbrl_instance(instance)
+
+    assert facts[0]["dimensions"] == {
+        "us-gaap:StatementBusinessSegmentsAxis": "acme:CloudMember",
+        "acme:LegalEntityAxis": (
+            "{http://www.acme.example/2024}LegalEntityDomain=Cloud Subsidiary"
+        ),
+    }
 
 
 def test_raw_fallback_marks_malformed_numeric_facts(fake_edgartools_unavailable, tmp_path):
