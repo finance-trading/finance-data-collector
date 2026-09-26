@@ -52,11 +52,24 @@ def parse_ticker(
     ticker: str,
     sec_root: Path,
     force: bool = False,
+    forms: set[str] | None = None,
+    parser_version: str | None = None,
+    accessions: set[str] | None = None,
 ) -> ParseRun:
     """Incrementally parse one ticker and commit a checkpoint per filing."""
 
     settings = get_settings()
+    if parser_version is not None:
+        settings = settings.model_copy(update={"parser_version": parser_version})
     scan = scan_ticker_archive(Path(sec_root), ticker)
+    if forms is not None:
+        scan.filings = [filing for filing in scan.filings if filing.form in forms]
+        scan.forms = tuple(sorted(forms))
+    if accessions is not None:
+        scan.filings = [
+            filing for filing in scan.filings if filing.accession in accessions
+        ]
+    scan.eligible_count = len(scan.filings)
     with session_factory() as session:
         pending = select_pending_filings(
             session, scan, settings.parser_version, force=force
@@ -71,6 +84,8 @@ def parse_ticker(
             error_summary={"errors": []},
             command_metadata={
                 "force": force,
+                "forms": sorted(forms) if forms is not None else None,
+                "accessions": sorted(accessions) if accessions is not None else None,
                 "sec_root": str(sec_root),
                 "scan": scan.summary(),
                 "parser_modules_hash": parser_service.parser_modules_hash(),
@@ -147,6 +162,8 @@ def parse_all(
     session_factory: sessionmaker[Session],
     sec_root: Path,
     force: bool = False,
+    forms: set[str] | None = None,
+    parser_version: str | None = None,
 ) -> list[ParseRun]:
     """Parse every indexed ticker directory in deterministic name order."""
 
@@ -156,4 +173,14 @@ def parse_all(
         for path in root.iterdir()
         if path.is_dir() and (path / INDEX_FILENAME).is_file()
     )
-    return [parse_ticker(session_factory, ticker, root, force=force) for ticker in tickers]
+    return [
+        parse_ticker(
+            session_factory,
+            ticker,
+            root,
+            force=force,
+            forms=forms,
+            parser_version=parser_version,
+        )
+        for ticker in tickers
+    ]
