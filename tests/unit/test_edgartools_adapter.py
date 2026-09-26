@@ -9,6 +9,7 @@ opens a socket fails through the autouse guard below.
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import socket
 from datetime import date
@@ -89,7 +90,12 @@ def load_statements() -> dict[str, list[dict]]:
     return json.loads((EDGAR_FIXTURES / "statements.json").read_text())
 
 
-def write_local_filing(tmp_path: Path, files: dict[str, Path], ticker: str = "ACME"):
+def write_local_filing(
+    tmp_path: Path,
+    files: dict[str, Path],
+    ticker: str = "ACME",
+    primary_document: str | None = None,
+):
     """Copy instance documents into a scratch archive and scan it."""
 
     accession = "0000000000-24-000010"
@@ -107,6 +113,7 @@ def write_local_filing(tmp_path: Path, files: dict[str, Path], ticker: str = "AC
                         "date": "2024-04-25",
                         "accession": accession,
                         "directory": directory,
+                        "primary_document": primary_document,
                     }
                 ]
             }
@@ -267,6 +274,24 @@ def test_malformed_facts_keep_text_but_never_fabricate_a_number(fake_edgartools,
     )
 
 
+@pytest.mark.parametrize("raw_value", ["NaN", "Infinity", "-Infinity"])
+def test_non_finite_facts_never_become_numeric_values(local_filing, raw_value):
+    draft = normalize_fact(
+        {
+            "concept": "us-gaap:Assets",
+            "value": raw_value,
+            "numeric_value": raw_value,
+            "unit_ref": "U_USD",
+        },
+        local_filing,
+        PARSER_VERSION,
+    )
+
+    assert draft is not None
+    assert draft.value_numeric is None
+    assert draft.value_text == raw_value
+
+
 def test_facts_without_a_concept_are_dropped_with_a_diagnostic(fake_edgartools, local_filing):
     output = EdgarToolsAdapter().parse(local_filing)
 
@@ -308,6 +333,27 @@ def test_balance_sheet_rows_keep_instant_periods(fake_edgartools, local_filing):
     assert assets.period_type == "instant"
     assert assets.value_numeric == 484275000000.0
     assert assets.label == "Total assets"
+
+
+def test_malformed_statement_values_remain_explicit_without_a_numeric_value(local_filing):
+    statements = load_statements()
+    period = "duration_2024-01-01_2024-03-31"
+    statements["IncomeStatement"][1]["values"][period] = "not-a-number"
+    xbrl = FakeXbrl(load_facts(), statements)
+
+    output = EdgarToolsAdapter(
+        statement_types=("IncomeStatement",), opener=lambda directory: xbrl
+    ).parse(local_filing)
+    malformed = next(
+        row
+        for row in output.statements
+        if row.concept == "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax"
+        and row.start_date == date(2024, 1, 1)
+    )
+
+    assert malformed.value_numeric is None
+    assert malformed.value_text == "not-a-number"
+    assert malformed.evidence.excerpt == "not-a-number"
 
 
 def test_missing_statements_are_explicit_and_partial(
@@ -362,6 +408,28 @@ def test_adapter_falls_back_to_raw_xbrl_instances(fake_edgartools_unavailable, i
     document_type = next(fact for fact in output.facts if fact.concept == "dei:DocumentType")
     assert document_type.value_numeric is None
     assert document_type.value_text == "10-Q"
+
+
+def test_fallback_evidence_points_to_the_xbrl_instance(
+    fake_edgartools_unavailable, tmp_path
+):
+    filing = write_local_filing(
+        tmp_path,
+        {
+            "acme-20240331.htm": EDGAR_FIXTURES / "inline_sample.xml",
+            "acme-20240331.xml": EDGAR_FIXTURES / "instance_sample.xml",
+        },
+        primary_document="acme-20240331.htm",
+    )
+
+    output = EdgarToolsAdapter().parse(filing)
+    revenue = next(fact for fact in output.facts if fact.concept == "us-gaap:Revenues")
+    instance = next(
+        artifact for artifact in filing.artifacts if artifact.path.name == "acme-20240331.xml"
+    )
+
+    assert revenue.evidence.relative_path == instance.relative_path
+    assert revenue.evidence.content_sha256 == instance.sha256
 
 
 def test_raw_xbrl_fallback_applies_inline_scale_and_sign(
@@ -432,24 +500,35 @@ def test_only_the_adapter_imports_edgartools():
     assert offenders == []
 
 
-def test_real_edgartools_parses_a_local_package(local_filing):
-    output = EdgarToolsAdapter().parse(local_filing)
+def test_real_edgartools_parses_the_checked_in_local_instance(instance_filing):
+    output = EdgarToolsAdapter().parse(instance_filing)
 
     assert isinstance(output, ParserOutput)
     assert output.parse_mode == "edgartools-local"
     assert output.edgartools_version is not None
-    assert [fact.concept for fact in output.facts] == [
-        "us-gaap:Revenues",
-        "us-gaap:Revenues",
-    ]
+    assets = next(fact for fact in output.facts if fact.concept == "us-gaap:Assets")
+    revenue = next(
+        fact for fact in output.facts if fact.concept == "us-gaap:Revenues" and fact.dimensions
+    )
+
+    assert assets.start_date is None
+    assert assets.end_date == date(2024, 3, 31)
+    assert assets.period_type == "instant"
+    assert revenue.dimensions == {
+        "us-gaap:StatementBusinessSegmentsAxis": "acme:CloudMember"
+    }
 
 
 REAL_PACKAGE = (
     Path(__file__).resolve().parents[2] / "sec" / "MSFT" / "10-K" / "0000950170-23-035122"
 )
+RUN_LOCAL_SEC_INTEGRATION = os.environ.get("FDC_RUN_LOCAL_SEC_INTEGRATION") == "1"
 
 
-@pytest.mark.skipif(not REAL_PACKAGE.is_dir(), reason="local sec/MSFT archive is not available")
+@pytest.mark.skipif(
+    not RUN_LOCAL_SEC_INTEGRATION or not REAL_PACKAGE.is_dir(),
+    reason="set FDC_RUN_LOCAL_SEC_INTEGRATION=1 with the local sec/MSFT archive available",
+)
 def test_real_edgartools_parses_a_repository_package(tmp_path):
     filing = write_local_filing(
         tmp_path,

@@ -18,6 +18,7 @@ import importlib.metadata
 import os
 from collections.abc import Callable, Iterable, Mapping, Sequence
 from datetime import date, datetime
+from math import isfinite
 from pathlib import Path
 from typing import Any, Literal
 
@@ -136,18 +137,21 @@ def _to_float(value: Any) -> float | None:
     if value is None or isinstance(value, bool):
         return None
     if isinstance(value, int | float):
-        return float(value)
-    text = str(value).strip().replace(",", "").replace("$", "")
-    if not text:
-        return None
-    negative = text.startswith("(") and text.endswith(")")
-    if negative:
-        text = text[1:-1]
+        candidate = value
+        negative = False
+    else:
+        text = str(value).strip().replace(",", "").replace("$", "")
+        if not text:
+            return None
+        negative = text.startswith("(") and text.endswith(")")
+        candidate = text[1:-1] if negative else text
     try:
-        number = float(text)
-    except ValueError:
+        number = float(candidate)
+    except (OverflowError, ValueError):
         return None
-    return -number if negative else number
+    if negative:
+        number = -number
+    return number if isfinite(number) else None
 
 
 def _to_int(value: Any) -> int | None:
@@ -207,18 +211,21 @@ def _evidence_for(
     *,
     locator_value: str,
     excerpt: str | None,
+    source_path: Path | None = None,
 ) -> EvidenceDraft:
-    """Build an XBRL-fact locator pointing at the filing's primary document."""
+    """Build an XBRL-fact locator pointing at its source artifact."""
 
-    primary = filing.primary_artifact
+    artifact = filing.primary_artifact
+    if source_path is not None:
+        artifact = next((item for item in filing.artifacts if item.path == source_path), None)
     return EvidenceDraft(
         locator_type=LocatorType.XBRL_FACT,
         locator_value=locator_value,
-        relative_path=filing.primary_relative_path,
+        relative_path=artifact.relative_path if artifact is not None else None,
         # The accession URL needs the issuer CIK, which the persistence layer
         # owns; the scanner deliberately does not read company metadata.
         accession_url=None,
-        content_sha256=primary.sha256 if primary is not None else None,
+        content_sha256=artifact.sha256 if artifact is not None else None,
         excerpt=excerpt[:EXCERPT_LIMIT] if excerpt else None,
     )
 
@@ -229,6 +236,7 @@ def normalize_fact(
     parser_version: str,
     *,
     extraction_method: str = EDGARTOOLS_FACT_METHOD,
+    evidence_path: Path | None = None,
 ) -> FactDraft | None:
     """Normalize one raw fact into a :class:`FactDraft`.
 
@@ -242,7 +250,7 @@ def normalize_fact(
         return None
 
     start = _to_date(raw_fact.get("period_start"))
-    end = _to_date(raw_fact.get("period_end"))
+    end = _to_date(raw_fact.get("period_end")) or _to_date(raw_fact.get("period_instant"))
     numeric = _to_float(raw_fact.get("numeric_value"))
     if numeric is None:
         numeric = _to_float(raw_fact.get("value")) if _unit_of(raw_fact) else None
@@ -261,7 +269,12 @@ def normalize_fact(
         period_type=period_type(start, end),
         dimensions=_dimensions_of(raw_fact),
         extraction_method=extraction_method,
-        evidence=_evidence_for(filing, locator_value=concept, excerpt=raw_value),
+        evidence=_evidence_for(
+            filing,
+            locator_value=concept,
+            excerpt=raw_value,
+            source_path=evidence_path,
+        ),
     )
 
 
@@ -343,6 +356,7 @@ def normalize_statement_rows(
         for period_position, period_key in enumerate(_ordered_period_keys(values)):
             start, end = _period_bounds(period_key)
             value = values[period_key]
+            numeric_value = _to_float(value)
             drafts.append(
                 StatementDraft(
                     statement_type=statement_type,
@@ -351,7 +365,8 @@ def normalize_statement_rows(
                     section=_normalize_concept_name(_clean_str(row.get("parent"))),
                     depth=_to_int(row.get("level")) or 0,
                     concept=concept,
-                    value_numeric=_to_float(value),
+                    value_numeric=numeric_value,
+                    value_text=None if numeric_value is not None else _clean_str(value),
                     unit=_normalize_unit_ref(units.get(period_key)),
                     start_date=start,
                     end_date=end,
@@ -786,6 +801,7 @@ class EdgarToolsAdapter:
                     filing,
                     self.parser_version,
                     extraction_method=RAW_XBRL_FACT_METHOD,
+                    evidence_path=path,
                 )
                 if draft is not None:
                     output.facts.append(draft)
