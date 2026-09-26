@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xbrli:xbrl
+  xmlns:xbrli="http://www.xbrl.org/2003/instance"
+  xmlns:xbrldi="http://xbrl.org/2006/xbrldi"
+  xmlns:link="http://www.xbrl.org/2003/linkbase"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:us-gaap="http://fasb.org/us-gaap/2024"
+  xmlns:dei="http://xbrl.sec.gov/dei/2024"
+  xmlns:acme="http://www.acme.example/20240331"
+  xmlns:iso4217="http://www.xbrl.org/2003/iso4217">
+  <link:schemaRef xlink:type="simple" xlink:href="acme-20240331.xsd" />
+  <xbrli:context id="c-q1">
+    <xbrli:entity>
+      <xbrli:identifier scheme="http://www.sec.gov/CIK">0000000001</xbrli:identifier>
+    </xbrli:entity>
+    <xbrli:period>
+      <xbrli:startDate>2024-01-01</xbrli:startDate>
+      <xbrli:endDate>2024-03-31</xbrli:endDate>
+    </xbrli:period>
+  </xbrli:context>
+  <xbrli:context id="c-instant">
+    <xbrli:entity>
+      <xbrli:identifier scheme="http://www.sec.gov/CIK">0000000001</xbrli:identifier>
+    </xbrli:entity>
+    <xbrli:period>
+      <xbrli:instant>2024-03-31</xbrli:instant>
+    </xbrli:period>
+  </xbrli:context>
+  <xbrli:context id="c-segment">
+    <xbrli:entity>
+      <xbrli:identifier scheme="http://www.sec.gov/CIK">0000000001</xbrli:identifier>
+      <xbrli:segment>
+        <xbrldi:explicitMember dimension="us-gaap:StatementBusinessSegmentsAxis">acme:CloudMember</xbrldi:explicitMember>
+      </xbrli:segment>
+    </xbrli:entity>
+    <xbrli:period>
+      <xbrli:startDate>2024-01-01</xbrli:startDate>
+      <xbrli:endDate>2024-03-31</xbrli:endDate>
+    </xbrli:period>
+  </xbrli:context>
+  <xbrli:unit id="U_USD">
+    <xbrli:measure>iso4217:USD</xbrli:measure>
+  </xbrli:unit>
+  <dei:DocumentType contextRef="c-q1">10-Q</dei:DocumentType>
+  <us-gaap:Revenues contextRef="c-q1" unitRef="U_USD" decimals="-6">69632000000</us-gaap:Revenues>
+  <us-gaap:Revenues contextRef="c-segment" unitRef="U_USD" decimals="-6">25100000000</us-gaap:Revenues>
+  <us-gaap:Assets contextRef="c-instant" unitRef="U_USD" decimals="-6">484275000000</us-gaap:Assets>
+  <us-gaap:NetIncomeLoss contextRef="c-q1" unitRef="U_USD" decimals="-6">21939000000</us-gaap:NetIncomeLoss>
+</xbrli:xbrl>

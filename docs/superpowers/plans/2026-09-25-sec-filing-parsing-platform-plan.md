@@ -276,7 +276,7 @@ git commit -m "feat: scan local SEC filing archives"
 - `normalize_fact(raw_fact: object, filing: LocalFiling, parser_version: str) -> FactDraft`.
 - `period_type(start: date | None, end: date | None) -> Literal[...]`.
 
-- [ ] **Step 1: Write failing adapter tests against a fixture double**
+- [x] **Step 1: Write failing adapter tests against a fixture double**
 
 ```python
 def test_adapter_preserves_period_identity_and_dimensions(fake_edgartools, local_filing):
@@ -292,39 +292,36 @@ def test_ytd_is_not_classified_as_quarter():
     assert period_type(date(2024, 1, 1), date(2024, 9, 30)) == "ytd"
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `pytest tests/unit/test_edgartools_adapter.py -q`
 
-Expected: FAIL because the adapter is absent.
+Result: Failed as expected (ModuleNotFoundError: No module named 'fdc.parsers')
+before implementation, then passed all 27 tests after implementation.
 
-- [ ] **Step 3: Probe and pin the installed EdgarTools API**
+- [x] **Step 3: Probe and pin the installed EdgarTools API**
 
-Use a checked-in fixture and a small adapter probe to identify the supported
-local-file/package entry point for the pinned EdgarTools release. Keep all
-EdgarTools imports inside `edgartools_adapter.py`; never leak EdgarTools model
-classes into database code. If the release cannot open a local package,
-parse its downloaded XBRL XML/Inline XBRL artifacts through the adapter's
-fallback and record `mode="raw-xbrl-fallback"` in diagnostics.
+Probed installed `edgartools==5.58.0`. Pinned local opener `XBRL.from_directory`,
+facts via `xbrl.facts.get_facts()`, statements via `xbrl.get_statement(...)`.
+Implemented fallback `parse_xbrl_instance` using `lxml` for pure XML/iXBRL
+files when EdgarTools cannot open a package.
 
-- [ ] **Step 4: Implement normalization**
+- [x] **Step 4: Implement normalization**
 
-Map facts and statement rows into `FactDraft`/`StatementDraft`, preserve
-namespace/concept/label/unit/decimals/start/end/dimensions/filing metadata,
-classify instant/quarter/annual/YTD using `(start, end)`, and choose no value
-when a raw fact is malformed. Include evidence draft data for each emitted
-fact.
+Implemented `normalize_fact`, `normalize_statement_rows`, `period_type`,
+evidence locator construction, dimension extraction, and malformed fact
+diagnostics in `src/fdc/parsers/edgartools_adapter.py`.
 
-- [ ] **Step 5: Run tests and lint**
+- [x] **Step 5: Run tests and lint**
 
 Run: `pytest tests/unit/test_edgartools_adapter.py -q && ruff check src/fdc/parsers/edgartools_adapter.py`
 
-Expected: PASS offline with the fixture double and no network requests.
+Result: PASS (27 passed in 0.97s, ruff clean, network isolation verified).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
-git add src/fdc/parsers tests/fixtures/edgar tests/unit/test_edgartools_adapter.py pyproject.toml uv.lock
+git add src/fdc/parsers tests/fixtures/edgar tests/unit/test_edgartools_adapter.py
 git commit -m "feat: add EdgarTools XBRL adapter"
 ```
 

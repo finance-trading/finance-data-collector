@@ -1,0 +1,77 @@
+{
+  "IncomeStatement": [
+    {
+      "concept": "us-gaap_IncomeStatementAbstract",
+      "name": "us-gaap_IncomeStatementAbstract",
+      "label": "Income Statement [Abstract]",
+      "level": 0,
+      "values": {},
+      "units": {},
+      "decimals": {},
+      "period_types": {},
+      "is_abstract": true,
+      "has_values": false,
+      "parent": null,
+      "weight": null
+    },
+    {
+      "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "name": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Revenue",
+      "level": 2,
+      "values": {
+        "duration_2024-01-01_2024-03-31": 69632000000.0,
+        "duration_2023-01-01_2023-03-31": 52857000000.0
+      },
+      "units": {
+        "duration_2024-01-01_2024-03-31": "U_USD",
+        "duration_2023-01-01_2023-03-31": "U_USD"
+      },
+      "decimals": {
+        "duration_2024-01-01_2024-03-31": -6,
+        "duration_2023-01-01_2023-03-31": -6
+      },
+      "period_types": {
+        "duration_2024-01-01_2024-03-31": "duration",
+        "duration_2023-01-01_2023-03-31": "duration"
+      },
+      "is_abstract": false,
+      "has_values": true,
+      "parent": "us-gaap_StatementLineItems",
+      "weight": 1.0
+    },
+    {
+      "concept": "us-gaap_OperatingIncomeLoss",
+      "name": "us-gaap_OperatingIncomeLoss",
+      "label": "Operating income",
+      "level": 2,
+      "values": {"duration_2024-01-01_2024-03-31": 27581000000.0},
+      "units": {"duration_2024-01-01_2024-03-31": "U_USD"},
+      "decimals": {"duration_2024-01-01_2024-03-31": -6},
+      "period_types": {"duration_2024-01-01_2024-03-31": "duration"},
+      "is_abstract": false,
+      "has_values": true,
+      "parent": "us-gaap_StatementLineItems",
+      "weight": 1.0
+    }
+  ],
+  "BalanceSheet": [
+    {
+      "concept": "us-gaap_Assets",
+      "name": "us-gaap_Assets",
+      "label": "Total assets",
+      "level": 1,
+      "values": {"instant_2024-03-31": 484275000000.0},
+      "units": {"instant_2024-03-31": "U_USD"},
+      "decimals": {"instant_2024-03-31": -6},
+      "period_types": {"instant_2024-03-31": "instant"},
+      "is_abstract": false,
+      "has_values": true,
+      "parent": "us-gaap_StatementOfFinancialPositionAbstract",
+      "weight": null
+    }
+  ],
+  "CashFlowStatement": [],
+  "StatementOfEquity": [],
+  "ComprehensiveIncome": []
+}
