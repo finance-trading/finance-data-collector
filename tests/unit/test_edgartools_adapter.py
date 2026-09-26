@@ -19,6 +19,7 @@ import pytest
 
 from fdc.archive import scan_ticker_archive
 from fdc.contracts import (
+    ArtifactRole,
     DiagnosticCode,
     DiagnosticSeverity,
     FactDraft,
@@ -58,6 +59,23 @@ class FakeFactsView:
 
     def get_facts(self) -> list[dict]:
         return [dict(fact) for fact in self._facts]
+
+
+class UnavailableFactsView:
+    def get_facts(self) -> list[dict]:
+        raise RuntimeError("facts unavailable")
+
+
+class ExplodingFact(dict):
+    def get(self, key, default=None):
+        if key == "concept":
+            raise RuntimeError("normalization exploded")
+        return super().get(key, default)
+
+
+class ExplodingFactsView:
+    def get_facts(self) -> list[dict]:
+        return [ExplodingFact(value="1")]
 
 
 class FakeXbrl:
@@ -208,10 +226,12 @@ def test_ytd_is_not_classified_as_quarter():
         (None, None, "other"),
         (None, date(2024, 3, 31), "instant"),
         (date(2024, 1, 1), date(2024, 3, 31), "quarter"),
-        (date(2024, 3, 1), date(2024, 3, 15), "quarter"),
+        (date(2024, 3, 1), date(2024, 3, 15), "other"),
         (date(2024, 1, 1), date(2024, 6, 30), "ytd"),
+        (date(2024, 1, 1), date(2024, 10, 31), "ytd"),
         (date(2024, 1, 1), date(2024, 12, 31), "annual"),
         (date(2023, 7, 1), date(2024, 6, 30), "annual"),
+        (date(2023, 1, 1), date(2024, 6, 30), "other"),
     ],
 )
 def test_period_type_classification(start, end, expected):
@@ -248,16 +268,21 @@ def test_ytd_fact_is_marked_as_ytd(fake_edgartools, local_filing):
     assert ytd.end_date == date(2024, 3, 31)
 
 
-def test_every_fact_carries_evidence_to_the_primary_document(fake_edgartools, local_filing):
+def test_every_fact_carries_source_and_fact_identity_evidence(fake_edgartools, local_filing):
     output = EdgarToolsAdapter().parse(local_filing)
+    source = next(
+        artifact
+        for artifact in local_filing.artifacts
+        if artifact.role is ArtifactRole.XBRL and artifact.path.suffix == ".xml"
+    )
 
     assert output.facts
     for fact in output.facts:
         assert fact.evidence is not None
         assert fact.evidence.locator_type is LocatorType.XBRL_FACT
-        assert fact.evidence.locator_value == fact.concept
-        assert fact.evidence.relative_path == local_filing.primary_relative_path
-        assert fact.evidence.content_sha256 == local_filing.primary_artifact.sha256
+        assert fact.evidence.locator_value.startswith(f"concept={fact.concept};context=")
+        assert fact.evidence.relative_path == source.relative_path
+        assert fact.evidence.content_sha256 == source.sha256
 
 
 def test_malformed_facts_keep_text_but_never_fabricate_a_number(fake_edgartools, local_filing):
@@ -322,6 +347,45 @@ def test_statements_are_emitted_once_per_period_in_presentation_order(
     assert income[0].section == "us-gaap:StatementLineItems"
     # Abstract presentation rows carry no value and are not stored.
     assert all(row.value_numeric is not None for row in income)
+    assert income[0].evidence.locator_value.endswith(
+        ";period=duration_2024-01-01_2024-03-31"
+    )
+
+
+def test_statement_rows_preserve_all_dimensions_per_period(local_filing):
+    statements = load_statements()
+    statements["IncomeStatement"][1]["dimension_metadata"] = [
+        {
+            "dimension": "us-gaap:StatementBusinessSegmentsAxis",
+            "member": "acme:CloudMember",
+            "member_label": "Cloud",
+        },
+        {
+            "dimension": "srt:ProductOrServiceAxis",
+            "member": "acme:SubscriptionMember",
+            "member_label": "Subscription",
+        },
+    ]
+    xbrl = FakeXbrl(load_facts(), statements)
+
+    output = EdgarToolsAdapter(
+        statement_types=("IncomeStatement",), opener=lambda directory: xbrl
+    ).parse(local_filing)
+    revenue_rows = [
+        row
+        for row in output.statements
+        if row.concept == "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax"
+    ]
+
+    assert revenue_rows
+    assert all(
+        row.dimensions
+        == {
+            "us-gaap:StatementBusinessSegmentsAxis": "acme:CloudMember",
+            "srt:ProductOrServiceAxis": "acme:SubscriptionMember",
+        }
+        for row in revenue_rows
+    )
 
 
 def test_balance_sheet_rows_keep_instant_periods(fake_edgartools, local_filing):
@@ -375,6 +439,45 @@ def test_missing_statements_are_explicit_and_partial(
     assert {diagnostic.scope for diagnostic in output.diagnostics} >= set(DEFAULT_STATEMENT_TYPES)
 
 
+def test_fact_collection_error_is_not_reported_as_success(local_filing):
+    xbrl = FakeXbrl(load_facts(), load_statements())
+    xbrl.facts = UnavailableFactsView()
+
+    output = EdgarToolsAdapter(
+        statement_types=("IncomeStatement",), opener=lambda directory: xbrl
+    ).parse(local_filing)
+
+    assert output.parse_mode == "edgartools-local"
+    assert output.status is ParseStatus.PARTIAL
+    assert output.statements
+    assert any(
+        diagnostic.code is DiagnosticCode.XBRL_UNAVAILABLE
+        and diagnostic.severity is DiagnosticSeverity.ERROR
+        for diagnostic in output.diagnostics
+    )
+
+
+def test_normalization_error_stays_in_edgartools_mode(local_filing):
+    xbrl = FakeXbrl([], {})
+    xbrl.facts = ExplodingFactsView()
+
+    output = EdgarToolsAdapter(statement_types=(), opener=lambda directory: xbrl).parse(
+        local_filing
+    )
+
+    assert output.parse_mode == "edgartools-local"
+    assert output.status is ParseStatus.FAILED
+    assert any(
+        diagnostic.code is DiagnosticCode.FACT_MALFORMED
+        and diagnostic.scope == "normalization"
+        for diagnostic in output.diagnostics
+    )
+    assert not any(
+        diagnostic.code is DiagnosticCode.RAW_XBRL_FALLBACK
+        for diagnostic in output.diagnostics
+    )
+
+
 def test_adapter_falls_back_to_raw_xbrl_instances(fake_edgartools_unavailable, instance_filing):
     output = EdgarToolsAdapter().parse(instance_filing)
     revenues = [fact for fact in output.facts if fact.concept == "us-gaap:Revenues"]
@@ -398,7 +501,10 @@ def test_adapter_falls_back_to_raw_xbrl_instances(fake_edgartools_unavailable, i
     assert plain.decimals == -6
 
     dimensioned = next(fact for fact in revenues if fact.dimensions)
-    assert dimensioned.dimensions == {"us-gaap:StatementBusinessSegmentsAxis": "acme:CloudMember"}
+    assert dimensioned.dimensions == {
+        "us-gaap:StatementBusinessSegmentsAxis": "acme:CloudMember",
+        "srt:ProductOrServiceAxis": "acme:SubscriptionMember",
+    }
     assert dimensioned.value_numeric == 25100000000.0
 
     assets = next(fact for fact in output.facts if fact.concept == "us-gaap:Assets")
@@ -423,13 +529,29 @@ def test_fallback_evidence_points_to_the_xbrl_instance(
     )
 
     output = EdgarToolsAdapter().parse(filing)
-    revenue = next(fact for fact in output.facts if fact.concept == "us-gaap:Revenues")
+    revenues = [fact for fact in output.facts if fact.concept == "us-gaap:Revenues"]
+    revenue = next(fact for fact in revenues if not fact.dimensions)
     instance = next(
         artifact for artifact in filing.artifacts if artifact.path.name == "acme-20240331.xml"
     )
 
     assert revenue.evidence.relative_path == instance.relative_path
     assert revenue.evidence.content_sha256 == instance.sha256
+    assert len(revenues) == 2
+
+
+def test_fallback_sniffs_inline_xbrl_in_html(fake_edgartools_unavailable, tmp_path):
+    filing = write_local_filing(
+        tmp_path,
+        {"acme-20240331.htm": EDGAR_FIXTURES / "inline_sample.xml"},
+        primary_document="acme-20240331.htm",
+    )
+
+    output = EdgarToolsAdapter().parse(filing)
+
+    assert output.parse_mode == "raw-xbrl-fallback"
+    assert output.status is ParseStatus.PARTIAL
+    assert any(fact.concept == "us-gaap:Revenues" for fact in output.facts)
 
 
 def test_raw_xbrl_fallback_applies_inline_scale_and_sign(
@@ -461,6 +583,68 @@ def test_parse_xbrl_instance_rejects_unparsable_documents(tmp_path):
 
     with pytest.raises(ValueError):
         parse_xbrl_instance(broken)
+
+
+def test_raw_xbrl_preserves_divisional_units(tmp_path):
+    instance = tmp_path / "divisional.xml"
+    instance.write_text(
+        """<?xml version="1.0" encoding="UTF-8"?>
+<xbrli:xbrl xmlns:xbrli="http://www.xbrl.org/2003/instance"
+  xmlns:us-gaap="http://fasb.org/us-gaap/2024"
+  xmlns:iso4217="http://www.xbrl.org/2003/iso4217">
+  <xbrli:context id="c1">
+    <xbrli:entity><xbrli:identifier scheme="test">1</xbrli:identifier></xbrli:entity>
+    <xbrli:period>
+      <xbrli:startDate>2024-01-01</xbrli:startDate>
+      <xbrli:endDate>2024-03-31</xbrli:endDate>
+    </xbrli:period>
+  </xbrli:context>
+  <xbrli:unit id="usd-per-share">
+    <xbrli:divide>
+      <xbrli:unitNumerator>
+        <xbrli:measure>iso4217:USD</xbrli:measure>
+      </xbrli:unitNumerator>
+      <xbrli:unitDenominator>
+        <xbrli:measure>xbrli:shares</xbrli:measure>
+      </xbrli:unitDenominator>
+    </xbrli:divide>
+  </xbrli:unit>
+  <us-gaap:EarningsPerShareBasic
+    contextRef="c1" unitRef="usd-per-share" decimals="2"
+  >3.25</us-gaap:EarningsPerShareBasic>
+</xbrli:xbrl>"""
+    )
+
+    facts = parse_xbrl_instance(instance)
+
+    assert facts[0]["unit_ref"] == "USD/xbrli:shares"
+
+
+def test_raw_fallback_marks_malformed_numeric_facts(fake_edgartools_unavailable, tmp_path):
+    source = (EDGAR_FIXTURES / "instance_sample.xml").read_text()
+    malformed = tmp_path / "malformed-source.xml"
+    malformed.write_text(
+        source.replace(
+            "</xbrli:xbrl>",
+            '<us-gaap:GoodwillImpairmentLoss contextRef="c-q1" '
+            'unitRef="U_USD" decimals="-6">not-a-number'
+            "</us-gaap:GoodwillImpairmentLoss></xbrli:xbrl>",
+        )
+    )
+    filing = write_local_filing(tmp_path / "archive", {"malformed.xml": malformed})
+
+    output = EdgarToolsAdapter().parse(filing)
+    fact = next(
+        item for item in output.facts if item.concept == "us-gaap:GoodwillImpairmentLoss"
+    )
+
+    assert fact.value_numeric is None
+    assert fact.value_text == "not-a-number"
+    assert any(
+        diagnostic.code is DiagnosticCode.FACT_MALFORMED
+        and diagnostic.relative_path == fact.evidence.relative_path
+        for diagnostic in output.diagnostics
+    )
 
 
 def test_normalize_fact_returns_none_without_a_concept(local_filing):
@@ -515,7 +699,8 @@ def test_real_edgartools_parses_the_checked_in_local_instance(instance_filing):
     assert assets.end_date == date(2024, 3, 31)
     assert assets.period_type == "instant"
     assert revenue.dimensions == {
-        "us-gaap:StatementBusinessSegmentsAxis": "acme:CloudMember"
+        "us-gaap:StatementBusinessSegmentsAxis": "acme:CloudMember",
+        "srt:ProductOrServiceAxis": "acme:SubscriptionMember",
     }
 
 

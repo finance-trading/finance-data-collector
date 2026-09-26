@@ -23,6 +23,7 @@ from pathlib import Path
 from typing import Any, Literal
 
 from fdc.contracts import (
+    ArtifactRole,
     DiagnosticCode,
     DiagnosticSeverity,
     EvidenceDraft,
@@ -68,6 +69,12 @@ LINKBASE_SUFFIXES = ("_cal.xml", "_def.xml", "_lab.xml", "_pre.xml")
 #: Markers that identify a file as an XBRL instance document.
 INSTANCE_MARKERS = ("<xbrli:xbrl", "<ix:", "nonfraction", "nonnumeric")
 
+# SEC inline XBRL is commonly stored as the primary HTML/XHTML document.
+INSTANCE_EXTENSIONS = frozenset({".xml", ".htm", ".html", ".xhtml"})
+
+QUARTER_DAY_RANGE = range(75, 101)
+ANNUAL_DAY_RANGE = range(350, 381)
+
 #: Bytes read when sniffing whether an artifact is an XBRL instance.
 SNIFF_BYTES = 8192
 
@@ -109,9 +116,8 @@ def xbrl_from_directory(directory: Path) -> Any:
 def period_type(start: date | None, end: date | None) -> PeriodTypeLiteral:
     """Classify a fact period from its start and end dates.
 
-    An instant has no start date, a quarter covers up to ~100 days, a year at
-    least 300 days, and everything in between — including a nine-month
-    year-to-date — stays ``ytd`` so it is never reported as a quarter.
+    Quarter and annual labels use bounded windows so short transition stubs and
+    ten-month year-to-date observations are not promoted to a canonical period.
     """
 
     if end is None:
@@ -119,11 +125,13 @@ def period_type(start: date | None, end: date | None) -> PeriodTypeLiteral:
     if start is None:
         return "instant"
     days = (end - start).days + 1
-    if days >= 300:
-        return "annual"
-    if days <= 100:
+    if days in QUARTER_DAY_RANGE:
         return "quarter"
-    return "ytd"
+    if days in ANNUAL_DAY_RANGE:
+        return "annual"
+    if QUARTER_DAY_RANGE.stop <= days < ANNUAL_DAY_RANGE.start:
+        return "ytd"
+    return "other"
 
 
 def _clean_str(value: Any) -> str | None:
@@ -192,18 +200,63 @@ def _unit_of(raw_fact: Mapping[str, Any]) -> str | None:
 
 
 def _dimensions_of(raw_fact: Mapping[str, Any]) -> dict[str, str]:
-    """Return the axis/member map of a raw fact.
+    """Return every axis/member pair exposed by EdgarTools or raw XBRL."""
 
-    EdgarTools reports the primary dimension as ``dimension``/``member``; extra
-    ``dim_*`` axes of exotic facts are not reconstructed because their names
-    cannot be split back into prefixed QNames reliably.
-    """
+    dimensions: dict[str, str] = {}
 
-    axis = _clean_str(raw_fact.get("dimension"))
-    member = _clean_str(raw_fact.get("member"))
-    if axis is None or member is None:
-        return {}
-    return {axis: member}
+    structured = raw_fact.get("dimensions")
+    if isinstance(structured, Mapping):
+        for raw_axis, raw_member in structured.items():
+            axis = _clean_str(raw_axis)
+            member = _clean_str(raw_member)
+            if axis is not None and member is not None:
+                dimensions[axis] = member
+
+    metadata = raw_fact.get("dimension_metadata")
+    if isinstance(metadata, Sequence) and not isinstance(metadata, str | bytes):
+        for item in metadata:
+            if not isinstance(item, Mapping):
+                continue
+            axis = _clean_str(item.get("dimension"))
+            member = _clean_str(item.get("member"))
+            if axis is not None and member is not None:
+                dimensions[axis] = member
+
+    for key, raw_member in raw_fact.items():
+        if not isinstance(key, str) or not key.startswith("dim_"):
+            continue
+        encoded_axis = key.removeprefix("dim_")
+        prefix, separator, local_name = encoded_axis.partition("_")
+        axis = f"{prefix}:{local_name}" if separator else encoded_axis
+        member = _clean_str(raw_member)
+        if member is not None:
+            dimensions[axis] = member
+
+    axis = _clean_str(raw_fact.get("dimension")) or _clean_str(
+        raw_fact.get("dimension_axis")
+    )
+    member = _clean_str(raw_fact.get("member")) or _clean_str(
+        raw_fact.get("dimension_member")
+    )
+    if axis is not None and member is not None:
+        dimensions[axis] = member
+    return dimensions
+
+
+def _fact_locator(raw_fact: Mapping[str, Any], concept: str) -> str:
+    """Build a stable locator that distinguishes repeated concepts."""
+
+    parts = [f"concept={concept}"]
+    context_ref = _clean_str(raw_fact.get("context_ref"))
+    fact_id = _clean_str(raw_fact.get("fact_id"))
+    fact_key = _clean_str(raw_fact.get("fact_key"))
+    if context_ref is not None:
+        parts.append(f"context={context_ref}")
+    if fact_id is not None:
+        parts.append(f"fact={fact_id}")
+    elif fact_key is not None:
+        parts.append(f"fact_key={fact_key}")
+    return ";".join(parts)
 
 
 def _evidence_for(
@@ -271,7 +324,7 @@ def normalize_fact(
         extraction_method=extraction_method,
         evidence=_evidence_for(
             filing,
-            locator_value=concept,
+            locator_value=_fact_locator(raw_fact, concept),
             excerpt=raw_value,
             source_path=evidence_path,
         ),
@@ -333,6 +386,7 @@ def normalize_statement_rows(
     statement_type: str,
     filing: LocalFiling,
     parser_version: str,
+    evidence_path: Path | None = None,
 ) -> list[StatementDraft]:
     """Expand presentation rows into one draft per valued period.
 
@@ -357,6 +411,12 @@ def normalize_statement_rows(
             start, end = _period_bounds(period_key)
             value = values[period_key]
             numeric_value = _to_float(value)
+            dimensions = _dimensions_of(row)
+            period_dimensions = row.get("dimensions")
+            if isinstance(period_dimensions, Mapping):
+                selected = period_dimensions.get(period_key)
+                if isinstance(selected, Mapping):
+                    dimensions = _dimensions_of({"dimensions": selected})
             drafts.append(
                 StatementDraft(
                     statement_type=statement_type,
@@ -371,10 +431,15 @@ def normalize_statement_rows(
                     start_date=start,
                     end_date=end,
                     period_type=period_type(start, end),
+                    dimensions=dimensions,
                     evidence=_evidence_for(
                         filing,
-                        locator_value=concept or f"{statement_type}:{label or row_index}",
+                        locator_value=(
+                            f"concept={concept or label or row_index};"
+                            f"statement={statement_type};period={period_key}"
+                        ),
                         excerpt=str(value),
+                        source_path=evidence_path,
                     ),
                 )
             )
@@ -433,7 +498,22 @@ def _parse_contexts(root) -> dict[str, dict[str, Any]]:
 
 
 def _parse_units(root) -> dict[str, str]:
-    """Map unit ids to their primary measure, e.g. ``U_USD`` -> ``USD``."""
+    """Map unit ids to lossless simple or divisional measure expressions."""
+
+    def normalized_measure(value: Any) -> str | None:
+        measure = _clean_str(value)
+        if measure is None:
+            return None
+        return measure.partition(":")[2] if measure.startswith("iso4217:") else measure
+
+    def measures_below(element) -> list[str]:
+        values = []
+        for child, child_qname in _iter_elements(element):
+            if child_qname.namespace == XBRLI_NS and child_qname.localname == "measure":
+                measure = normalized_measure(child.text)
+                if measure is not None:
+                    values.append(measure)
+        return values
 
     units: dict[str, str] = {}
     for element, qname in _iter_elements(root):
@@ -442,16 +522,45 @@ def _parse_units(root) -> dict[str, str]:
         unit_id = element.get("id")
         if not unit_id:
             continue
-        measures = [
-            _clean_str(child.text)
-            for child, child_qname in _iter_elements(element)
-            if child_qname.localname == "measure"
-        ]
-        measure = next((item for item in measures if item), None)
-        if measure is None:
+        divide = next(
+            (
+                child
+                for child, child_qname in _iter_elements(element)
+                if child_qname.namespace == XBRLI_NS and child_qname.localname == "divide"
+            ),
+            None,
+        )
+        if divide is not None:
+            numerator = next(
+                (
+                    child
+                    for child, child_qname in _iter_elements(divide)
+                    if child_qname.namespace == XBRLI_NS
+                    and child_qname.localname == "unitNumerator"
+                ),
+                None,
+            )
+            denominator = next(
+                (
+                    child
+                    for child, child_qname in _iter_elements(divide)
+                    if child_qname.namespace == XBRLI_NS
+                    and child_qname.localname == "unitDenominator"
+                ),
+                None,
+            )
+            numerator_measures = measures_below(numerator) if numerator is not None else []
+            denominator_measures = measures_below(denominator) if denominator is not None else []
+            if numerator_measures and denominator_measures:
+                units[unit_id] = (
+                    f"{'*'.join(numerator_measures)}/{'*'.join(denominator_measures)}"
+                )
             continue
-        # ``iso4217:USD`` -> ``USD``; divisional units keep their shape.
-        units[unit_id] = measure.partition(":")[2] if measure.startswith("iso4217:") else measure
+
+        measures = measures_below(element)
+        if not measures:
+            continue
+        units[unit_id] = "*".join(measures)
     return units
 
 
@@ -486,6 +595,7 @@ def _raw_fact(
         "is_dimensioned": is_dimensioned,
         "dimension": axis,
         "member": dimensions.get(axis) if is_dimensioned else None,
+        "dimensions": dict(dimensions),
         "label": None,
         "original_label": None,
         "fact_id": fact_id,
@@ -604,7 +714,7 @@ def parse_xbrl_instance(path: Path) -> list[dict[str, Any]]:
 def looks_like_instance(path: Path) -> bool:
     """Sniff whether an artifact is an XBRL instance document."""
 
-    if path.suffix.lower() != ".xml":
+    if path.suffix.lower() not in INSTANCE_EXTENSIONS:
         return False
     if path.name.lower().endswith(LINKBASE_SUFFIXES):
         return False
@@ -617,14 +727,61 @@ def looks_like_instance(path: Path) -> bool:
 
 
 def _find_instance_artifacts(filing: LocalFiling) -> list[Path]:
-    """Return local XML artifacts that can be parsed as XBRL instances."""
+    """Return eligible local XML or inline-HTML XBRL instance artifacts."""
 
     candidates: list[Path] = []
     for artifact in filing.artifacts:
         path = artifact.path
-        if looks_like_instance(path):
+        if artifact.parse_eligible and looks_like_instance(path):
             candidates.append(path)
-    return candidates
+    return sorted(candidates, key=_instance_priority)
+
+
+def _instance_priority(path: Path) -> tuple[int, str]:
+    """Prefer classic instances over equivalent inline documents."""
+
+    try:
+        with path.open("rb") as handle:
+            head = handle.read(SNIFF_BYTES).decode("utf-8", errors="replace").lower()
+    except OSError:
+        head = ""
+    is_inline = "<ix:" in head or "nonfraction" in head or "nonnumeric" in head
+    return (1 if is_inline else 0, path.as_posix())
+
+
+def _evidence_source_path(filing: LocalFiling) -> Path | None:
+    """Choose the local instance artifact that backs EdgarTools observations."""
+
+    instances = _find_instance_artifacts(filing)
+    if instances:
+        return instances[0]
+    xbrl_artifacts = sorted(
+        (
+            artifact.path
+            for artifact in filing.artifacts
+            if artifact.role is ArtifactRole.XBRL
+            and artifact.parse_eligible
+            and artifact.path.suffix.lower() == ".xml"
+            and not artifact.path.name.lower().endswith(LINKBASE_SUFFIXES)
+        ),
+        key=lambda path: path.as_posix(),
+    )
+    return xbrl_artifacts[0] if xbrl_artifacts else None
+
+
+def _fact_identity(draft: FactDraft) -> tuple[Any, ...]:
+    """Semantic identity used to collapse equivalent inline/classic facts."""
+
+    return (
+        draft.concept,
+        draft.value_numeric,
+        draft.value_text,
+        draft.unit,
+        draft.decimals,
+        draft.start_date,
+        draft.end_date,
+        tuple(sorted((str(axis), str(member)) for axis, member in draft.dimensions.items())),
+    )
 
 
 class EdgarToolsAdapter:
@@ -652,9 +809,25 @@ class EdgarToolsAdapter:
         opener = self._opener or xbrl_from_directory
         try:
             xbrl = opener(filing.package_dir)
-            return self._parse_with_edgartools(xbrl, filing, edgar_version)
         except Exception as error:
             return self._parse_with_fallback(filing, edgar_version, error)
+        try:
+            return self._parse_with_edgartools(xbrl, filing, edgar_version)
+        except Exception as error:
+            return ParserOutput(
+                status=ParseStatus.FAILED,
+                parser_version=self.parser_version,
+                parse_mode=PARSE_MODE_EDGARTOOLS,
+                edgartools_version=edgar_version,
+                diagnostics=[
+                    ParserDiagnostic(
+                        code=DiagnosticCode.FACT_MALFORMED,
+                        detail=f"EdgarTools normalization failed: {error}",
+                        scope="normalization",
+                        severity=DiagnosticSeverity.ERROR,
+                    )
+                ],
+            )
 
     def _parse_with_edgartools(
         self,
@@ -668,11 +841,15 @@ class EdgarToolsAdapter:
             parse_mode=PARSE_MODE_EDGARTOOLS,
             edgartools_version=edgar_version,
         )
+        evidence_path = _evidence_source_path(filing)
+        seen_facts: set[tuple[Any, ...]] = set()
+        facts_failed = False
 
         try:
             raw_facts = xbrl.facts.get_facts()
         except Exception as error:  # pragma: no cover - defensive
             raw_facts = []
+            facts_failed = True
             output.diagnostics.append(
                 ParserDiagnostic(
                     code=DiagnosticCode.XBRL_UNAVAILABLE,
@@ -685,7 +862,12 @@ class EdgarToolsAdapter:
         for raw_fact in raw_facts:
             if not isinstance(raw_fact, Mapping):
                 continue
-            draft = normalize_fact(raw_fact, filing, self.parser_version)
+            draft = normalize_fact(
+                raw_fact,
+                filing,
+                self.parser_version,
+                evidence_path=evidence_path,
+            )
             if draft is None:
                 output.diagnostics.append(
                     ParserDiagnostic(
@@ -706,7 +888,10 @@ class EdgarToolsAdapter:
                         severity=DiagnosticSeverity.WARNING,
                     )
                 )
-            output.facts.append(draft)
+            identity = _fact_identity(draft)
+            if identity not in seen_facts:
+                seen_facts.add(identity)
+                output.facts.append(draft)
 
         statement_failures = 0
         for statement_type in self.statement_types:
@@ -717,6 +902,7 @@ class EdgarToolsAdapter:
                     statement_type=statement_type,
                     filing=filing,
                     parser_version=self.parser_version,
+                    evidence_path=evidence_path,
                 )
                 output.statements.extend(drafts)
             except Exception as error:
@@ -730,7 +916,9 @@ class EdgarToolsAdapter:
                     )
                 )
 
-        if statement_failures == len(self.statement_types) and output.facts:
+        if facts_failed:
+            output.status = ParseStatus.PARTIAL if output.statements else ParseStatus.FAILED
+        elif statement_failures == len(self.statement_types) and output.facts:
             output.status = ParseStatus.PARTIAL
         elif not output.facts and not output.statements:
             output.status = ParseStatus.FAILED
@@ -764,7 +952,7 @@ class EdgarToolsAdapter:
             output.diagnostics.append(
                 ParserDiagnostic(
                     code=DiagnosticCode.XBRL_UNAVAILABLE,
-                    detail="no XML artifacts matching XBRL instance patterns in package",
+                    detail="no local XML/HTML artifacts matching XBRL instance patterns in package",
                     scope="fallback",
                     severity=DiagnosticSeverity.ERROR,
                 )
@@ -780,6 +968,7 @@ class EdgarToolsAdapter:
             )
         )
 
+        seen_facts: set[tuple[Any, ...]] = set()
         for path in instances:
             try:
                 raw_facts = parse_xbrl_instance(path)
@@ -803,7 +992,32 @@ class EdgarToolsAdapter:
                     extraction_method=RAW_XBRL_FACT_METHOD,
                     evidence_path=path,
                 )
-                if draft is not None:
+                if draft is None:
+                    output.diagnostics.append(
+                        ParserDiagnostic(
+                            code=DiagnosticCode.FACT_MALFORMED,
+                            detail="raw fallback fact has no concept name",
+                            scope="fallback",
+                            relative_path=path.relative_to(
+                                filing.package_dir.parent.parent
+                            ).as_posix(),
+                            severity=DiagnosticSeverity.WARNING,
+                        )
+                    )
+                    continue
+                if _fact_is_malformed(raw_fact, draft):
+                    output.diagnostics.append(
+                        ParserDiagnostic(
+                            code=DiagnosticCode.FACT_MALFORMED,
+                            detail=f"fact {draft.concept} carried no usable numeric value",
+                            scope="fallback",
+                            relative_path=draft.evidence.relative_path,
+                            severity=DiagnosticSeverity.WARNING,
+                        )
+                    )
+                identity = _fact_identity(draft)
+                if identity not in seen_facts:
+                    seen_facts.add(identity)
                     output.facts.append(draft)
 
         if not output.facts:
