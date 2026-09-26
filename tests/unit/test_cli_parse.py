@@ -2,12 +2,17 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from types import SimpleNamespace
 from uuid import uuid4
 
+import pytest
 from typer.testing import CliRunner
 
-from fdc.cli import app
+from fdc.cli import app, parse_accession
+from fdc.sync import parse_ticker as sync_parse_ticker
+
+FIXTURE_ROOT = Path(__file__).resolve().parents[1] / "fixtures" / "filings"
 
 
 def _fake_run(**overrides):
@@ -82,6 +87,94 @@ def test_parse_filings_cli_all_scope_calls_parse_all(monkeypatch):
     assert called["force"] is True
     assert "status=partial" in result.output
     assert "failure=1" in result.output
+
+
+def test_parse_filings_cli_rejects_unsupported_form_before_starting_run(monkeypatch):
+    """Regression: unsupported forms must not become successful empty runs."""
+
+    monkeypatch.setattr("fdc.cli.get_session_factory", lambda *_args: "factory")
+
+    called = False
+
+    def unexpected(**_kwargs):
+        nonlocal called
+        called = True
+        raise AssertionError("sync was called")
+
+    monkeypatch.setattr("fdc.cli.parse_ticker", unexpected)
+
+    result = CliRunner().invoke(
+        app, ["parse", "filings", "--ticker", "MSFT", "--forms", "8-K"]
+    )
+
+    assert result.exit_code != 0
+    assert called is False
+    assert "unsupported" in result.output.lower()
+
+
+def test_sync_passes_validated_forms_into_archive_scan(
+    engine, session_factory, monkeypatch
+):
+    """Regression: scanning all forms then filtering wastes work and hides bad input."""
+
+    from fdc.archive import scan_ticker_archive
+
+    called = {}
+
+    def capture_scan(sec_root, ticker, forms=None):
+        called["forms"] = forms
+        return scan_ticker_archive(sec_root, ticker, forms=forms)
+
+    monkeypatch.setattr("fdc.sync.scan_ticker_archive", capture_scan)
+    monkeypatch.setattr("fdc.sync.select_pending_filings", lambda *_args, **_kwargs: [])
+
+    run = sync_parse_ticker(
+        session_factory,
+        "MSFT",
+        FIXTURE_ROOT,
+        forms={"10-K"},
+    )
+
+    assert called["forms"] == {"10-K"}
+    assert run.command_metadata["forms"] == ["10-K"]
+
+
+def test_sync_rejects_unsupported_forms_without_scanning(
+    engine, session_factory, monkeypatch
+):
+    """Regression: non-CLI callers must receive the same supported-form guard."""
+
+    def unexpected(*_args, **_kwargs):
+        raise AssertionError("scanner must not run for unsupported form input")
+
+    monkeypatch.setattr("fdc.sync.scan_ticker_archive", unexpected)
+
+    with pytest.raises(ValueError, match="unsupported"):
+        sync_parse_ticker(
+            session_factory,
+            "MSFT",
+            FIXTURE_ROOT,
+            forms={"8-K"},
+        )
+
+
+def test_parse_accession_persists_filing_scope(
+    engine, session_factory, monkeypatch
+):
+    """Regression: accession operations must not be recorded as ticker runs."""
+
+    monkeypatch.setattr("fdc.sync.select_pending_filings", lambda *_args, **_kwargs: [])
+
+    run = parse_accession(
+        session_factory=session_factory,
+        accession="000000000024000001",
+        sec_root=FIXTURE_ROOT,
+        force=False,
+        parser_version=None,
+    )
+
+    assert run.scope_type == "filing"
+    assert run.scope_value == "0000000000-24-000001"
 
 
 def test_parse_filing_cli_passes_accession_and_prints_explicit_failure(monkeypatch):

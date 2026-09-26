@@ -431,16 +431,14 @@ def list_filings(
 def get_filing(accession: str) -> FilingView:
     with _session_scope() as session:
         filing, issuer = _filing(session, accession)
-        result = _latest_parse(session, filing.id)
+        result = _current_parse(session, filing)
         parse = ParseView(
-            status=result.status if result is not None else "unavailable",
-            parser_version=result.parser_version if result is not None else None,
-            parser_modules=result.parser_modules if result is not None else None,
-            edgartools_version=result.edgartools_version if result is not None else None,
-            parse_mode=result.parse_mode if result is not None else None,
-            diagnostics=(
-                result.diagnostics if result is not None else {"parse_result": "missing"}
-            ),
+            status=result.status,
+            parser_version=result.parser_version,
+            parser_modules=result.parser_modules,
+            edgartools_version=result.edgartools_version,
+            parse_mode=result.parse_mode,
+            diagnostics=result.diagnostics,
         )
         return FilingView(
             accession=filing.accession_number,
@@ -589,18 +587,23 @@ def get_tables(accession: str, table_type: str | None) -> TableView:
         ).all()
         if not rows:
             raise _unavailable(filing, result, "tables", normalized_type)
-        failures = [row for row in rows if row.status == "failed"]
-        parsed = [row for row in rows if row.status == "parsed"]
-        if failures and not parsed:
+        non_success = [row for row in rows if row.status != "parsed"]
+        state_diagnostics = {
+            "tables": [
+                {"status": row.status, "diagnostics": row.diagnostics}
+                for row in non_success
+            ]
+        }
+        if any(row.status == "failed" for row in non_success):
             raise ReadServiceError(
-                422, "failed", "table extraction failed", failures[0].diagnostics
+                422, "failed", "one or more table extractions failed", state_diagnostics
             )
-        if not parsed:
+        if non_success:
             raise ReadServiceError(
                 409,
                 "unavailable",
-                "table extraction is unavailable",
-                {"rows": [row.diagnostics for row in rows]},
+                "one or more table extractions are unavailable",
+                state_diagnostics,
             )
         return TableView(
             accession=filing.accession_number,
@@ -624,7 +627,7 @@ def get_tables(accession: str, table_type: str | None) -> TableView:
                     parser_version=row.parser_version,
                     evidence=_evidence(session, filing, row.evidence_locator_id),
                 )
-                for row in parsed
+                for row in rows
             ],
         )
 

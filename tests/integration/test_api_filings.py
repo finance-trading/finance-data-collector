@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import asyncio
 from datetime import UTC, date, datetime
 
+import httpx
 import pytest
-from fastapi.testclient import TestClient
+from sqlalchemy import select
 
 from fdc.api import app
 from fdc.models import (
@@ -219,8 +221,19 @@ def seeded_database(session, database_url, monkeypatch):
 
 @pytest.fixture
 def client(seeded_database):
-    with TestClient(app) as test_client:
-        yield test_client
+    class ApiClient:
+        def get(self, path: str) -> httpx.Response:
+            async def request() -> httpx.Response:
+                transport = httpx.ASGITransport(app=app)
+                async with httpx.AsyncClient(
+                    transport=transport,
+                    base_url="http://testserver",
+                ) as async_client:
+                    return await async_client.get(path)
+
+            return asyncio.run(request())
+
+    return ApiClient()
 
 
 def test_api_registers_only_get_read_routes():
@@ -265,6 +278,25 @@ def test_filing_api_exposes_current_parser_identity(client):
     assert response.json()["report_date"] == "2024-06-30"
 
 
+@pytest.mark.parametrize(
+    ("accession", "expected_code", "expected_state"),
+    [
+        (UNPARSED_ACCESSION, 409, "unavailable"),
+        (FAILED_ACCESSION, 422, "failed"),
+    ],
+)
+def test_filing_detail_requires_current_success(
+    client, accession, expected_code, expected_state
+):
+    """Regression: filing detail must not serve failed or unparsed output as 200."""
+
+    response = client.get(f"/api/v1/filings/{accession}")
+
+    assert response.status_code == expected_code
+    assert response.json()["detail"]["status"] == expected_state
+    assert "diagnostics" in response.json()["detail"]
+
+
 def test_filing_api_exposes_fact_and_statement_evidence(client):
     facts = client.get(f"/api/v1/filings/{ACCESSION}/facts?concept=Revenue")
     statements = client.get(
@@ -294,6 +326,78 @@ def test_filing_api_exposes_sections_tables_and_evidence(client, seeded_database
     assert tables.json()["tables"][0]["rows"] == [["2025", "10"]]
     assert evidence.status_code == 200
     assert evidence.json()["content_sha256"] == "d" * 64
+
+
+def _add_mixed_tables(session, *, table_type, non_success_status):
+    current = session.scalar(
+        select(FilingParse).where(
+            FilingParse.parser_version == "parser-v1",
+            FilingParse.is_current.is_(True),
+        )
+    )
+    evidence = session.scalar(select(EvidenceLocator))
+    assert current is not None and evidence is not None
+    common = {
+        "source_filing_id": current.filing_id,
+        "parse_run_id": current.parse_run_id,
+        "filing_parse_id": current.id,
+        "evidence_locator_id": evidence.id,
+        "parser_version": current.parser_version,
+        "table_type": table_type,
+    }
+    session.add_all(
+        [
+            ExtractedTable(
+                **common,
+                order_index=10,
+                rows=[["parsed"]],
+                status="parsed",
+                diagnostics=[],
+            ),
+            ExtractedTable(
+                **common,
+                order_index=11,
+                rows=[],
+                status=non_success_status,
+                diagnostics=[{"code": "TABLE_GAP", "detail": "fixture gap"}],
+            ),
+        ]
+    )
+    session.commit()
+
+
+@pytest.mark.parametrize(
+    ("table_type", "row_status", "expected_code", "expected_state"),
+    [
+        ("mixed_failed", "failed", 422, "failed"),
+        ("mixed_unavailable", "unavailable", 409, "unavailable"),
+    ],
+)
+def test_mixed_table_results_never_discard_non_success_states(
+    client,
+    session,
+    table_type,
+    row_status,
+    expected_code,
+    expected_state,
+):
+    """Regression: one parsed table must not conceal a failed/unavailable peer."""
+
+    _add_mixed_tables(session, table_type=table_type, non_success_status=row_status)
+
+    response = client.get(
+        f"/api/v1/filings/{ACCESSION}/tables?table_type={table_type}"
+    )
+
+    assert response.status_code == expected_code
+    detail = response.json()["detail"]
+    assert detail["status"] == expected_state
+    assert detail["diagnostics"]["tables"] == [
+        {
+            "status": row_status,
+            "diagnostics": [{"code": "TABLE_GAP", "detail": "fixture gap"}],
+        }
+    ]
 
 
 def test_parse_run_api_exposes_counts_and_accession_diagnostics(client, seeded_database):

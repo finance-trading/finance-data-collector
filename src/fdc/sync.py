@@ -8,7 +8,7 @@ from pathlib import Path
 from sqlalchemy import select
 from sqlalchemy.orm import Session, sessionmaker
 
-from fdc.archive import INDEX_FILENAME, scan_ticker_archive
+from fdc.archive import INDEX_FILENAME, PARSER_FORMS, normalize_form, scan_ticker_archive
 from fdc.config import get_settings
 from fdc.contracts import ArchiveScan, LocalFiling
 from fdc.models import Filing, FilingParse, Issuer, ParseRun
@@ -47,6 +47,21 @@ def select_pending_filings(
     ]
 
 
+def _validated_forms(forms: set[str] | None) -> set[str] | None:
+    if forms is None:
+        return None
+    normalized = {value for item in forms if (value := normalize_form(item)) is not None}
+    unsupported = normalized.difference(PARSER_FORMS)
+    if unsupported:
+        raise ValueError(
+            f"unsupported forms: {', '.join(sorted(unsupported))}; "
+            f"supported forms: {', '.join(PARSER_FORMS)}"
+        )
+    if not normalized:
+        raise ValueError("forms must contain at least one supported SEC form")
+    return normalized
+
+
 def parse_ticker(
     session_factory: sessionmaker[Session],
     ticker: str,
@@ -55,28 +70,28 @@ def parse_ticker(
     forms: set[str] | None = None,
     parser_version: str | None = None,
     accessions: set[str] | None = None,
+    scope_type: str = "ticker",
+    scope_value: str | None = None,
 ) -> ParseRun:
     """Incrementally parse one ticker and commit a checkpoint per filing."""
 
+    selected_forms = _validated_forms(forms)
     settings = get_settings()
     if parser_version is not None:
         settings = settings.model_copy(update={"parser_version": parser_version})
-    scan = scan_ticker_archive(Path(sec_root), ticker)
-    if forms is not None:
-        scan.filings = [filing for filing in scan.filings if filing.form in forms]
-        scan.forms = tuple(sorted(forms))
+    scan = scan_ticker_archive(Path(sec_root), ticker, forms=selected_forms)
     if accessions is not None:
         scan.filings = [
             filing for filing in scan.filings if filing.accession in accessions
         ]
-    scan.eligible_count = len(scan.filings)
+        scan.eligible_count = len(scan.filings)
     with session_factory() as session:
         pending = select_pending_filings(
             session, scan, settings.parser_version, force=force
         )
         run = ParseRun(
-            scope_type="ticker",
-            scope_value=scan.ticker,
+            scope_type=scope_type,
+            scope_value=scope_value if scope_value is not None else scan.ticker,
             parser_version=settings.parser_version,
             edgartools_version=settings.edgartools_version or installed_edgartools_version(),
             status="running",
@@ -84,7 +99,7 @@ def parse_ticker(
             error_summary={"errors": []},
             command_metadata={
                 "force": force,
-                "forms": sorted(forms) if forms is not None else None,
+                "forms": sorted(selected_forms) if selected_forms is not None else None,
                 "accessions": sorted(accessions) if accessions is not None else None,
                 "sec_root": str(sec_root),
                 "scan": scan.summary(),
@@ -167,6 +182,7 @@ def parse_all(
 ) -> list[ParseRun]:
     """Parse every indexed ticker directory in deterministic name order."""
 
+    selected_forms = _validated_forms(forms)
     root = Path(sec_root)
     tickers = sorted(
         path.name
@@ -179,7 +195,7 @@ def parse_all(
             ticker,
             root,
             force=force,
-            forms=forms,
+            forms=selected_forms,
             parser_version=parser_version,
         )
         for ticker in tickers

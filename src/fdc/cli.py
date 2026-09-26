@@ -10,7 +10,13 @@ from uuid import UUID
 import typer
 from sqlalchemy.orm import Session, sessionmaker
 
-from fdc.archive import INDEX_FILENAME, normalize_accession, normalize_form, scan_ticker_archive
+from fdc.archive import (
+    INDEX_FILENAME,
+    PARSER_FORMS,
+    normalize_accession,
+    normalize_form,
+    scan_ticker_archive,
+)
 from fdc.db import get_session_factory
 from fdc.models import ParseRun
 from fdc.sync import parse_all as _parse_all
@@ -63,6 +69,8 @@ def parse_accession(
                 force=force,
                 parser_version=parser_version,
                 accessions={normalized},
+                scope_type="filing",
+                scope_value=normalized,
             )
     raise LookupError(f"accession {normalized} was not found under {root}")
 
@@ -87,6 +95,12 @@ def _forms(value: str | None) -> set[str] | None:
     normalized = {item for item in forms if item is not None}
     if not normalized:
         raise typer.BadParameter("--forms requires at least one form")
+    unsupported = normalized.difference(PARSER_FORMS)
+    if unsupported:
+        raise typer.BadParameter(
+            f"unsupported forms: {', '.join(sorted(unsupported))}; "
+            f"supported forms: {', '.join(PARSER_FORMS)}"
+        )
     return normalized
 
 
