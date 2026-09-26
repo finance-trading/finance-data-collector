@@ -44,14 +44,26 @@ def classify_disclosure(table: TableDraft) -> DisclosureType:
     caption = _words(table.caption)
     nearby_heading = _words(table.period_hints.get("nearby_heading"))
     visible_context = " ".join(part for part in (caption, nearby_heading) if part)
-    columns = tuple(_words(column) for column in table.columns)
+    original_columns = table.period_hints.get("original_columns")
+    if isinstance(original_columns, list | tuple):
+        columns = tuple(_words(column) for column in original_columns)
+    else:
+        columns = tuple(_words(column) for column in table.columns)
     column_text = " ".join(columns)
     all_text = " ".join(part for part in (visible_context, column_text) if part)
+
+    if "contractual obligation" in visible_context:
+        return DisclosureType.CONTRACTUAL_OBLIGATION
 
     debt_anchor = _has_any(
         visible_context,
         ("debt", "borrowings", "notes payable", "senior notes"),
-    ) or any(column in {"debt", "borrowings", "principal payments"} for column in columns)
+    ) or any(
+        column in {"debt", "borrowings", "principal payments"}
+        or column.endswith(" debt")
+        or column.startswith("debt ")
+        for column in columns
+    )
     maturity_terms = _has_any(
         all_text,
         ("matur", "payments due", "due by", "principal payment", "thereafter"),
@@ -65,8 +77,6 @@ def classify_disclosure(table: TableDraft) -> DisclosureType:
         return DisclosureType.DEBT_MATURITY
     if lease_anchor and maturity_terms:
         return DisclosureType.LEASE_MATURITY
-    if "contractual obligation" in visible_context:
-        return DisclosureType.CONTRACTUAL_OBLIGATION
 
     segment_anchor = "segment" in visible_context or "segment" in columns
     if segment_anchor:
@@ -89,4 +99,3 @@ def classify_disclosure(table: TableDraft) -> DisclosureType:
     ):
         return DisclosureType.LIQUIDITY
     return DisclosureType.GENERIC
-

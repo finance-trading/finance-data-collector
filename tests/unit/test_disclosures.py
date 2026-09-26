@@ -53,6 +53,29 @@ def test_nearby_heading_context_can_classify_an_otherwise_ambiguous_table():
     assert classify_disclosure(table) is DisclosureType.DEBT_MATURITY
 
 
+def test_explicit_contractual_obligation_caption_wins_over_debt_columns():
+    table = TableDraft(
+        table_type="generic",
+        order_index=1,
+        caption="Contractual obligations and commitments",
+        columns=("period", "debt", "principal payments"),
+    )
+
+    assert classify_disclosure(table) is DisclosureType.CONTRACTUAL_OBLIGATION
+
+
+def test_classifier_uses_preserved_original_column_labels():
+    table = TableDraft(
+        table_type="generic",
+        order_index=1,
+        caption="Payments due by year",
+        columns=("column_1", "column_2"),
+        period_hints={"original_columns": ["Maturity Year", "Long-Term Debt"]},
+    )
+
+    assert classify_disclosure(table) is DisclosureType.DEBT_MATURITY
+
+
 def test_issuer_css_vocabulary_is_not_a_classification_input():
     table = TableDraft(
         table_type="generic",

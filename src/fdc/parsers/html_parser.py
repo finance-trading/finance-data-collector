@@ -38,7 +38,10 @@ _ITEM_PATTERN = re.compile(
     r"^\s*item\s+(?P<item>\d+[a-z]?)\s*[.\-:]?\s*(?P<title>.*)$",
     re.IGNORECASE,
 )
-_HEADING_TAGS = frozenset({"h1", "h2", "h3", "h4", "h5", "h6", "p", "div"})
+_PART_PATTERN = re.compile(r"^\s*part\s+(?P<part>i{1,2})\b", re.IGNORECASE)
+_HEADING_TAGS = frozenset(
+    {"h1", "h2", "h3", "h4", "h5", "h6", "p", "div", "td", "th"}
+)
 
 _TEN_K_SECTIONS = {
     "1": "business",
@@ -78,6 +81,15 @@ class HtmlDocument:
     path: Path
     relative_path: str
     content_sha256: str
+
+
+@dataclass(frozen=True, slots=True)
+class _HeadingCandidate:
+    element: Tag
+    item: str
+    title: str
+    part: str | None
+    source_index: int
 
 
 def _normalize_text(value: object) -> str:
@@ -122,17 +134,81 @@ def _document(path: Path, filing: LocalFiling, content: bytes) -> HtmlDocument:
     )
 
 
-def _item_headings(document: HtmlDocument) -> list[tuple[Tag, str]]:
-    headings: list[tuple[Tag, str]] = []
+def _is_visible_presentation_heading(element: Tag) -> bool:
+    table = element.find_parent("table")
+    if table is None:
+        return True
+    cell = element if element.name in {"td", "th"} else element.find_parent(("td", "th"))
+    if cell is None:
+        return False
+    row = cell.find_parent("tr")
+    if row is None:
+        return False
+    visible_cells = [
+        candidate
+        for candidate in row.find_all(("td", "th"), recursive=False)
+        if _normalize_text(candidate.get_text(" ", strip=True))
+    ]
+    return (
+        len(visible_cells) == 1
+        and visible_cells[0] is cell
+        and _normalize_text(cell.get_text(" ", strip=True))
+        == _normalize_text(element.get_text(" ", strip=True))
+    )
+
+
+def _raw_item_elements(document: HtmlDocument) -> list[tuple[Tag, re.Match[str]]]:
+    matches: list[tuple[Tag, re.Match[str]]] = []
     for element in document._soup.find_all(_HEADING_TAGS):
-        if element.find_parent("table") is not None:
+        if not _is_visible_presentation_heading(element):
             continue
         text = _normalize_text(element.get_text(" ", strip=True))
         if not text or len(text) > 300:
             continue
         match = _ITEM_PATTERN.match(text)
         if match is not None:
-            headings.append((element, match.group("item").casefold()))
+            matches.append((element, match))
+    return matches
+
+
+def _item_headings(document: HtmlDocument) -> list[_HeadingCandidate]:
+    raw_matches = _raw_item_elements(document)
+    raw_elements = [element for element, _ in raw_matches]
+    headings: list[_HeadingCandidate] = []
+    current_part: str | None = None
+    source_index = 0
+
+    for element in document._soup.find_all(_HEADING_TAGS):
+        if not _is_visible_presentation_heading(element):
+            continue
+        text = _normalize_text(element.get_text(" ", strip=True))
+        part_match = _PART_PATTERN.match(text)
+        if part_match is not None:
+            current_part = part_match.group("part").upper()
+
+        match = next(
+            (candidate_match for candidate, candidate_match in raw_matches if candidate is element),
+            None,
+        )
+        if match is None:
+            continue
+        if any(
+            candidate is not element
+            and any(parent is element for parent in candidate.parents)
+            and _normalize_text(candidate.get_text(" ", strip=True)) == text
+            for candidate in raw_elements
+        ):
+            continue
+        headings.append(
+            _HeadingCandidate(
+                element=element,
+                item=match.group("item").casefold(),
+                title=_normalize_text(match.group("title")).casefold(),
+                part=current_part,
+                source_index=source_index,
+            )
+        )
+        source_index += 1
     return headings
 
 
@@ -145,8 +221,30 @@ def _section_mapping(form: str) -> tuple[dict[str, str], tuple[str, ...]]:
     return {}, ()
 
 
-def _is_descendant(node: Tag, ancestor: Tag) -> bool:
-    return any(parent is ancestor for parent in node.parents)
+def _section_type(form: str, heading: _HeadingCandidate) -> str | None:
+    normalized = form.upper().removesuffix("/A")
+    if normalized == "10-K":
+        return _TEN_K_SECTIONS.get(heading.item)
+    if normalized != "10-Q":
+        return None
+
+    title = heading.title
+    part = heading.part
+    if heading.item == "1a" and (part == "II" or "risk factor" in title):
+        return "risk_factors"
+    if heading.item == "1" and (part == "I" or "financial statement" in title):
+        return "financial_statements"
+    if heading.item == "2" and part != "II" and (
+        part == "I"
+        or "management's discussion" in title
+        or "management discussion" in title
+    ):
+        return "md_and_a"
+    if heading.item == "4" and part != "II" and (
+        part == "I" or "controls and procedures" in title
+    ):
+        return "controls"
+    return None
 
 
 def _section_text(heading: Tag, next_heading: Tag | None) -> str:
@@ -216,33 +314,67 @@ def extract_sections(document: HtmlDocument) -> list[SectionDraft]:
     """Extract standard 10-K/10-Q item sections in document order."""
 
     mapping, expected = _section_mapping(document.filing.form)
-    headings = _item_headings(document)
-    sections: list[SectionDraft] = []
-    seen_types: set[str] = set()
+    if not mapping:
+        diagnostic = ParserDiagnostic(
+            code="HTML_FORM_UNSUPPORTED",
+            detail=f"HTML section extraction does not support form {document.filing.form}",
+            scope="sections",
+            relative_path=document.relative_path,
+            severity=DiagnosticSeverity.WARNING,
+        )
+        return [
+            SectionDraft(
+                section_type="unsupported",
+                order_index=1,
+                status=RowStatus.UNSUPPORTED,
+                diagnostics=(diagnostic,),
+                evidence=EvidenceDraft(
+                    locator_type=LocatorType.HEADING,
+                    locator_value=f"unsupported-form:{document.filing.form}",
+                    relative_path=document.relative_path,
+                    content_sha256=document.content_sha256,
+                ),
+            )
+        ]
 
-    for index, (heading, item) in enumerate(headings):
-        section_type = mapping.get(item)
+    headings = _item_headings(document)
+    selected: dict[str, tuple[_HeadingCandidate, str, str]] = {}
+
+    for index, heading in enumerate(headings):
+        section_type = _section_type(document.filing.form, heading)
         if section_type is None:
             continue
-        next_heading = headings[index + 1][0] if index + 1 < len(headings) else None
-        text = _section_text(heading, next_heading)
-        fragment = _section_fragment(heading, next_heading)
+        next_heading = headings[index + 1].element if index + 1 < len(headings) else None
+        text = _section_text(heading.element, next_heading)
+        fragment = _section_fragment(heading.element, next_heading)
+        previous = selected.get(section_type)
+        if previous is None or len(text) >= len(previous[1]):
+            selected[section_type] = (heading, text, fragment)
+
+    sections: list[SectionDraft] = []
+    for section_type, (heading, text, fragment) in sorted(
+        selected.items(), key=lambda item: item[1][0].source_index
+    ):
         sections.append(
             SectionDraft(
                 section_type=section_type,
                 order_index=len(sections) + 1,
-                heading=_normalize_text(heading.get_text(" ", strip=True)),
+                heading=_normalize_text(heading.element.get_text(" ", strip=True)),
                 text=text or None,
                 status=RowStatus.PARSED,
                 raw_fragment=fragment,
                 raw_fragment_hash=_fragment_hash(fragment),
-                evidence=_section_evidence(document, heading, section_type, text),
+                evidence=_section_evidence(
+                    document,
+                    heading.element,
+                    section_type,
+                    text,
+                ),
             )
         )
-        seen_types.add(section_type)
 
     for section_type in expected:
-        if section_type in seen_types:
+        if section_type in selected:
             continue
         diagnostic = ParserDiagnostic(
             code="HTML_SECTION_UNAVAILABLE",
@@ -293,6 +425,13 @@ def _expanded_cells(row: Tag) -> list[str]:
             colspan = 1
         values.extend([value] * colspan)
     return values
+
+
+def _row_is_explicit_header(row: Tag) -> bool:
+    cells = row.find_all(("th", "td"), recursive=False)
+    return bool(cells) and (
+        row.find_parent("thead") is not None or all(cell.name == "th" for cell in cells)
+    )
 
 
 def _column_name(label: str, index: int) -> str:
@@ -348,8 +487,12 @@ def extract_tables(document: HtmlDocument) -> list[TableDraft]:
         fragment = str(table)
         caption, nearby_heading = _nearby_context(table)
         row_elements = table.find_all("tr")
-        matrix = [_expanded_cells(row) for row in row_elements]
-        matrix = [row for row in matrix if row]
+        parsed_rows = [
+            (row, cells)
+            for row in row_elements
+            if (cells := _expanded_cells(row))
+        ]
+        matrix = [cells for _, cells in parsed_rows]
         diagnostics: list[ParserDiagnostic] = []
 
         if not matrix:
@@ -366,11 +509,28 @@ def extract_tables(document: HtmlDocument) -> list[TableDraft]:
                 )
             )
         else:
-            original_columns = matrix[0]
-            columns = _unique_columns(original_columns)
+            has_explicit_header = _row_is_explicit_header(parsed_rows[0][0])
+            original_columns = matrix[0] if has_explicit_header else []
+            data_matrix = matrix[1:] if has_explicit_header else matrix
+            if has_explicit_header:
+                columns = _unique_columns(original_columns)
+            else:
+                columns = tuple(f"column_{index + 1}" for index in range(len(matrix[0])))
+                diagnostics.append(
+                    ParserDiagnostic(
+                        code="UNSUPPORTED_HTML_TABLE",
+                        detail="table has no explicit header row; positional columns were retained",
+                        scope=f"table:{order_index}",
+                        relative_path=document.relative_path,
+                        severity=DiagnosticSeverity.WARNING,
+                    )
+                )
             expected_width = len(columns)
             normalized: list[dict[str, Any]] = []
-            for source_row_index, row in enumerate(matrix[1:], start=2):
+            for source_row_index, row in enumerate(
+                data_matrix,
+                start=2 if has_explicit_header else 1,
+            ):
                 if len(row) != expected_width:
                     diagnostics.append(
                         ParserDiagnostic(
@@ -387,6 +547,16 @@ def extract_tables(document: HtmlDocument) -> list[TableDraft]:
                 padded = (row + [""] * expected_width)[:expected_width]
                 normalized.append(dict(zip(columns, padded, strict=True)))
             normalized_rows = tuple(normalized)
+            if has_explicit_header and not normalized_rows:
+                diagnostics.append(
+                    ParserDiagnostic(
+                        code="MALFORMED_HTML_TABLE",
+                        detail="table has a header row but no data rows",
+                        scope=f"table:{order_index}",
+                        relative_path=document.relative_path,
+                        severity=DiagnosticSeverity.ERROR,
+                    )
+                )
 
         context = " ".join(
             part
@@ -414,7 +584,18 @@ def extract_tables(document: HtmlDocument) -> list[TableDraft]:
         if unit:
             hints["unit"] = unit
 
-        status = RowStatus.FAILED if diagnostics else RowStatus.PARSED
+        has_malformed_diagnostic = any(
+            diagnostic.code == "MALFORMED_HTML_TABLE" for diagnostic in diagnostics
+        )
+        has_unsupported_diagnostic = any(
+            diagnostic.code == "UNSUPPORTED_HTML_TABLE" for diagnostic in diagnostics
+        )
+        if has_malformed_diagnostic:
+            status = RowStatus.FAILED
+        elif has_unsupported_diagnostic:
+            status = RowStatus.UNSUPPORTED
+        else:
+            status = RowStatus.PARSED
         excerpt = _normalize_text(table.get_text(" ", strip=True))
         generic = TableDraft(
             table_type=DisclosureType.GENERIC,
@@ -475,11 +656,11 @@ def parse_html_document(
         for draft in [*sections, *tables]
         for diagnostic in draft.diagnostics
     ]
-    has_unavailable_section = any(section.status is RowStatus.UNAVAILABLE for section in sections)
-    has_failed_table = any(table.status is RowStatus.FAILED for table in tables)
+    has_nonparsed_section = any(section.status is not RowStatus.PARSED for section in sections)
+    has_nonparsed_table = any(table.status is not RowStatus.PARSED for table in tables)
     status = (
         ParseStatus.PARTIAL
-        if has_unavailable_section or has_failed_table
+        if has_nonparsed_section or has_nonparsed_table
         else ParseStatus.SUCCESS
     )
     evidence = [

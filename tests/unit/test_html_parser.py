@@ -159,6 +159,99 @@ def test_missing_expected_section_is_explicit_not_fabricated():
     assert any(diagnostic.code == "HTML_SECTION_UNAVAILABLE" for diagnostic in missing.diagnostics)
 
 
+def test_ten_q_part_context_suppresses_toc_wrappers_and_reused_item_numbers():
+    path = FIXTURES / "ten-q-parts.html"
+    filing = _local_filing(path, form="10-Q")
+
+    output = parse_html_document(path, filing, PARSER_VERSION)
+    parsed = [section for section in output.sections if section.status is RowStatus.PARSED]
+
+    assert [section.section_type for section in parsed] == [
+        "financial_statements",
+        "md_and_a",
+        "controls",
+        "risk_factors",
+    ]
+    assert len({section.section_type for section in parsed}) == len(parsed)
+    assert [section.evidence.locator_value for section in parsed] == [
+        "financial-statements",
+        "quarterly-mdna",
+        "quarterly-controls",
+        "quarterly-risks",
+    ]
+    assert "legal proceedings" not in " ".join(section.text or "" for section in parsed).lower()
+
+
+def test_item_heading_in_single_cell_presentation_table_is_recognized(tmp_path):
+    path = tmp_path / "presentation-heading.html"
+    path.write_text(
+        """<html><body><table><tr><td>
+        <p id="table-item-7">Item 7. Management's Discussion and Analysis</p>
+        </td></tr></table>
+        <p>Liquidity from operations remained strong.</p>
+        <h2>Item 8. Financial Statements and Supplementary Data</h2>
+        <p>Financial statements follow.</p>
+        </body></html>"""
+    )
+    filing = _local_filing(path, form="10-K")
+
+    output = parse_html_document(path, filing, PARSER_VERSION)
+    mdna = next(section for section in output.sections if section.section_type == "md_and_a")
+
+    assert mdna.status is RowStatus.PARSED
+    assert mdna.evidence.locator_value == "table-item-7"
+    assert "liquidity" in (mdna.text or "").lower()
+
+
+def test_item_like_text_in_multi_cell_data_table_is_not_a_heading(tmp_path):
+    path = tmp_path / "data-table.html"
+    path.write_text(
+        """<html><body>
+        <table><tr><td><p>Item 1. Business</p></td><td>ordinary data</td></tr></table>
+        <h2>Item 7. Management's Discussion and Analysis</h2>
+        <p>Liquidity remained strong.</p>
+        </body></html>"""
+    )
+    filing = _local_filing(path, form="10-K")
+
+    output = parse_html_document(path, filing, PARSER_VERSION)
+    business = next(section for section in output.sections if section.section_type == "business")
+
+    assert business.status is RowStatus.UNAVAILABLE
+
+
+def test_headerless_table_preserves_first_row_and_is_explicitly_unsupported():
+    path = FIXTURES / "headerless-table.html"
+    filing = _local_filing(path, form="10-K")
+
+    output = parse_html_document(path, filing, PARSER_VERSION)
+    table = output.tables[0]
+
+    assert table.status is RowStatus.UNSUPPORTED
+    assert table.columns == ("column_1", "column_2")
+    assert table.rows == (
+        {"column_1": "2027", "column_2": "120"},
+        {"column_1": "2028", "column_2": "80"},
+    )
+    assert any(diagnostic.code == "UNSUPPORTED_HTML_TABLE" for diagnostic in table.diagnostics)
+    assert output.status is ParseStatus.PARTIAL
+
+
+def test_unsupported_form_emits_an_explicit_status_record(debt_fixture):
+    filing = _local_filing(debt_fixture, form="8-K")
+
+    output = parse_html_document(debt_fixture, filing, PARSER_VERSION)
+
+    assert output.status is ParseStatus.PARTIAL
+    assert len(output.sections) == 1
+    section = output.sections[0]
+    assert section.section_type == "unsupported"
+    assert section.status is RowStatus.UNSUPPORTED
+    assert section.evidence is not None
+    assert section.evidence.locator_value == "unsupported-form:8-K"
+    assert section.diagnostics[0].code == "HTML_FORM_UNSUPPORTED"
+
+
 def test_malformed_table_is_retained_with_scoped_diagnostic():
     path = FIXTURES / "malformed-table.html"
     filing = _local_filing(path, form="10-Q")
