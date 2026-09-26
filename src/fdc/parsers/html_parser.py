@@ -212,6 +212,25 @@ def _item_headings(document: HtmlDocument) -> list[_HeadingCandidate]:
     return headings
 
 
+def _section_boundaries(
+    document: HtmlDocument,
+    headings: list[_HeadingCandidate],
+) -> list[Tag]:
+    """Return Item and Part headings in source order as hard text boundaries."""
+
+    item_elements = {id(heading.element) for heading in headings}
+    boundaries: list[Tag] = []
+    for element in document._soup.find_all(_HEADING_TAGS):
+        if not _is_visible_presentation_heading(element):
+            continue
+        text = _normalize_text(element.get_text(" ", strip=True))
+        if id(element) in item_elements or (
+            text and len(text) <= 300 and _PART_PATTERN.match(text) is not None
+        ):
+            boundaries.append(element)
+    return boundaries
+
+
 def _section_mapping(form: str) -> tuple[dict[str, str], tuple[str, ...]]:
     normalized = form.upper().removesuffix("/A")
     if normalized == "10-K":
@@ -338,15 +357,22 @@ def extract_sections(document: HtmlDocument) -> list[SectionDraft]:
         ]
 
     headings = _item_headings(document)
+    boundaries = _section_boundaries(document, headings)
+    boundary_positions = {id(element): index for index, element in enumerate(boundaries)}
     selected: dict[str, tuple[_HeadingCandidate, str, str]] = {}
 
-    for index, heading in enumerate(headings):
+    for heading in headings:
         section_type = _section_type(document.filing.form, heading)
         if section_type is None:
             continue
-        next_heading = headings[index + 1].element if index + 1 < len(headings) else None
-        text = _section_text(heading.element, next_heading)
-        fragment = _section_fragment(heading.element, next_heading)
+        boundary_index = boundary_positions[id(heading.element)]
+        next_boundary = (
+            boundaries[boundary_index + 1]
+            if boundary_index + 1 < len(boundaries)
+            else None
+        )
+        text = _section_text(heading.element, next_boundary)
+        fragment = _section_fragment(heading.element, next_boundary)
         previous = selected.get(section_type)
         if previous is None or len(text) >= len(previous[1]):
             selected[section_type] = (heading, text, fragment)

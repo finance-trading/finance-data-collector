@@ -180,6 +180,11 @@ def test_ten_q_part_context_suppresses_toc_wrappers_and_reused_item_numbers():
         "quarterly-risks",
     ]
     assert "legal proceedings" not in " ".join(section.text or "" for section in parsed).lower()
+    controls = next(section for section in parsed if section.section_type == "controls")
+    assert "part ii" not in (controls.text or "").lower()
+    assert "other information" not in (controls.text or "").lower()
+    assert "part ii" not in (controls.raw_fragment or "").lower()
+    assert "other information" not in (controls.raw_fragment or "").lower()
 
 
 def test_item_heading_in_single_cell_presentation_table_is_recognized(tmp_path):
