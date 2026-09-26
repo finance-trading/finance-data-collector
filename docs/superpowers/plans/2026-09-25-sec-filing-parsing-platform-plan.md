@@ -111,6 +111,7 @@ git commit -m "build: bootstrap filing parser runtime"
 - Create: `alembic.ini`
 - Create: `alembic/env.py`
 - Create: `alembic/versions/0001_filing_parser_platform.py`
+- Create: `tests/conftest.py`
 - Create: `tests/unit/test_models.py`
 - Create: `tests/integration/test_schema.py`
 
@@ -118,7 +119,7 @@ git commit -m "build: bootstrap filing parser runtime"
 - Produces SQLAlchemy models `Issuer`, `Filing`, `Artifact`, `ParseRun`, `FilingParse`, `XbrlFact`, `StatementLine`, `FilingSection`, `ExtractedTable`, and `EvidenceLocator`.
 - Produces `create_all_for_tests(engine)` and migration target metadata.
 
-- [ ] **Step 1: Write failing model and constraint tests**
+- [x] **Step 1: Write failing model and constraint tests**
 
 ```python
 def test_filing_accession_is_unique(session):
@@ -145,13 +146,15 @@ def test_fact_has_version_and_evidence(session):
     assert fact.parser_version == "filing-parser-v1"
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
-Run: `pytest tests/unit/test_models.py tests/integration/test_schema.py -q`
+Run: `uv run pytest tests/unit/test_models.py tests/integration/test_schema.py -q`
 
-Expected: FAIL because models and migrations are absent.
+Result: FAILED before Step 3 (no `fdc.models`, no `alembic.ini`), then green after
+Steps 3-4: `24 passed, 1 skipped` (the skip is the PostgreSQL case, which needs
+`docker compose up -d postgres`).
 
-- [ ] **Step 3: Implement models and indexes**
+- [x] **Step 3: Implement models and indexes**
 
 Use UUID primary keys and UTC-aware timestamps. Add unique `(issuer_id,
 accession_number)`, unique artifact `(filing_id, relative_path, sha256)`,
@@ -161,21 +164,26 @@ per filing/serving version. Add indexes for ticker lookup, filing date/form,
 fact concept/period, parse status, and evidence lookup. Store dimensions,
 diagnostics, normalized table rows, and source metadata in JSON columns.
 
-- [ ] **Step 4: Create and exercise the migration**
+- [x] **Step 4: Create and exercise the migration**
 
 Run:
 
 ```bash
-alembic upgrade head
-pytest tests/unit/test_models.py tests/integration/test_schema.py -q
+uv run alembic upgrade head
+uv run pytest tests/unit/test_models.py tests/integration/test_schema.py -q
 ```
 
-Expected: PASS on SQLite fixture tests and PostgreSQL when `docker compose up -d postgres` is available.
+Result: `alembic upgrade head`, `alembic downgrade base`, and a second
+`upgrade head` all succeed against SQLite; the migrated columns, indexes, and
+named constraints are asserted against `Base.metadata` in
+`tests/integration/test_schema.py`. The PostgreSQL round-trip is covered by the
+same module and skips when no container is reachable.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
-git add src/fdc/models.py alembic.ini alembic src/fdc/db.py tests/unit/test_models.py tests/integration/test_schema.py
+git add src/fdc/models.py alembic.ini alembic src/fdc/db.py .env.example tests/conftest.py \
+  tests/unit/test_models.py tests/integration/test_schema.py
 git commit -m "feat: add versioned filing parser schema"
 ```
 

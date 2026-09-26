@@ -11,7 +11,7 @@ from collections.abc import Iterator
 from contextlib import contextmanager
 from threading import Lock
 
-from sqlalchemy import Engine, create_engine
+from sqlalchemy import Engine, create_engine, event
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import StaticPool
 
@@ -46,6 +46,8 @@ def get_engine(database_url: str | None = None) -> Engine:
             engine = _engines.get(url)
             if engine is None:
                 engine = create_engine(url, **_engine_options(url))
+                if url.startswith("sqlite"):
+                    event.listen(engine, "connect", _enable_sqlite_foreign_keys)
                 _engines[url] = engine
     return engine
 
@@ -89,3 +91,13 @@ class _LazySessionFactory:
 
 
 SessionLocal = _LazySessionFactory()
+
+
+def _enable_sqlite_foreign_keys(dbapi_connection, _connection_record) -> None:
+    """Enable SQLite FK enforcement for every pooled connection."""
+
+    cursor = dbapi_connection.cursor()
+    try:
+        cursor.execute("PRAGMA foreign_keys=ON")
+    finally:
+        cursor.close()
