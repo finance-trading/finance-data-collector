@@ -89,16 +89,25 @@ def parse_ticker(
         return run
 
     for local_filing in pending:
+        attempt_status: str
+        attempt_diagnostics: dict | None
         with session_factory() as session:
             session.info[parser_service._RUN_INFO_KEY] = run_id
-            result = parser_service.parse_one_filing(
-                session, local_filing, settings, force=force
-            )
+            try:
+                result = parser_service.parse_one_filing(
+                    session, local_filing, settings, force=force
+                )
+            except parser_service.ParseAttemptFailed as error:
+                attempt_status = error.status
+                attempt_diagnostics = error.diagnostics
+            else:
+                attempt_status = result.status
+                attempt_diagnostics = result.diagnostics
         with session_factory() as session:
             stored_run = session.get(ParseRun, run_id)
             if stored_run is None:  # pragma: no cover - referential integrity guard
                 raise RuntimeError(f"parse run {run_id} disappeared")
-            if result.status == "success":
+            if attempt_status == "success":
                 stored_run.success_count += 1
             else:
                 stored_run.failure_count += 1
@@ -107,8 +116,8 @@ def parse_ticker(
                 errors.append(
                     {
                         "accession": local_filing.accession,
-                        "status": result.status,
-                        "diagnostics": result.diagnostics,
+                        "status": attempt_status,
+                        "diagnostics": attempt_diagnostics,
                     }
                 )
                 stored_run.error_summary = {**summary, "errors": errors}
@@ -144,4 +153,3 @@ def parse_all(
         if path.is_dir() and (path / INDEX_FILENAME).is_file()
     )
     return [parse_ticker(session_factory, ticker, root, force=force) for ticker in tickers]
-

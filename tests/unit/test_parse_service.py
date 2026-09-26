@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import pytest
 from sqlalchemy import func, select
 
 from fdc.archive import scan_ticker_archive
@@ -61,7 +62,7 @@ def _outputs(local_filing):
         excerpt="Liquidity remained strong.",
     )
     html = ParserOutput(
-        status=ParseStatus.PARTIAL,
+        status=ParseStatus.SUCCESS,
         parser_version=PARSER_VERSION,
         parse_mode="fixture-html",
         sections=[
@@ -169,3 +170,36 @@ def test_parse_one_skips_an_existing_success_without_calling_parsers(
         second = parse_one_filing(session, local_filing, _settings(database_url))
 
     assert second.id == first.id
+
+
+@pytest.mark.parametrize(
+    ("module_status", "expected_status"),
+    [
+        (ParseStatus.PARTIAL, "partial"),
+        (ParseStatus.FAILED, "failed"),
+    ],
+)
+def test_incomplete_required_module_result_is_never_current(
+    engine,
+    session_factory,
+    database_url,
+    monkeypatch,
+    module_status,
+    expected_status,
+):
+    local_filing = scan_ticker_archive(FIXTURE_ROOT, "MSFT").filings[0]
+    xbrl, html = _outputs(local_filing)
+    html.status = module_status
+    monkeypatch.setattr(
+        "fdc.parsers.service.EdgarToolsAdapter.parse", lambda _self, _filing: xbrl
+    )
+    monkeypatch.setattr(
+        "fdc.parsers.service.parse_html_document",
+        lambda _path, _filing, _version: html,
+    )
+
+    with session_factory() as session:
+        result = parse_one_filing(session, local_filing, _settings(database_url))
+
+    assert result.status == expected_status
+    assert result.is_current is False

@@ -36,6 +36,15 @@ _MODULE_FILES = (
 _RUN_INFO_KEY = "fdc_parse_run_id"
 
 
+class ParseAttemptFailed(RuntimeError):
+    """A parse attempt failed without changing an existing immutable result."""
+
+    def __init__(self, status: str, diagnostics: dict[str, Any]) -> None:
+        super().__init__(diagnostics.get("detail") or f"parse attempt ended {status}")
+        self.status = status
+        self.diagnostics = diagnostics
+
+
 def parser_modules_manifest() -> dict[str, str]:
     """Return stable content identities for every required parser module."""
 
@@ -327,6 +336,57 @@ def _delete_result_children(session: Session, result: FilingParse) -> None:
         session.execute(delete(EvidenceLocator).where(EvidenceLocator.id.in_(evidence_ids)))
 
 
+def _overall_status(xbrl_output: ParserOutput, html_output: ParserOutput) -> str:
+    statuses = {str(xbrl_output.status), str(html_output.status)}
+    if statuses == {"success"}:
+        return "success"
+    if "failed" in statuses:
+        return "failed"
+    return "partial"
+
+
+def _result_diagnostics(
+    xbrl_output: ParserOutput, html_output: ParserOutput
+) -> dict[str, Any]:
+    return {
+        "modules": {
+            "edgartools_adapter": _diagnostics(xbrl_output.diagnostics),
+            "html_parser": _diagnostics(html_output.diagnostics),
+        },
+        "counts": {
+            "edgartools_adapter": xbrl_output.counts(),
+            "html_parser": html_output.counts(),
+        },
+    }
+
+
+def _activate_result(session: Session, result: FilingParse) -> None:
+    session.execute(
+        update(FilingParse)
+        .where(
+            FilingParse.filing_id == result.filing_id,
+            FilingParse.parser_version == result.parser_version,
+            FilingParse.id != result.id,
+            FilingParse.is_current.is_(True),
+        )
+        .values(is_current=False)
+    )
+    result.is_current = True
+    session.flush()
+
+
+def _finish_owned_run(
+    run: ParseRun, local_filing: LocalFiling, status: str, diagnostics: dict | None = None
+) -> None:
+    successful = status == "success"
+    run.success_count = 1 if successful else 0
+    run.failure_count = 0 if successful else 1
+    run.status = "completed" if successful else "failed"
+    run.checkpoint_accession = local_filing.accession
+    run.error_summary = None if successful else {"errors": [diagnostics or {}]}
+    run.finished_at = datetime.now(UTC)
+
+
 def parse_one_filing(
     session: Session,
     local_filing: LocalFiling,
@@ -346,6 +406,8 @@ def parse_one_filing(
     )
     existing = session.scalar(select(FilingParse).where(*identity))
     if existing is not None and existing.status == "success" and not force:
+        if not existing.is_current:
+            _activate_result(session, existing)
         session.commit()
         return existing
 
@@ -361,7 +423,80 @@ def parse_one_filing(
             local_filing,
             settings.parser_version,
         )
+    except Exception as error:
+        if existing is not None and existing.status == "success":
+            diagnostics = {
+                "error_type": type(error).__name__,
+                "detail": str(error),
+                "retryable": True,
+                "preserved_filing_parse_id": str(existing.id),
+            }
+            if owns_run:
+                _finish_owned_run(run, local_filing, "failed", diagnostics)
+            session.commit()
+            raise ParseAttemptFailed("failed", diagnostics) from error
 
+        session.rollback()
+        run, owns_run = _run_for_filing(session, local_filing, settings)
+        filing, _artifacts = _upsert_filing_metadata(session, local_filing)
+        identity = (
+            FilingParse.filing_id == filing.id,
+            FilingParse.artifact_set_hash == local_filing.artifact_set_hash,
+            FilingParse.parser_version == settings.parser_version,
+            FilingParse.parser_modules_hash == modules_hash,
+        )
+        existing = session.scalar(select(FilingParse).where(*identity))
+        result = existing or FilingParse(
+            filing_id=filing.id,
+            parse_run_id=run.id,
+            artifact_set_hash=local_filing.artifact_set_hash,
+            parser_version=settings.parser_version,
+            parser_modules_hash=modules_hash,
+        )
+        result.parse_run_id = run.id
+        result.parser_modules = modules
+        result.edgartools_version = settings.edgartools_version or installed_edgartools_version()
+        result.status = "failed"
+        result.is_current = False
+        result.diagnostics = {
+            "error_type": type(error).__name__,
+            "detail": str(error),
+            "retryable": True,
+        }
+        session.add(result)
+        if owns_run:
+            _finish_owned_run(run, local_filing, result.status, result.diagnostics)
+        session.commit()
+        return result
+
+    overall_status = _overall_status(xbrl_output, html_output)
+    diagnostics = _result_diagnostics(xbrl_output, html_output)
+
+    if existing is not None and existing.status == "success":
+        if overall_status == "success":
+            if not existing.is_current:
+                _activate_result(session, existing)
+            if owns_run:
+                _finish_owned_run(run, local_filing, "success")
+            session.commit()
+            return existing
+
+        attempt_diagnostics = {
+            "detail": f"required parser modules ended {overall_status}",
+            "module_statuses": {
+                "edgartools_adapter": str(xbrl_output.status),
+                "html_parser": str(html_output.status),
+            },
+            "modules": diagnostics["modules"],
+            "preserved_filing_parse_id": str(existing.id),
+            "retryable": True,
+        }
+        if owns_run:
+            _finish_owned_run(run, local_filing, overall_status, attempt_diagnostics)
+        session.commit()
+        raise ParseAttemptFailed(overall_status, attempt_diagnostics)
+
+    try:
         with session.begin_nested():
             if existing is not None:
                 _delete_result_children(session, existing)
@@ -391,18 +526,9 @@ def parse_one_filing(
             result.parse_mode = "+".join(
                 mode for mode in (xbrl_output.parse_mode, html_output.parse_mode) if mode
             )
-            result.status = "success"
+            result.status = overall_status
             result.is_current = False
-            result.diagnostics = {
-                "modules": {
-                    "edgartools_adapter": _diagnostics(xbrl_output.diagnostics),
-                    "html_parser": _diagnostics(html_output.diagnostics),
-                },
-                "counts": {
-                    "edgartools_adapter": xbrl_output.counts(),
-                    "html_parser": html_output.counts(),
-                },
-            }
+            result.diagnostics = diagnostics
             session.flush()
             _persist_output(
                 session,
@@ -423,25 +549,13 @@ def parse_one_filing(
                 settings.parser_version,
             )
             session.flush()
-            session.execute(
-                update(FilingParse)
-                .where(
-                    FilingParse.filing_id == filing.id,
-                    FilingParse.parser_version == settings.parser_version,
-                    FilingParse.id != result.id,
-                    FilingParse.is_current.is_(True),
-                )
-                .values(is_current=False)
-            )
-            result.is_current = True
-            session.flush()
+            if result.status == "success":
+                _activate_result(session, result)
     except Exception as error:
         session.rollback()
         run, owns_run = _run_for_filing(session, local_filing, settings)
         filing, _artifacts = _upsert_filing_metadata(session, local_filing)
         existing = session.scalar(select(FilingParse).where(*identity))
-        if existing is not None and existing.status == "success":
-            raise
         result = existing or FilingParse(
             filing_id=filing.id,
             parse_run_id=run.id,
@@ -462,10 +576,6 @@ def parse_one_filing(
         session.add(result)
 
     if owns_run:
-        run.success_count = 1 if result.status == "success" else 0
-        run.failure_count = 0 if result.status == "success" else 1
-        run.status = "completed" if result.status == "success" else "failed"
-        run.checkpoint_accession = local_filing.accession
-        run.finished_at = datetime.now(UTC)
+        _finish_owned_run(run, local_filing, result.status, result.diagnostics)
     session.commit()
     return result
