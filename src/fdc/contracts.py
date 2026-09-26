@@ -46,6 +46,12 @@ class DiagnosticCode(StrEnum):
     PACKAGE_EMPTY = "PACKAGE_EMPTY"
     PRIMARY_MISSING = "PRIMARY_MISSING"
     UNREADABLE_ARTIFACT = "UNREADABLE_ARTIFACT"
+    ARTIFACT_OUTSIDE_PACKAGE = "ARTIFACT_OUTSIDE_PACKAGE"
+    EDGARTOOLS_UNAVAILABLE = "EDGARTOOLS_UNAVAILABLE"
+    XBRL_UNAVAILABLE = "XBRL_UNAVAILABLE"
+    STATEMENT_UNAVAILABLE = "STATEMENT_UNAVAILABLE"
+    FACT_MALFORMED = "FACT_MALFORMED"
+    RAW_XBRL_FALLBACK = "RAW_XBRL_FALLBACK"
 
 
 class DiagnosticSeverity(StrEnum):
@@ -312,6 +318,7 @@ class FactDraft:
     """One normalized XBRL fact observation."""
 
     concept: str
+    evidence: EvidenceDraft
     value_numeric: float | None = None
     value_text: str | None = None
     label: str | None = None
@@ -323,7 +330,10 @@ class FactDraft:
     period_type: PeriodType | str | None = None
     dimensions: dict[str, Any] = field(default_factory=dict)
     extraction_method: str | None = None
-    evidence: EvidenceDraft | None = None
+
+    def __post_init__(self) -> None:
+        if self.evidence is None:
+            raise ValueError("FactDraft evidence is required")
 
 
 @dataclass(frozen=True, slots=True)
@@ -332,6 +342,7 @@ class StatementDraft:
 
     statement_type: str
     order_index: int
+    evidence: EvidenceDraft
     label: str | None = None
     section: str | None = None
     depth: int = 0
@@ -343,7 +354,10 @@ class StatementDraft:
     end_date: date | None = None
     period_type: PeriodType | str | None = None
     dimensions: dict[str, Any] = field(default_factory=dict)
-    evidence: EvidenceDraft | None = None
+
+    def __post_init__(self) -> None:
+        if self.evidence is None:
+            raise ValueError("StatementDraft evidence is required")
 
 
 @dataclass(frozen=True, slots=True)

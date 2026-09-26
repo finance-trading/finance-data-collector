@@ -87,6 +87,9 @@ MAX_REPORTED_RECORDS = 40
 #: Exhibit names such as ``msft-ex31_1.htm`` or ``exhibit-10-1.htm``.
 _EXHIBIT_RE = re.compile(r"(?:^|[-_])ex(?:hibit)?[-_]?\d", re.IGNORECASE)
 
+#: SEC document type tags used by text exhibits without exhibit-like names.
+_EXHIBIT_TYPE_RE = re.compile(r"<TYPE>\s*EX(?:HIBIT)?[-_\s]?\d", re.IGNORECASE)
+
 #: Inline XBRL instance documents, e.g. ``msft-20250630_htm.xml``.
 _INLINE_XBRL_RE = re.compile(r"_htm\.xml$", re.IGNORECASE)
 
@@ -166,6 +169,12 @@ def _is_complete_submission(snippet: str) -> bool:
     return "<sec-document>" in lowered or "<sec-header>" in lowered
 
 
+def _is_text_exhibit(name: str, snippet: str) -> bool:
+    """True when a text artifact is named or tagged as an SEC exhibit."""
+
+    return is_exhibit_name(name) or bool(_EXHIBIT_TYPE_RE.search(snippet))
+
+
 def classify_artifact(path: Path) -> ArtifactRole:
     """Classify one package artifact, reading content for ambiguous extensions.
 
@@ -191,6 +200,8 @@ def classify_artifact(path: Path) -> ArtifactRole:
             return ArtifactRole.TEXT
         if "<?xml" in snippet.lower():
             return ArtifactRole.XBRL
+        if _is_text_exhibit(name, snippet):
+            return ArtifactRole.EXHIBIT
         return ArtifactRole.TEXT
     return ArtifactRole.UNKNOWN
 
@@ -199,18 +210,15 @@ def is_parse_eligible(path: Path, role: ArtifactRole) -> bool:
     """Whether a parser should ever read this artifact.
 
     Images and unknown binaries are indexed for provenance but never parsed.
-    ``.txt`` artifacts stay parseable only when their content is an HTML
-    document; plain text and complete-submission containers are not.
+    Complete-submission ``.txt`` containers are skipped; independent text
+    exhibits and ordinary text remain part of parsing and filing identity.
     """
 
     if role in (ArtifactRole.IMAGE, ArtifactRole.UNKNOWN):
         return False
-    if role is ArtifactRole.TEXT and path.suffix.lower() == ".txt":
+    if path.suffix.lower() == ".txt":
         snippet = read_snippet(path) or ""
-        if _is_complete_submission(snippet):
-            return False
-        lowered = snippet.lower()
-        return "<html" in lowered or "<!doctype html" in lowered
+        return not _is_complete_submission(snippet)
     return True
 
 
@@ -259,7 +267,7 @@ def parse_iso_date(value: Any) -> date | None:
 def package_files(package_dir: Path) -> list[Path]:
     """Return every file in a package, in deterministic path order."""
 
-    files = (path for path in package_dir.rglob("*") if path.is_file())
+    files = (path for path in package_dir.rglob("*") if path.is_file() or path.is_symlink())
     return sorted(files, key=lambda path: path.relative_to(package_dir).as_posix())
 
 
@@ -286,9 +294,22 @@ def collect_artifacts(
 
     artifacts: list[ArtifactRef] = []
     gaps: list[ArchiveGap] = []
+    resolved_package_dir = package_dir.resolve()
 
     for path in package_files(package_dir):
         relative_path = path.relative_to(ticker_dir).as_posix()
+        if not path.resolve().is_relative_to(resolved_package_dir):
+            gaps.append(
+                ArchiveGap(
+                    code=DiagnosticCode.ARTIFACT_OUTSIDE_PACKAGE,
+                    detail="artifact resolves outside the filing package",
+                    ticker=ticker,
+                    form=form,
+                    accession=accession,
+                    path=relative_path,
+                )
+            )
+            continue
         role = classify_artifact(path)
         eligible = is_parse_eligible(path, role)
         try:
@@ -482,21 +503,25 @@ def scan_ticker_archive(
 ) -> ArchiveScan:
     """Scan ``sec_root/<TICKER>`` for eligible filings and explicit gaps.
 
-    ``forms`` filters index records by normalized form; ``None`` accepts every
-    record.  Eligible filings are ordered chronologically (oldest first) so a
-    checkpointed run can resume where it stopped.
+    ``forms`` narrows the four parser-supported forms; ``None`` accepts all four.
+    Eligible filings are ordered chronologically (oldest first) so a checkpointed
+    run can resume where it stopped.
     """
 
     root = Path(sec_root)
+    if limit is not None and limit <= 0:
+        raise ValueError("limit must be positive")
     normalized_ticker = str(ticker).strip().upper()
     ticker_dir = root / normalized_ticker
     index_path = ticker_dir / INDEX_FILENAME
     relative_index_path = f"{normalized_ticker}/{INDEX_FILENAME}"
-    wanted = (
-        tuple(sorted({form for form in (normalize_form(item) for item in forms) if form}))
+    parser_forms = frozenset(PARSER_FORMS)
+    requested_forms = (
+        {form for form in (normalize_form(item) for item in forms) if form}
         if forms is not None
-        else ()
+        else parser_forms
     )
+    wanted = tuple(sorted(parser_forms.intersection(requested_forms)))
 
     scan = ArchiveScan(
         ticker=normalized_ticker,
@@ -578,7 +603,7 @@ def scan_ticker_archive(
             )
             continue
 
-        if wanted and form not in wanted:
+        if form not in wanted:
             scan.skipped.append(
                 ArchiveGap(
                     code=DiagnosticCode.UNSUPPORTED_FORM,
@@ -591,6 +616,16 @@ def scan_ticker_archive(
             continue
 
         package_path = directory.replace("\\", "/").removeprefix("./").rstrip("/")
+        accession = normalize_accession(record.get("accession"))
+        if accession is None:
+            scan.gaps.append(
+                ArchiveGap(
+                    code=DiagnosticCode.INVALID_ACCESSION,
+                    detail=f"accession {record.get('accession')!r} is not a valid accession number",
+                    path=package_path,
+                    **record_context,
+                )
+            )
         package_dir = (resolved_ticker_dir / package_path).resolve()
         if not package_dir.is_relative_to(resolved_ticker_dir):
             scan.gaps.append(
@@ -612,17 +647,7 @@ def scan_ticker_archive(
                 )
             )
             continue
-
-        accession = normalize_accession(record.get("accession"))
         if accession is None:
-            scan.gaps.append(
-                ArchiveGap(
-                    code=DiagnosticCode.INVALID_ACCESSION,
-                    detail=f"accession {record.get('accession')!r} is not a valid accession number",
-                    path=package_path,
-                    **record_context,
-                )
-            )
             continue
 
         filing, filing_gaps = _build_filing(
@@ -640,7 +665,7 @@ def scan_ticker_archive(
 
     eligible.sort(key=lambda filing: (filing.filing_date or date.min, filing.accession))
     scan.eligible_count = len(eligible)
-    scan.filings = eligible[:limit] if limit else eligible
+    scan.filings = eligible[:limit] if limit is not None else eligible
     return scan
 
 
@@ -653,6 +678,15 @@ def default_sec_root() -> Path:
 
     override = os.environ.get("FDC_SEC_ROOT", "").strip()
     return Path(override) if override else SEC_ROOT
+
+
+def _positive_int(value: str) -> int:
+    """Parse a positive CLI integer."""
+
+    parsed = int(value)
+    if parsed <= 0:
+        raise argparse.ArgumentTypeError("must be a positive integer")
+    return parsed
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -671,7 +705,12 @@ def _build_parser() -> argparse.ArgumentParser:
         default=",".join(PARSER_FORMS),
         help="comma-separated forms to accept, e.g. '10-K,10-Q'",
     )
-    parser.add_argument("--limit", type=int, default=None, help="report at most N eligible filings")
+    parser.add_argument(
+        "--limit",
+        type=_positive_int,
+        default=None,
+        help="report at most N eligible filings",
+    )
     parser.add_argument(
         "--verbose",
         action="store_true",

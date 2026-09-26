@@ -35,6 +35,7 @@ from fdc.contracts import (
     ParserOutput,
     ParseStatus,
     SectionDraft,
+    StatementDraft,
     TableDraft,
 )
 
@@ -137,6 +138,25 @@ def test_unsupported_forms_are_skipped_explicitly(fixture_root):
     assert "0000000000-24-000004" not in scan.accessions
 
 
+def test_none_forms_still_enforces_parser_form_contract(fixture_root):
+    scan = scan_ticker_archive(fixture_root, "MSFT", None)
+
+    assert scan.forms == ("10-K", "10-K/A", "10-Q", "10-Q/A")
+    assert [filing.form for filing in scan.filings] == ["10-K", "10-Q"]
+    assert [gap.form for gap in scan.skipped] == ["8-K"]
+    assert all(gap.code is DiagnosticCode.UNSUPPORTED_FORM for gap in scan.skipped)
+
+
+def test_requested_forms_are_intersected_with_parser_form_contract(fixture_root):
+    scan = scan_ticker_archive(fixture_root, "MSFT", {"8-K"})
+
+    assert scan.forms == ()
+    assert scan.filings == []
+    assert scan.gaps == []
+    assert [gap.form for gap in scan.skipped] == ["10-Q", "10-K", "8-K", "10-Q"]
+    assert all(gap.code is DiagnosticCode.UNSUPPORTED_FORM for gap in scan.skipped)
+
+
 def test_missing_package_is_explicit_gap(tmp_path):
     (tmp_path / "MSFT").mkdir()
     (tmp_path / "MSFT" / "filings_index.json").write_text(
@@ -146,8 +166,8 @@ def test_missing_package_is_explicit_gap(tmp_path):
                     {
                         "form": "10-K",
                         "date": "2024-01-01",
-                        "accession": "a",
-                        "directory": "10-K/a",
+                        "accession": "0000000000-24-000001",
+                        "directory": "10-K/0000000000-24-000001",
                     }
                 ]
             }
@@ -157,6 +177,23 @@ def test_missing_package_is_explicit_gap(tmp_path):
 
     assert scan.gaps[0].code == "PACKAGE_MISSING"
     assert scan.filings == []
+
+
+def test_invalid_accession_and_missing_package_are_both_explicit_gaps(tmp_path):
+    record = {
+        "form": "10-K",
+        "date": "2024-01-01",
+        "accession": "not-an-accession",
+        "directory": "10-K/not-an-accession",
+    }
+    write_index(tmp_path, "MSFT", [record])
+
+    scan = scan_ticker_archive(tmp_path, "MSFT", PARSER_FORMS)
+
+    assert [gap.code for gap in scan.gaps] == [
+        DiagnosticCode.INVALID_ACCESSION,
+        DiagnosticCode.PACKAGE_MISSING,
+    ]
 
 
 def test_missing_index_is_explicit_gap(tmp_path):
@@ -297,6 +334,55 @@ def test_txt_artifacts_are_classified_by_content(tmp_path):
     assert by_name["0000000000-24-000001.txt"].parse_eligible is False
     assert by_name["acme-20240630.txt"].parse_eligible is True
     assert filing.primary_document.name == "acme-20240630.txt"
+
+
+def test_plain_text_and_text_exhibits_are_parseable_but_submission_container_is_not(tmp_path):
+    scan = single_filing_archive(
+        tmp_path,
+        {
+            "acme-20240630.htm": MINIMAL_HTML,
+            "notes.txt": "Ordinary filing notes without HTML markup.",
+            "acme-ex99_1.txt": "Independent exhibit text.",
+            "announcement.txt": "<DOCUMENT><TYPE>EX-99.2\n<TEXT>News release</TEXT></DOCUMENT>",
+            "0000000000-24-000001.txt": SUBMISSION_TXT,
+        },
+    )
+    filing = scan.filings[0]
+    by_name = {a.path.name: a for a in filing.artifacts}
+
+    assert by_name["notes.txt"].role is ArtifactRole.TEXT
+    assert by_name["notes.txt"].parse_eligible is True
+    assert by_name["acme-ex99_1.txt"].role is ArtifactRole.EXHIBIT
+    assert by_name["acme-ex99_1.txt"].parse_eligible is True
+    assert by_name["announcement.txt"].role is ArtifactRole.EXHIBIT
+    assert by_name["announcement.txt"].parse_eligible is True
+    assert by_name["0000000000-24-000001.txt"].parse_eligible is False
+    assert {artifact.path.name for artifact in filing.parseable_artifacts} == {
+        "acme-20240630.htm",
+        "notes.txt",
+        "acme-ex99_1.txt",
+        "announcement.txt",
+    }
+
+
+def test_artifact_symlink_escaping_package_is_an_explicit_gap(tmp_path):
+    record = {
+        "form": "10-K",
+        "date": "2024-07-25",
+        "accession": "0000000000-24-000001",
+        "directory": "10-K/0000000000-24-000001",
+    }
+    ticker_dir = write_index(tmp_path, "MSFT", [record])
+    package = write_package(ticker_dir, record["directory"], {"acme-20240630.htm": MINIMAL_HTML})
+    outside = tmp_path / "outside.txt"
+    outside.write_text("must not enter the filing identity")
+    (package / "escape.txt").symlink_to(outside)
+
+    scan = scan_ticker_archive(tmp_path, "MSFT", PARSER_FORMS)
+
+    assert [gap.code for gap in scan.gaps] == [DiagnosticCode.ARTIFACT_OUTSIDE_PACKAGE]
+    assert scan.gaps[0].path.endswith("/escape.txt")
+    assert {artifact.path.name for artifact in scan.filings[0].artifacts} == {"acme-20240630.htm"}
 
 
 def test_unreadable_artifacts_are_recorded_without_aborting_the_scan(tmp_path, monkeypatch):
@@ -489,6 +575,20 @@ def test_parser_output_contract_carries_rows_evidence_and_status():
     assert output.tables[0].rows[0]["segment"] == "Intelligent Cloud"
 
 
+def test_fact_and_statement_drafts_require_evidence():
+    with pytest.raises(TypeError):
+        FactDraft(concept="us-gaap:Assets")
+
+    with pytest.raises(TypeError):
+        StatementDraft(statement_type="BalanceSheet", order_index=0)
+
+    with pytest.raises(ValueError, match="FactDraft evidence is required"):
+        FactDraft(concept="us-gaap:Assets", evidence=None)
+
+    with pytest.raises(ValueError, match="StatementDraft evidence is required"):
+        StatementDraft(statement_type="BalanceSheet", order_index=0, evidence=None)
+
+
 def test_cli_scan_reports_summary(fixture_root, capsys):
     assert main(["MSFT", "--sec-root", str(fixture_root)]) == 0
     text = capsys.readouterr().out
@@ -523,6 +623,20 @@ def test_cli_can_restrict_forms_and_limit_reporting(fixture_root, capsys):
 
     assert [filing["accession"] for filing in limited["filings"]] == ["0000000000-24-000001"]
     assert limited["filings_scanned"] == 2
+
+
+@pytest.mark.parametrize("limit", [0, -1])
+def test_scan_rejects_non_positive_limit(fixture_root, limit):
+    with pytest.raises(ValueError, match="limit must be positive"):
+        scan_ticker_archive(fixture_root, "MSFT", PARSER_FORMS, limit=limit)
+
+
+@pytest.mark.parametrize("limit", ["0", "-1"])
+def test_cli_rejects_non_positive_limit(fixture_root, limit):
+    with pytest.raises(SystemExit) as error:
+        main(["MSFT", "--sec-root", str(fixture_root), "--limit", limit])
+
+    assert error.value.code == 2
 
 
 def test_cli_fails_when_the_ticker_index_is_missing(tmp_path, capsys):
