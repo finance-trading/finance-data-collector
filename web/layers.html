@@ -124,6 +124,8 @@ const byTicker = new Map(companies.map(company => [company.ticker, company]));
 
 const hidden = new Set();
 const collapsed = new Set();
+const collapsedLayers = new Set();
+const collapsedSegments = new Set();
 let showCross = true;
 let mode = "columns";
 let contentSize = { width: 1200, height: 600 };
@@ -148,7 +150,7 @@ const crossTargets = company => company.also_in.filter(id => !hidden.has(id));
 $("gen-time").textContent = data.generated_at ? ` · ${data.generated_at}` : "";
 $("stats").textContent = `${data.stats.companies} 家公司 · ${data.stats.layers} 层 · ` +
   `${data.stats.segments} 个细分 · ${data.stats.cross_layer} 个跨层角色`;
-$("hint").textContent = "点击公司节点查看详情 · 滚轮缩放 · 拖拽平移 · 树状图点击层/细分可折叠";
+$("hint").textContent = "点击公司节点查看详情 · 滚轮缩放 · 拖拽平移 · 点击层标题折叠整层、点击细分折叠成员";
 
 // ---------------------------------------------------------------- card panel
 function showCard(company) {
@@ -202,8 +204,9 @@ function renderColumns() {
     layer.children.forEach(segment => {
       const members = nodes.filter(company => company.segment === segment.name);
       if (members.length) {
-        column.segments.push({ segment, members, top: y });
-        y += SEG_H + members.length * ROW_H;
+        const segCollapsed = collapsedSegments.has(segment.id);
+        column.segments.push({ segment, members, top: y, collapsed: segCollapsed });
+        y += SEG_H + (segCollapsed ? 0 : members.length * ROW_H);
       }
     });
     column.bottom = y;
@@ -220,20 +223,38 @@ function renderColumns() {
   columns.forEach(column => {
     const x = 40 + column.index * COL_W;
     const color = colorOf[column.layer.id];
-    chart.append("rect").attr("x", x - 14).attr("y", 58).attr("width", COL_W - 28).attr("height", 48)
+    const isCollapsed = collapsedLayers.has(column.layer.id);
+    const header = chart.append("g").style("cursor", "pointer")
+      .on("click", () => {
+        if (isCollapsed) { collapsedLayers.delete(column.layer.id); } else { collapsedLayers.add(column.layer.id); }
+        render();
+      });
+    header.append("rect").attr("x", x - 14).attr("y", 58).attr("width", COL_W - 28).attr("height", 48)
       .attr("rx", 9).attr("fill", `${color}1f`).attr("stroke", `${color}66`)
       .append("title").text(column.layer.summary);
-    chart.append("text").attr("x", x).attr("y", 80).attr("fill", color)
+    header.append("text").attr("x", x).attr("y", 80).attr("fill", color)
       .style("font-size", "13px").style("font-weight", "600")
-      .text(`${column.layer.name} (${column.nodes.length})`);
-    chart.append("text").attr("x", x).attr("y", 97).attr("fill", "#7f8ab5").style("font-size", "10.5px")
+      .text(`${isCollapsed ? "▸" : "▾"} ${column.layer.name} (${column.nodes.length})`);
+    header.append("text").attr("x", x).attr("y", 97).attr("fill", "#7f8ab5").style("font-size", "10.5px")
       .text(column.layer.name_en);
     chart.append("line").attr("x1", x - 14).attr("x2", x - 14).attr("y1", TOP - 10).attr("y2", column.bottom)
       .attr("stroke", `${color}55`);
 
     column.segments.forEach(entry => {
-      chart.append("text").attr("x", x).attr("y", entry.top + 12).attr("fill", "#8b96c2")
-        .style("font-size", "11px").text(`${entry.segment.name} · ${entry.members.length}`);
+      if (isCollapsed) { return; }
+      const seg = chart.append("g").style("cursor", "pointer")
+        .on("click", () => {
+          if (entry.collapsed) { collapsedSegments.delete(entry.segment.id); }
+          else { collapsedSegments.add(entry.segment.id); }
+          render();
+        })
+        .append("g")
+        .call(g => {
+          g.append("text").attr("x", x).attr("y", entry.top + 12).attr("fill", "#8b96c2")
+            .style("font-size", "11px")
+            .text(`${entry.collapsed ? "▸" : "▾"} ${entry.segment.name} · ${entry.members.length}`);
+        });
+      if (entry.collapsed) { return; }
       entry.members.forEach((company, offset) => {
         const cy = entry.top + SEG_H + offset * ROW_H + ROW_H / 2;
         positions.set(company.ticker, [x, cy]);
@@ -359,8 +380,11 @@ function mermaidText() {
 function fit() {
   const box = svg.node().getBoundingClientRect();
   svg.attr("width", box.width).attr("height", box.height);
-  const scale = Math.min(1, box.width / contentSize.width, box.height / contentSize.height);
-  svg.call(zoom.transform, d3.zoomIdentity.translate(0, 0).scale(scale));
+  const fitScale = Math.min(box.width / contentSize.width, box.height / contentSize.height);
+  const scale = Math.min(1.25, Math.max(fitScale, 0.85));
+  const tx = (box.width - contentSize.width * scale) / 2;
+  const ty = 40 - 48 * scale;
+  svg.call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(scale));
 }
 
 function render() {
