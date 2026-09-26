@@ -204,7 +204,7 @@ git commit -m "feat: add versioned filing parser schema"
 - `classify_artifact(path: Path) -> ArtifactRole` and `sha256_file(path: Path) -> str`.
 - `ParserOutput` contains facts, statements, sections, tables, evidence, diagnostics, and status.
 
-- [ ] **Step 1: Write failing scanner tests**
+- [x] **Step 1: Write failing scanner tests**
 
 ```python
 def test_scan_normalizes_forms_and_hashes_artifacts(fixture_root):
@@ -224,13 +224,14 @@ def test_missing_package_is_explicit_gap(tmp_path):
     assert scan.gaps[0].code == "PACKAGE_MISSING"
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
-Run: `pytest tests/unit/test_archive.py -q`
+Run: `uv run pytest tests/unit/test_archive.py -q`
 
-Expected: FAIL because scanner and contracts are absent.
+Result: FAILED with `ModuleNotFoundError: No module named 'fdc.archive'` before Step 3,
+then green: `49 passed`.
 
-- [ ] **Step 3: Implement scanner and typed contracts**
+- [x] **Step 3: Implement scanner and typed contracts**
 
 Read only the ticker's `filings_index.json`; validate parallel metadata without
 deleting files; classify `.txt` by content/name rather than extension; skip
@@ -240,13 +241,22 @@ sorted tuple `(relative_path, byte_size, sha256)` with SHA-256. Define stable
 diagnostic codes for missing index, malformed index, missing package, missing
 primary, unsupported form, and unreadable artifact.
 
-- [ ] **Step 4: Run tests and a real local scan**
+Implemented as `DiagnosticCode` (plus `INVALID_INDEX_RECORD`, `INVALID_ACCESSION`
+and `PACKAGE_EMPTY`, which a real archive needs: dated MSFT packages exist as
+empty directories). The scanner records `gaps` for blocking problems and
+`skipped` for records outside the requested form set, so nothing is dropped
+silently.
 
-Run: `pytest tests/unit/test_archive.py -q && python -m fdc.archive MSFT --sec-root sec`
+- [x] **Step 4: Run tests and a real local scan**
 
-Expected: fixture tests pass and a local MSFT scan reports eligible 10-K/10-Q packages plus explicit gaps, without network access.
+Run: `uv run pytest tests/unit/test_archive.py -q && uv run python -m fdc.archive MSFT --sec-root sec`
 
-- [ ] **Step 5: Commit**
+Result: tests green; the real MSFT scan finishes offline in ~1s and reports
+`555 index records, 100 eligible filings, 37 gaps, 418 skipped`
+(24 `PACKAGE_MISSING`, 13 `PACKAGE_EMPTY`, the rest non-10-K/10-Q forms), with
+10-Q=73, 10-K=25, 10-Q/A=2 eligible.
+
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/fdc/contracts.py src/fdc/archive.py tests/fixtures/filings tests/unit/test_archive.py

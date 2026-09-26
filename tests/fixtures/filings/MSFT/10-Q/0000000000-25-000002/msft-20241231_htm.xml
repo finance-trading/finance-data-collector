@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xbri xmlns:us-gaap="http://fasb.org/us-gaap/2025">
+  <us-gaap:Revenues contextRef="c-1" unitRef="usd" decimals="-6">69632000000</us-gaap:Revenues>
+</xbri>
