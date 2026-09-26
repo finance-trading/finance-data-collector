@@ -1,6 +1,28 @@
 # finance-data-collector
 Finance Data Collector
 
+## SEC filing research page
+
+The local research page moves from a company filing timeline to reported
+statements, disclosures, and exact source evidence. It reads persisted parser
+output only; the browser does not recompute financial values.
+
+```bash
+uv sync
+docker compose up -d postgres
+export FDC_DATABASE_URL='postgresql+psycopg://fdc:fdc@localhost:5432/fdc'
+export FDC_SEC_ROOT="$PWD/sec"
+export FDC_SEC_USER_AGENT='Collector name@example.com'
+alembic upgrade head
+uv run fdc parse filings --ticker MSFT
+uv run uvicorn fdc.api:app --reload --host 127.0.0.1 --port 8000
+```
+
+Open `http://127.0.0.1:8000/company.html?ticker=MSFT`. The API and static page
+share the same origin. See [the parser runbook](docs/runbook.md) for archive
+prerequisites, scoped parsing, forced/versioned reparses, deterministic tests,
+and optional PostgreSQL/live SEC checks.
+
 ## AI 产业分层（`web/data/companies.json`）
 
 `web/data/companies.json` 是 AI 产业链 universe 的唯一数据源：

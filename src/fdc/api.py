@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Annotated, Callable, TypeVar
 
 from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel
+from starlette.staticfiles import StaticFiles
 
 from fdc import read_service
 from fdc.read_service import (
@@ -84,3 +86,7 @@ def filing_evidence(accession: str, evidence_id: str) -> EvidenceView:
 @app.get("/api/v1/parse-runs/{run_id}", response_model=ParseRunView)
 def parse_run(run_id: str) -> ParseRunView:
     return _read(lambda: read_service.get_parse_run(run_id))
+
+
+_WEB_ROOT = Path(__file__).resolve().parents[2] / "web"
+app.mount("/", StaticFiles(directory=_WEB_ROOT, html=True), name="web")

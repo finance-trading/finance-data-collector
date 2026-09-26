@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Company filings | Finance Data Collector</title>
+  <link rel="stylesheet" href="data/company.css">
+  <script src="company.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#financials">Skip to financials</a>
+
+  <header class="company-header">
+    <div class="identity">
+      <p class="product-name">Finance Data Collector</p>
+      <h1 id="company-name">Loading company</h1>
+      <p id="company-identity" class="identity-line" aria-live="polite">
+        Reading company record…
+      </p>
+    </div>
+    <div class="header-status">
+      <span id="company-status" class="status status-loading">Loading</span>
+      <span id="filing-count">— filings</span>
+    </div>
+  </header>
+
+  <main class="research-shell">
+    <aside class="filing-rail" aria-labelledby="filings-heading">
+      <div class="rail-heading">
+        <div>
+          <h2 id="filings-heading">Filings</h2>
+          <p>Newest first</p>
+        </div>
+        <label for="form-filter">
+          <span class="visually-hidden">Filter by form</span>
+          <select id="form-filter">
+            <option value="">All forms</option>
+            <option value="10-K">10-K</option>
+            <option value="10-Q">10-Q</option>
+          </select>
+        </label>
+      </div>
+      <nav id="filings" aria-label="Company filing timeline">
+        <p class="state-message">Loading filings…</p>
+      </nav>
+    </aside>
+
+    <section id="financials" class="financial-workspace" aria-labelledby="filing-title">
+      <header class="filing-header">
+        <div>
+          <p id="filing-kicker" class="filing-kicker">Select a filing</p>
+          <h2 id="filing-title">Filing workspace</h2>
+        </div>
+        <a id="sec-filing-link" class="source-link is-hidden" href="#"
+           target="_blank" rel="noopener noreferrer">Open SEC filing</a>
+      </header>
+
+      <dl class="filing-meta" aria-live="polite">
+        <div>
+          <dt>Accession</dt>
+          <dd id="selected-accession">—</dd>
+        </div>
+        <div>
+          <dt>Filed</dt>
+          <dd id="selected-filing-date">—</dd>
+        </div>
+        <div>
+          <dt>Report date</dt>
+          <dd id="selected-report-date">—</dd>
+        </div>
+        <div>
+          <dt>Parse status</dt>
+          <dd id="selected-status">—</dd>
+        </div>
+      </dl>
+
+      <section class="metric-section" aria-labelledby="reported-facts-heading">
+        <div class="section-heading">
+          <div>
+            <h3 id="reported-facts-heading">Reported facts</h3>
+            <p>Period-aware values as reported by the filing API.</p>
+          </div>
+          <span class="data-note">No derived metrics</span>
+        </div>
+        <div id="fact-chart" class="fact-chart" aria-live="polite">
+          <p class="state-message">Select a filing to load facts.</p>
+        </div>
+      </section>
+
+      <section class="statement-section" aria-labelledby="statements-heading">
+        <div class="section-heading">
+          <div>
+            <h3 id="statements-heading">Financial statements</h3>
+            <p>Values and periods are displayed without client-side calculation.</p>
+          </div>
+        </div>
+        <div class="statement-tabs" role="tablist" aria-label="Financial statement">
+          <button id="income-tab" role="tab" aria-selected="true"
+                  aria-controls="income-statement" data-panel="income-statement">
+            Income statement
+          </button>
+          <button id="balance-tab" role="tab" aria-selected="false"
+                  aria-controls="balance-sheet" data-panel="balance-sheet" tabindex="-1">
+            Balance sheet
+          </button>
+          <button id="cash-tab" role="tab" aria-selected="false"
+                  aria-controls="cash-flow" data-panel="cash-flow" tabindex="-1">
+            Cash flow
+          </button>
+        </div>
+
+        <div id="income-statement" class="statement-panel" role="tabpanel"
+             aria-labelledby="income-tab">
+          <table>
+            <caption>Income statement lines</caption>
+            <thead><tr><th scope="col">Line item</th><th scope="col">Period</th><th scope="col">Reported value</th><th scope="col">Source</th></tr></thead>
+            <tbody><tr><td colspan="4" class="state-message">Select a filing to load this statement.</td></tr></tbody>
+          </table>
+        </div>
+
+        <div id="balance-sheet" class="statement-panel" role="tabpanel"
+             aria-labelledby="balance-tab" hidden>
+          <table>
+            <caption>Balance sheet lines</caption>
+            <thead><tr><th scope="col">Line item</th><th scope="col">Period</th><th scope="col">Reported value</th><th scope="col">Source</th></tr></thead>
+            <tbody><tr><td colspan="4" class="state-message">Select a filing to load this statement.</td></tr></tbody>
+          </table>
+        </div>
+
+        <div id="cash-flow" class="statement-panel" role="tabpanel"
+             aria-labelledby="cash-tab" hidden>
+          <table>
+            <caption>Cash flow statement lines</caption>
+            <thead><tr><th scope="col">Line item</th><th scope="col">Period</th><th scope="col">Reported value</th><th scope="col">Source</th></tr></thead>
+            <tbody><tr><td colspan="4" class="state-message">Select a filing to load this statement.</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="disclosure-section" aria-labelledby="disclosures-heading">
+        <div class="section-heading">
+          <div>
+            <h3 id="disclosures-heading">Disclosures and tables</h3>
+            <p>Parsed narrative and tabular evidence for the selected filing.</p>
+          </div>
+        </div>
+        <div class="disclosure-grid">
+          <article id="section-result" aria-labelledby="section-title">
+            <h4 id="section-title">Management discussion</h4>
+            <p class="state-message">Select a filing to load this section.</p>
+          </article>
+          <article id="table-result" aria-labelledby="table-title">
+            <h4 id="table-title">Extracted tables</h4>
+            <p class="state-message">Select a filing to load tables.</p>
+          </article>
+        </div>
+      </section>
+    </section>
+
+    <aside id="evidence" class="evidence-rail" aria-labelledby="evidence-heading">
+      <div class="evidence-heading-row">
+        <h2 id="evidence-heading">Evidence</h2>
+        <span class="evidence-trace" aria-hidden="true"></span>
+      </div>
+      <div id="evidence-content" aria-live="polite">
+        <p class="evidence-empty">
+          Choose a source link beside a reported value to inspect its exact filing
+          locator, excerpt, and content hash.
+        </p>
+      </div>
+    </aside>
+  </main>
+</body>
+</html>
