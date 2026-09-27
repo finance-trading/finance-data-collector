@@ -301,7 +301,20 @@ def live_server(tmp_path_factory: pytest.TempPathFactory) -> Iterator[str]:
 
     import uvicorn
 
+    from fdc import read_service
     from fdc.api import app
+
+    original_get_evidence = read_service.get_evidence
+
+    def get_direct_evidence(accession: str, evidence_id: str):
+        evidence = original_get_evidence(accession, evidence_id)
+        return evidence.model_copy(
+            update={
+                "excerpt": f"Direct evidence endpoint response for {accession}",
+            }
+        )
+
+    read_service.get_evidence = get_direct_evidence
 
     port = _free_port()
     config = uvicorn.Config(app, host="127.0.0.1", port=port, log_level="warning", lifespan="off")
@@ -321,6 +334,7 @@ def live_server(tmp_path_factory: pytest.TempPathFactory) -> Iterator[str]:
 
     server.should_exit = True
     thread.join(timeout=15)
+    read_service.get_evidence = original_get_evidence
     for name, value in saved.items():
         if value is None:
             os.environ.pop(name, None)

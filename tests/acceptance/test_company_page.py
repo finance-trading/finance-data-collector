@@ -102,10 +102,21 @@ def test_company_page_end_to_end_uses_persisted_statement_names(browser, live_se
         "Operating cash flow"
     )
 
-    page.locator("#fact-chart .evidence-button").first.click()
+    with page.expect_response(lambda response: "/evidence/" in response.url) as response_info:
+        page.locator("#fact-chart .evidence-button").first.click()
+    evidence_response = response_info.value
+    evidence_payload = evidence_response.json()
     expect(page.locator("#evidence-content")).to_contain_text("Content SHA-256")
-    expect(page.locator("#evidence-content")).to_contain_text("Revenue 120")
+    expect(page.locator("#evidence-content")).to_contain_text(
+        "Direct evidence endpoint response for 0000000000-25-000002"
+    )
+    expect(page.locator("#evidence-content")).not_to_contain_text("Revenue 120")
     expect(page.locator("#evidence-content")).to_contain_text("us-gaap:Revenue")
+    assert evidence_response.status == 200
+    assert evidence_payload["accession"] == "0000000000-25-000002"
+    assert evidence_payload["excerpt"] == (
+        "Direct evidence endpoint response for 0000000000-25-000002"
+    )
     assert len(evidence_requests) == 1
     assert evidence_requests[0].startswith(
         f"{live_server}/api/v1/filings/0000000000-25-000002/evidence/"
