@@ -233,7 +233,15 @@ def _session_scope() -> Iterator[Session]:
 def _issuer(session: Session, ticker: str) -> Issuer:
     normalized = ticker.strip().upper()
     issuer = session.scalar(
-        select(Issuer).where(func.upper(Issuer.ticker_hint) == normalized)
+        select(Issuer)
+        .outerjoin(Filing, Filing.issuer_id == Issuer.id)
+        .where(func.upper(Issuer.ticker_hint) == normalized)
+        .group_by(Issuer.id)
+        .order_by(
+            func.max(Filing.filing_date).desc(),
+            func.max(Filing.created_at).desc(),
+            Issuer.cik.desc(),
+        )
     )
     if issuer is None:
         raise ReadServiceError(404, "not_found", f"unknown ticker {normalized}")

@@ -283,7 +283,7 @@ class FilingParse(TimestampMixin, Base):
     attempt_number: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
     parser_modules: Mapped[dict | None] = mapped_column(JSON)
     edgartools_version: Mapped[str | None] = mapped_column(String(32))
-    parse_mode: Mapped[str | None] = mapped_column(String(32))
+    parse_mode: Mapped[str | None] = mapped_column(String(128))
     status: Mapped[str] = mapped_column(String(16), nullable=False)
     is_current: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     diagnostics: Mapped[dict | None] = mapped_column(JSON)

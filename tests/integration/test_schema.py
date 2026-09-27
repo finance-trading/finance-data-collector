@@ -7,14 +7,17 @@ covered when ``FDC_TEST_POSTGRES_URL`` points at a reachable server.
 from __future__ import annotations
 
 import os
+from datetime import UTC, datetime
 from pathlib import Path
+from uuid import uuid4
 
 import pytest
 from alembic.config import Config
 from sqlalchemy import create_engine, inspect, text
+from sqlalchemy.orm import Session
 
 from alembic import command
-from fdc.models import Base
+from fdc.models import Base, Filing, FilingParse, Issuer, ParseRun
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
@@ -115,3 +118,61 @@ def test_postgres_upgrade_matches_models():
     inspector = inspect(create_engine(url))
 
     assert set(inspector.get_table_names()) - {"alembic_version"} == set(Base.metadata.tables)
+
+
+@pytest.mark.skipif(
+    not os.environ.get("FDC_TEST_POSTGRES_URL"),
+    reason="FDC_TEST_POSTGRES_URL is not configured",
+)
+def test_postgres_persists_composed_parse_mode():
+    url = os.environ["FDC_TEST_POSTGRES_URL"]
+    command.upgrade(alembic_config(url), "head")
+    engine = create_engine(url)
+    issuer_id = uuid4()
+    filing_id = uuid4()
+    run_id = uuid4()
+    parse_id = uuid4()
+    composed_mode = "edgartools-local+deterministic-html"
+
+    with Session(engine) as session:
+        session.add(
+            Issuer(id=issuer_id, cik="9999999999", name="Schema Test", ticker_hint="TEST")
+        )
+        session.flush()
+        session.add_all(
+            [
+                Filing(
+                    id=filing_id,
+                    issuer_id=issuer_id,
+                    accession_number="9999999999-26-000001",
+                    form="10-K",
+                    package_path="10-K/9999999999-26-000001",
+                ),
+                ParseRun(
+                    id=run_id,
+                    scope_type="filing",
+                    scope_value="9999999999-26-000001",
+                    parser_version="filing-parser-v1",
+                    status="completed",
+                    started_at=datetime.now(UTC),
+                ),
+            ]
+        )
+        session.flush()
+        session.add(
+            FilingParse(
+                id=parse_id,
+                filing_id=filing_id,
+                parse_run_id=run_id,
+                artifact_set_hash="a" * 64,
+                parser_version="filing-parser-v1",
+                parser_modules_hash="b" * 64,
+                parse_mode=composed_mode,
+                status="success",
+                is_current=True,
+            )
+        )
+
+        session.flush()
+
+        assert session.get(FilingParse, parse_id).parse_mode == composed_mode

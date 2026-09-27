@@ -269,6 +269,57 @@ def test_company_and_filtered_filing_list_expose_parse_state(client):
     }
 
 
+def test_company_prefers_same_ticker_issuer_with_the_latest_filing(
+    client, session, seeded_database
+):
+    latest_accession = "0000000001-25-000001"
+    issuer = Issuer(
+        cik="0000000001",
+        name="Microsoft Current Corporation",
+        ticker_hint="MSFT",
+    )
+    session.add(issuer)
+    session.flush()
+    filing = Filing(
+        issuer_id=issuer.id,
+        accession_number=latest_accession,
+        form="10-Q",
+        filing_date=date(2025, 5, 1),
+        report_date=date(2025, 3, 31),
+        package_path=f"MSFT/10-Q/{latest_accession}",
+    )
+    run = ParseRun(
+        scope_type="filing",
+        scope_value=latest_accession,
+        parser_version="parser-v1",
+        status="completed",
+        started_at=datetime(2025, 5, 2, tzinfo=UTC),
+    )
+    session.add_all([filing, run])
+    session.flush()
+    session.add(
+        FilingParse(
+            filing_id=filing.id,
+            parse_run_id=run.id,
+            artifact_set_hash="f" * 64,
+            parser_version="parser-v1",
+            parser_modules_hash="1" * 64,
+            status="success",
+            is_current=True,
+        )
+    )
+    session.commit()
+
+    company = client.get("/api/v1/companies/MSFT")
+    filings = client.get("/api/v1/companies/MSFT/filings")
+
+    assert company.status_code == 200
+    assert company.json()["cik"] == "0000000001"
+    assert company.json()["latest_filing_date"] == "2025-05-01"
+    assert filings.status_code == 200
+    assert filings.json()["filings"][0]["accession"] == latest_accession
+
+
 def test_filing_api_exposes_current_parser_identity(client):
     response = client.get(f"/api/v1/filings/{ACCESSION}")
 
