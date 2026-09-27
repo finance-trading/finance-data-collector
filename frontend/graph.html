@@ -1,19 +1,30 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark">
-  <title>美股科技公司关系图 · Finance Data Collector</title>
+  <title>Company relationship graph | Finance Data Collector</title>
+  <link rel="stylesheet" href="/src/styles/theme.css">
   <link rel="stylesheet" href="/src/styles/graph.css">
   <script type="module" src="/src/pages/graph.ts"></script>
 </head>
 <body data-graph-app>
   <main id="graph" aria-label="AI company relationship graph"></main>
-  <div id="graph-state" role="status" aria-live="polite">正在读取公司关系图…</div>
+
+  <header id="topbar" aria-label="Primary navigation">
+    <a class="brand" href="index.html">Finance Data Collector</a>
+    <nav class="nav">
+      <a href="index.html">Research</a>
+      <a href="graph.html" aria-current="page">Company graph</a>
+      <a href="layers.html">AI layers</a>
+    </nav>
+  </header>
+
+  <div id="graph-state" role="status" aria-live="polite">Reading the company relationship graph…</div>
 
   <aside id="card" class="panel" hidden aria-live="polite">
-    <button class="close" type="button" data-close-panel aria-label="关闭公司详情">✕</button>
+    <button class="close" type="button" data-close-panel aria-label="Close company details">✕</button>
     <h2 id="card-name"></h2>
     <div class="sub" id="card-sector"></div>
     <p id="card-desc"></p>
@@ -21,30 +32,30 @@
   </aside>
 
   <aside id="link-card" class="panel" hidden aria-live="polite">
-    <button class="close" type="button" data-close-panel aria-label="关闭关系详情">✕</button>
+    <button class="close" type="button" data-close-panel aria-label="Close relationship details">✕</button>
     <h2 id="link-title"></h2>
     <p id="link-desc"></p>
   </aside>
 
   <aside id="legend" class="panel" aria-label="Graph filters">
-    <h2>着色 / 过滤</h2>
+    <h2>Color / filter</h2>
     <div class="dimension-controls">
-      <label class="row"><input type="radio" name="dim" value="sector" checked>行业</label>
-      <label class="row"><input type="radio" name="dim" value="layer">AI 分层</label>
+      <label class="row"><input type="radio" name="dim" value="sector" checked>Industry</label>
+      <label class="row"><input type="radio" name="dim" value="layer">AI layer</label>
     </div>
     <div id="legend-rows"></div>
     <div class="legend-links">
-      <h2>连线类型</h2>
-      <label class="row"><input type="checkbox" id="ft-industry" checked><span class="dot" style="background:#3a4a80"></span>同子行业</label>
-      <label class="row"><input type="checkbox" id="ft-crossref" checked><span class="dot" style="background:#f6ad55"></span>10-K 互提及</label>
-      <label class="row"><input type="checkbox" id="ft-coholding"><span class="dot" style="background:#4fd1c5"></span>13F 共同持仓</label>
+      <h2>Link types</h2>
+      <label class="row"><input type="checkbox" id="ft-industry" checked><span class="dot" style="background:#3a4a80"></span>Same sub-industry</label>
+      <label class="row"><input type="checkbox" id="ft-crossref" checked><span class="dot" style="background:#f6ad55"></span>10-K cross-reference</label>
+      <label class="row"><input type="checkbox" id="ft-coholding"><span class="dot" style="background:#4fd1c5"></span>13F co-holding</label>
     </div>
   </aside>
 
   <footer id="title">
-    <a href="index.html">研究目录</a> ·
-    <a href="layers.html">AI 产业分层</a> ·
-    3d-force-graph · EDGAR 数据 · <span id="gen-time"></span>
+    <a href="index.html">Research directory</a> ·
+    <a href="layers.html">AI industry layers</a> ·
+    3d-force-graph · EDGAR data · <span id="gen-time"></span>
   </footer>
 </body>
 </html>

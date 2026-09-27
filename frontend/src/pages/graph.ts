@@ -87,7 +87,7 @@ function renderNodeCard(node: GraphNode, degree: Record<string, number>): void {
   const meta = element("card-meta");
   meta.replaceChildren();
   const detail = document.createElement("span");
-  detail.textContent = `CIK ${node.id} · 度 ${degree[node.ticker] ?? 0}`;
+  detail.textContent = `CIK ${node.id} · Degree ${degree[node.ticker] ?? 0}`;
   meta.append(detail);
   if (node.edgar) {
     meta.append(document.createElement("br"));
@@ -95,7 +95,7 @@ function renderNodeCard(node: GraphNode, degree: Record<string, number>): void {
     link.href = node.edgar;
     link.target = "_blank";
     link.rel = "noopener noreferrer";
-    link.textContent = "EDGAR 档案";
+    link.textContent = "EDGAR filing";
     meta.append(link);
   }
   element("card").hidden = false;
@@ -128,8 +128,8 @@ export function mountGraph(
   let dimension: "sector" | "layer" = "sector";
   const groupOf = (node: GraphNode): string =>
     dimension === "sector"
-      ? node.sector ?? "未分类"
-      : node.layer_name ?? node.layer ?? "未分层";
+      ? node.sector ?? "Unclassified"
+      : node.layer_name ?? node.layer ?? "Unlayered";
   const endpointHidden = (endpoint: GraphEndpoint): boolean => {
     const node = nodeForEndpoint(endpoint, byTicker);
     return node ? hidden.has(groupOf(node)) : false;
@@ -240,7 +240,7 @@ export function mountGraph(
 
 async function loadGraph(): Promise<void> {
   const status = element("graph-state");
-  renderDataState(status, "loading", "正在读取公司关系图…");
+  renderDataState(status, "loading", "Reading the company relationship graph…");
   try {
     const payload = normalizeGraph(
       await apiGet<GraphPayload>("/api/v1/visualizations/graph"),
@@ -252,7 +252,8 @@ async function loadGraph(): Promise<void> {
     renderDataState(
       status,
       "error",
-      "公司关系图暂不可用。请确认可视化数据已生成。",
+      "The company relationship graph is unavailable. " +
+        "Confirm the visualization data has been generated.",
       () => void loadGraph(),
     );
     console.error(error);

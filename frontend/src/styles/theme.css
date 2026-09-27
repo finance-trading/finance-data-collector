@@ -1,0 +1,22 @@
+/* Shared dark design tokens for every page.
+   Page stylesheets link this first and must not re-declare these tokens. */
+:root {
+  color-scheme: dark;
+  --ledger: #0a0e1a;
+  --paper: #151c32;
+  --ink: #dfe6ff;
+  --muted: #8b96c2;
+  --rule: rgb(90 120 255 / 20%);
+  --rule-strong: rgb(90 120 255 / 35%);
+  --pine: #68d391;
+  --pine-dark: #4fae7b;
+  --pine-wash: rgb(104 211 145 / 15%);
+  --filing-blue: #7fa2ff;
+  --blue-wash: rgb(90 120 255 / 14%);
+  --amber: #f6ad55;
+  --amber-wash: rgb(246 173 85 / 15%);
+  --error: #fc8181;
+  --error-wash: rgb(252 129 129 / 15%);
+  --sans: "Avenir Next", Avenir, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --serif: Charter, "Iowan Old Style", Georgia, serif;
+}

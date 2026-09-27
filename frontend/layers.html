@@ -1,43 +1,47 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark">
-  <title>AI 产业分层 · Finance Data Collector</title>
+  <title>AI industry layers | Finance Data Collector</title>
+  <link rel="stylesheet" href="/src/styles/theme.css">
   <link rel="stylesheet" href="/src/styles/layers.css">
   <script type="module" src="/src/pages/layers.ts"></script>
 </head>
 <body data-layers-app>
   <header id="topbar">
-    <div class="brand">AI 产业链分层<small id="gen-time"></small></div>
+    <div class="brand">AI industry layers<small id="gen-time"></small></div>
     <div class="modes" aria-label="Visualization mode">
-      <button class="mode active" type="button" data-mode="columns">分层图</button>
-      <button class="mode" type="button" data-mode="tree">树状图</button>
+      <button class="mode active" type="button" data-mode="columns">Columns</button>
+      <button class="mode" type="button" data-mode="tree">Tree</button>
       <button class="mode" type="button" data-mode="mermaid">Mermaid</button>
     </div>
-    <input id="search" type="search" placeholder="搜索 ticker / 公司 / 说明" aria-label="搜索公司">
+    <input id="search" type="search" placeholder="Search ticker / company / description" aria-label="Search companies">
     <span id="stats"></span>
-    <a id="back" href="index.html">研究目录</a>
-    <a id="back-graph" href="graph.html">公司关系图</a>
+    <nav class="nav" aria-label="Primary navigation">
+      <a href="index.html">Research</a>
+      <a href="graph.html">Company graph</a>
+      <a href="layers.html" aria-current="page">AI layers</a>
+    </nav>
   </header>
 
-  <div id="layers-state" role="status" aria-live="polite">正在读取 AI 产业分层…</div>
+  <div id="layers-state" role="status" aria-live="polite">Reading the AI industry layers…</div>
   <svg id="view" aria-label="AI company layers visualization"></svg>
   <pre id="mermaid" hidden aria-label="Mermaid source"></pre>
 
   <aside id="legend" class="panel" aria-label="Layer filters">
-    <h2>分层（点击过滤）</h2>
+    <h2>Layers (click to filter)</h2>
     <div id="legend-rows"></div>
     <label class="row">
       <input type="checkbox" id="show-cross" checked>
       <span class="dot" style="background:#f6ad55"></span>
-      跨层角色虚线
+      Cross-layer links (dashed)
     </label>
   </aside>
 
   <aside id="card" class="panel" hidden aria-live="polite">
-    <button id="card-close" class="close" type="button" aria-label="关闭公司详情">✕</button>
+    <button id="card-close" class="close" type="button" aria-label="Close company details">✕</button>
     <h2 id="card-name"></h2>
     <div class="sub" id="card-path"></div>
     <p id="card-desc"></p>

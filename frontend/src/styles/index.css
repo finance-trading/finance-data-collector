@@ -1,23 +1,3 @@
-:root {
-  --ledger: #f2f5f3;
-  --paper: #fff;
-  --ink: #14211c;
-  --muted: #5d6b65;
-  --rule: #cbd5d0;
-  --rule-strong: #8fa198;
-  --pine: #176b4d;
-  --pine-dark: #0d4c37;
-  --pine-wash: #e3efe9;
-  --filing-blue: #1e5aa8;
-  --blue-wash: #e9f0f8;
-  --amber: #9a5a12;
-  --amber-wash: #fbf0df;
-  --error: #a82a21;
-  --error-wash: #fbe9e7;
-  --sans: "Avenir Next", Avenir, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --serif: Charter, "Iowan Old Style", Georgia, serif;
-}
-
 * { box-sizing: border-box; }
 
 html {
@@ -40,7 +20,7 @@ a:focus-visible,
 button:focus-visible,
 input:focus-visible,
 select:focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--filing-blue) 45%, white);
+  outline: 3px solid var(--filing-blue);
   outline-offset: 3px;
 }
 
@@ -50,8 +30,8 @@ select:focus-visible {
   left: 10px;
   z-index: 20;
   padding: 8px 12px;
-  background: var(--ink);
-  color: white;
+  background: var(--pine);
+  color: #0d2818;
   transform: translateY(-160%);
 }
 
@@ -197,10 +177,10 @@ h1 {
   border: 1px solid var(--rule-strong);
   border-right: 0;
   border-radius: 0;
-  background: #fbfcfb;
+  background: var(--ledger);
 }
 
-.search-controls input::placeholder { color: #78867f; }
+.search-controls input::placeholder { color: var(--muted); }
 
 .search-controls button {
   min-height: 48px;
@@ -208,7 +188,7 @@ h1 {
   border: 1px solid var(--pine-dark);
   border-radius: 0;
   background: var(--pine);
-  color: white;
+  color: #0d2818;
   font-weight: 750;
   cursor: pointer;
 }
@@ -261,7 +241,7 @@ h1 {
   padding: 10px 12px;
   border-left: 4px solid var(--filing-blue);
   background: var(--blue-wash);
-  color: #173f73;
+  color: var(--filing-blue);
 }
 
 .directory-state span { margin-right: 14px; }
@@ -338,7 +318,7 @@ th, td {
 
 th { color: var(--muted); font-size: 0.76rem; font-weight: 750; }
 tbody tr:last-child td { border-bottom: 0; }
-tbody tr:hover { background: #f7faf8; }
+tbody tr:hover { background: rgb(90 120 255 / 7%); }
 .company-cell { width: 31%; }
 
 .company-identity {

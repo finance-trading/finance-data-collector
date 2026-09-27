@@ -124,7 +124,7 @@ export function mountLayers(payload: LayersPayload): void {
     const badges = element("card-badges");
     badges.replaceChildren();
     appendText(badges, "badge", company.industry);
-    company.cross_in.forEach((name) => appendText(badges, "badge cross", `跨层：${name}`));
+    company.cross_in.forEach((name) => appendText(badges, "badge cross", `Cross-layer: ${name}`));
     const meta = element("card-meta");
     meta.replaceChildren();
     appendText(meta, "", `CIK ${company.cik} · ${company.sector} · `);
@@ -132,7 +132,7 @@ export function mountLayers(payload: LayersPayload): void {
     link.href = company.edgar;
     link.target = "_blank";
     link.rel = "noopener noreferrer";
-    link.textContent = "EDGAR 档案";
+    link.textContent = "EDGAR filing";
     meta.append(link);
     element("card").hidden = false;
   };
@@ -360,9 +360,10 @@ export function mountLayers(payload: LayersPayload): void {
 
   element("gen-time").textContent = payload.generated_at ? ` · ${payload.generated_at}` : "";
   element("stats").textContent =
-    `${payload.stats.companies} 家公司 · ${payload.stats.layers} 层 · ` +
-    `${payload.stats.segments} 个细分 · ${payload.stats.cross_layer} 个跨层角色`;
-  element("hint").textContent = "点击公司查看详情 · 点击层或细分标题折叠 · 滚轮缩放 · 拖拽平移";
+    `${payload.stats.companies} companies · ${payload.stats.layers} layers · ` +
+    `${payload.stats.segments} segments · ${payload.stats.cross_layer} cross-layer roles`;
+  element("hint").textContent =
+    "Click a company for details · click a layer or segment title to collapse · scroll to zoom · drag to pan";
 
   const legendRows = element("legend-rows");
   layers.forEach((layer) => {
@@ -423,7 +424,7 @@ export function mountLayers(payload: LayersPayload): void {
 
 async function loadLayers(): Promise<void> {
   const status = element("layers-state");
-  renderDataState(status, "loading", "正在读取 AI 产业分层…");
+  renderDataState(status, "loading", "Reading the AI industry layers…");
   try {
     const payload = await apiGet<LayersPayload>("/api/v1/visualizations/layers");
     mountLayers(payload);
@@ -432,7 +433,8 @@ async function loadLayers(): Promise<void> {
     renderDataState(
       status,
       "error",
-      "AI 产业分层暂不可用。请确认可视化数据已生成。",
+      "The AI industry layers are unavailable. " +
+        "Confirm the visualization data has been generated.",
       () => void loadLayers(),
     );
     console.error(error);

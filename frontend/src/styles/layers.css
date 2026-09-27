@@ -1,7 +1,7 @@
 :root {
   color: #dfe6ff;
   background: #0a0e1a;
-  font-family: "Avenir Next", Avenir, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+  font-family: "Avenir Next", Avenir, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -23,6 +23,11 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 3px solid 
   border-bottom: 1px solid rgb(90 120 255 / 28%);
   background: rgb(15 20 35 / 94%);
 }
+
+.nav { display: flex; gap: 14px; margin-left: auto; }
+.nav a { padding: 5px 0; color: #9db4ff; font-size: 12px; text-decoration: none; white-space: nowrap; }
+.nav a:hover { color: #fff; }
+.nav a[aria-current="page"] { color: #fff; border-bottom: 2px solid #7fa2ff; padding-bottom: 3px; }
 
 .brand { color: #fff; font-size: 15px; white-space: nowrap; }
 .brand small { margin-left: 6px; color: #7f8ab5; font-size: 11px; font-weight: 400; }
