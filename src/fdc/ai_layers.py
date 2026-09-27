@@ -1,6 +1,6 @@
 """AI value-chain layering: company universe -> tree/graph data for the web viewers.
 
-``web/data/companies.json`` stays the single source of truth:
+``data/ai_companies.json`` stays the single source of truth:
 
 - ``layers``   ordered upstream -> downstream AI value-chain layers.  Each layer
   declares the ``segments`` it contains, so rendering order never depends on the
@@ -9,12 +9,12 @@
   ``also_in`` (layer ids) for companies that play a role in several layers.
 
 This module validates that contract, resolves tickers to CIKs, and writes the
-nested tree consumed by ``web/layers.html``:
+nested tree served by the read API:
 
     {"generated_at": ..., "stats": {...}, "root": {layer -> segment -> company}}
 
 Usage:
-    uv run python -m fdc.ai_layers                  # write web/data/layers.json
+    uv run python -m fdc.ai_layers                  # write data/generated/layers.json
     uv run python -m fdc.ai_layers --tree           # ASCII tree to stdout
     uv run python -m fdc.ai_layers --mermaid        # mermaid graph to stdout
     uv run python -m fdc.ai_layers --enrich-graph   # copy layer/segment into graph.json
@@ -34,15 +34,10 @@ import sys
 import time
 from pathlib import Path
 
+from fdc.data_files import CATALOG_PATH, GRAPH_PATH, LAYERS_PATH, write_json_artifact
 from fdc.graph import load_ticker_cik_map
-from fdc.sec_storage import PROJECT_ROOT
-from fdc.web_data import write_data
 
-WEB_DIR = PROJECT_ROOT / "web"
-DATA_DIR = WEB_DIR / "data"
-COMPANIES_PATH = DATA_DIR / "companies.json"
-LAYERS_PATH = DATA_DIR / "layers.json"
-GRAPH_PATH = DATA_DIR / "graph.json"
+COMPANIES_PATH = CATALOG_PATH
 
 REQUIRED_COMPANY_KEYS = ("ticker", "name", "sector", "industry", "layer", "segment", "description")
 EDGAR_BROWSER = "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={cik}"
@@ -205,7 +200,7 @@ def build_tree(companies: list[dict], layers: list[dict], generated_at: str) -> 
     }
     return {
         "generated_at": generated_at,
-        "source": "web/data/companies.json",
+        "source": "data/ai_companies.json",
         "stats": stats,
         "root": {
             "id": ROOT_ID,
@@ -303,7 +298,7 @@ def enrich_graph(
         if company.get("also_in"):
             node["also_in"] = list(company["also_in"])
         updated += 1
-    write_data(path.stem, payload, path.parent)
+    write_json_artifact(path, payload)
     return updated
 
 
@@ -348,7 +343,7 @@ def render_alignment(report: dict) -> str:
 
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(
-        description="Build the AI value-chain layer tree from web/data/companies.json."
+        description="Build the AI value-chain layer tree from data/ai_companies.json."
     )
     parser.add_argument(
         "--out", type=Path, default=LAYERS_PATH, help="output path for the tree JSON"
@@ -361,7 +356,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument(
         "--enrich-graph",
         action="store_true",
-        help="also copy layer/segment into web/data/graph.json",
+        help="also copy layer/segment into data/generated/graph.json",
     )
     parser.add_argument(
         "--allow-stale-graph",
@@ -374,11 +369,11 @@ def main(argv: list[str] | None = None) -> None:
     print(f"universe: {len(companies)} companies · {len(layers)} layers")
     resolved = resolve_ciks(companies)
     tree = build_tree(resolved, layers, time.strftime("%Y-%m-%d %H:%M"))
-    json_path, js_path = write_data(args.out.stem, tree, args.out.parent)
+    json_path = write_json_artifact(args.out, tree)
 
     stats = tree["stats"]
     print(
-        f"wrote {json_path} + {js_path.name} — {stats['companies']} companies · "
+        f"wrote {json_path} — {stats['companies']} companies · "
         f"{stats['layers']} layers · {stats['segments']} segments · "
         f"{stats['cross_layer']} cross-layer roles"
     )
@@ -406,5 +401,3 @@ def main(argv: list[str] | None = None) -> None:
 
 if __name__ == "__main__":
     main()
-
-

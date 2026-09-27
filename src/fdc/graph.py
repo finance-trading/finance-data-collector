@@ -1,8 +1,8 @@
 """Build the tech-company relationship graph for the 3D viewer.
 
-Reads web/data/companies.json (the curated universe, single source of truth),
+Reads data/ai_companies.json (the curated universe, single source of truth),
 resolves tickers to CIKs, derives three edge types, and writes
-web/data/graph.json consumed by web/graph.html.
+data/generated/graph.json for the read API.
 
 Edge types:
 - industry   : same GICS sub-industry (bounded K-nearest so meshes stay readable)
@@ -34,12 +34,10 @@ import urllib.request
 from collections import Counter, defaultdict
 from pathlib import Path
 
-from fdc.sec_storage import CACHE_DIR, PROJECT_ROOT
-from fdc.web_data import write_data
+from fdc.data_files import CATALOG_PATH, GRAPH_PATH, write_json_artifact
+from fdc.sec_storage import CACHE_DIR
 
-WEB_DIR = PROJECT_ROOT / "web"
-COMPANIES_PATH = WEB_DIR / "data" / "companies.json"
-GRAPH_PATH = WEB_DIR / "data" / "graph.json"
+COMPANIES_PATH = CATALOG_PATH
 TICKERS_CACHE = CACHE_DIR / "company_tickers.json"
 EFTS_CACHE = CACHE_DIR / "efts"
 
@@ -495,10 +493,10 @@ def main() -> None:
         refresh_cache=args.refresh_cache,
         layer_names=layer_names,
     )
-    json_path, js_path = write_data(GRAPH_PATH.stem, graph, GRAPH_PATH.parent)
+    json_path = write_json_artifact(GRAPH_PATH, graph)
     types = Counter(link["type"] for link in graph["links"])
     total = f"{len(graph['nodes'])} nodes, {len(graph['links'])} links, {dict(types)}"
-    print(f"wrote {json_path} + {js_path.name} — {total}")
+    print(f"wrote {json_path} — {total}")
 
 
 if __name__ == "__main__":

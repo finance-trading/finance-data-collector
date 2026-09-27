@@ -234,11 +234,9 @@ def test_main_writes_tree_json(tmp_path, monkeypatch):
     payload = json.loads(out.read_text())
     assert payload["stats"]["companies"] == 2
     assert payload["generated_at"]
-    assert payload["source"] == "web/data/companies.json"
+    assert payload["source"] == "data/ai_companies.json"
 
-    shim = out.with_suffix(".js")
-    assert shim.exists()
-    assert 'window.__FDC_DATA__["layers"] = {' in shim.read_text()
+    assert not out.with_suffix(".js").exists()
 
 
 def test_audit_graph_reports_missing_and_stale_nodes():

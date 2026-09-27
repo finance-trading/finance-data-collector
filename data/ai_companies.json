@@ -1,5 +1,5 @@
 {
-  "_comment": "Single source of truth for the AI value-chain universe (web/layers.html 分层树 + web/index.html 3D 关系图). `layers` = 有序的 AI 产业链分层（上游 -> 下游），每层声明自己的 `segments`；每个 company 声明 layer + segment，可选 also_in = 该公司的跨层角色（层 id 数组）。sector/industry 使用 GICS 标签，description 为节点卡片文案。Ticker 到 CIK 在构建时解析（离线走 sec/.cache/company_tickers.json，否则 EDGAR）。",
+  "_comment": "Single source of truth for the AI value-chain universe served by the backend API. `layers` = 有序的 AI 产业链分层（上游 -> 下游），每层声明自己的 `segments`；每个 company 声明 layer + segment，可选 also_in = 该公司的跨层角色（层 id 数组）。sector/industry 使用 GICS 标签，description 为节点卡片文案。Ticker 到 CIK 在构建时解析（离线走 sec/.cache/company_tickers.json，否则 EDGAR）。",
   "layers": [
     {"id": "power", "name": "能源与电力", "name_en": "Energy & Power", "summary": "AI 算力的物理底座：发电、输电、配电与液冷散热。机柜功率密度上升后，电力供给成为算力扩张的第一约束。", "segments": ["数据中心电力与温控", "发电与核电", "电网与工程"]},
     {"id": "silicon", "name": "芯片与半导体", "name_en": "Semiconductors & Silicon", "summary": "算力芯片、存储、模拟电源、晶圆代工、设备材料、EDA/IP 与光互连，是 AI 硬件价值链最上游。", "segments": ["算力芯片", "存储芯片", "模拟与电源芯片", "晶圆代工", "半导体设备与材料", "EDA 与 IP", "互连与光器件"]},

@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-09-25 12:04",
- "source": "web/data/companies.json",
+ "generated_at": "2026-09-27 00:12",
+ "source": "data/ai_companies.json",
  "stats": {
   "companies": 211,
   "layers": 6,
