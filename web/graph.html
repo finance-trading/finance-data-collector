@@ -66,26 +66,10 @@
 <script type="module">
 import ThreeForceGraph from "https://esm.sh/3d-force-graph@1.80.0?target=es2022";
 
-// Served over HTTP the payload comes from data/<name>.json. Opening this page
-// straight from disk (file://) blocks fetch(), so fall back to data/<name>.js,
-// which assigns window.__FDC_DATA__[<name>] through a plain script tag.
 async function loadData(name) {
-  if (location.protocol !== "file:") {
-    try {
-      const res = await fetch(`data/${name}.json`);
-      if (res.ok) return await res.json();
-    } catch (err) { /* fall through to the script shim */ }
-  }
-  await new Promise((resolve, reject) => {
-    const script = document.createElement("script");
-    script.src = `data/${name}.js`;
-    script.onload = resolve;
-    script.onerror = () => reject(new Error(`无法加载 data/${name}.js`));
-    document.head.appendChild(script);
-  });
-  const payload = (window.__FDC_DATA__ || {})[name];
-  if (!payload) throw new Error(`data/${name}.js 没有提供 ${name} 数据`);
-  return payload;
+  const response = await fetch(`/api/v1/visualizations/${name}`);
+  if (!response.ok) throw new Error(`${name} request returned ${response.status}`);
+  return response.json();
 }
 
 (async () => {

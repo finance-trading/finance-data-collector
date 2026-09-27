@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Annotated, Callable, TypeVar
+from typing import Annotated, Any, Callable, Literal, TypeVar
 
 from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel
 from starlette.staticfiles import StaticFiles
 
-from fdc import read_service
+from fdc import catalog, read_service
+from fdc.catalog import CatalogLayerListView
 from fdc.read_service import (
     CompanyListView,
     CompanyView,
@@ -43,6 +44,16 @@ def companies(
     offset: Annotated[int, Query(ge=0)] = 0,
 ) -> CompanyListView:
     return _read(lambda: read_service.list_companies(query, limit, offset))
+
+
+@app.get("/api/v1/catalog/layers", response_model=CatalogLayerListView)
+def catalog_layers() -> CatalogLayerListView:
+    return _read(catalog.list_layers)
+
+
+@app.get("/api/v1/visualizations/{name}")
+def visualization(name: Literal["graph", "layers"]) -> dict[str, Any]:
+    return _read(lambda: catalog.read_visualization(name))
 
 
 @app.get("/api/v1/companies/{ticker}", response_model=CompanyView)

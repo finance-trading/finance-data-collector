@@ -10,6 +10,7 @@ import httpx
 import pytest
 from sqlalchemy import select
 
+from fdc import catalog
 from fdc.api import app
 from fdc.models import (
     Artifact,
@@ -290,6 +291,33 @@ def test_company_directory_supports_name_search(client):
             }
         ],
     }
+
+
+def test_catalog_layers_expose_the_complete_ai_universe(client):
+    response = client.get("/api/v1/catalog/layers")
+
+    assert response.status_code == 200
+    assert response.json()["total_companies"] == 211
+    assert response.json()["layers"][0]["id"] == "power"
+    assert response.json()["layers"][0]["count"] == 16
+
+
+def test_graph_visualization_is_served_by_the_read_api(client):
+    response = client.get("/api/v1/visualizations/graph")
+
+    assert response.status_code == 200
+    assert len(response.json()["nodes"]) == 211
+
+
+def test_missing_visualization_has_an_explicit_unavailable_state(
+    client, monkeypatch, tmp_path
+):
+    monkeypatch.setattr(catalog, "GRAPH_PATH", tmp_path / "missing.json")
+
+    response = client.get("/api/v1/visualizations/graph")
+
+    assert response.status_code == 409
+    assert response.json()["detail"]["status"] == "unavailable"
 
 
 def test_company_prefers_same_ticker_issuer_with_the_latest_filing(
