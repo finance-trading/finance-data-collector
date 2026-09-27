@@ -1,0 +1,70 @@
+:root {
+  color: #dfe6ff;
+  background: #0a0e1a;
+  font-family: "Avenir Next", Avenir, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+button, input { color: inherit; font: inherit; }
+button:focus-visible, input:focus-visible, a:focus-visible { outline: 3px solid #8eabff; outline-offset: 3px; }
+
+#topbar {
+  position: fixed;
+  z-index: 20;
+  top: 0;
+  right: 0;
+  left: 0;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  border-bottom: 1px solid rgb(90 120 255 / 28%);
+  background: rgb(15 20 35 / 94%);
+}
+
+.brand { color: #fff; font-size: 15px; white-space: nowrap; }
+.brand small { margin-left: 6px; color: #7f8ab5; font-size: 11px; font-weight: 400; }
+.modes { display: flex; gap: 6px; }
+button.mode { padding: 5px 11px; border: 1px solid rgb(90 120 255 / 30%); border-radius: 8px; background: rgb(90 120 255 / 14%); color: #9db4ff; font-size: 12px; cursor: pointer; }
+button.mode.active { background: #3a4a80; color: #fff; }
+#search { flex: 0 1 300px; min-width: 130px; padding: 6px 10px; border: 1px solid rgb(90 120 255 / 30%); border-radius: 8px; background: #131a2e; color: #dfe6ff; font-size: 12px; }
+#stats { color: #7f8ab5; font-size: 11px; white-space: nowrap; }
+#back { margin-left: auto; color: #7fa2ff; font-size: 12px; text-decoration: none; white-space: nowrap; }
+
+#view, #mermaid { position: fixed; top: 52px; left: 0; width: 100%; height: calc(100% - 52px); }
+#view { display: block; cursor: grab; }
+#mermaid { padding: 16px; overflow: auto; background: #0a0e1a; color: #cbd5ff; font: 12px/1.6 ui-monospace, Menlo, monospace; white-space: pre; }
+[hidden] { display: none !important; }
+
+.panel { position: fixed; z-index: 10; padding: 12px 14px; border: 1px solid rgb(90 120 255 / 35%); border-radius: 10px; background: rgb(15 20 35 / 94%); box-shadow: 0 8px 32px rgb(0 0 0 / 50%); backdrop-filter: blur(6px); }
+.panel h2 { margin: 0 0 8px; color: #fff; font-size: 13px; }
+.panel p { margin: 0; font-size: 12.5px; line-height: 1.55; }
+#legend { top: 66px; right: 16px; width: 252px; max-height: calc(100% - 108px); overflow: auto; }
+.row { display: flex; align-items: center; gap: 7px; margin: 5px 0; font-size: 12px; cursor: pointer; user-select: none; }
+.row .n { margin-left: auto; color: #7f8ab5; font-size: 11px; }
+.dot { width: 10px; height: 10px; flex-shrink: 0; border-radius: 50%; }
+#card { bottom: 16px; left: 16px; width: 370px; max-height: calc(100% - 120px); overflow: auto; }
+#card h2 { font-size: 15px; }
+#card .sub { margin: 2px 0 8px; color: #8b96c2; font-size: 12px; }
+#card .meta { margin-top: 9px; color: #7f8ab5; font-size: 11px; }
+#card a { color: #7fa2ff; text-decoration: none; }
+.close { position: absolute; top: 5px; right: 7px; border: 0; background: transparent; color: #aeb8df; cursor: pointer; }
+.badge { display: inline-block; margin: 8px 5px 4px 0; padding: 1px 7px; border-radius: 9px; background: rgb(90 120 255 / 18%); color: #9db4ff; font-size: 11px; }
+.badge.cross { background: rgb(246 173 85 / 16%); color: #f6ad55; }
+#hint { position: fixed; z-index: 5; bottom: 14px; left: 50%; color: #5c679a; font-size: 11px; transform: translateX(-50%); white-space: nowrap; }
+
+#layers-state { position: fixed; z-index: 30; top: 62px; left: 50%; display: none; max-width: min(520px, calc(100vw - 32px)); padding: 10px 13px; border-left: 4px solid #7fa2ff; background: #151c32; transform: translateX(-50%); }
+#layers-state.is-visible { display: flex; align-items: center; gap: 12px; }
+#layers-state.is-error { border-left-color: #fc8181; }
+#layers-state button { border: 1px solid currentColor; background: transparent; cursor: pointer; }
+
+@media (max-width: 760px) {
+  #topbar { align-items: center; overflow-x: auto; }
+  .brand small, #stats { display: none; }
+  #back { margin-left: 0; }
+  #legend { top: auto; right: 10px; bottom: 36px; width: min(230px, calc(100vw - 20px)); max-height: 42vh; }
+  #card { top: 66px; right: 10px; bottom: auto; left: 10px; width: auto; max-height: 46vh; }
+  #hint { right: 10px; bottom: 10px; left: 10px; overflow: hidden; text-align: center; text-overflow: ellipsis; transform: none; }
+}

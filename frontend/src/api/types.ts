@@ -197,3 +197,51 @@ export interface GraphPayload {
   nodes: GraphNode[];
   links: GraphLink[];
 }
+
+export interface LayerCompanyNode {
+  id: string;
+  type: "company";
+  ticker: string;
+  name: string;
+  cik: number | string;
+  sector: string;
+  industry: string;
+  layer: string;
+  segment: string;
+  description: string;
+  also_in: string[];
+  cross_in: string[];
+  edgar: string;
+}
+
+export interface LayerSegmentNode {
+  id: string;
+  name: string;
+  count: number;
+  children: LayerCompanyNode[];
+}
+
+export interface LayerNode {
+  id: string;
+  name: string;
+  name_en: string;
+  count: number;
+  summary: string;
+  children: LayerSegmentNode[];
+}
+
+export interface LayersPayload {
+  generated_at?: string;
+  stats: {
+    companies: number;
+    layers: number;
+    segments: number;
+    cross_layer: number;
+  };
+  root: {
+    id: string;
+    name: string;
+    count: number;
+    children: LayerNode[];
+  };
+}

@@ -126,6 +126,51 @@ def test_company_graph_renders_and_keeps_ticker_identity(browser, live_server):
     page.close()
 
 
+def test_ai_layers_modes_collapse_search_and_narrow_layout(browser, live_server):
+    page = browser.new_page(viewport={"width": 1280, "height": 800})
+    console_errors = []
+    page.on(
+        "console",
+        lambda message: console_errors.append(message.text)
+        if message.type == "error"
+        else None,
+    )
+
+    page.goto(f"{live_server}/layers.html")
+    expect(page.locator("#stats")).to_contain_text("211 家公司")
+    expect(page.locator("#view")).to_be_visible()
+
+    page.get_by_role("button", name="树状图").click()
+    expect(page.get_by_role("button", name="树状图")).to_have_class("mode active")
+    page.get_by_role("button", name="Mermaid").click()
+    expect(page.locator("#mermaid")).to_be_visible()
+    expect(page.locator("#mermaid")).to_contain_text("graph LR")
+    page.get_by_role("button", name="分层图").click()
+    expect(page.locator("#view")).to_be_visible()
+
+    first_layer = page.locator("[data-layer-id]").first
+    layer_id = first_layer.get_attribute("data-layer-id")
+    first_layer.click()
+    expect(page.locator(f'[data-layer-id="{layer_id}"] text').first).to_contain_text("▸")
+
+    first_segment = page.locator("[data-segment-id]").first
+    segment_id = first_segment.get_attribute("data-segment-id")
+    first_segment.click()
+    expect(page.locator(f'[data-segment-id="{segment_id}"] text').first).to_contain_text("▸")
+
+    page.locator("#search").fill("NVDA")
+    page.evaluate("window.__selectLayerCompany('NVDA')")
+    expect(page.locator("#card-name")).to_contain_text("NVDA")
+    page.locator("#search").fill("")
+
+    page.set_viewport_size({"width": 390, "height": 844})
+    page.reload()
+    expect(page.locator("#stats")).to_contain_text("211 家公司")
+    assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth")
+    assert console_errors == []
+    page.close()
+
+
 def test_company_page_end_to_end_uses_persisted_statement_names(browser, live_server):
     page = browser.new_page(viewport={"width": 1280, "height": 800})
     console_errors = []
