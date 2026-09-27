@@ -6,7 +6,7 @@
 
 **Architecture:** Move canonical and generated data to backend-owned `data/`, expose it through read-only APIs, and build the four browser pages from `frontend/`. During migration, first move the existing pages into Vite without behavior changes, then replace each page with focused TypeScript modules; FastAPI mounts only `frontend/dist` after its API routes.
 
-**Tech Stack:** Python 3.12, FastAPI, Pydantic 2, SQLAlchemy 2, PostgreSQL/SQLite tests, Node 22, npm, Vite 7, TypeScript 5.9, Vitest 3, jsdom, D3 7, 3d-force-graph 1.80, Playwright.
+**Tech Stack:** Python 3.12, FastAPI, Pydantic 2, SQLAlchemy 2, PostgreSQL/SQLite tests, Node 22, npm, Vite 7, TypeScript 5.9, Vitest 5, jsdom, D3 7, 3d-force-graph 1.80, Playwright.
 
 **Spec:** `docs/superpowers/specs/2026-09-26-frontend-backend-separation-design.md`
 
@@ -414,8 +414,8 @@ Expected: FAIL because `frontend/` and its production build do not exist.
     "@types/node": "22.18.6",
     "jsdom": "26.1.0",
     "typescript": "5.9.2",
-    "vite": "7.1.7",
-    "vitest": "3.2.4"
+    "vite": "7.3.6",
+    "vitest": "5.0.2"
   }
 }
 ```

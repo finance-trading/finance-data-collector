@@ -64,7 +64,7 @@
 <div id="title"><a href="index.html" style="color:#7fa2ff;text-decoration:none">研究目录</a> · <a href="layers.html" style="color:#7fa2ff;text-decoration:none">AI 产业分层 &rarr;</a> · 3d-force-graph · EDGAR 数据 · <span id="gen-time"></span></div>
 
 <script type="module">
-import ThreeForceGraph from "https://esm.sh/3d-force-graph@1.80.0?target=es2022";
+import ThreeForceGraph from "3d-force-graph";
 
 async function loadData(name) {
   const response = await fetch(`/api/v1/visualizations/${name}`);

@@ -1,16 +1,13 @@
-import asyncio
 from pathlib import Path
 
 import httpx
 from playwright.sync_api import expect
 
-from fdc.api import app
-
-WEB_ROOT = Path(__file__).resolve().parents[2] / "web"
+FRONTEND_ROOT = Path(__file__).resolve().parents[2] / "frontend"
 
 
 def test_company_page_has_research_workspace_mounts():
-    html = (WEB_ROOT / "company.html").read_text()
+    html = (FRONTEND_ROOT / "company.html").read_text()
 
     assert 'id="filings"' in html
     assert 'id="income-statement"' in html
@@ -22,15 +19,15 @@ def test_company_page_has_research_workspace_mounts():
 
 
 def test_company_page_loads_its_styles_and_deferred_script():
-    html = (WEB_ROOT / "company.html").read_text()
+    html = (FRONTEND_ROOT / "company.html").read_text()
 
-    assert 'href="data/company.css"' in html
-    assert 'src="company.js"' in html
-    assert "defer" in html
+    assert 'href="/src/styles/company.css"' in html
+    assert 'src="/src/legacy/company.js"' in html
+    assert 'type="module"' in html
 
 
 def test_company_page_fetches_only_read_api_resources():
-    script = (WEB_ROOT / "company.js").read_text()
+    script = (FRONTEND_ROOT / "src" / "legacy" / "company.js").read_text()
 
     assert '"/api/v1/companies/"' in script
     assert '"/filings"' in script
@@ -44,7 +41,7 @@ def test_company_page_fetches_only_read_api_resources():
 
 
 def test_company_page_preserves_explicit_data_states():
-    script = (WEB_ROOT / "company.js").read_text()
+    script = (FRONTEND_ROOT / "src" / "legacy" / "company.js").read_text()
 
     assert '"Not found"' in script
     assert '"Unavailable"' in script
@@ -52,16 +49,8 @@ def test_company_page_preserves_explicit_data_states():
     assert '"Parse failed"' in script
 
 
-def test_read_app_serves_company_page_on_the_api_origin():
-    async def request_page() -> httpx.Response:
-        transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(
-            transport=transport,
-            base_url="http://testserver",
-        ) as client:
-            return await client.get("/company.html?ticker=MSFT")
-
-    response = asyncio.run(request_page())
+def test_read_app_serves_company_page_on_the_api_origin(live_server):
+    response = httpx.get(f"{live_server}/company.html?ticker=MSFT")
 
     assert response.status_code == 200
     assert 'id="company-name"' in response.text

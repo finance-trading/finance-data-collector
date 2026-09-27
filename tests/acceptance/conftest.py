@@ -8,10 +8,12 @@ from __future__ import annotations
 
 import os
 import socket
+import subprocess
 import threading
 import time
 from collections.abc import Iterator
 from datetime import UTC, date, datetime
+from pathlib import Path
 
 import pytest
 from sqlalchemy.orm import Session
@@ -33,6 +35,8 @@ from fdc.models import (
 )
 
 PARSER_VERSION = "parser-v1"
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+FRONTEND_ROOT = PROJECT_ROOT / "frontend"
 
 #: 10-K with a successful current parse, 10-Q with a different successful parse.
 ANNUAL_ACCESSION = "0000000000-24-000001"
@@ -289,6 +293,14 @@ def _free_port() -> int:
 @pytest.fixture(scope="module")
 def live_server(tmp_path_factory: pytest.TempPathFactory) -> Iterator[str]:
     """Run uvicorn over a seeded SQLite database and yield its base URL."""
+
+    install_command = (
+        ["npm", "ci"]
+        if (FRONTEND_ROOT / "package-lock.json").exists()
+        else ["npm", "install"]
+    )
+    subprocess.run(install_command, cwd=FRONTEND_ROOT, check=True)
+    subprocess.run(["npm", "run", "build"], cwd=FRONTEND_ROOT, check=True)
 
     database_url = f"sqlite:///{tmp_path_factory.mktemp('acceptance') / 'acceptance.db'}"
     names = ("FDC_DATABASE_URL", "FDC_PARSER_VERSION", "FDC_SEC_USER_AGENT")

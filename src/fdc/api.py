@@ -109,5 +109,9 @@ def parse_run(run_id: str) -> ParseRunView:
     return _read(lambda: read_service.get_parse_run(run_id))
 
 
-_WEB_ROOT = Path(__file__).resolve().parents[2] / "web"
-app.mount("/", StaticFiles(directory=_WEB_ROOT, html=True), name="web")
+FRONTEND_DIST = Path(__file__).resolve().parents[2] / "frontend" / "dist"
+app.mount(
+    "/",
+    StaticFiles(directory=FRONTEND_DIST, html=True, check_dir=False),
+    name="frontend",
+)

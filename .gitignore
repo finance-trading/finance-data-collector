@@ -224,3 +224,7 @@ sec/
 
 # Playwright MCP browser session dumps (screenshots, page snapshots)
 .playwright-mcp/
+
+# Frontend dependencies and compiled assets
+node_modules/
+frontend/dist/
