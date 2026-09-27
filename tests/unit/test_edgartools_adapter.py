@@ -673,6 +673,66 @@ def test_raw_xbrl_fallback_applies_inline_scale_and_sign(
     assert revenues.end_date == date(2024, 3, 31)
 
 
+@pytest.mark.parametrize(
+    ("display_value", "scale", "sign", "expected"),
+    [
+        (
+            "12345678901234567890123456789.12345",
+            "2",
+            None,
+            Decimal("1234567890123456789012345678912.34500"),
+        ),
+        (
+            "12345678901234567890123456789.12345",
+            None,
+            "-",
+            Decimal("-12345678901234567890123456789.12345"),
+        ),
+        (
+            "(12345678901234567890123456789.12345)",
+            None,
+            None,
+            Decimal("-12345678901234567890123456789.12345"),
+        ),
+    ],
+    ids=("scale", "sign", "parenthesized-negative"),
+)
+def test_raw_xbrl_preserves_large_inline_values_exactly(
+    tmp_path, display_value, scale, sign, expected
+):
+    attributes = ""
+    if scale is not None:
+        attributes += f' scale="{scale}"'
+    if sign is not None:
+        attributes += f' sign="{sign}"'
+    instance = tmp_path / "large-inline-value.xml"
+    instance.write_text(
+        f"""<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ix="http://www.xbrl.org/2013/inlineXBRL"
+  xmlns:xbrli="http://www.xbrl.org/2003/instance"
+  xmlns:us-gaap="http://fasb.org/us-gaap/2024"
+  xmlns:iso4217="http://www.xbrl.org/2003/iso4217">
+  <body>
+    <xbrli:context id="c-instant">
+      <xbrli:entity>
+        <xbrli:identifier scheme="http://www.sec.gov/CIK">0000000001</xbrli:identifier>
+      </xbrli:entity>
+      <xbrli:period><xbrli:instant>2024-03-31</xbrli:instant></xbrli:period>
+    </xbrli:context>
+    <xbrli:unit id="U_USD"><xbrli:measure>iso4217:USD</xbrli:measure></xbrli:unit>
+    <ix:nonFraction name="us-gaap:Assets" contextRef="c-instant"
+      unitRef="U_USD"{attributes}>{display_value}</ix:nonFraction>
+  </body>
+</html>
+"""
+    )
+
+    fact = parse_xbrl_instance(instance)[0]
+
+    assert fact["numeric_value"] == expected
+
+
 def test_fallback_reports_when_no_instance_is_present(fake_edgartools_unavailable, local_filing):
     output = EdgarToolsAdapter().parse(local_filing)
 

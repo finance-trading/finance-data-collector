@@ -163,7 +163,7 @@ def _to_decimal(value: Any) -> Decimal | None:
     except (InvalidOperation, ValueError):
         return None
     if negative:
-        number = -number
+        number = number.copy_negate()
     return number if number.is_finite() else None
 
 
@@ -705,10 +705,21 @@ def _numeric_text(text: str, scale: str | None, sign: str | None) -> Decimal | N
     number = _to_decimal(text)
     if number is None:
         return None
-    factor = Decimal(10) ** (_to_int(scale) or 0)
-    number *= factor
+    scale_value = _to_int(scale) or 0
+    if scale_value:
+        decimal_tuple = number.as_tuple()
+        exponent = decimal_tuple.exponent
+        if not isinstance(exponent, int):  # pragma: no cover - finite Decimal invariant
+            return None
+        if scale_value > 0:
+            digits = decimal_tuple.digits + (0,) * scale_value
+            number = Decimal((decimal_tuple.sign, digits, exponent))
+        else:
+            number = Decimal(
+                (decimal_tuple.sign, decimal_tuple.digits, exponent + scale_value)
+            )
     if sign == "-":
-        number = -number
+        number = number.copy_negate()
     return number
 
 
