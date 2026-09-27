@@ -2,15 +2,14 @@
 
 from functools import lru_cache
 
-from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
     """Runtime settings for the local collector.
 
-    All environment-backed options use the ``FDC_`` prefix.  SEC identity is
-    intentionally required so live requests cannot run without attribution.
+    All environment-backed options use the ``FDC_`` prefix. Offline parsing
+    and reads do not need an SEC identity; network call sites validate it.
     """
 
     model_config = SettingsConfigDict(env_prefix="FDC_", case_sensitive=False)
@@ -26,12 +25,12 @@ class Settings(BaseSettings):
     retry_base_delay_seconds: float = 1.0
     retry_max_delay_seconds: float = 30.0
 
-    @field_validator("sec_user_agent")
-    @classmethod
-    def require_sec_user_agent(cls, value: str | None) -> str:
-        if value is None or not value.strip():
+    def require_sec_user_agent(self) -> str:
+        """Return the attributed identity required by a live SEC request."""
+
+        if self.sec_user_agent is None or not self.sec_user_agent.strip():
             raise ValueError("FDC_SEC_USER_AGENT must be explicitly configured")
-        return value
+        return self.sec_user_agent.strip()
 
 
 @lru_cache(maxsize=1)

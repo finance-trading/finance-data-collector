@@ -10,16 +10,21 @@ def clear_settings_cache():
     get_settings.cache_clear()
 
 
-def test_settings_require_explicit_sec_user_agent(monkeypatch):
+def test_offline_settings_do_not_require_sec_user_agent(monkeypatch):
     monkeypatch.delenv("FDC_SEC_USER_AGENT", raising=False)
-    with pytest.raises(ValueError, match="FDC_SEC_USER_AGENT"):
-        get_settings()
+
+    settings = get_settings()
+
+    assert settings.sec_user_agent is None
 
 
-def test_settings_reject_blank_sec_user_agent(monkeypatch):
+def test_live_sec_identity_rejects_blank_sec_user_agent(monkeypatch):
     monkeypatch.setenv("FDC_SEC_USER_AGENT", "   ")
+
+    settings = get_settings()
+
     with pytest.raises(ValueError, match="FDC_SEC_USER_AGENT"):
-        get_settings()
+        settings.require_sec_user_agent()
 
 
 def test_settings_defaults_and_environment_overrides(monkeypatch):

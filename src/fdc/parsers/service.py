@@ -5,10 +5,11 @@ from __future__ import annotations
 import hashlib
 import json
 from datetime import UTC, datetime
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
+from urllib.parse import quote
 
-from sqlalchemy import delete, select, update
+from sqlalchemy import func, select, update
 from sqlalchemy.orm import Session
 
 from fdc.config import Settings
@@ -56,10 +57,12 @@ def parser_modules_manifest() -> dict[str, str]:
     """Return stable content identities for every required parser module."""
 
     directory = Path(__file__).parent
-    return {
+    manifest = {
         name.removesuffix(".py"): hashlib.sha256((directory / name).read_bytes()).hexdigest()
         for name in _MODULE_FILES
     }
+    manifest["edgartools"] = installed_edgartools_version() or "unavailable"
+    return manifest
 
 
 def parser_modules_hash() -> str:
@@ -77,6 +80,20 @@ def _as_string(value: object | None) -> str | None:
 
 def _diagnostics(values: list[ParserDiagnostic] | tuple[ParserDiagnostic, ...]) -> list[dict]:
     return [value.as_dict() for value in values]
+
+
+def _edgar_archive_base(cik: str, accession: str) -> str:
+    normalized_cik = cik.lstrip("0") or "0"
+    normalized_accession = accession.replace("-", "")
+    return (
+        "https://www.sec.gov/Archives/edgar/data/"
+        f"{normalized_cik}/{normalized_accession}/"
+    )
+
+
+def _edgar_artifact_url(cik: str, accession: str, relative_path: str) -> str:
+    name = PurePosixPath(relative_path).name
+    return _edgar_archive_base(cik, accession) + quote(name)
 
 
 def _run_for_filing(
@@ -130,6 +147,11 @@ def _upsert_filing_metadata(
             Filing.accession_number == local_filing.accession,
         )
     )
+    primary_name = (
+        local_filing.primary_document.name
+        if local_filing.primary_document is not None
+        else None
+    )
     if filing is None:
         filing = Filing(
             issuer_id=issuer.id,
@@ -140,16 +162,24 @@ def _upsert_filing_metadata(
             report_date=local_filing.report_date,
             fiscal_year=local_filing.fiscal_year,
             fiscal_period=local_filing.fiscal_period,
-            primary_document=(
-                local_filing.primary_document.name
-                if local_filing.primary_document is not None
-                else None
-            ),
+            primary_document=primary_name,
             package_path=local_filing.package_path,
+            sec_url=(
+                _edgar_artifact_url(cik, local_filing.accession, primary_name)
+                if primary_name is not None
+                else _edgar_archive_base(cik, local_filing.accession)
+            ),
             index_metadata=dict(local_filing.index_record),
         )
         session.add(filing)
         session.flush()
+    elif filing.sec_url is None:
+        filing.primary_document = filing.primary_document or primary_name
+        filing.sec_url = (
+            _edgar_artifact_url(cik, local_filing.accession, primary_name)
+            if primary_name is not None
+            else _edgar_archive_base(cik, local_filing.accession)
+        )
 
     artifacts: dict[tuple[str, str], Artifact] = {}
     for source in local_filing.artifacts:
@@ -216,7 +246,14 @@ def _persist_evidence(
         filing_id=filing.id,
         artifact_id=artifact.id,
         relative_path=evidence.relative_path,
-        accession_url=evidence.accession_url,
+        accession_url=(
+            evidence.accession_url
+            or _edgar_artifact_url(
+                filing.accession_number[:10],
+                filing.accession_number,
+                artifact.relative_path,
+            )
+        ),
         locator_type=str(evidence.locator_type),
         locator_value=evidence.locator_value,
         content_sha256=evidence.content_sha256,
@@ -330,19 +367,6 @@ def _persist_output(
         )
 
 
-def _delete_result_children(session: Session, result: FilingParse) -> None:
-    evidence_ids: list[Any] = []
-    for model in (XbrlFact, StatementLine, FilingSection, ExtractedTable):
-        evidence_ids.extend(
-            session.scalars(
-                select(model.evidence_locator_id).where(model.filing_parse_id == result.id)
-            ).all()
-        )
-        session.execute(delete(model).where(model.filing_parse_id == result.id))
-    if evidence_ids:
-        session.execute(delete(EvidenceLocator).where(EvidenceLocator.id.in_(evidence_ids)))
-
-
 def _overall_status(xbrl_output: ParserOutput, html_output: ParserOutput) -> str:
     statuses = {str(xbrl_output.status), str(html_output.status)}
     if statuses == {"success"}:
@@ -416,6 +440,46 @@ def _record_parent_run_failure(
     run.checkpoint_accession = local_filing.accession
 
 
+def _record_parent_run_success(run: ParseRun, local_filing: LocalFiling) -> None:
+    """Atomically account for a committed filing result in its parent run."""
+
+    run.success_count += 1
+    run.checkpoint_accession = local_filing.accession
+
+
+def _record_run_disposition(
+    run: ParseRun,
+    owns_run: bool,
+    local_filing: LocalFiling,
+    status: str,
+    diagnostics: dict[str, Any] | None,
+) -> None:
+    if owns_run:
+        _finish_owned_run(run, local_filing, status, diagnostics)
+    elif status == "success":
+        _record_parent_run_success(run, local_filing)
+    else:
+        _record_parent_run_failure(run, local_filing, status, diagnostics or {})
+
+
+def _next_attempt_number(
+    session: Session,
+    filing: Filing,
+    local_filing: LocalFiling,
+    parser_version: str,
+    modules_hash: str,
+) -> int:
+    latest = session.scalar(
+        select(func.max(FilingParse.attempt_number)).where(
+            FilingParse.filing_id == filing.id,
+            FilingParse.artifact_set_hash == local_filing.artifact_set_hash,
+            FilingParse.parser_version == parser_version,
+            FilingParse.parser_modules_hash == modules_hash,
+        )
+    )
+    return (latest or 0) + 1
+
+
 def parse_one_filing(
     session: Session,
     local_filing: LocalFiling,
@@ -433,15 +497,47 @@ def parse_one_filing(
         FilingParse.parser_version == settings.parser_version,
         FilingParse.parser_modules_hash == modules_hash,
     )
-    existing = session.scalar(select(FilingParse).where(*identity))
-    if existing is not None and existing.status == "success" and not force:
-        if not existing.is_current:
-            _activate_result(session, existing)
+    successful = session.scalar(
+        select(FilingParse)
+        .where(*identity, FilingParse.status == "success")
+        .order_by(FilingParse.attempt_number.desc())
+        .limit(1)
+    )
+    if successful is not None and not force:
+        run, owns_run = _run_for_filing(session, local_filing, settings)
+        if not successful.is_current:
+            _activate_result(session, successful)
+        _record_run_disposition(run, owns_run, local_filing, "success", None)
         session.commit()
-        return existing
+        return successful
 
     run, owns_run = _run_for_filing(session, local_filing, settings)
     run.command_metadata = {**(run.command_metadata or {}), "force": force}
+    attempt_number = _next_attempt_number(
+        session,
+        filing,
+        local_filing,
+        settings.parser_version,
+        modules_hash,
+    )
+
+    def new_result(status: str, diagnostics: dict[str, Any]) -> FilingParse:
+        result = FilingParse(
+            filing_id=filing.id,
+            parse_run_id=run.id,
+            artifact_set_hash=local_filing.artifact_set_hash,
+            parser_version=settings.parser_version,
+            parser_modules_hash=modules_hash,
+            attempt_number=attempt_number,
+            parser_modules=modules,
+            edgartools_version=settings.edgartools_version or installed_edgartools_version(),
+            status=status,
+            is_current=False,
+            diagnostics=diagnostics,
+        )
+        session.add(result)
+        session.flush()
+        return result
 
     try:
         xbrl_output = EdgarToolsAdapter(parser_version=settings.parser_version).parse(local_filing)
@@ -453,109 +549,40 @@ def parse_one_filing(
             settings.parser_version,
         )
     except Exception as error:
-        if existing is not None and existing.status == "success":
-            diagnostics = {
-                "error_type": type(error).__name__,
-                "detail": str(error),
-                "retryable": True,
-                "preserved_filing_parse_id": str(existing.id),
-            }
-            if owns_run:
-                _finish_owned_run(run, local_filing, "failed", diagnostics)
-            else:
-                _record_parent_run_failure(
-                    run, local_filing, "failed", diagnostics
-                )
-            session.commit()
+        diagnostics = {
+            "error_type": type(error).__name__,
+            "detail": str(error),
+            "retryable": True,
+        }
+        if successful is not None:
+            diagnostics["preserved_filing_parse_id"] = str(successful.id)
+        result = new_result("failed", diagnostics)
+        _record_run_disposition(
+            run, owns_run, local_filing, result.status, result.diagnostics
+        )
+        session.commit()
+        if successful is not None and not owns_run:
             raise ParseAttemptFailed(
                 "failed",
                 diagnostics,
                 disposition_recorded=True,
             ) from error
-
-        session.rollback()
-        run, owns_run = _run_for_filing(session, local_filing, settings)
-        filing, _artifacts = _upsert_filing_metadata(session, local_filing)
-        identity = (
-            FilingParse.filing_id == filing.id,
-            FilingParse.artifact_set_hash == local_filing.artifact_set_hash,
-            FilingParse.parser_version == settings.parser_version,
-            FilingParse.parser_modules_hash == modules_hash,
-        )
-        existing = session.scalar(select(FilingParse).where(*identity))
-        result = existing or FilingParse(
-            filing_id=filing.id,
-            parse_run_id=run.id,
-            artifact_set_hash=local_filing.artifact_set_hash,
-            parser_version=settings.parser_version,
-            parser_modules_hash=modules_hash,
-        )
-        result.parse_run_id = run.id
-        result.parser_modules = modules
-        result.edgartools_version = settings.edgartools_version or installed_edgartools_version()
-        result.status = "failed"
-        result.is_current = False
-        result.diagnostics = {
-            "error_type": type(error).__name__,
-            "detail": str(error),
-            "retryable": True,
-        }
-        session.add(result)
-        if owns_run:
-            _finish_owned_run(run, local_filing, result.status, result.diagnostics)
-        session.commit()
         return result
 
     overall_status = _overall_status(xbrl_output, html_output)
     diagnostics = _result_diagnostics(xbrl_output, html_output)
 
-    if existing is not None and existing.status == "success":
-        if overall_status == "success":
-            if not existing.is_current:
-                _activate_result(session, existing)
-            if owns_run:
-                _finish_owned_run(run, local_filing, "success")
-            session.commit()
-            return existing
-
-        attempt_diagnostics = {
-            "detail": f"required parser modules ended {overall_status}",
-            "module_statuses": {
-                "edgartools_adapter": str(xbrl_output.status),
-                "html_parser": str(html_output.status),
-            },
-            "modules": diagnostics["modules"],
-            "preserved_filing_parse_id": str(existing.id),
-            "retryable": True,
-        }
-        if owns_run:
-            _finish_owned_run(run, local_filing, overall_status, attempt_diagnostics)
-        else:
-            _record_parent_run_failure(
-                run, local_filing, overall_status, attempt_diagnostics
-            )
-        session.commit()
-        raise ParseAttemptFailed(
-            overall_status,
-            attempt_diagnostics,
-            disposition_recorded=True,
-        )
-
     try:
         with session.begin_nested():
-            if existing is not None:
-                _delete_result_children(session, existing)
-                result = existing
-                result.parse_run_id = run.id
-            else:
-                result = FilingParse(
-                    filing_id=filing.id,
-                    parse_run_id=run.id,
-                    artifact_set_hash=local_filing.artifact_set_hash,
-                    parser_version=settings.parser_version,
-                    parser_modules_hash=modules_hash,
-                )
-                session.add(result)
+            result = FilingParse(
+                filing_id=filing.id,
+                parse_run_id=run.id,
+                artifact_set_hash=local_filing.artifact_set_hash,
+                parser_version=settings.parser_version,
+                parser_modules_hash=modules_hash,
+                attempt_number=attempt_number,
+            )
+            session.add(result)
             result.parser_modules = {
                 **modules,
                 "statuses": {
@@ -597,30 +624,21 @@ def parse_one_filing(
             if result.status == "success":
                 _activate_result(session, result)
     except Exception as error:
-        session.rollback()
-        run, owns_run = _run_for_filing(session, local_filing, settings)
-        filing, _artifacts = _upsert_filing_metadata(session, local_filing)
-        existing = session.scalar(select(FilingParse).where(*identity))
-        result = existing or FilingParse(
-            filing_id=filing.id,
-            parse_run_id=run.id,
-            artifact_set_hash=local_filing.artifact_set_hash,
-            parser_version=settings.parser_version,
-            parser_modules_hash=modules_hash,
-        )
-        result.parse_run_id = run.id
-        result.parser_modules = modules
-        result.edgartools_version = settings.edgartools_version or installed_edgartools_version()
-        result.status = "failed"
-        result.is_current = False
-        result.diagnostics = {
+        diagnostics = {
             "error_type": type(error).__name__,
             "detail": str(error),
             "retryable": True,
         }
-        session.add(result)
+        if successful is not None:
+            diagnostics["preserved_filing_parse_id"] = str(successful.id)
+        result = new_result("failed", diagnostics)
 
-    if owns_run:
-        _finish_owned_run(run, local_filing, result.status, result.diagnostics)
+    _record_run_disposition(run, owns_run, local_filing, result.status, result.diagnostics)
     session.commit()
+    if result.status != "success" and successful is not None and not owns_run:
+        raise ParseAttemptFailed(
+            result.status,
+            result.diagnostics or {},
+            disposition_recorded=True,
+        )
     return result

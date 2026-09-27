@@ -13,6 +13,7 @@ import os
 import shutil
 import socket
 from datetime import date
+from decimal import Decimal
 from pathlib import Path
 
 import pytest
@@ -525,14 +526,14 @@ def test_malformed_statement_values_remain_explicit_without_a_numeric_value(loca
     assert malformed.evidence.excerpt == "not-a-number"
 
 
-def test_missing_statements_are_explicit_and_partial(
+def test_missing_optional_statements_are_explicit_without_failing_module(
     fake_edgartools_without_statements, local_filing
 ):
     output = EdgarToolsAdapter().parse(local_filing)
 
     assert output.facts
     assert output.statements == []
-    assert output.status is ParseStatus.PARTIAL
+    assert output.status is ParseStatus.SUCCESS
     assert {diagnostic.code for diagnostic in output.diagnostics} >= {
         DiagnosticCode.STATEMENT_UNAVAILABLE
     }
@@ -544,7 +545,7 @@ def test_missing_statements_are_explicit_and_partial(
     assert {diagnostic.scope for diagnostic in output.diagnostics} >= set(DEFAULT_STATEMENT_TYPES)
 
 
-def test_fact_collection_error_is_not_reported_as_success(local_filing):
+def test_fact_collection_error_keeps_module_servable_when_statements_exist(local_filing):
     xbrl = FakeXbrl(load_facts(), load_statements())
     xbrl.facts = UnavailableFactsView()
 
@@ -553,7 +554,7 @@ def test_fact_collection_error_is_not_reported_as_success(local_filing):
     ).parse(local_filing)
 
     assert output.parse_mode == "edgartools-local"
-    assert output.status is ParseStatus.PARTIAL
+    assert output.status is ParseStatus.SUCCESS
     assert output.statements
     assert any(
         diagnostic.code is DiagnosticCode.XBRL_UNAVAILABLE
@@ -588,7 +589,7 @@ def test_adapter_falls_back_to_raw_xbrl_instances(fake_edgartools_unavailable, i
     revenues = [fact for fact in output.facts if fact.concept == "us-gaap:Revenues"]
 
     assert output.parse_mode == "raw-xbrl-fallback"
-    assert output.status is ParseStatus.PARTIAL
+    assert output.status is ParseStatus.SUCCESS
     assert any(
         diagnostic.code is DiagnosticCode.RAW_XBRL_FALLBACK for diagnostic in output.diagnostics
     )
@@ -655,7 +656,7 @@ def test_fallback_sniffs_inline_xbrl_in_html(fake_edgartools_unavailable, tmp_pa
     output = EdgarToolsAdapter().parse(filing)
 
     assert output.parse_mode == "raw-xbrl-fallback"
-    assert output.status is ParseStatus.PARTIAL
+    assert output.status is ParseStatus.SUCCESS
     assert any(fact.concept == "us-gaap:Revenues" for fact in output.facts)
 
 
@@ -794,6 +795,21 @@ def test_raw_fallback_marks_malformed_numeric_facts(fake_edgartools_unavailable,
 
 def test_normalize_fact_returns_none_without_a_concept(local_filing):
     assert normalize_fact({"value": "1"}, local_filing, PARSER_VERSION) is None
+
+
+def test_normalize_fact_preserves_decimal_beyond_binary_float_precision(local_filing):
+    draft = normalize_fact(
+        {
+            "concept": "us-gaap:ExactValue",
+            "value": "9007199254740993.125",
+            "unit_ref": "USD",
+        },
+        local_filing,
+        PARSER_VERSION,
+    )
+
+    assert draft is not None
+    assert draft.value_numeric == Decimal("9007199254740993.125")
     assert isinstance(
         normalize_fact({"concept": "us-gaap:Assets", "value": "1"}, local_filing, PARSER_VERSION),
         FactDraft,

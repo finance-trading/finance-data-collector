@@ -149,7 +149,7 @@ def test_missing_expected_section_is_explicit_not_fabricated():
         section for section in output.sections if section.section_type == "financial_statements"
     )
 
-    assert output.status is ParseStatus.PARTIAL
+    assert output.status is ParseStatus.SUCCESS
     assert missing.status is RowStatus.UNAVAILABLE
     assert missing.text is None
     assert missing.raw_fragment is None
@@ -239,7 +239,7 @@ def test_headerless_table_preserves_first_row_and_is_explicitly_unsupported():
         {"column_1": "2028", "column_2": "80"},
     )
     assert any(diagnostic.code == "UNSUPPORTED_HTML_TABLE" for diagnostic in table.diagnostics)
-    assert output.status is ParseStatus.PARTIAL
+    assert output.status is ParseStatus.SUCCESS
 
 
 def test_unsupported_form_emits_an_explicit_status_record(debt_fixture):
@@ -247,7 +247,7 @@ def test_unsupported_form_emits_an_explicit_status_record(debt_fixture):
 
     output = parse_html_document(debt_fixture, filing, PARSER_VERSION)
 
-    assert output.status is ParseStatus.PARTIAL
+    assert output.status is ParseStatus.SUCCESS
     assert len(output.sections) == 1
     section = output.sections[0]
     assert section.section_type == "unsupported"
@@ -273,6 +273,7 @@ def test_malformed_table_is_retained_with_scoped_diagnostic():
         table.raw_fragment.encode("utf-8")
     ).hexdigest()
     assert any(diagnostic.code == "MALFORMED_HTML_TABLE" for diagnostic in table.diagnostics)
+    assert output.status is ParseStatus.SUCCESS
 
 
 def test_parse_is_deterministic_for_identical_local_bytes(debt_fixture, local_filing):

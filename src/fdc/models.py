@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import uuid
 from datetime import UTC, date, datetime
+from decimal import Decimal
 
 from sqlalchemy import (
     JSON,
@@ -81,6 +82,28 @@ class UtcDateTime(TypeDecorator[datetime]):
             return value.replace(tzinfo=UTC)
         return value.astimezone(UTC)
 
+
+class ExactNumeric(TypeDecorator[Decimal]):
+    """Exact decimal storage: PostgreSQL NUMERIC and text-backed SQLite."""
+
+    impl = Numeric(100, 30)
+    cache_ok = True
+
+    def load_dialect_impl(self, dialect):
+        if dialect.name == "sqlite":
+            return dialect.type_descriptor(String(132))
+        return dialect.type_descriptor(Numeric(100, 30))
+
+    def process_bind_param(self, value, dialect):
+        if value is None:
+            return None
+        decimal_value = value if isinstance(value, Decimal) else Decimal(str(value))
+        return format(decimal_value, "f") if dialect.name == "sqlite" else decimal_value
+
+    def process_result_value(self, value, dialect) -> Decimal | None:
+        if value is None:
+            return None
+        return value if isinstance(value, Decimal) else Decimal(str(value))
 
 def _now() -> datetime:
     return datetime.now(UTC)
@@ -257,6 +280,7 @@ class FilingParse(TimestampMixin, Base):
     artifact_set_hash: Mapped[str] = mapped_column(String(64), nullable=False)
     parser_version: Mapped[str] = mapped_column(String(64), nullable=False)
     parser_modules_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    attempt_number: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
     parser_modules: Mapped[dict | None] = mapped_column(JSON)
     edgartools_version: Mapped[str | None] = mapped_column(String(32))
     parse_mode: Mapped[str | None] = mapped_column(String(32))
@@ -271,6 +295,7 @@ class FilingParse(TimestampMixin, Base):
             "artifact_set_hash",
             "parser_version",
             "parser_modules_hash",
+            "attempt_number",
             name="uq_filing_parse_identity",
         ),
         CheckConstraint(
@@ -311,7 +336,7 @@ class XbrlFact(TimestampMixin, Base):
     concept_namespace: Mapped[str | None] = mapped_column(String(64))
     concept: Mapped[str] = mapped_column(String(255), nullable=False)
     label: Mapped[str | None] = mapped_column(String(512))
-    value_numeric: Mapped[float | None] = mapped_column(Numeric(38, 6))
+    value_numeric: Mapped[Decimal | None] = mapped_column(ExactNumeric())
     value_text: Mapped[str | None] = mapped_column(Text)
     unit: Mapped[str | None] = mapped_column(String(32))
     decimals: Mapped[int | None] = mapped_column(Integer)
@@ -368,7 +393,7 @@ class StatementLine(TimestampMixin, Base):
     depth: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     label: Mapped[str | None] = mapped_column(String(512))
     concept: Mapped[str | None] = mapped_column(String(255))
-    value_numeric: Mapped[float | None] = mapped_column(Numeric(38, 6))
+    value_numeric: Mapped[Decimal | None] = mapped_column(ExactNumeric())
     value_text: Mapped[str | None] = mapped_column(Text)
     unit: Mapped[str | None] = mapped_column(String(32))
     start_date: Mapped[date | None] = mapped_column(Date)

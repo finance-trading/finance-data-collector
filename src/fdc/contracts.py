@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import UTC, date, datetime
+from decimal import Decimal
 from enum import StrEnum
 from pathlib import Path
 from typing import Any
@@ -319,7 +320,7 @@ class FactDraft:
 
     concept: str
     evidence: EvidenceDraft
-    value_numeric: float | None = None
+    value_numeric: Decimal | None = None
     value_text: str | None = None
     label: str | None = None
     concept_namespace: str | None = None
@@ -347,7 +348,7 @@ class StatementDraft:
     section: str | None = None
     depth: int = 0
     concept: str | None = None
-    value_numeric: float | None = None
+    value_numeric: Decimal | None = None
     value_text: str | None = None
     unit: str | None = None
     start_date: date | None = None

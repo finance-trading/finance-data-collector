@@ -682,13 +682,10 @@ def parse_html_document(
         for draft in [*sections, *tables]
         for diagnostic in draft.diagnostics
     ]
-    has_nonparsed_section = any(section.status is not RowStatus.PARSED for section in sections)
-    has_nonparsed_table = any(table.status is not RowStatus.PARSED for table in tables)
-    status = (
-        ParseStatus.PARTIAL
-        if has_nonparsed_section or has_nonparsed_table
-        else ParseStatus.SUCCESS
-    )
+    # Missing optional sections and malformed/unsupported individual tables are
+    # row-scoped states. The module succeeded once it read and deterministically
+    # inspected the document; consumers decide which rows they can use.
+    status = ParseStatus.SUCCESS
     evidence = [
         draft.evidence
         for draft in [*sections, *tables]

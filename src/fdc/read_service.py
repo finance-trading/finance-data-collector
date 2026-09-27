@@ -201,6 +201,7 @@ class TableView(BaseModel):
     status: str
     parser_version: str
     tables: list[TableItemView]
+    diagnostics: dict[str, Any] | None = None
 
 
 class ParseRunView(BaseModel):
@@ -330,7 +331,12 @@ def _summary(session: Session, filing: Filing) -> FilingSummaryView:
 
 
 def _decimal(value: Decimal | float | None) -> str | None:
-    return None if value is None else format(value, "f")
+    if value is None:
+        return None
+    rendered = format(value, "f")
+    if "." in rendered:
+        rendered = rendered.rstrip("0").rstrip(".")
+    return rendered or "0"
 
 
 def _evidence(
@@ -587,18 +593,23 @@ def get_tables(accession: str, table_type: str | None) -> TableView:
         ).all()
         if not rows:
             raise _unavailable(filing, result, "tables", normalized_type)
+        usable = [row for row in rows if row.status == "parsed"]
         non_success = [row for row in rows if row.status != "parsed"]
         state_diagnostics = {
             "tables": [
-                {"status": row.status, "diagnostics": row.diagnostics}
+                {
+                    "table_id": str(row.id),
+                    "status": row.status,
+                    "diagnostics": row.diagnostics,
+                }
                 for row in non_success
             ]
         }
-        if any(row.status == "failed" for row in non_success):
+        if not usable and any(row.status == "failed" for row in non_success):
             raise ReadServiceError(
                 422, "failed", "one or more table extractions failed", state_diagnostics
             )
-        if non_success:
+        if not usable:
             raise ReadServiceError(
                 409,
                 "unavailable",
@@ -608,8 +619,9 @@ def get_tables(accession: str, table_type: str | None) -> TableView:
         return TableView(
             accession=filing.accession_number,
             table_type=normalized_type,
-            status="success",
+            status="partial" if non_success else "success",
             parser_version=result.parser_version,
+            diagnostics=state_diagnostics if non_success else None,
             tables=[
                 TableItemView(
                     table_id=str(row.id),
@@ -627,7 +639,7 @@ def get_tables(accession: str, table_type: str | None) -> TableView:
                     parser_version=row.parser_version,
                     evidence=_evidence(session, filing, row.evidence_locator_id),
                 )
-                for row in rows
+                for row in usable
             ],
         )
 

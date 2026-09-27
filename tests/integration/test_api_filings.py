@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 from datetime import UTC, date, datetime
+from decimal import Decimal
 
 import httpx
 import pytest
@@ -310,6 +311,20 @@ def test_filing_api_exposes_fact_and_statement_evidence(client):
     assert statements.json()["lines"][0]["evidence"]["evidence_id"]
 
 
+def test_fact_api_serializes_large_decimal_without_binary_float_loss(
+    client, session, seeded_database
+):
+    fact = session.scalar(select(XbrlFact).where(XbrlFact.concept == "Revenue"))
+    assert fact is not None
+    fact.value_numeric = Decimal("9007199254740993.125")
+    session.commit()
+
+    response = client.get(f"/api/v1/filings/{ACCESSION}/facts?concept=Revenue")
+
+    assert response.status_code == 200
+    assert response.json()["facts"][0]["value_numeric"] == "9007199254740993.125"
+
+
 def test_filing_api_exposes_sections_tables_and_evidence(client, seeded_database):
     section = client.get(f"/api/v1/filings/{ACCESSION}/sections/md_and_a")
     tables = client.get(
@@ -367,21 +382,19 @@ def _add_mixed_tables(session, *, table_type, non_success_status):
 
 
 @pytest.mark.parametrize(
-    ("table_type", "row_status", "expected_code", "expected_state"),
+    ("table_type", "row_status"),
     [
-        ("mixed_failed", "failed", 422, "failed"),
-        ("mixed_unavailable", "unavailable", 409, "unavailable"),
+        ("mixed_failed", "failed"),
+        ("mixed_unavailable", "unavailable"),
     ],
 )
-def test_mixed_table_results_never_discard_non_success_states(
+def test_mixed_table_results_return_usable_rows_with_partial_diagnostics(
     client,
     session,
     table_type,
     row_status,
-    expected_code,
-    expected_state,
 ):
-    """Regression: one parsed table must not conceal a failed/unavailable peer."""
+    """A scoped table failure must not hide a usable peer."""
 
     _add_mixed_tables(session, table_type=table_type, non_success_status=row_status)
 
@@ -389,15 +402,42 @@ def test_mixed_table_results_never_discard_non_success_states(
         f"/api/v1/filings/{ACCESSION}/tables?table_type={table_type}"
     )
 
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["status"] == "partial"
+    assert [table["rows"] for table in payload["tables"]] == [[["parsed"]]]
+    assert len(payload["diagnostics"]["tables"]) == 1
+    diagnostic = payload["diagnostics"]["tables"][0]
+    assert diagnostic["table_id"]
+    assert diagnostic["status"] == row_status
+    assert diagnostic["diagnostics"] == [{"code": "TABLE_GAP", "detail": "fixture gap"}]
+
+
+@pytest.mark.parametrize(
+    ("table_type", "row_status", "expected_code", "expected_state"),
+    [
+        ("only_failed", "failed", 422, "failed"),
+        ("only_unavailable", "unavailable", 409, "unavailable"),
+    ],
+)
+def test_table_api_errors_only_when_no_requested_table_is_usable(
+    client, session, table_type, row_status, expected_code, expected_state
+):
+    _add_mixed_tables(session, table_type=table_type, non_success_status=row_status)
+    parsed = session.scalar(
+        select(ExtractedTable).where(
+            ExtractedTable.table_type == table_type,
+            ExtractedTable.status == "parsed",
+        )
+    )
+    assert parsed is not None
+    session.delete(parsed)
+    session.commit()
+
+    response = client.get(f"/api/v1/filings/{ACCESSION}/tables?table_type={table_type}")
+
     assert response.status_code == expected_code
-    detail = response.json()["detail"]
-    assert detail["status"] == expected_state
-    assert detail["diagnostics"]["tables"] == [
-        {
-            "status": row_status,
-            "diagnostics": [{"code": "TABLE_GAP", "detail": "fixture gap"}],
-        }
-    ]
+    assert response.json()["detail"]["status"] == expected_state
 
 
 def test_parse_run_api_exposes_counts_and_accession_diagnostics(client, seeded_database):

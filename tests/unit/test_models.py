@@ -8,10 +8,11 @@ valid row, and re-parsing must never destroy a previous result.
 from __future__ import annotations
 
 from datetime import UTC, date, datetime
+from decimal import Decimal
 from uuid import uuid4
 
 import pytest
-from sqlalchemy import inspect, text
+from sqlalchemy import inspect, select, text
 from sqlalchemy.exc import IntegrityError
 
 from fdc.models import (
@@ -80,6 +81,7 @@ def add_parse(
     status="success",
     artifact_set_hash="b" * 64,
     modules_hash="c" * 64,
+    attempt_number=1,
 ):
     run = ParseRun(
         scope_type="filing",
@@ -96,6 +98,7 @@ def add_parse(
         artifact_set_hash=artifact_set_hash,
         parser_version=parser_version,
         parser_modules_hash=modules_hash,
+        attempt_number=attempt_number,
         parser_modules={"edgartools": "5.58.0", "html_parser": parser_version},
         status=status,
         is_current=is_current,
@@ -157,13 +160,19 @@ def test_artifact_identity_is_unique_per_filing(session):
         session.commit()
 
 
-def test_parse_identity_is_unique(session):
+def test_parse_identity_allows_multiple_numbered_attempts(session):
     filing = add_filing(session, add_issuer(session))
     add_parse(session, filing)
+    add_parse(session, filing, is_current=False, attempt_number=2)
     session.commit()
 
+    attempts = session.scalars(
+        select(FilingParse).order_by(FilingParse.attempt_number)
+    ).all()
+    assert [row.attempt_number for row in attempts] == [1, 2]
+
     with pytest.raises(IntegrityError):
-        add_parse(session, filing, is_current=False)
+        add_parse(session, filing, is_current=False, attempt_number=2)
         session.commit()
 
 
@@ -298,6 +307,27 @@ def test_fact_period_identity_and_dimensions_round_trip(session):
     assert stored.period_type == "ytd"
     assert stored.dimensions == {"segment": "cloud"}
     assert stored.value_numeric == pytest.approx(391035000000.0)
+
+
+def test_fact_numeric_round_trip_preserves_more_than_float_precision(session):
+    filing = add_filing(session, add_issuer(session))
+    evidence = add_evidence(session, filing, locator_type="xbrl_fact")
+    parse = add_parse(session, filing)
+    exact = Decimal("9007199254740993.125")
+    fact = XbrlFact(
+        source_filing_id=filing.id,
+        parse_run_id=parse.parse_run_id,
+        filing_parse_id=parse.id,
+        evidence_locator_id=evidence.id,
+        parser_version=PARSER_VERSION,
+        concept="ExactValue",
+        value_numeric=exact,
+    )
+    session.add(fact)
+    session.commit()
+    session.expire_all()
+
+    assert session.get(XbrlFact, fact.id).value_numeric == exact
 
 
 def test_statement_section_and_table_rows_round_trip(session):

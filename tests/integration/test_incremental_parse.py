@@ -17,7 +17,7 @@ from fdc.contracts import (
     RowStatus,
     SectionDraft,
 )
-from fdc.models import FilingParse, FilingSection, ParseRun, XbrlFact
+from fdc.models import EvidenceLocator, FilingParse, FilingSection, ParseRun, XbrlFact
 from fdc.parsers import service as parse_service
 from fdc.sync import parse_ticker, select_pending_filings
 
@@ -178,30 +178,36 @@ def test_force_selects_successful_exact_identity(engine, session_factory, fixtur
     assert [filing.accession for filing in pending] == scan.accessions
 
 
-def test_forced_success_keeps_result_provenance_and_children_immutable(
+def test_forced_success_creates_new_attempt_and_preserves_prior_children(
     engine, session_factory, fixture_root
 ):
     parse_ticker(session_factory, "MSFT", fixture_root)
     with session_factory() as session:
         before = {
-            result.id: (result.parse_run_id, result.created_at)
+            result.id: result.parse_run_id
             for result in session.scalars(select(FilingParse)).all()
         }
         fact_ids = set(session.scalars(select(XbrlFact.id)).all())
         section_ids = set(session.scalars(select(FilingSection.id)).all())
+        evidence_ids = set(session.scalars(select(EvidenceLocator.id)).all())
 
     forced = parse_ticker(session_factory, "MSFT", fixture_root, force=True)
 
     assert forced.input_count == 2
     assert forced.success_count == 2
     with session_factory() as session:
-        after = {
-            result.id: (result.parse_run_id, result.created_at)
-            for result in session.scalars(select(FilingParse)).all()
+        attempts = session.scalars(
+            select(FilingParse).order_by(FilingParse.filing_id, FilingParse.attempt_number)
+        ).all()
+        assert len(attempts) == 4
+        assert {result.attempt_number for result in attempts} == {1, 2}
+        preserved = {
+            result.id: result.parse_run_id for result in attempts if result.id in before
         }
-        assert after == before
-        assert set(session.scalars(select(XbrlFact.id)).all()) == fact_ids
-        assert set(session.scalars(select(FilingSection.id)).all()) == section_ids
+        assert preserved == before
+        assert fact_ids < set(session.scalars(select(XbrlFact.id)).all())
+        assert section_ids < set(session.scalars(select(FilingSection.id)).all())
+        assert evidence_ids < set(session.scalars(select(EvidenceLocator.id)).all())
 
 
 def test_forced_failure_preserves_current_result_and_continues_run(
@@ -235,7 +241,13 @@ def test_forced_failure_preserves_current_result_and_continues_run(
             select(FilingParse).where(FilingParse.is_current.is_(True))
         ).all()
         assert len(current) == 2
-        assert {result.id: result.parse_run_id for result in current} == before
+        attempts = session.scalars(select(FilingParse)).all()
+        assert len(attempts) == 4
+        assert sum(result.status == "failed" for result in attempts) == 1
+        failed_attempt = next(result for result in attempts if result.status == "failed")
+        assert failed_attempt.attempt_number == 2
+        assert failed_attempt.is_current is False
+        assert any(result.id in before for result in current)
 
 
 def test_forced_failure_disposition_is_durable_before_sync_continues(

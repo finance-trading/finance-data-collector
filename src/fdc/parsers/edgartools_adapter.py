@@ -20,7 +20,7 @@ import os
 from collections.abc import Callable, Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from datetime import date, datetime
-from math import isfinite
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Any, Literal
 
@@ -143,11 +143,14 @@ def _clean_str(value: Any) -> str | None:
     return text or None
 
 
-def _to_float(value: Any) -> float | None:
+def _to_decimal(value: Any) -> Decimal | None:
     if value is None or isinstance(value, bool):
         return None
-    if isinstance(value, int | float):
-        candidate = value
+    if isinstance(value, Decimal | int):
+        candidate = str(value)
+        negative = False
+    elif isinstance(value, float):
+        candidate = str(value)
         negative = False
     else:
         text = str(value).strip().replace(",", "").replace("$", "")
@@ -156,16 +159,16 @@ def _to_float(value: Any) -> float | None:
         negative = text.startswith("(") and text.endswith(")")
         candidate = text[1:-1] if negative else text
     try:
-        number = float(candidate)
-    except (OverflowError, ValueError):
+        number = Decimal(candidate)
+    except (InvalidOperation, ValueError):
         return None
     if negative:
         number = -number
-    return number if isfinite(number) else None
+    return number if number.is_finite() else None
 
 
 def _to_int(value: Any) -> int | None:
-    number = _to_float(value)
+    number = _to_decimal(value)
     if number is None:
         return None
     try:
@@ -329,9 +332,9 @@ def normalize_fact(
 
     start = _to_date(raw_fact.get("period_start"))
     end = _to_date(raw_fact.get("period_end")) or _to_date(raw_fact.get("period_instant"))
-    numeric = _to_float(raw_fact.get("numeric_value"))
+    numeric = _to_decimal(raw_fact.get("numeric_value"))
     if numeric is None:
-        numeric = _to_float(raw_fact.get("value")) if _unit_of(raw_fact) else None
+        numeric = _to_decimal(raw_fact.get("value")) if _unit_of(raw_fact) else None
     raw_value = _clean_str(raw_fact.get("value"))
     resolution = _SourceResolution(path=evidence_path, context_ref=None, ambiguous=False)
     if evidence_path is None and source_catalog is not None:
@@ -447,7 +450,7 @@ def normalize_statement_rows(
         for period_position, period_key in enumerate(_ordered_period_keys(values)):
             start, end = _period_bounds(period_key)
             value = values[period_key]
-            numeric_value = _to_float(value)
+            numeric_value = _to_decimal(value)
             dimensions = _dimensions_of(row)
             period_dimensions = row.get("dimensions")
             if isinstance(period_dimensions, Mapping):
@@ -663,7 +666,7 @@ def _raw_fact(
     *,
     concept: str,
     value: str | None,
-    numeric_value: float | None,
+    numeric_value: Decimal | None,
     unit_ref: str | None,
     decimals: str | None,
     context_ref: str | None,
@@ -698,11 +701,11 @@ def _raw_fact(
     }
 
 
-def _numeric_text(text: str, scale: str | None, sign: str | None) -> float | None:
-    number = _to_float(text)
+def _numeric_text(text: str, scale: str | None, sign: str | None) -> Decimal | None:
+    number = _to_decimal(text)
     if number is None:
         return None
-    factor = 10 ** (_to_int(scale) or 0)
+    factor = Decimal(10) ** (_to_int(scale) or 0)
     number *= factor
     if sign == "-":
         number = -number
@@ -732,7 +735,7 @@ def _parse_classic_facts(
             _raw_fact(
                 concept=concept,
                 value=text,
-                numeric_value=_to_float(text),
+                numeric_value=_to_decimal(text),
                 unit_ref=units.get(unit_id, unit_id),
                 decimals=element.get("decimals"),
                 context_ref=context_ref,
@@ -886,9 +889,9 @@ class _SourceResolution:
 
 def _raw_fact_identity(raw_fact: Mapping[str, Any]) -> tuple[Any, ...]:
     concept = _clean_str(raw_fact.get("concept"))
-    numeric = _to_float(raw_fact.get("numeric_value"))
+    numeric = _to_decimal(raw_fact.get("numeric_value"))
     if numeric is None:
-        numeric = _to_float(raw_fact.get("value")) if _unit_of(raw_fact) else None
+        numeric = _to_decimal(raw_fact.get("value")) if _unit_of(raw_fact) else None
     raw_value = _clean_str(raw_fact.get("value"))
     start = _to_date(raw_fact.get("period_start"))
     end = _to_date(raw_fact.get("period_end")) or _to_date(raw_fact.get("period_instant"))
@@ -1054,13 +1057,10 @@ class EdgarToolsAdapter:
         )
         source_catalog = _build_source_catalog(filing)
         seen_facts: set[tuple[Any, ...]] = set()
-        facts_failed = False
-
         try:
             raw_facts = xbrl.facts.get_facts()
         except Exception as error:  # pragma: no cover - defensive
             raw_facts = []
-            facts_failed = True
             output.diagnostics.append(
                 ParserDiagnostic(
                     code=DiagnosticCode.XBRL_UNAVAILABLE,
@@ -1104,7 +1104,6 @@ class EdgarToolsAdapter:
                 seen_facts.add(identity)
                 output.facts.append(draft)
 
-        statement_failures = 0
         for statement_type in self.statement_types:
             try:
                 rows = xbrl.get_statement(statement_type)
@@ -1117,7 +1116,6 @@ class EdgarToolsAdapter:
                 )
                 output.statements.extend(drafts)
             except Exception as error:
-                statement_failures += 1
                 output.diagnostics.append(
                     ParserDiagnostic(
                         code=DiagnosticCode.STATEMENT_UNAVAILABLE,
@@ -1127,11 +1125,7 @@ class EdgarToolsAdapter:
                     )
                 )
 
-        if facts_failed:
-            output.status = ParseStatus.PARTIAL if output.statements else ParseStatus.FAILED
-        elif statement_failures == len(self.statement_types) and output.facts:
-            output.status = ParseStatus.PARTIAL
-        elif not output.facts and not output.statements:
+        if not output.facts and not output.statements:
             output.status = ParseStatus.FAILED
 
         return output
@@ -1143,7 +1137,7 @@ class EdgarToolsAdapter:
         reason: Exception,
     ) -> ParserOutput:
         output = ParserOutput(
-            status=ParseStatus.PARTIAL,
+            status=ParseStatus.SUCCESS,
             parser_version=self.parser_version,
             parse_mode=PARSE_MODE_RAW_XBRL,
             edgartools_version=edgar_version,

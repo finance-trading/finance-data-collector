@@ -16,8 +16,8 @@ from fdc.contracts import (
     RowStatus,
     SectionDraft,
 )
-from fdc.models import EvidenceLocator, FilingParse, FilingSection, XbrlFact
-from fdc.parsers.service import parse_one_filing
+from fdc.models import EvidenceLocator, Filing, FilingParse, FilingSection, XbrlFact
+from fdc.parsers.service import parse_one_filing, parser_modules_manifest
 
 FIXTURE_ROOT = __import__("pathlib").Path(__file__).resolve().parents[1] / "fixtures" / "filings"
 PARSER_VERSION = "filing-parser-v1"
@@ -115,6 +115,55 @@ def test_parse_one_filing_persists_every_row_with_run_artifact_and_evidence(
             assert evidence is not None
             assert evidence.artifact_id is not None
             assert evidence.filing_id == stored.filing_id
+
+
+def test_parse_persists_canonical_edgar_filing_and_artifact_urls(
+    engine, session_factory, database_url, monkeypatch
+):
+    local_filing = scan_ticker_archive(FIXTURE_ROOT, "MSFT").filings[0]
+    xbrl, html = _outputs(local_filing)
+    monkeypatch.setattr("fdc.parsers.service.EdgarToolsAdapter.parse", lambda *_: xbrl)
+    monkeypatch.setattr("fdc.parsers.service.parse_html_document", lambda *_: html)
+
+    with session_factory() as session:
+        result = parse_one_filing(session, local_filing, _settings(database_url))
+
+    base = "https://www.sec.gov/Archives/edgar/data/0/000000000024000001/"
+    with session_factory() as session:
+        filing = session.get(Filing, result.filing_id)
+        evidence = session.scalars(select(EvidenceLocator)).all()
+        assert filing.sec_url == base + "msft-20240630.htm"
+        assert {row.accession_url for row in evidence} == {base + "msft-20240630.htm"}
+
+
+def test_retry_backfills_missing_canonical_filing_url(
+    engine, session_factory, database_url, monkeypatch
+):
+    local_filing = scan_ticker_archive(FIXTURE_ROOT, "MSFT").filings[0]
+    xbrl, html = _outputs(local_filing)
+    monkeypatch.setattr("fdc.parsers.service.EdgarToolsAdapter.parse", lambda *_: xbrl)
+    monkeypatch.setattr("fdc.parsers.service.parse_html_document", lambda *_: html)
+    settings = _settings(database_url)
+
+    with session_factory() as session:
+        first = parse_one_filing(session, local_filing, settings)
+    with session_factory() as session:
+        filing = session.get(Filing, first.filing_id)
+        filing.sec_url = None
+        session.commit()
+    with session_factory() as session:
+        retried = parse_one_filing(session, local_filing, settings, force=True)
+
+    with session_factory() as session:
+        filing = session.get(Filing, retried.filing_id)
+        assert filing.sec_url == (
+            "https://www.sec.gov/Archives/edgar/data/0/"
+            "000000000024000001/msft-20240630.htm"
+        )
+
+
+def test_parser_module_identity_includes_installed_edgartools_version():
+    assert parser_modules_manifest()["edgartools"] == "5.58.0"
 
 
 def test_parse_exception_rolls_back_all_extracted_rows_and_persists_failure(
