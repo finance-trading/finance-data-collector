@@ -97,6 +97,35 @@ def test_research_home_search_opens_the_company_workspace(browser, live_server):
     page.close()
 
 
+def test_company_graph_renders_and_keeps_ticker_identity(browser, live_server):
+    page = browser.new_page(viewport={"width": 1280, "height": 800})
+    console_errors = []
+    page.on(
+        "console",
+        lambda message: console_errors.append(message.text)
+        if message.type == "error"
+        else None,
+    )
+
+    page.goto(f"{live_server}/graph.html")
+    page.wait_for_function("Boolean(window.__graph)")
+
+    expect(page.locator("#graph canvas")).to_have_count(1)
+    assert page.evaluate("window.__graph.graphData().nodes.length") == 211
+
+    page.locator("#ft-crossref").uncheck()
+    expect(page.locator("#ft-crossref")).not_to_be_checked()
+
+    page.evaluate("window.__selectGraphNode('VRT')")
+    expect(page.locator("#card-name")).to_contain_text("VRT")
+    first_name = page.locator("#card-name").text_content()
+    page.evaluate("window.__selectGraphNode('NVDA')")
+    expect(page.locator("#card-name")).to_contain_text("NVDA")
+    assert page.locator("#card-name").text_content() != first_name
+    assert console_errors == []
+    page.close()
+
+
 def test_company_page_end_to_end_uses_persisted_statement_names(browser, live_server):
     page = browser.new_page(viewport={"width": 1280, "height": 800})
     console_errors = []

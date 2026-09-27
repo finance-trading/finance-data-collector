@@ -1,3 +1,5 @@
+import type { LinkObject, NodeObject } from "3d-force-graph";
+
 export type IngestionStatus =
   | "parsed"
   | "failed"
@@ -164,4 +166,34 @@ export interface TableView {
   accession: string;
   status: string;
   tables: TableItem[];
+}
+
+export interface GraphNode extends NodeObject {
+  id: number | string;
+  ticker: string;
+  name: string;
+  sector?: string;
+  industry?: string;
+  layer?: string;
+  layer_name?: string;
+  segment?: string;
+  description?: string;
+  edgar?: string;
+  color?: string;
+}
+
+export type GraphEndpoint = number | string | GraphNode;
+
+export interface GraphLink extends LinkObject<GraphNode> {
+  source: GraphEndpoint;
+  target: GraphEndpoint;
+  type: string;
+  weight: number;
+  desc?: string;
+}
+
+export interface GraphPayload {
+  generated_at?: string;
+  nodes: GraphNode[];
+  links: GraphLink[];
 }

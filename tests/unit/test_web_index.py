@@ -7,33 +7,33 @@ FRONTEND_ROOT = PROJECT_ROOT / "frontend"
 def test_graph_mount_is_a_layout_container_for_three_force_graph():
     html = (FRONTEND_ROOT / "graph.html").read_text()
 
-    assert '<div id="graph"></div>' in html
+    assert '<main id="graph"' in html
     assert '<canvas id="graph"></canvas>' not in html
 
 
 def test_graph_fits_all_nodes_after_force_layout_stabilizes():
-    html = (FRONTEND_ROOT / "graph.html").read_text()
+    script = (FRONTEND_ROOT / "src" / "pages" / "graph.ts").read_text()
 
-    assert "Graph.zoomToFit(800, 80)" in html
+    assert "graph.zoomToFit(800, 80)" in script
 
 
 def test_graph_uses_unique_ticker_as_node_identity_for_clicks():
-    html = (FRONTEND_ROOT / "graph.html").read_text()
+    script = (FRONTEND_ROOT / "src" / "pages" / "graph.ts").read_text()
 
-    assert '.nodeId("ticker")' in html
+    assert '.nodeId("ticker")' in script
 
 
 def test_graph_click_handler_uses_ticker_for_degree_lookup():
-    html = (FRONTEND_ROOT / "graph.html").read_text()
+    script = (FRONTEND_ROOT / "src" / "pages" / "graph.ts").read_text()
 
-    assert "degree[node.ticker]" in html
+    assert "degree[node.ticker]" in script
 
 
 def test_graph_exposes_hover_state_without_reusing_a_fixed_node_label():
-    html = (FRONTEND_ROOT / "graph.html").read_text()
+    script = (FRONTEND_ROOT / "src" / "pages" / "graph.ts").read_text()
 
-    assert ".onNodeHover(node =>" in html
-    assert 'nodeLabel(n => `${n.name} (${n.ticker})' in html
+    assert ".onNodeHover((node) =>" in script
+    assert "`${node.name} (${node.ticker})" in script
 
 
 def test_index_is_the_research_directory_and_preserves_graph_navigation():
