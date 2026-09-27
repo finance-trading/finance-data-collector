@@ -56,3 +56,20 @@ def test_index_client_uses_only_the_read_api():
     assert '"/api/v1/catalog/layers"' in script
     assert 'company.html?ticker=' in script
     assert "method:" not in script
+
+
+def test_sources_and_workflow_docs_do_not_reference_legacy_web_data():
+    source_paths = [
+        *PROJECT_ROOT.joinpath("src").rglob("*.py"),
+        *FRONTEND_ROOT.joinpath("src").rglob("*.ts"),
+        PROJECT_ROOT / "README.md",
+        PROJECT_ROOT / "docs" / "runbook.md",
+    ]
+    legacy_markers = ("web/data", "__FDC_DATA__", "mounts `web/`")
+    offenders = []
+    for path in source_paths:
+        text = path.read_text()
+        if any(marker in text for marker in legacy_markers):
+            offenders.append(str(path.relative_to(PROJECT_ROOT)))
+
+    assert offenders == []

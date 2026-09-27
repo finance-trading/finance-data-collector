@@ -10,6 +10,7 @@ The supported runtime is Python 3.12 or newer. From the repository root:
 
 ```bash
 uv sync
+cd frontend && npm ci && cd ..
 ```
 
 The examples below use `uv run`. An activated `.venv` is equivalent.
@@ -19,7 +20,7 @@ The examples below use `uv run`. An activated `.venv` is equivalent.
 ```bash
 docker compose up -d postgres
 export FDC_DATABASE_URL='postgresql+psycopg://fdc:fdc@localhost:5432/fdc'
-alembic upgrade head
+uv run alembic upgrade head
 ```
 
 `docker compose ps postgres` should report the service as healthy before a
@@ -104,22 +105,42 @@ uv run fdc parse filings \
 export FDC_PARSER_VERSION='filing-parser-v2'
 ```
 
-## 5. Start the API and research page
+## 5. Start the API and research pages
 
-The FastAPI application mounts `web/` after its read-only API routes, so the
-page and JSON API share one origin:
+The FastAPI application mounts the locally built `frontend/dist/` after its
+read-only API routes, so all four pages and the JSON API share one origin.
+
+For development, start the API and Vite in separate terminals. Vite proxies
+`/api` to port 8000:
 
 ```bash
 export FDC_DATABASE_URL='postgresql+psycopg://fdc:fdc@localhost:5432/fdc'
 export FDC_SEC_USER_AGENT='Collector name@example.com'
 export FDC_PARSER_VERSION='filing-parser-v1'
 uv run uvicorn fdc.api:app --reload --host 127.0.0.1 --port 8000
+
+# second terminal
+cd frontend && npm ci && npm run dev
+```
+
+For a production-style single origin at `http://127.0.0.1:8000/`, build first:
+
+```bash
+cd frontend && npm ci && npm run build
+cd ..
+FDC_DATABASE_URL='postgresql+psycopg://fdc:fdc@localhost:5432/fdc' \
+FDC_SEC_USER_AGENT='Collector name@example.com' \
+FDC_PARSER_VERSION='filing-parser-v1' \
+  uv run uvicorn fdc.api:app --host 127.0.0.1 --port 8000
 ```
 
 Open:
 
 ```text
+http://127.0.0.1:8000/
 http://127.0.0.1:8000/company.html?ticker=MSFT
+http://127.0.0.1:8000/graph.html
+http://127.0.0.1:8000/layers.html
 ```
 
 The browser uses only `/api/v1` read routes. It does not calculate financial
@@ -127,9 +148,15 @@ metrics. `Unavailable`, `Unsupported`, and `Parse failed` remain visible rather
 than being converted to zero. Interactive API documentation is available at
 `http://127.0.0.1:8000/docs`.
 
-For static-only inspection, `python -m http.server -d web 8001` can render the
-page shell, but API-backed content will not load. Use the FastAPI command for a
-functional research page.
+Direct `file://` viewing is unsupported. Built assets are generated under
+`frontend/dist/` and are not committed.
+
+Regenerate both backend-owned visualization payloads after catalog changes:
+
+```bash
+uv run python -m fdc.graph
+uv run python -m fdc.ai_layers --enrich-graph
+```
 
 ## 6. Deterministic checks
 
@@ -137,10 +164,12 @@ The default suite uses local fixtures and SQLite. It does not require a live
 SEC request or PostgreSQL:
 
 ```bash
+cd frontend && npm ci && npm test && npm run typecheck && npm run build
+cd ..
 uv run pytest tests/acceptance/test_company_page.py -q
 uv run pytest -q
-uv run ruff check src tests
-uv run python -m compileall src
+uv run ruff check src tests alembic
+uv run python -m compileall -q src tests alembic
 ```
 
 The checked-in MSFT fixture archive is under `tests/fixtures/filings/MSFT`.
@@ -153,7 +182,7 @@ success.
 
 ```bash
 docker compose up -d postgres
-alembic upgrade head
+uv run alembic upgrade head
 python scripts/live_sec_smoke.py
 ```
 

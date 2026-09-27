@@ -13,19 +13,48 @@ docker compose up -d postgres
 export FDC_DATABASE_URL='postgresql+psycopg://fdc:fdc@localhost:5432/fdc'
 export FDC_SEC_ROOT="$PWD/sec"
 export FDC_SEC_USER_AGENT='Collector name@example.com'
-alembic upgrade head
+uv run alembic upgrade head
 uv run fdc parse filings --ticker MSFT
+cd frontend && npm ci && npm run build && cd ..
 uv run uvicorn fdc.api:app --reload --host 127.0.0.1 --port 8000
 ```
 
-Open `http://127.0.0.1:8000/company.html?ticker=MSFT`. The API and static page
-share the same origin. See [the parser runbook](docs/runbook.md) for archive
+Open `http://127.0.0.1:8000/` for the 211-company AI directory, or
+`http://127.0.0.1:8000/company.html?ticker=MSFT` for a company workspace. The
+API and built frontend share the same origin. See [the parser runbook](docs/runbook.md) for archive
 prerequisites, scoped parsing, forced/versioned reparses, deterministic tests,
 and optional PostgreSQL/live SEC checks.
 
-## AI 产业分层（`web/data/companies.json`）
+## Frontend development
 
-`web/data/companies.json` 是 AI 产业链 universe 的唯一数据源：
+The browser app is a Vite multi-page TypeScript project under `frontend/`.
+For API plus hot reload, run the API and Vite in separate terminals:
+
+```bash
+FDC_DATABASE_URL='postgresql+psycopg://fdc:fdc@localhost:5432/fdc' \
+FDC_SEC_USER_AGENT='Collector name@example.com' \
+  uv run uvicorn fdc.api:app --reload --host 127.0.0.1 --port 8000
+
+cd frontend && npm ci && npm run dev
+```
+
+Vite serves its development URL and proxies `/api` to port 8000. For the
+production-style single origin at `http://127.0.0.1:8000/`:
+
+```bash
+cd frontend && npm ci && npm run build
+cd ..
+FDC_DATABASE_URL='postgresql+psycopg://fdc:fdc@localhost:5432/fdc' \
+FDC_SEC_USER_AGENT='Collector name@example.com' \
+  uv run uvicorn fdc.api:app --host 127.0.0.1 --port 8000
+```
+
+Built assets in `frontend/dist/` are generated locally and are not committed.
+Direct `file://` viewing is unsupported because every page reads the API.
+
+## AI 产业分层（`data/ai_companies.json`）
+
+`data/ai_companies.json` 是 AI 产业链 universe 的唯一数据源：
 
 - `layers`：有序分层（上游 → 下游），每层声明自己的 `segments`（细分环节）
 - `companies`：每行声明 `layer` + `segment`，可选 `also_in`（跨层角色的层 id 数组）
@@ -43,7 +72,7 @@ and optional PostgreSQL/live SEC checks.
 构建与查看：
 
 ```bash
-uv run python -m fdc.ai_layers                 # 校验分层契约 -> web/data/layers.json（树状 JSON）
+uv run python -m fdc.ai_layers                 # 校验分层契约 -> data/generated/layers.json
 uv run python -m fdc.ai_layers --tree          # 终端 ASCII 树
 uv run python -m fdc.ai_layers --mermaid       # Mermaid graph，可直接粘进文档
 uv run python -m fdc.ai_layers --enrich-graph  # 把 layer/segment 写回 graph.json，并校验图与 universe 对齐
@@ -57,9 +86,8 @@ uv run uvicorn fdc.api:app --host 127.0.0.1 --port 8000
 # http://localhost:8000/layers.html  AI 分层：分层图（按层分列 + 跨层虚线）/ 树状图 / Mermaid
 ```
 
-构建脚本同时写出 `data/<name>.json` 与 `data/<name>.js`（脚本垫片），所以直接双击
-`web/layers.html` / `web/graph.html` 也能打开：`file://` 下浏览器禁止 `fetch()`，页面会自动
-改用 `<script>` 垫片读取数据，无需起本地服务器。
+生成器只写 `data/generated/graph.json` 与 `data/generated/layers.json`。浏览器通过
+`/api/v1/visualizations/{name}` 读取，不生成 JavaScript 数据垫片。
 
 `tests/unit/test_ai_layers.py` 覆盖分层契约校验（未知层、未声明细分、重复 ticker、空环节）与
 树 / ASCII / Mermaid 渲染，全部离线运行。`tests/unit/test_graph.py` 用桩 EFTS 响应覆盖 10-K
