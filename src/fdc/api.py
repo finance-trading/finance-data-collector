@@ -11,6 +11,7 @@ from starlette.staticfiles import StaticFiles
 
 from fdc import read_service
 from fdc.read_service import (
+    CompanyListView,
     CompanyView,
     EvidenceView,
     FactView,
@@ -33,6 +34,15 @@ def _read(operation: Callable[[], ViewT]) -> ViewT:
         return operation()
     except ReadServiceError as error:
         raise HTTPException(status_code=error.status_code, detail=error.detail()) from error
+
+
+@app.get("/api/v1/companies", response_model=CompanyListView)
+def companies(
+    query: str | None = None,
+    limit: Annotated[int, Query(ge=1, le=200)] = 100,
+    offset: Annotated[int, Query(ge=0)] = 0,
+) -> CompanyListView:
+    return _read(lambda: read_service.list_companies(query, limit, offset))
 
 
 @app.get("/api/v1/companies/{ticker}", response_model=CompanyView)

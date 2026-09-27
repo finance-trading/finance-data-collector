@@ -2,7 +2,7 @@
 
 Reads web/data/companies.json (the curated universe, single source of truth),
 resolves tickers to CIKs, derives three edge types, and writes
-web/data/graph.json consumed by web/index.html.
+web/data/graph.json consumed by web/graph.html.
 
 Edge types:
 - industry   : same GICS sub-industry (bounded K-nearest so meshes stay readable)

@@ -61,6 +61,14 @@ class CompanyView(BaseModel):
     filing_count: int
 
 
+class CompanyListView(BaseModel):
+    query: str | None
+    limit: int
+    offset: int
+    total: int
+    companies: list[CompanyView]
+
+
 class FilingSummaryView(BaseModel):
     accession: str
     form: str
@@ -409,6 +417,81 @@ def get_company(ticker: str) -> CompanyView:
                 latest_parse.status if latest_parse is not None else "unavailable"
             ),
             filing_count=len(filings),
+        )
+
+
+def list_companies(
+    query: str | None,
+    limit: int,
+    offset: int,
+) -> CompanyListView:
+    normalized_query = query.strip().casefold() if query and query.strip() else None
+    with _session_scope() as session:
+        rows = session.execute(
+            select(
+                Issuer,
+                func.max(Filing.filing_date).label("latest_filing_date"),
+                func.count(Filing.id).label("filing_count"),
+            )
+            .join(Filing, Filing.issuer_id == Issuer.id)
+            .where(Issuer.ticker_hint.is_not(None))
+            .group_by(Issuer.id)
+        ).all()
+
+        canonical: dict[str, tuple[Issuer, date | None, int]] = {}
+        for issuer, latest_filing_date, filing_count in rows:
+            ticker = (issuer.ticker_hint or "").upper()
+            existing = canonical.get(ticker)
+            if existing is None or (
+                latest_filing_date or date.min,
+                issuer.cik,
+            ) > (
+                existing[1] or date.min,
+                existing[0].cik,
+            ):
+                canonical[ticker] = (issuer, latest_filing_date, filing_count)
+
+        companies: list[CompanyView] = []
+        for ticker, (issuer, latest_filing_date, filing_count) in canonical.items():
+            if normalized_query and normalized_query not in ticker.casefold() and (
+                normalized_query not in issuer.name.casefold()
+            ):
+                continue
+            latest = session.scalar(
+                select(Filing)
+                .where(Filing.issuer_id == issuer.id)
+                .order_by(Filing.filing_date.desc(), Filing.accession_number.desc())
+                .limit(1)
+            )
+            latest_parse = _latest_parse(session, latest.id) if latest is not None else None
+            companies.append(
+                CompanyView(
+                    ticker=ticker,
+                    name=issuer.name,
+                    cik=issuer.cik,
+                    sic=issuer.sic,
+                    latest_filing_date=latest_filing_date,
+                    latest_filing_status=(
+                        latest_parse.status if latest_parse is not None else "unavailable"
+                    ),
+                    filing_count=filing_count,
+                )
+            )
+
+        companies.sort(
+            key=lambda company: (
+                company.latest_filing_date or date.min,
+                company.ticker,
+            ),
+            reverse=True,
+        )
+        total = len(companies)
+        return CompanyListView(
+            query=query.strip() if query and query.strip() else None,
+            limit=limit,
+            offset=offset,
+            total=total,
+            companies=companies[offset : offset + limit],
         )
 
 

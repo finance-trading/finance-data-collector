@@ -51,13 +51,14 @@ uv run python -m fdc.graph                     # 3D 关系图数据（首次需�
 uv run python -m fdc.graph --offline           # 完全离线：只算行业边
 uv run python -m fdc.graph --refresh-cache     # 忽略 sec/.cache/efts，重新抓 EDGAR
 
-uv run python -m http.server -d web 8000
+uv run uvicorn fdc.api:app --host 127.0.0.1 --port 8000
+# http://localhost:8000/             SEC 公司研究目录
+# http://localhost:8000/graph.html   3D 公司关系图（行业 / 分层着色）
 # http://localhost:8000/layers.html  AI 分层：分层图（按层分列 + 跨层虚线）/ 树状图 / Mermaid
-# http://localhost:8000/             3D 公司关系图（行业 / 分层着色）
 ```
 
 构建脚本同时写出 `data/<name>.json` 与 `data/<name>.js`（脚本垫片），所以直接双击
-`web/layers.html` / `web/index.html` 也能打开：`file://` 下浏览器禁止 `fetch()`，页面会自动
+`web/layers.html` / `web/graph.html` 也能打开：`file://` 下浏览器禁止 `fetch()`，页面会自动
 改用 `<script>` 垫片读取数据，无需起本地服务器。
 
 `tests/unit/test_ai_layers.py` 覆盖分层契约校验（未知层、未声明细分、重复 ticker、空环节）与

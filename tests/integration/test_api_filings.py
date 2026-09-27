@@ -269,6 +269,29 @@ def test_company_and_filtered_filing_list_expose_parse_state(client):
     }
 
 
+def test_company_directory_supports_name_search(client):
+    response = client.get("/api/v1/companies?query=microsoft&limit=10&offset=0")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "query": "microsoft",
+        "limit": 10,
+        "offset": 0,
+        "total": 1,
+        "companies": [
+            {
+                "ticker": "MSFT",
+                "name": "Microsoft Fixture Corporation",
+                "cik": "0000000000",
+                "sic": "7372",
+                "latest_filing_date": "2024-08-01",
+                "latest_filing_status": "success",
+                "filing_count": 3,
+            }
+        ],
+    }
+
+
 def test_company_prefers_same_ticker_issuer_with_the_latest_filing(
     client, session, seeded_database
 ):

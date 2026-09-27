@@ -67,6 +67,34 @@ def test_read_app_serves_company_page_on_the_api_origin():
     assert 'id="company-name"' in response.text
 
 
+def test_research_home_search_opens_the_company_workspace(browser, live_server):
+    page = browser.new_page(viewport={"width": 1280, "height": 800})
+    console_errors = []
+    page.on(
+        "console",
+        lambda message: console_errors.append(message.text)
+        if message.type == "error"
+        else None,
+    )
+
+    page.goto(live_server)
+    page.wait_for_load_state("networkidle")
+
+    expect(page.get_by_role("heading", name="Research starts with the filing.")).to_be_visible()
+    expect(page.locator("#company-directory")).to_contain_text("MSFT")
+    expect(page.locator("#company-directory")).to_contain_text(
+        "Microsoft Fixture Corporation"
+    )
+    page.locator("#company-search").fill("msft")
+    page.get_by_role("button", name="Open company research").click()
+    page.wait_for_load_state("networkidle")
+
+    expect(page).to_have_url(f"{live_server}/company.html?ticker=MSFT")
+    expect(page.locator("#company-name")).to_have_text("Microsoft Fixture Corporation")
+    assert console_errors == []
+    page.close()
+
+
 def test_company_page_end_to_end_uses_persisted_statement_names(browser, live_server):
     page = browser.new_page(viewport={"width": 1280, "height": 800})
     console_errors = []
