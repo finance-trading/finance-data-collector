@@ -85,6 +85,54 @@ select:focus-visible {
   display: none !important;
 }
 
+.research-nav {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 0 28px;
+  border-top: 5px solid var(--pine);
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper);
+}
+
+.research-nav > div {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.research-nav a {
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.research-nav a[aria-current="page"],
+.research-nav a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 5px; }
+
+.research-nav .product-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--ink);
+  font-weight: 750;
+}
+
+.product-mark span {
+  width: 27px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--pine);
+  border-left-width: 4px;
+  color: var(--pine);
+  font-family: var(--serif);
+  font-size: 1.05rem;
+}
+
 .company-header {
   min-height: 120px;
   display: flex;
@@ -92,7 +140,6 @@ select:focus-visible {
   justify-content: space-between;
   gap: 32px;
   padding: 22px 28px 20px;
-  border-top: 5px solid var(--pine);
   border-bottom: 1px solid var(--rule-strong);
   background: var(--paper);
 }
@@ -671,6 +718,15 @@ td:nth-child(3) {
 }
 
 @media (max-width: 760px) {
+  .research-nav {
+    align-items: flex-start;
+    padding: 10px 17px;
+  }
+
+  .research-nav .product-mark { font-size: 0; }
+  .research-nav > div { gap: 13px; overflow-x: auto; }
+  .research-nav a { white-space: nowrap; }
+
   .company-header {
     min-height: auto;
     align-items: flex-start;

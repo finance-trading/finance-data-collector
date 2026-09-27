@@ -22,26 +22,27 @@ def test_company_page_loads_its_styles_and_deferred_script():
     html = (FRONTEND_ROOT / "company.html").read_text()
 
     assert 'href="/src/styles/company.css"' in html
-    assert 'src="/src/legacy/company.js"' in html
+    assert 'src="/src/pages/company.ts"' in html
     assert 'type="module"' in html
+    assert 'data-nav href="index.html"' in html
 
 
 def test_company_page_fetches_only_read_api_resources():
-    script = (FRONTEND_ROOT / "src" / "legacy" / "company.js").read_text()
+    script = (FRONTEND_ROOT / "src" / "pages" / "company.ts").read_text()
 
     assert '"/api/v1/companies/"' in script
-    assert '"/filings"' in script
+    assert "/filings`" in script
     assert '"/api/v1/filings/"' in script
-    assert '"/statements?statement_type="' in script
-    assert '"/facts"' in script
-    assert '"/sections/"' in script
-    assert '"/tables"' in script
-    assert '"/evidence/"' in script
+    assert "/statements`" in script
+    assert "/facts`" in script
+    assert "/sections/md_and_a`" in script
+    assert "/tables`" in script
+    assert "/evidence/" in script
     assert "method:" not in script
 
 
 def test_company_page_preserves_explicit_data_states():
-    script = (FRONTEND_ROOT / "src" / "legacy" / "company.js").read_text()
+    script = (FRONTEND_ROOT / "src" / "pages" / "company.ts").read_text()
 
     assert '"Not found"' in script
     assert '"Unavailable"' in script
@@ -119,12 +120,18 @@ def test_company_page_end_to_end_uses_persisted_statement_names(browser, live_se
     expect(page.locator("#selected-accession")).to_have_text(
         "0000000000-25-000002"
     )
+    expect(page.get_by_role("link", name="Research")).to_have_attribute(
+        "href", "index.html"
+    )
     page.locator('[data-accession="0000000000-24-000001"]').click()
     expect(page.locator("#selected-filing-date")).to_have_text("Aug 1, 2024")
     page.locator('[data-accession="0000000000-25-000002"]').click()
     expect(page.locator("#selected-filing-date")).to_have_text("Jan 25, 2025")
 
-    page.locator("#balance-tab").click()
+    page.locator("#income-tab").focus()
+    page.keyboard.press("ArrowRight")
+    expect(page.locator("#balance-tab")).to_be_focused()
+    expect(page.locator("#balance-tab")).to_have_attribute("aria-selected", "true")
     expect(page.locator("#balance-sheet tbody")).to_contain_text("Total assets")
     page.locator("#cash-tab").click()
     expect(page.locator("#cash-flow tbody")).to_contain_text(

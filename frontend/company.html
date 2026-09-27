@@ -6,10 +6,22 @@
   <meta name="color-scheme" content="light">
   <title>Company filings | Finance Data Collector</title>
   <link rel="stylesheet" href="/src/styles/company.css">
-  <script type="module" src="/src/legacy/company.js"></script>
+  <script type="module" src="/src/pages/company.ts"></script>
 </head>
 <body>
   <a class="skip-link" href="#financials">Skip to financials</a>
+
+  <nav class="research-nav" aria-label="Primary navigation">
+    <a class="product-mark" href="index.html" aria-label="Finance Data Collector home">
+      <span aria-hidden="true">F</span>
+      Finance Data Collector
+    </a>
+    <div>
+      <a data-nav href="index.html">Research</a>
+      <a data-nav href="graph.html">Company graph</a>
+      <a data-nav href="layers.html">AI layers</a>
+    </div>
+  </nav>
 
   <header class="company-header">
     <div class="identity">
@@ -25,7 +37,7 @@
     </div>
   </header>
 
-  <main class="research-shell">
+  <main class="research-shell" data-company-app>
     <aside class="filing-rail" aria-labelledby="filings-heading">
       <div class="rail-heading">
         <div>
