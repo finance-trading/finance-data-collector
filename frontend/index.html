@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
-  <meta name="description" content="Browse locally parsed SEC filings and open evidence-linked company research.">
-  <title>Company research | Finance Data Collector</title>
+  <meta name="description" content="Browse 211 public companies across the AI stack and open evidence-linked SEC research.">
+  <title>AI company directory | Finance Data Collector</title>
   <link rel="stylesheet" href="/src/styles/index.css">
-  <script type="module" src="/src/legacy/index.js"></script>
+  <script type="module" src="/src/pages/directory.ts"></script>
 </head>
 <body>
   <a class="skip-link" href="#company-directory">Skip to company directory</a>
@@ -24,14 +24,14 @@
     </nav>
   </header>
 
-  <main>
+  <main data-directory-app>
     <section class="hero" aria-labelledby="page-title">
       <div class="hero-copy">
-        <p class="section-label">SEC research directory</p>
+        <p class="section-label">The public AI stack</p>
         <h1 id="page-title">Research starts with the filing.</h1>
         <p class="hero-summary">
-          Find a company, review its filing history, and trace every parsed value
-          back to its source document.
+          Map 211 companies from power and silicon through models and applications,
+          then trace ingested financial evidence to its source filing.
         </p>
       </div>
 
@@ -44,7 +44,7 @@
           <button type="submit">Open company research</button>
         </div>
         <p id="search-guidance" class="search-guidance">
-          Enter a ticker to open it directly, or filter the directory by name.
+          An exact ingested ticker opens its workspace. Any other query filters the directory.
         </p>
       </form>
     </section>
@@ -52,8 +52,8 @@
     <section class="directory-section" aria-labelledby="directory-heading">
       <header class="directory-heading">
         <div>
-          <p class="section-label">Local filing coverage</p>
-          <h2 id="directory-heading">Company directory</h2>
+          <p class="section-label">AI layer and filing coverage</p>
+          <h2 id="directory-heading">All companies</h2>
         </div>
         <dl class="directory-summary" aria-label="Directory summary">
           <div>
@@ -61,35 +61,70 @@
             <dd id="company-total">—</dd>
           </div>
           <div>
-            <dt>Filings</dt>
+            <dt>Page filings</dt>
             <dd id="filing-total">—</dd>
           </div>
         </dl>
       </header>
 
-      <p id="directory-state" class="directory-state" role="status" aria-live="polite">
-        Reading the filing index…
-      </p>
+      <div class="directory-filters" aria-label="Directory filters">
+        <label>
+          AI layer
+          <select id="layer-filter">
+            <option value="">All layers</option>
+          </select>
+        </label>
+        <label>
+          Segment
+          <select id="segment-filter">
+            <option value="">All segments</option>
+          </select>
+        </label>
+        <label>
+          Ingestion status
+          <select id="status-filter">
+            <option value="">All statuses</option>
+            <option value="parsed">Parsed</option>
+            <option value="failed">Parse failed</option>
+            <option value="unavailable">Unavailable</option>
+            <option value="not_ingested">Not ingested</option>
+          </select>
+        </label>
+        <label>
+          Rows per page
+          <select id="page-size">
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+        </label>
+      </div>
+
+      <div id="directory-state" class="directory-state is-visible" role="status" aria-live="polite">
+        Reading the AI company catalog…
+      </div>
 
       <div class="directory-frame">
         <table id="company-directory">
-          <caption>Companies with locally stored SEC filings</caption>
+          <caption>Public companies in the AI stack and their local SEC filing coverage</caption>
           <thead>
             <tr>
               <th scope="col">Company</th>
+              <th scope="col">AI layer</th>
               <th scope="col">Latest filing</th>
-              <th scope="col">Parse status</th>
+              <th scope="col">Coverage</th>
               <th scope="col" class="number-column">Filings</th>
               <th scope="col"><span class="visually-hidden">Open research</span></th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="company-directory-body">
             <tr class="loading-row">
-              <td colspan="5">Loading companies…</td>
+              <td colspan="6">Loading companies…</td>
             </tr>
           </tbody>
         </table>
       </div>
+      <nav id="directory-pagination" class="directory-pagination" aria-label="Company pages"></nav>
     </section>
   </main>
 

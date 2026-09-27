@@ -274,23 +274,42 @@ def test_company_directory_supports_name_search(client):
     response = client.get("/api/v1/companies?query=microsoft&limit=10&offset=0")
 
     assert response.status_code == 200
-    assert response.json() == {
-        "query": "microsoft",
-        "limit": 10,
-        "offset": 0,
-        "total": 1,
-        "companies": [
-            {
-                "ticker": "MSFT",
-                "name": "Microsoft Fixture Corporation",
-                "cik": "0000000000",
-                "sic": "7372",
-                "latest_filing_date": "2024-08-01",
-                "latest_filing_status": "success",
-                "filing_count": 3,
-            }
-        ],
-    }
+    payload = response.json()
+    assert payload["query"] == "microsoft"
+    assert payload["limit"] == 10
+    assert payload["offset"] == 0
+    assert payload["total"] == 1
+    assert payload["companies"][0]["ticker"] == "MSFT"
+    assert payload["companies"][0]["cik"] == "0000000000"
+    assert payload["companies"][0]["latest_filing_date"] == "2024-08-01"
+    assert payload["companies"][0]["latest_filing_status"] == "success"
+    assert payload["companies"][0]["ingestion_status"] == "parsed"
+    assert payload["companies"][0]["research_available"] is True
+    assert payload["companies"][0]["filing_count"] == 3
+
+
+def test_company_directory_paginates_the_complete_catalog(client):
+    first = client.get("/api/v1/companies?limit=25&offset=0")
+    last = client.get("/api/v1/companies?limit=25&offset=200")
+
+    assert first.status_code == 200
+    assert first.json()["total"] == 211
+    assert len(first.json()["companies"]) == 25
+    assert len(last.json()["companies"]) == 11
+
+
+def test_company_directory_combines_layer_and_status_filters(client):
+    response = client.get(
+        "/api/v1/companies?layer=silicon&ingestion_status=not_ingested&limit=100"
+    )
+
+    assert response.status_code == 200
+    assert response.json()["companies"]
+    assert all(item["layer"] == "silicon" for item in response.json()["companies"])
+    assert all(
+        item["ingestion_status"] == "not_ingested"
+        for item in response.json()["companies"]
+    )
 
 
 def test_catalog_layers_expose_the_complete_ai_universe(client):

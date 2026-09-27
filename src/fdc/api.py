@@ -10,9 +10,8 @@ from pydantic import BaseModel
 from starlette.staticfiles import StaticFiles
 
 from fdc import catalog, read_service
-from fdc.catalog import CatalogLayerListView
+from fdc.catalog import CatalogLayerListView, CompanyDirectoryView, IngestionStatus
 from fdc.read_service import (
-    CompanyListView,
     CompanyView,
     EvidenceView,
     FactView,
@@ -37,13 +36,25 @@ def _read(operation: Callable[[], ViewT]) -> ViewT:
         raise HTTPException(status_code=error.status_code, detail=error.detail()) from error
 
 
-@app.get("/api/v1/companies", response_model=CompanyListView)
+@app.get("/api/v1/companies", response_model=CompanyDirectoryView)
 def companies(
     query: str | None = None,
-    limit: Annotated[int, Query(ge=1, le=200)] = 100,
+    layer: str | None = None,
+    segment: str | None = None,
+    ingestion_status: Annotated[IngestionStatus | None, Query()] = None,
+    limit: Annotated[int, Query(ge=1, le=100)] = 25,
     offset: Annotated[int, Query(ge=0)] = 0,
-) -> CompanyListView:
-    return _read(lambda: read_service.list_companies(query, limit, offset))
+) -> CompanyDirectoryView:
+    return _read(
+        lambda: catalog.list_companies(
+            query,
+            layer,
+            segment,
+            ingestion_status,
+            limit,
+            offset,
+        )
+    )
 
 
 @app.get("/api/v1/catalog/layers", response_model=CatalogLayerListView)

@@ -70,10 +70,22 @@ def test_research_home_search_opens_the_company_workspace(browser, live_server):
     page.wait_for_load_state("networkidle")
 
     expect(page.get_by_role("heading", name="Research starts with the filing.")).to_be_visible()
-    expect(page.locator("#company-directory")).to_contain_text("MSFT")
-    expect(page.locator("#company-directory")).to_contain_text(
-        "Microsoft Fixture Corporation"
-    )
+    expect(page.locator("#company-total")).to_have_text("211")
+    expect(page.locator("#company-directory-body tr")).to_have_count(25)
+    expect(page.locator("#directory-pagination")).to_contain_text("1–25 of 211")
+
+    page.get_by_role("button", name="Next").click()
+    page.wait_for_function("location.search.includes('page=2')")
+    assert "page=2" in page.url
+    expect(page.locator("#directory-pagination")).to_contain_text("26–50 of 211")
+
+    page.locator("#company-search").fill("VRT")
+    page.get_by_role("button", name="Open company research").click()
+    expect(page.locator("#company-total")).to_have_text("1")
+    expect(page.locator("#company-directory-body")).to_contain_text("VRT")
+    expect(page.locator("#company-directory-body")).to_contain_text("Not ingested")
+    expect(page.locator("#company-directory-body a[href*='company.html']")).to_have_count(0)
+
     page.locator("#company-search").fill("msft")
     page.get_by_role("button", name="Open company research").click()
     page.wait_for_load_state("networkidle")

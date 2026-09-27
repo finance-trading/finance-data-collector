@@ -42,14 +42,17 @@ def test_index_is_the_research_directory_and_preserves_graph_navigation():
     assert 'id="company-search"' in html
     assert 'id="company-directory"' in html
     assert 'id="directory-state"' in html
+    assert 'id="directory-pagination"' in html
+    assert 'id="layer-filter"' in html
     assert 'href="graph.html"' in html
-    assert 'src="/src/legacy/index.js"' in html
+    assert 'src="/src/pages/directory.ts"' in html
     assert 'href="/src/styles/index.css"' in html
 
 
 def test_index_client_uses_only_the_read_api():
-    script = (FRONTEND_ROOT / "src" / "legacy" / "index.js").read_text()
+    script = (FRONTEND_ROOT / "src" / "pages" / "directory.ts").read_text()
 
     assert '"/api/v1/companies"' in script
+    assert '"/api/v1/catalog/layers"' in script
     assert 'company.html?ticker=' in script
     assert "method:" not in script
