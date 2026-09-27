@@ -154,15 +154,26 @@ success.
 ```bash
 docker compose up -d postgres
 alembic upgrade head
-FDC_SEC_USER_AGENT='Collector name@example.com' \
-  python scripts/live_sec_smoke.py
+python scripts/live_sec_smoke.py
 ```
 
 The PostgreSQL result is `PASS` only after the container is healthy and the
-migration succeeds. The live SEC result is `PASS` only when the script exists,
-network access is available, and the attributed request succeeds. Otherwise
-report it as `SKIPPED` with the concrete reason. A missing local filing package
-is not permission to download during a parse run.
+migration succeeds. The live command above is safe by default and reports
+`SKIPPED` without making a request. To allow its single read of the public SEC
+company-ticker file, opt in explicitly and provide a monitored contact email:
+
+```bash
+FDC_RUN_LIVE_SEC_SMOKE=1 \
+FDC_SEC_USER_AGENT='Finance Data Collector your-real-email@your-domain.com' \
+  python scripts/live_sec_smoke.py
+```
+
+Do not use the placeholder address literally. The live result is `PASS` only
+when the attributed request succeeds and the returned JSON contains the
+expected MSFT record. Missing opt-in or contact configuration is `SKIPPED`;
+network, HTTP, or payload validation errors are `FAILED` with a nonzero exit.
+Report this separately from PostgreSQL and fixture tests. A missing local
+filing package is not permission to download during a parse run.
 
 ## 8. Stop local services
 

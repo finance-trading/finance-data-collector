@@ -148,7 +148,8 @@ select:focus-visible {
 }
 
 .status-loading,
-.status-unavailable {
+.status-unavailable,
+.status-not-found {
   background: var(--amber-wash);
   color: var(--amber);
 }
@@ -522,6 +523,10 @@ td:nth-child(3) {
   padding-left: calc(var(--depth, 0) * 13px);
 }
 
+.line-period-mobile {
+  display: none;
+}
+
 .disclosure-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -570,7 +575,8 @@ td:nth-child(3) {
 }
 
 .state-message.unavailable,
-.state-message.unsupported {
+.state-message.unsupported,
+.state-message.not-found {
   border-left: 3px solid var(--amber);
   background: var(--amber-wash);
   color: #74420b;
@@ -766,6 +772,15 @@ td:nth-child(3) {
   th:nth-child(2),
   td:nth-child(2) {
     display: none;
+  }
+
+  .line-period-mobile {
+    display: block;
+    margin-top: 3px;
+    padding-left: calc(var(--depth, 0) * 13px);
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 500;
   }
 
   .disclosure-grid {

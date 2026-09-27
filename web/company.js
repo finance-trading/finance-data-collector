@@ -11,6 +11,7 @@
   const EVIDENCE_SUFFIX = "/evidence/";
 
   const STATE_LABELS = {
+    not_found: "Not found",
     unavailable: "Unavailable",
     unsupported: "Unsupported",
     failed: "Parse failed",
@@ -67,6 +68,7 @@
 
   function displayState(status) {
     const normalized = String(status || "unavailable").toLowerCase();
+    if (normalized === "not_found") return STATE_LABELS.not_found;
     if (normalized === "failed") return STATE_LABELS.failed;
     if (normalized === "unsupported") return STATE_LABELS.unsupported;
     if (normalized === "success" || normalized === "parsed") return "Parsed";
@@ -75,6 +77,7 @@
 
   function stateClass(status) {
     const normalized = String(status || "unavailable").toLowerCase();
+    if (normalized === "not_found") return "not-found";
     if (normalized === "failed") return "failed";
     if (normalized === "unsupported") return "unsupported";
     if (normalized === "success" || normalized === "parsed") return "success";
@@ -83,11 +86,10 @@
 
   function statusMessage(error, context) {
     if (error instanceof ApiError) {
-      const inferredState = error.statusCode === 404 ? "unsupported" : error.state;
-      const label = displayState(inferredState);
+      const label = displayState(error.state);
       return {
         label,
-        className: stateClass(inferredState),
+        className: stateClass(error.state),
         text: `${label}: ${error.message}`,
       };
     }
@@ -263,6 +265,11 @@
   }
 
   async function openEvidence(embeddedEvidence) {
+    const requestSequence = pageState.requestSequence;
+    const selectionIsCurrent = () => (
+      requestSequence === pageState.requestSequence
+      && pageState.selectedAccession === embeddedEvidence.accession
+    );
     renderEvidence(embeddedEvidence);
     byId("evidence").scrollIntoView({ behavior: "smooth", block: "start" });
     const accession = encodeURIComponent(embeddedEvidence.accession);
@@ -271,10 +278,11 @@
       const evidence = await apiGet(
         `${API_FILINGS}${accession}${EVIDENCE_SUFFIX}${evidenceId}`,
       );
-      if (pageState.selectedAccession === embeddedEvidence.accession) {
+      if (selectionIsCurrent()) {
         renderEvidence(evidence);
       }
     } catch (error) {
+      if (!selectionIsCurrent()) return;
       const message = statusMessage(error, "Evidence");
       replaceChildren(
         byId("evidence-content"),
@@ -365,10 +373,17 @@
       const labelCell = document.createElement("td");
       const label = textElement("span", "line-label", line.label || line.concept);
       label.style.setProperty("--depth", String(Math.min(Math.max(line.depth || 0, 0), 6)));
-      labelCell.append(label);
       const period = [formatDate(line.end_date), line.period_type]
         .filter((part) => part && part !== "—")
         .join(" / ");
+      labelCell.append(
+        label,
+        textElement(
+          "span",
+          "line-period-mobile",
+          `Period: ${period || STATE_LABELS.unavailable}`,
+        ),
+      );
       const evidenceCell = document.createElement("td");
       evidenceCell.append(evidenceButton(line.evidence, "Source"));
       row.append(
