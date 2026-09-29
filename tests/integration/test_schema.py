@@ -13,7 +13,7 @@ from uuid import uuid4
 
 import pytest
 from alembic.config import Config
-from sqlalchemy import create_engine, inspect, text
+from sqlalchemy import Text, create_engine, inspect, text
 from sqlalchemy.orm import Session
 
 from alembic import command
@@ -72,6 +72,26 @@ def test_migrated_columns_match_model_metadata(migrated_url):
     for name, table in Base.metadata.tables.items():
         columns = {column["name"] for column in inspector.get_columns(name)}
         assert columns == {column.name for column in table.columns}, name
+
+
+@pytest.mark.parametrize(
+    ("table_name", "column_name"),
+    [
+        ("evidence_locator", "locator_value"),
+        ("extracted_table", "caption"),
+        ("xbrl_fact", "unit"),
+        ("statement_line", "unit"),
+    ],
+)
+def test_unbounded_parser_payload_columns_are_text(
+    migrated_url, table_name, column_name
+):
+    inspector = inspect(create_engine(migrated_url))
+    column = next(
+        item for item in inspector.get_columns(table_name) if item["name"] == column_name
+    )
+
+    assert isinstance(column["type"], Text)
 
 
 def test_migrated_indexes_and_constraints_exist(migrated_url):

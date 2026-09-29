@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import signal
+from dataclasses import replace
+
 import pytest
 from sqlalchemy import func, select
 
@@ -17,7 +20,7 @@ from fdc.contracts import (
     SectionDraft,
 )
 from fdc.models import EvidenceLocator, Filing, FilingParse, FilingSection, XbrlFact
-from fdc.parsers.service import parse_one_filing, parser_modules_manifest
+from fdc.parsers.service import ParseAttemptFailed, parse_one_filing, parser_modules_manifest
 
 FIXTURE_ROOT = __import__("pathlib").Path(__file__).resolve().parents[1] / "fixtures" / "filings"
 PARSER_VERSION = "filing-parser-v1"
@@ -225,7 +228,7 @@ def test_parse_one_skips_an_existing_success_without_calling_parsers(
     ("module_status", "expected_status"),
     [
         (ParseStatus.PARTIAL, "partial"),
-        (ParseStatus.FAILED, "failed"),
+        (ParseStatus.FAILED, "partial"),
     ],
 )
 def test_incomplete_required_module_result_is_never_current(
@@ -252,3 +255,121 @@ def test_incomplete_required_module_result_is_never_current(
 
     assert result.status == expected_status
     assert result.is_current is False
+
+
+def test_one_failed_module_with_usable_output_is_partial(
+    engine, session_factory, database_url, monkeypatch
+):
+    local_filing = scan_ticker_archive(FIXTURE_ROOT, "MSFT").filings[0]
+    xbrl, html = _outputs(local_filing)
+    xbrl.status = ParseStatus.FAILED
+    assert html.is_empty is False
+    monkeypatch.setattr(
+        "fdc.parsers.service.EdgarToolsAdapter.parse", lambda _self, _filing: xbrl
+    )
+    monkeypatch.setattr(
+        "fdc.parsers.service.parse_html_document",
+        lambda _path, _filing, _version: html,
+    )
+
+    with session_factory() as session:
+        result = parse_one_filing(session, local_filing, _settings(database_url))
+
+    assert result.status == "partial"
+    assert result.is_current is False
+
+
+def test_both_failed_modules_are_failed(
+    engine, session_factory, database_url, monkeypatch
+):
+    local_filing = scan_ticker_archive(FIXTURE_ROOT, "MSFT").filings[0]
+    xbrl, html = _outputs(local_filing)
+    xbrl.status = ParseStatus.FAILED
+    html.status = ParseStatus.FAILED
+    xbrl.facts.clear()
+    xbrl.statements.clear()
+    html.sections.clear()
+    html.tables.clear()
+    monkeypatch.setattr(
+        "fdc.parsers.service.EdgarToolsAdapter.parse", lambda _self, _filing: xbrl
+    )
+    monkeypatch.setattr(
+        "fdc.parsers.service.parse_html_document",
+        lambda _path, _filing, _version: html,
+    )
+
+    with session_factory() as session:
+        result = parse_one_filing(session, local_filing, _settings(database_url))
+
+    assert result.status == "failed"
+
+
+def test_parse_timeout_is_persisted_and_signals_processing_may_continue(
+    engine, session_factory, database_url, monkeypatch
+):
+    local_filing = scan_ticker_archive(FIXTURE_ROOT, "MSFT").filings[0]
+    settings = _settings(database_url).model_copy(update={"parse_timeout_seconds": 7})
+    alarms = []
+    handlers = []
+
+    def fake_signal(sig, handler):
+        handlers.append((sig, handler))
+        return signal.SIG_DFL
+
+    def fake_setitimer(which, seconds):
+        alarms.append((which, seconds))
+        return (0.0, 0.0)
+
+    def time_out(_self, _filing):
+        handlers[-1][1](signal.SIGALRM, None)
+
+    monkeypatch.setattr(signal, "signal", fake_signal)
+    monkeypatch.setattr(signal, "setitimer", fake_setitimer)
+    monkeypatch.setattr("fdc.parsers.service.EdgarToolsAdapter.parse", time_out)
+
+    with session_factory() as session:
+        with pytest.raises(ParseAttemptFailed) as raised:
+            parse_one_filing(session, local_filing, settings)
+
+    assert raised.value.status == "failed"
+    assert raised.value.diagnostics["error_type"] == "FilingParseTimeout"
+    assert raised.value.diagnostics["timeout_seconds"] == 7
+    assert alarms == [(signal.ITIMER_REAL, 7), (signal.ITIMER_REAL, 0)]
+
+    with session_factory() as session:
+        stored = session.scalars(select(FilingParse)).one()
+        assert stored.status == "failed"
+        assert stored.diagnostics["error_type"] == "FilingParseTimeout"
+
+
+def test_ambiguous_evidence_is_persisted_without_a_false_artifact_link(
+    engine, session_factory, database_url, monkeypatch
+):
+    local_filing = scan_ticker_archive(FIXTURE_ROOT, "MSFT").filings[0]
+    xbrl, html = _outputs(local_filing)
+    xbrl.facts[0] = replace(
+        xbrl.facts[0],
+        evidence=EvidenceDraft(
+            locator_type=LocatorType.XBRL_FACT,
+            locator_value="concept=FixtureRevenue;source=ambiguous",
+        ),
+    )
+    monkeypatch.setattr(
+        "fdc.parsers.service.EdgarToolsAdapter.parse", lambda _self, _filing: xbrl
+    )
+    monkeypatch.setattr(
+        "fdc.parsers.service.parse_html_document",
+        lambda _path, _filing, _version: html,
+    )
+
+    with session_factory() as session:
+        result = parse_one_filing(session, local_filing, _settings(database_url))
+
+    assert result.status == "success"
+    with session_factory() as session:
+        evidence = session.scalars(
+            select(EvidenceLocator).where(
+                EvidenceLocator.locator_value == "concept=FixtureRevenue;source=ambiguous"
+            )
+        ).one()
+        assert evidence.artifact_id is None

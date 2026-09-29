@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import signal
 from datetime import UTC, datetime
 from pathlib import Path, PurePosixPath
 from typing import Any
@@ -51,6 +52,39 @@ class ParseAttemptFailed(RuntimeError):
         self.status = status
         self.diagnostics = diagnostics
         self.disposition_recorded = disposition_recorded
+
+
+class FilingParseTimeout(TimeoutError):
+    """One filing exceeded the configured local parse deadline."""
+
+    def __init__(self, seconds: float) -> None:
+        super().__init__(f"filing parse exceeded {seconds:g} seconds")
+        self.seconds = seconds
+
+
+class _filing_parse_deadline:
+    """Bound CPU-heavy local parsing without stopping the ticker loop."""
+
+    def __init__(self, seconds: float) -> None:
+        self.seconds = seconds
+        self._previous_handler = None
+
+    def __enter__(self):
+        if self.seconds <= 0:
+            return self
+
+        def timeout(_signum, _frame):
+            raise FilingParseTimeout(self.seconds)
+
+        self._previous_handler = signal.signal(signal.SIGALRM, timeout)
+        signal.setitimer(signal.ITIMER_REAL, self.seconds)
+        return self
+
+    def __exit__(self, _error_type, _error, _traceback):
+        if self.seconds > 0:
+            signal.setitimer(signal.ITIMER_REAL, 0)
+            signal.signal(signal.SIGALRM, self._previous_handler)
+        return False
 
 
 def parser_modules_manifest() -> dict[str, str]:
@@ -241,17 +275,26 @@ def _persist_evidence(
 ) -> EvidenceLocator:
     if evidence is None:
         raise ValueError("every extracted row requires evidence")
-    artifact = _artifact_for_evidence(evidence, artifacts)
+    ambiguous = (
+        evidence.relative_path is None
+        and evidence.content_sha256 is None
+        and (evidence.locator_value or "").endswith(";source=ambiguous")
+    )
+    artifact = None if ambiguous else _artifact_for_evidence(evidence, artifacts)
     locator = EvidenceLocator(
         filing_id=filing.id,
-        artifact_id=artifact.id,
+        artifact_id=artifact.id if artifact is not None else None,
         relative_path=evidence.relative_path,
         accession_url=(
             evidence.accession_url
-            or _edgar_artifact_url(
-                filing.accession_number[:10],
-                filing.accession_number,
-                artifact.relative_path,
+            or (
+                _edgar_artifact_url(
+                    filing.accession_number[:10],
+                    filing.accession_number,
+                    artifact.relative_path,
+                )
+                if artifact is not None
+                else None
             )
         ),
         locator_type=str(evidence.locator_type),
@@ -371,9 +414,9 @@ def _overall_status(xbrl_output: ParserOutput, html_output: ParserOutput) -> str
     statuses = {str(xbrl_output.status), str(html_output.status)}
     if statuses == {"success"}:
         return "success"
-    if "failed" in statuses:
-        return "failed"
-    return "partial"
+    if not xbrl_output.is_empty or not html_output.is_empty:
+        return "partial"
+    return "failed"
 
 
 def _result_diagnostics(
@@ -540,20 +583,25 @@ def parse_one_filing(
         return result
 
     try:
-        xbrl_output = EdgarToolsAdapter(parser_version=settings.parser_version).parse(local_filing)
-        if local_filing.primary_document is None:
-            raise ValueError("filing has no primary document for HTML parsing")
-        html_output = parse_html_document(
-            local_filing.primary_document,
-            local_filing,
-            settings.parser_version,
-        )
+        with _filing_parse_deadline(settings.parse_timeout_seconds):
+            xbrl_output = EdgarToolsAdapter(parser_version=settings.parser_version).parse(
+                local_filing
+            )
+            if local_filing.primary_document is None:
+                raise ValueError("filing has no primary document for HTML parsing")
+            html_output = parse_html_document(
+                local_filing.primary_document,
+                local_filing,
+                settings.parser_version,
+            )
     except Exception as error:
         diagnostics = {
             "error_type": type(error).__name__,
             "detail": str(error),
             "retryable": True,
         }
+        if isinstance(error, FilingParseTimeout):
+            diagnostics["timeout_seconds"] = error.seconds
         if successful is not None:
             diagnostics["preserved_filing_parse_id"] = str(successful.id)
         result = new_result("failed", diagnostics)
@@ -561,7 +609,9 @@ def parse_one_filing(
             run, owns_run, local_filing, result.status, result.diagnostics
         )
         session.commit()
-        if successful is not None and not owns_run:
+        if isinstance(error, FilingParseTimeout) or (
+            successful is not None and not owns_run
+        ):
             raise ParseAttemptFailed(
                 "failed",
                 diagnostics,

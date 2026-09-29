@@ -32,6 +32,7 @@ def test_settings_defaults_and_environment_overrides(monkeypatch):
     monkeypatch.setenv("FDC_DATABASE_URL", "sqlite:///collector.db")
     monkeypatch.setenv("FDC_RAW_ROOT", "/tmp/raw")
     monkeypatch.setenv("FDC_SEC_TIMEOUT_SECONDS", "17")
+    monkeypatch.setenv("FDC_PARSE_TIMEOUT_SECONDS", "23")
     monkeypatch.setenv("FDC_RETRY_MAX_ATTEMPTS", "5")
     monkeypatch.setenv("FDC_RETRY_BASE_DELAY_SECONDS", "0.25")
     monkeypatch.setenv("FDC_RETRY_MAX_DELAY_SECONDS", "9")
@@ -42,6 +43,7 @@ def test_settings_defaults_and_environment_overrides(monkeypatch):
     assert settings.raw_root == "/tmp/raw"
     assert settings.sec_user_agent == "Research Bot research@example.com"
     assert settings.sec_timeout_seconds == 17
+    assert settings.parse_timeout_seconds == 23
     assert settings.retry_max_attempts == 5
     assert settings.retry_base_delay_seconds == 0.25
     assert settings.retry_max_delay_seconds == 9
@@ -53,6 +55,7 @@ def test_settings_use_raw_root_default(monkeypatch):
         "FDC_DATABASE_URL",
         "FDC_RAW_ROOT",
         "FDC_SEC_TIMEOUT_SECONDS",
+        "FDC_PARSE_TIMEOUT_SECONDS",
         "FDC_RETRY_MAX_ATTEMPTS",
         "FDC_RETRY_BASE_DELAY_SECONDS",
         "FDC_RETRY_MAX_DELAY_SECONDS",
@@ -62,3 +65,4 @@ def test_settings_use_raw_root_default(monkeypatch):
     settings = get_settings()
 
     assert settings.raw_root == "./data/raw"
+    assert settings.parse_timeout_seconds == 300

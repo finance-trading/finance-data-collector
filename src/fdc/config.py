@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     edgartools_version: str | None = None
     sec_user_agent: str | None = None
     sec_timeout_seconds: float = 30.0
+    parse_timeout_seconds: float = 300.0
     retry_max_attempts: int = 3
     retry_base_delay_seconds: float = 1.0
     retry_max_delay_seconds: float = 30.0
