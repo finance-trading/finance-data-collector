@@ -85,7 +85,10 @@ INDEX_FILENAME = "filings_index.json"
 MAX_REPORTED_RECORDS = 40
 
 #: Exhibit names such as ``msft-ex31_1.htm`` or ``exhibit-10-1.htm``.
-_EXHIBIT_RE = re.compile(r"(?:^|[-_])ex(?:hibit)?[-_]?\d", re.IGNORECASE)
+#: SEC packages also commonly concatenate the exhibit marker to a descriptive
+#: stem (for example ``securityex-4_6.htm``), so the marker need not have a
+#: delimiter before it.
+_EXHIBIT_RE = re.compile(r"ex(?:hibit)?[-_]?\d", re.IGNORECASE)
 
 #: SEC document type tags used by text exhibits without exhibit-like names.
 _EXHIBIT_TYPE_RE = re.compile(r"<TYPE>\s*EX(?:HIBIT)?[-_\s]?\d", re.IGNORECASE)

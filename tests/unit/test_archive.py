@@ -270,6 +270,18 @@ def test_primary_document_falls_back_to_ranking(tmp_path):
     assert scan.filings[0].primary_document.name == "acme-20240630.htm"
 
 
+def test_primary_document_ranking_rejects_sec_exhibit_suffix_without_delimiter(tmp_path):
+    scan = single_filing_archive(
+        tmp_path,
+        {
+            "ekq12013_10q04292013.htm": MINIMAL_HTML * 10,
+            "ekjuniordipsecurityex-4_6.htm": MINIMAL_HTML * 200,
+        },
+    )
+
+    assert scan.filings[0].primary_document.name == "ekq12013_10q04292013.htm"
+
+
 def test_primary_document_falls_back_to_inline_xbrl(tmp_path):
     scan = single_filing_archive(
         tmp_path,
