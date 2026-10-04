@@ -74,6 +74,31 @@ describe("directory rendering", () => {
       "company.html?ticker=NVDA",
     );
   });
+
+  it("renders the latest price and signed daily change in the price cell", () => {
+    const up = { ...catalogOnlyCompany, ticker: "NVDA", price: 233.95, change_pct: 1.34 };
+    const down = { ...catalogOnlyCompany, ticker: "TSLA", price: 288.4, change_pct: -2.1 };
+    renderCompanies([up, down]);
+
+    const cells = document.querySelectorAll(".price-cell");
+    expect(cells.length).toBe(2);
+
+    const value = document.querySelector(".price-value") as HTMLElement;
+    expect(value.textContent).toBe("$233.95");
+    const upChange = document.querySelector(".price-change.up") as HTMLElement;
+    expect(upChange.textContent).toBe("+1.34%");
+
+    const downChange = document.querySelector(".price-change.down") as HTMLElement;
+    expect(downChange.textContent).toBe("-2.10%");
+  });
+
+  it("shows a muted placeholder when no price is available", () => {
+    renderCompanies([catalogOnlyCompany]);
+
+    const placeholder = document.querySelector(".price-na") as HTMLElement;
+    expect(placeholder.textContent).toBe("—");
+    expect(document.querySelector(".price-value")).toBeNull();
+  });
 });
 
 describe("pagination", () => {
