@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 import json
+import uuid
 from collections import defaultdict
 from datetime import date, datetime
 from pathlib import Path
 from typing import Any, Callable, Literal
 
 from pydantic import BaseModel, Field
-from sqlalchemy import and_, select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from fdc.ai_layers import validate_universe
@@ -157,58 +158,97 @@ def _database_summaries(
     session: Session,
 ) -> dict[str, _IssuerSummary]:
     parser_version = get_settings().parser_version
-    rows = session.execute(
-        select(Issuer, Filing, FilingParse)
-        .outerjoin(Filing, Filing.issuer_id == Issuer.id)
-        .outerjoin(
-            FilingParse,
-            and_(
-                FilingParse.filing_id == Filing.id,
-                FilingParse.parser_version == parser_version,
-            ),
-        )
+
+    issuer_rows = session.execute(
+        select(Issuer.id, Issuer.cik, Issuer.ticker_hint, Issuer.created_at)
         .where(Issuer.ticker_hint.is_not(None))
     ).all()
 
-    by_issuer: dict[Any, dict[str, Any]] = {}
-    for issuer, filing, result in rows:
-        state = by_issuer.setdefault(
-            issuer.id,
-            {"issuer": issuer, "filings": {}, "parses": {}},
+    # Filing counts per issuer — grouped, no cross-join.
+    count_rows = session.execute(
+        select(Filing.issuer_id, func.count(Filing.id))
+        .group_by(Filing.issuer_id)
+    ).all()
+    counts: dict[uuid.UUID, int] = {
+        issuer_id: count for issuer_id, count in count_rows
+    }
+
+    # Latest filing per issuer, chosen exactly as the reference implementation
+    # did: greatest (filing_date, accession_number) with a NULL filing_date
+    # treated as the minimum. One window pass over `filing` (no join product).
+    latest_cte = (
+        select(
+            Filing.issuer_id.label("issuer_id"),
+            Filing.id.label("filing_id"),
+            Filing.filing_date.label("filing_date"),
+            Filing.created_at.label("filing_created_at"),
+            func.row_number()
+            .over(
+                partition_by=Filing.issuer_id,
+                order_by=[
+                    Filing.filing_date.desc().nulls_last(),
+                    Filing.accession_number.desc(),
+                ],
+            )
+            .label("rn"),
         )
-        if filing is None:
-            continue
-        state["filings"][filing.id] = filing
-        if result is not None:
-            current = state["parses"].get(filing.id)
-            if current is None or _parse_key(result) > _parse_key(current):
-                state["parses"][filing.id] = result
+        .cte("latest_filings")
+    )
+    latest_rows = session.execute(
+        select(
+            latest_cte.c.issuer_id,
+            latest_cte.c.filing_id,
+            latest_cte.c.filing_date,
+            latest_cte.c.filing_created_at,
+        ).where(latest_cte.c.rn == 1)
+    ).all()
+    latest: dict[uuid.UUID, tuple[date | None, datetime, uuid.UUID]] = {
+        issuer_id: (filing_date, filing_created_at, filing_id)
+        for issuer_id, filing_id, filing_date, filing_created_at in latest_rows
+    }
+
+    # The chosen parse status for each latest filing: the parse with the
+    # greatest _parse_key among that filing's current-version parses.
+    latest_filing_ids = [entry[2] for entry in latest.values()]
+    parse_status: dict[uuid.UUID, str] = {}
+    if latest_filing_ids:
+        parse_rows = session.execute(
+            select(
+                FilingParse.filing_id,
+                FilingParse.status,
+                FilingParse.is_current,
+                FilingParse.created_at,
+            )
+            .where(
+                FilingParse.filing_id.in_(latest_filing_ids),
+                FilingParse.parser_version == parser_version,
+            )
+        ).all()
+        by_filing: dict[uuid.UUID, tuple[tuple[int, datetime], str]] = {}
+        for filing_id, status, is_current, created_at in parse_rows:
+            key = (int(is_current and status == "success"), created_at)
+            current = by_filing.get(filing_id)
+            if current is None or key > current[0]:
+                by_filing[filing_id] = (key, status)
+        parse_status = {filing_id: entry[1] for filing_id, entry in by_filing.items()}
 
     canonical: dict[str, tuple[tuple[date, datetime, str], _IssuerSummary]] = {}
-    for state in by_issuer.values():
-        issuer: Issuer = state["issuer"]
-        filings: list[Filing] = list(state["filings"].values())
-        latest = max(
-            filings,
-            key=lambda filing: (
-                filing.filing_date or date.min,
-                filing.accession_number,
-            ),
-            default=None,
+    for issuer_id, cik, ticker_hint, issuer_created_at in issuer_rows:
+        filing_date, filing_created_at, filing_id = latest.get(
+            issuer_id, (None, None, None)
         )
-        latest_parse = state["parses"].get(latest.id) if latest is not None else None
         summary = _IssuerSummary(
-            cik=issuer.cik,
-            latest_filing_date=latest.filing_date if latest is not None else None,
-            latest_filing_status=latest_parse.status if latest_parse is not None else None,
-            filing_count=len(filings),
+            cik=cik,
+            latest_filing_date=filing_date,
+            latest_filing_status=parse_status.get(filing_id) if filing_id else None,
+            filing_count=counts.get(issuer_id, 0),
         )
         key = (
-            latest.filing_date if latest is not None and latest.filing_date else date.min,
-            latest.created_at if latest is not None else issuer.created_at,
-            issuer.cik,
+            filing_date or date.min,
+            filing_created_at if filing_id is not None else issuer_created_at,
+            cik,
         )
-        ticker = (issuer.ticker_hint or "").upper()
+        ticker = (ticker_hint or "").upper()
         if ticker not in canonical or key > canonical[ticker][0]:
             canonical[ticker] = (key, summary)
     return {ticker: summary for ticker, (_, summary) in canonical.items()}
