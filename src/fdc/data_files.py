@@ -13,6 +13,7 @@ CATALOG_PATH = DATA_ROOT / "ai_companies.json"
 GENERATED_DATA_DIR = DATA_ROOT / "generated"
 GRAPH_PATH = GENERATED_DATA_DIR / "graph.json"
 LAYERS_PATH = GENERATED_DATA_DIR / "layers.json"
+QUOTES_PATH = GENERATED_DATA_DIR / "quotes.json"
 
 
 def write_json_artifact(path: Path, payload: dict[str, Any]) -> Path:

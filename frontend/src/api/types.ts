@@ -22,6 +22,9 @@ export interface CompanyDirectoryItem {
   ingestion_status: IngestionStatus;
   filing_count: number;
   research_available: boolean;
+  price?: number | null;
+  change_pct?: number | null;
+  quote_as_of?: string | null;
 }
 
 export interface CompanyDirectoryView {

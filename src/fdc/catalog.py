@@ -14,7 +14,7 @@ from sqlalchemy.orm import Session
 
 from fdc.ai_layers import validate_universe
 from fdc.config import get_settings
-from fdc.data_files import CATALOG_PATH, GRAPH_PATH, LAYERS_PATH
+from fdc.data_files import CATALOG_PATH, GRAPH_PATH, LAYERS_PATH, QUOTES_PATH
 from fdc.db import SessionLocal
 from fdc.models import Filing, FilingParse, Issuer
 from fdc.read_service import ReadServiceError
@@ -73,6 +73,9 @@ class CompanyDirectoryItem(CatalogCompany):
     ingestion_status: IngestionStatus
     filing_count: int
     research_available: bool
+    price: float | None = None
+    change_pct: float | None = None
+    quote_as_of: date | None = None
 
 
 class CompanyDirectoryView(BaseModel):
@@ -133,6 +136,21 @@ def list_layers(path: Path | str | None = None) -> CatalogLayerListView:
 def _parse_key(result: FilingParse) -> tuple[int, datetime]:
     current_success = result.is_current and result.status == "success"
     return (1 if current_success else 0, result.created_at)
+
+
+def _load_quotes() -> tuple[dict[str, dict[str, float | None]], date | None]:
+    """Return cached quotes per ticker plus the quote date; empty when absent."""
+
+    if not QUOTES_PATH.exists():
+        return {}, None
+    try:
+        payload = json.loads(QUOTES_PATH.read_text())
+        quotes = payload.get("quotes", {})
+        generated_at = payload.get("generated_at")
+        as_of = date.fromisoformat(generated_at[:10]) if generated_at else None
+        return quotes, as_of
+    except (OSError, json.JSONDecodeError, KeyError, ValueError):
+        return {}, None
 
 
 def _database_summaries(
@@ -221,6 +239,7 @@ def list_companies(
 
     catalog = load_catalog(catalog_path)
     layer_names = {item.id: item.name for item in catalog.layers}
+    quotes, quote_as_of = _load_quotes()
     with session_factory() as session:
         summaries = _database_summaries(session)
 
@@ -229,8 +248,10 @@ def list_companies(
     normalized_segment = segment.strip() if segment and segment.strip() else None
     companies: list[CompanyDirectoryItem] = []
     for company in catalog.companies:
-        summary = summaries.get(company.ticker.upper())
+        ticker = company.ticker.upper()
+        summary = summaries.get(ticker)
         status = _status(summary)
+        quote = quotes.get(ticker)
         if (
             needle
             and needle not in company.ticker.casefold()
@@ -253,6 +274,9 @@ def list_companies(
                 ingestion_status=status,
                 filing_count=summary.filing_count if summary else 0,
                 research_available=bool(summary and summary.filing_count),
+                price=quote.get("price") if quote else None,
+                change_pct=quote.get("change_pct") if quote else None,
+                quote_as_of=quote_as_of,
             )
         )
 

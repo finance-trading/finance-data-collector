@@ -123,6 +123,35 @@ export function renderCompanies(
     const countCell = cell("Filings", "number-column");
     countCell.textContent = new Intl.NumberFormat("en").format(company.filing_count);
 
+    const priceCell = cell("Price", "number-column price-cell");
+    if (company.price !== null && company.price !== undefined) {
+      const price = document.createElement("span");
+      price.className = "price-value";
+      price.textContent = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(company.price);
+      priceCell.append(price);
+      if (company.change_pct !== null && company.change_pct !== undefined) {
+        const change = document.createElement("span");
+        change.className = `price-change ${
+          company.change_pct > 0 ? "up" : company.change_pct < 0 ? "down" : "flat"
+        }`;
+        change.textContent =
+          company.change_pct > 0
+            ? `+${company.change_pct.toFixed(2)}%`
+            : company.change_pct < 0
+              ? company.change_pct.toFixed(2) + "%"
+              : "0.00%";
+        priceCell.append(change);
+      }
+    } else {
+      const na = document.createElement("span");
+      na.className = "price-na";
+      na.textContent = "—";
+      priceCell.append(na);
+    }
+
     const actionCell = cell("Action", "action-cell");
     if (company.research_available) {
       const action = document.createElement("a");
@@ -137,7 +166,7 @@ export function renderCompanies(
       actionCell.append(unavailable);
     }
 
-    row.append(companyCell, categoryCell, dateCell, statusCell, countCell, actionCell);
+    row.append(companyCell, categoryCell, dateCell, statusCell, countCell, priceCell, actionCell);
     target.append(row);
   });
 }
