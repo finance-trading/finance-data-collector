@@ -347,13 +347,14 @@ tbody tr:hover { background: rgb(90 120 255 / 7%); }
 
 .number-column { text-align: right; font-variant-numeric: tabular-nums; }
 
-.price-cell { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.price-cell, .cap-cell { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .price-value { color: var(--ink); font-weight: 600; margin-right: 0.5em; }
+.cap-value { color: var(--ink); font-weight: 600; }
 .price-change { font-size: 0.82em; margin-left: 0.35em; }
 .price-change.up { color: var(--pine); }
 .price-change.down { color: var(--error); }
 .price-change.flat { color: var(--muted); }
-.price-na { color: var(--muted); }
+.price-na, .cap-na { color: var(--muted); }
 
 .parse-status {
   display: inline-flex;

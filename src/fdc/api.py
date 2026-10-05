@@ -10,7 +10,13 @@ from pydantic import BaseModel
 from starlette.staticfiles import StaticFiles
 
 from fdc import catalog, read_service
-from fdc.catalog import CatalogLayerListView, CompanyDirectoryView, IngestionStatus
+from fdc.catalog import (
+    CatalogLayerListView,
+    CompanyDirectoryView,
+    IngestionStatus,
+    Order,
+    SortKey,
+)
 from fdc.read_service import (
     CompanyView,
     EvidenceView,
@@ -42,6 +48,8 @@ def companies(
     layer: str | None = None,
     segment: str | None = None,
     ingestion_status: Annotated[IngestionStatus | None, Query()] = None,
+    sort_by: Annotated[SortKey | None, Query()] = None,
+    order: Order = "desc",
     limit: Annotated[int, Query(ge=1, le=100)] = 25,
     offset: Annotated[int, Query(ge=0)] = 0,
 ) -> CompanyDirectoryView:
@@ -53,6 +61,8 @@ def companies(
             ingestion_status,
             limit,
             offset,
+            sort_by=sort_by,
+            order=order,
         )
     )
 

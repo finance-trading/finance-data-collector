@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+from concurrent.futures import ThreadPoolExecutor
 from datetime import date, datetime, timezone
 from typing import Any
 
@@ -46,6 +47,32 @@ def already_refreshed_today(force: bool = False) -> bool:
         return False
 
 
+def _market_caps(tickers: list[str], workers: int = 16) -> dict[str, int]:
+    """Return market cap in USD per ticker; absent keys mean unavailable.
+
+    ``yf.download`` does not expose market cap, and yfinance has no batched
+    accessor, so this fetches ``fast_info`` per ticker in a small thread pool.
+    Roughly 9s for the 227-ticker universe — acceptable for a daily job.
+    """
+
+    def cap(ticker: str) -> tuple[str, int | None]:
+        try:
+            value = yf.Ticker(ticker).fast_info["marketCap"]
+        except Exception:
+            return ticker, None
+        try:
+            return ticker, round(float(value)) if value else None
+        except (TypeError, ValueError):
+            return ticker, None
+
+    caps: dict[str, int] = {}
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        for ticker, value in pool.map(cap, tickers):
+            if value is not None:
+                caps[ticker] = value
+    return caps
+
+
 def fetch_quotes() -> dict[str, Any]:
     """Fetch last close and previous close for every ticker in the catalog.
 
@@ -71,7 +98,10 @@ def fetch_quotes() -> dict[str, Any]:
         logger.exception("yfinance download failed")
         raise
 
-    quotes: dict[str, dict[str, float | None]] = {}
+    caps = _market_caps(tickers)
+    logger.info("%d tickers have market cap data", len(caps))
+
+    quotes: dict[str, dict[str, float | int | None]] = {}
     for tk in tickers:
         try:
             if tk not in data.columns.get_level_values(0):
@@ -92,6 +122,7 @@ def fetch_quotes() -> dict[str, Any]:
                 "price": price,
                 "previous_close": prev,
                 "change_pct": change_pct,
+                "market_cap": caps.get(tk),
             }
         except Exception:
             logger.warning("skipping ticker %s (no usable close data)", tk)

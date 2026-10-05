@@ -27,10 +27,10 @@ const catalogOnlyCompany: CompanyDirectoryItem = {
 };
 
 describe("directory URL state", () => {
-  it("round-trips filters and paging through the URL", () => {
+  it("round-trips filters, sort, and paging through the URL", () => {
     const state = readDirectoryState(
       new URLSearchParams(
-        "query=nvda&layer=silicon&segment=Compute&status=parsed&page=2&pageSize=50",
+        "query=nvda&layer=silicon&segment=Compute&status=parsed&sort=market_cap_desc&page=2&pageSize=50",
       ),
     );
 
@@ -39,11 +39,19 @@ describe("directory URL state", () => {
       layer: "silicon",
       segment: "Compute",
       status: "parsed",
+      sort: "market_cap_desc",
       page: 2,
       pageSize: 50,
     });
     expect(writeDirectoryState(state).toString()).toBe(
-      "query=nvda&layer=silicon&segment=Compute&status=parsed&page=2&pageSize=50",
+      "query=nvda&layer=silicon&segment=Compute&status=parsed&sort=market_cap_desc&page=2&pageSize=50",
+    );
+  });
+
+  it("normalizes invalid sort values to catalog order", () => {
+    expect(readDirectoryState(new URLSearchParams("sort=change_pct")).sort).toBe("");
+    expect(readDirectoryState(new URLSearchParams("sort=market_cap_asc")).sort).toBe(
+      "market_cap_asc",
     );
   });
 
@@ -98,6 +106,28 @@ describe("directory rendering", () => {
     const placeholder = document.querySelector(".price-na") as HTMLElement;
     expect(placeholder.textContent).toBe("—");
     expect(document.querySelector(".price-value")).toBeNull();
+  });
+
+  it("renders market cap in compact units next to the price", () => {
+    const trillion = { ...catalogOnlyCompany, ticker: "NVDA", market_cap: 5_649_190_576_309 };
+    const billion = { ...catalogOnlyCompany, ticker: "VRT", market_cap: 97_086_314_647 };
+    const million = { ...catalogOnlyCompany, ticker: "RGTI", market_cap: 985_200_000 };
+    renderCompanies([trillion, billion, million, catalogOnlyCompany]);
+
+    const cells = document.querySelectorAll<HTMLTableCellElement>(".cap-cell");
+    expect(cells.length).toBe(4);
+
+    const values = Array.from(document.querySelectorAll(".cap-value")).map(
+      (element) => element.textContent,
+    );
+    expect(values).toEqual(["$5.65T", "$97.09B", "$985.2M"]);
+
+    // Column order follows the header: Company, layer, date, coverage, filings,
+    // price, market cap, action.
+    expect(cells[0].cellIndex).toBe(6);
+
+    const missing = document.querySelector(".cap-na") as HTMLElement;
+    expect(missing.textContent).toBe("—");
   });
 });
 

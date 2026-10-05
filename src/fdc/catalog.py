@@ -21,6 +21,8 @@ from fdc.models import Filing, FilingParse, Issuer
 from fdc.read_service import ReadServiceError
 
 IngestionStatus = Literal["parsed", "failed", "unavailable", "not_ingested"]
+SortKey = Literal["market_cap", "change_pct"]
+Order = Literal["desc", "asc"]
 
 
 class CatalogCompany(BaseModel):
@@ -75,6 +77,7 @@ class CompanyDirectoryItem(CatalogCompany):
     filing_count: int
     research_available: bool
     price: float | None = None
+    market_cap: int | None = None
     change_pct: float | None = None
     quote_as_of: date | None = None
 
@@ -84,6 +87,8 @@ class CompanyDirectoryView(BaseModel):
     layer: str | None
     segment: str | None
     ingestion_status: IngestionStatus | None
+    sort_by: SortKey | None = None
+    order: Order = "desc"
     limit: int
     offset: int
     total: int
@@ -139,7 +144,7 @@ def _parse_key(result: FilingParse) -> tuple[int, datetime]:
     return (1 if current_success else 0, result.created_at)
 
 
-def _load_quotes() -> tuple[dict[str, dict[str, float | None]], date | None]:
+def _load_quotes() -> tuple[dict[str, dict[str, float | int | None]], date | None]:
     """Return cached quotes per ticker plus the quote date; empty when absent."""
 
     if not QUOTES_PATH.exists():
@@ -264,6 +269,17 @@ def _status(summary: _IssuerSummary | None) -> IngestionStatus:
     return "unavailable"
 
 
+def _quote_sort_key(
+    item: CompanyDirectoryItem, sort_by: SortKey, descending: bool
+) -> tuple[bool, float]:
+    """Sort by a quote field, keeping companies with no quote last."""
+
+    value = item.market_cap if sort_by == "market_cap" else item.change_pct
+    if value is None:
+        return (True, 0.0)
+    return (False, -value if descending else value)
+
+
 def list_companies(
     query: str | None,
     layer: str | None,
@@ -272,6 +288,8 @@ def list_companies(
     limit: int,
     offset: int,
     *,
+    sort_by: SortKey | None = None,
+    order: Order = "desc",
     catalog_path: Path | str | None = None,
     session_factory: Callable[..., Session] = SessionLocal,
 ) -> CompanyDirectoryView:
@@ -315,8 +333,18 @@ def list_companies(
                 filing_count=summary.filing_count if summary else 0,
                 research_available=bool(summary and summary.filing_count),
                 price=quote.get("price") if quote else None,
+                market_cap=quote.get("market_cap") if quote else None,
                 change_pct=quote.get("change_pct") if quote else None,
                 quote_as_of=quote_as_of,
+            )
+        )
+
+    if sort_by:
+        # Descending by default: biggest caps and biggest daily moves first.
+        # Sort before slicing so pagination walks a globally ordered list.
+        companies.sort(
+            key=lambda item: _quote_sort_key(
+                item, sort_by, descending=(order == "desc")
             )
         )
 
@@ -325,6 +353,8 @@ def list_companies(
         layer=normalized_layer,
         segment=normalized_segment,
         ingestion_status=ingestion_status,
+        sort_by=sort_by,
+        order=order,
         limit=limit,
         offset=offset,
         total=len(companies),

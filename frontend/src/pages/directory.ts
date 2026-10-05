@@ -8,11 +8,14 @@ import type {
 import { renderDataState } from "../components/data-state";
 import { renderPagination } from "../components/pagination";
 
+export type DirectorySort = "market_cap_desc" | "market_cap_asc" | "change_pct_desc" | "change_pct_asc";
+
 export interface DirectoryState {
   query: string;
   layer: string;
   segment: string;
   status: "" | IngestionStatus;
+  sort: "" | DirectorySort;
   page: number;
   pageSize: 25 | 50 | 100;
 }
@@ -24,9 +27,16 @@ const statuses = new Set<IngestionStatus>([
   "not_ingested",
 ]);
 const pageSizes = new Set([25, 50, 100]);
+const sorts = new Set<DirectorySort>([
+  "market_cap_desc",
+  "market_cap_asc",
+  "change_pct_desc",
+  "change_pct_asc",
+]);
 
 export function readDirectoryState(search: URLSearchParams): DirectoryState {
   const rawStatus = search.get("status") ?? "";
+  const rawSort = search.get("sort") ?? "";
   const rawPage = Number(search.get("page") ?? "1");
   const rawPageSize = Number(search.get("pageSize") ?? "25");
   return {
@@ -36,6 +46,7 @@ export function readDirectoryState(search: URLSearchParams): DirectoryState {
     status: statuses.has(rawStatus as IngestionStatus)
       ? (rawStatus as IngestionStatus)
       : "",
+    sort: sorts.has(rawSort as DirectorySort) ? (rawSort as DirectorySort) : "",
     page: Number.isInteger(rawPage) && rawPage > 0 ? rawPage : 1,
     pageSize: pageSizes.has(rawPageSize)
       ? (rawPageSize as DirectoryState["pageSize"])
@@ -49,6 +60,7 @@ export function writeDirectoryState(state: DirectoryState): URLSearchParams {
   if (state.layer) params.set("layer", state.layer);
   if (state.segment) params.set("segment", state.segment);
   if (state.status) params.set("status", state.status);
+  if (state.sort) params.set("sort", state.sort);
   params.set("page", String(state.page));
   params.set("pageSize", String(state.pageSize));
   return params;
@@ -69,6 +81,17 @@ function formatDate(value: string | null): string {
     year: "numeric",
     timeZone: "UTC",
   }).format(new Date(`${value}T00:00:00Z`));
+}
+
+function formatCompactUSD(value: number): string {
+  if (value >= 1e12) return `$${(value / 1e12).toFixed(2)}T`;
+  if (value >= 1e9) return `$${(value / 1e9).toFixed(2)}B`;
+  if (value >= 1e6) return `$${(value / 1e6).toFixed(1)}M`;
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(value);
 }
 
 function cell(label: string, className = ""): HTMLTableCellElement {
@@ -152,6 +175,19 @@ export function renderCompanies(
       priceCell.append(na);
     }
 
+    const capCell = cell("Market cap", "number-column cap-cell");
+    if (company.market_cap !== null && company.market_cap !== undefined) {
+      const cap = document.createElement("span");
+      cap.className = "cap-value";
+      cap.textContent = formatCompactUSD(company.market_cap);
+      capCell.append(cap);
+    } else {
+      const na = document.createElement("span");
+      na.className = "cap-na";
+      na.textContent = "—";
+      capCell.append(na);
+    }
+
     const actionCell = cell("Action", "action-cell");
     if (company.research_available) {
       const action = document.createElement("a");
@@ -166,7 +202,7 @@ export function renderCompanies(
       actionCell.append(unavailable);
     }
 
-    row.append(companyCell, categoryCell, dateCell, statusCell, countCell, priceCell, actionCell);
+    row.append(companyCell, categoryCell, dateCell, statusCell, countCell, priceCell, capCell, actionCell);
     target.append(row);
   });
 }
@@ -187,6 +223,7 @@ export async function mountDirectory(): Promise<void> {
   const layer = document.querySelector<HTMLSelectElement>("#layer-filter")!;
   const segment = document.querySelector<HTMLSelectElement>("#segment-filter")!;
   const status = document.querySelector<HTMLSelectElement>("#status-filter")!;
+  const sort = document.querySelector<HTMLSelectElement>("#sort-filter")!;
   const pageSize = document.querySelector<HTMLSelectElement>("#page-size")!;
   const directoryState = document.querySelector<HTMLElement>("#directory-state")!;
   const pagination = document.querySelector<HTMLElement>("#directory-pagination")!;
@@ -212,6 +249,7 @@ export async function mountDirectory(): Promise<void> {
     query.value = state.query;
     layer.value = state.layer;
     status.value = state.status;
+    sort.value = state.sort;
     pageSize.value = String(state.pageSize);
     updateSegments();
   };
@@ -226,6 +264,11 @@ export async function mountDirectory(): Promise<void> {
     if (state.layer) params.set("layer", state.layer);
     if (state.segment) params.set("segment", state.segment);
     if (state.status) params.set("ingestion_status", state.status);
+    if (state.sort) {
+      const separator = state.sort.endsWith("_desc") ? "_desc" : "_asc";
+      params.set("sort_by", state.sort.slice(0, -separator.length));
+      params.set("order", separator === "_desc" ? "desc" : "asc");
+    }
     params.set("limit", String(state.pageSize));
     params.set("offset", String((state.page - 1) * state.pageSize));
 
@@ -301,6 +344,7 @@ export async function mountDirectory(): Promise<void> {
       layer: layer.value,
       segment: segment.value,
       status: status.value as DirectoryState["status"],
+      sort: sort.value as DirectoryState["sort"],
       page: 1,
       pageSize: Number(pageSize.value) as DirectoryState["pageSize"],
     };
@@ -322,6 +366,7 @@ export async function mountDirectory(): Promise<void> {
   });
   segment.addEventListener("change", () => applyFilters());
   status.addEventListener("change", () => applyFilters());
+  sort.addEventListener("change", () => applyFilters());
   pageSize.addEventListener("change", () => applyFilters());
   window.addEventListener("popstate", () => {
     state = readDirectoryState(new URL(window.location.href).searchParams);

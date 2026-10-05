@@ -125,8 +125,18 @@ def test_directory_merges_cached_quotes(tmp_path, engine, session_factory, monke
             {
                 "generated_at": "2026-10-04T15:00:00+00:00",
                 "quotes": {
-                    "VRT": {"price": 252.18, "previous_close": 246.12, "change_pct": 2.46},
-                    "NVDA": {"price": 233.95, "previous_close": 230.86, "change_pct": 1.34},
+                    "VRT": {
+                        "price": 252.18,
+                        "previous_close": 246.12,
+                        "change_pct": 2.46,
+                        "market_cap": 97086314647,
+                    },
+                    "NVDA": {
+                        "price": 233.95,
+                        "previous_close": 230.86,
+                        "change_pct": 1.34,
+                        "market_cap": 5649190576309,
+                    },
                 },
             }
         )
@@ -146,13 +156,165 @@ def test_directory_merges_cached_quotes(tmp_path, engine, session_factory, monke
 
     by_ticker = {company.ticker: company for company in result.companies}
     assert by_ticker["VRT"].price == 252.18
+    assert by_ticker["VRT"].market_cap == 97086314647
     assert by_ticker["VRT"].change_pct == 2.46
     assert by_ticker["VRT"].quote_as_of.isoformat() == "2026-10-04"
     # AMD is in the fixture catalog but has no entry in quotes.json — nulls
     # are expected for it, not for VRT/NVDA which both have quotes.
     assert by_ticker["NVDA"].price == 233.95
+    assert by_ticker["NVDA"].market_cap == 5649190576309
     assert by_ticker["NVDA"].change_pct == 1.34
     assert by_ticker["AMD"].price is None
+
+
+def test_directory_sorts_globally_not_per_page(
+    tmp_path, engine, session_factory, monkeypatch
+):
+    """Sorting must order all companies, then paginate — not reorder one page."""
+
+    quotes = tmp_path / "quotes.json"
+    quotes.write_text(
+        json.dumps(
+            {
+                "generated_at": "2026-10-04T15:00:00+00:00",
+                "quotes": {
+                    # AMD sorts last by market cap but is first by daily change.
+                    "AMD": {"market_cap": 295_000_000_000, "change_pct": 8.1},
+                    "VRT": {
+                        "market_cap": 97_086_314_647,
+                        "change_pct": 2.46,
+                    },
+                    "NVDA": {
+                        "market_cap": 5_649_190_576_309,
+                        "change_pct": 1.34,
+                    },
+                },
+            }
+        )
+    )
+    monkeypatch.setattr(fdc.catalog, "QUOTES_PATH", quotes)
+
+    descending = list_companies(
+        query=None,
+        layer=None,
+        segment=None,
+        ingestion_status=None,
+        limit=25,
+        offset=0,
+        sort_by="market_cap",
+        order="desc",
+        catalog_path=_catalog_path(tmp_path),
+        session_factory=session_factory,
+    )
+    # Descending: NVDA > AMD > VRT.
+    assert [c.ticker for c in descending.companies] == ["NVDA", "AMD", "VRT"]
+    assert descending.sort_by == "market_cap"
+    assert descending.order == "desc"
+
+    ascending = list_companies(
+        query=None,
+        layer=None,
+        segment=None,
+        ingestion_status=None,
+        limit=25,
+        offset=0,
+        sort_by="market_cap",
+        order="asc",
+        catalog_path=_catalog_path(tmp_path),
+        session_factory=session_factory,
+    )
+    assert [c.ticker for c in ascending.companies] == ["VRT", "AMD", "NVDA"]
+
+    # Pagination walks the same globally ordered list.
+    second_page = list_companies(
+        query=None,
+        layer=None,
+        segment=None,
+        ingestion_status=None,
+        limit=1,
+        offset=1,
+        sort_by="market_cap",
+        order="desc",
+        catalog_path=_catalog_path(tmp_path),
+        session_factory=session_factory,
+    )
+    assert [c.ticker for c in second_page.companies] == ["AMD"]
+
+
+def test_directory_sorts_by_daily_change_and_keeps_missing_last(
+    tmp_path, engine, session_factory, monkeypatch
+):
+    """Companies with no quote must sink to the bottom in either direction."""
+
+    quotes = tmp_path / "quotes.json"
+    quotes.write_text(
+        json.dumps(
+            {
+                "generated_at": "2026-10-04T15:00:00+00:00",
+                "quotes": {
+                    # VRT up, NVDA down; AMD has no quote at all.
+                    "VRT": {"change_pct": 2.46},
+                    "NVDA": {"change_pct": -1.34},
+                },
+            }
+        )
+    )
+    monkeypatch.setattr(fdc.catalog, "QUOTES_PATH", quotes)
+
+    def tickers(order):
+        return [
+            c.ticker
+            for c in list_companies(
+                query=None,
+                layer=None,
+                segment=None,
+                ingestion_status=None,
+                limit=25,
+                offset=0,
+                sort_by="change_pct",
+                order=order,
+                catalog_path=_catalog_path(tmp_path),
+                session_factory=session_factory,
+            ).companies
+        ]
+
+    assert tickers("desc") == ["VRT", "NVDA", "AMD"]
+    # Ascending puts NVDA first, but AMD stays last, not first.
+    assert tickers("asc") == ["NVDA", "VRT", "AMD"]
+
+
+def test_directory_tolerates_quotes_without_market_cap(
+    tmp_path, engine, session_factory, monkeypatch
+):
+    """A cache written before market cap landed must still merge cleanly."""
+
+    quotes = tmp_path / "quotes.json"
+    quotes.write_text(
+        json.dumps(
+            {
+                "generated_at": "2026-10-04T15:00:00+00:00",
+                "quotes": {"VRT": {"price": 252.18, "change_pct": 2.46}},
+            }
+        )
+    )
+    monkeypatch.setattr(fdc.catalog, "QUOTES_PATH", quotes)
+
+    result = list_companies(
+        query=None,
+        layer=None,
+        segment=None,
+        ingestion_status=None,
+        limit=25,
+        offset=0,
+        catalog_path=_catalog_path(tmp_path),
+        session_factory=session_factory,
+    )
+
+    by_ticker = {company.ticker: company for company in result.companies}
+    assert by_ticker["VRT"].price == 252.18
+    assert by_ticker["VRT"].market_cap is None
+    assert by_ticker["AMD"].price is None
+    assert by_ticker["AMD"].market_cap is None
 
 
 def test_directory_degrades_when_quotes_file_is_missing(

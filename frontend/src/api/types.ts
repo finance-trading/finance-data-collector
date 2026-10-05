@@ -6,6 +6,10 @@ export type IngestionStatus =
   | "unavailable"
   | "not_ingested";
 
+export type DirectorySortKey = "market_cap" | "change_pct";
+
+export type DirectoryOrder = "desc" | "asc";
+
 export interface CompanyDirectoryItem {
   ticker: string;
   name: string;
@@ -23,6 +27,7 @@ export interface CompanyDirectoryItem {
   filing_count: number;
   research_available: boolean;
   price?: number | null;
+  market_cap?: number | null;
   change_pct?: number | null;
   quote_as_of?: string | null;
 }
@@ -32,6 +37,8 @@ export interface CompanyDirectoryView {
   layer: string | null;
   segment: string | null;
   ingestion_status: IngestionStatus | null;
+  sort_by: DirectorySortKey | null;
+  order: DirectoryOrder;
   limit: number;
   offset: number;
   total: number;
