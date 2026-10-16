@@ -59,6 +59,7 @@ def test_settings_use_raw_root_default(monkeypatch):
         "FDC_RETRY_MAX_ATTEMPTS",
         "FDC_RETRY_BASE_DELAY_SECONDS",
         "FDC_RETRY_MAX_DELAY_SECONDS",
+        "FDC_QUOTES_PROXY",
     ):
         monkeypatch.delenv(key, raising=False)
 
@@ -66,3 +67,37 @@ def test_settings_use_raw_root_default(monkeypatch):
 
     assert settings.raw_root == "./data/raw"
     assert settings.parse_timeout_seconds == 300
+
+
+def _clear_proxy_env(monkeypatch):
+    for key in ("FDC_QUOTES_PROXY", "HTTPS_PROXY", "https_proxy"):
+        monkeypatch.delenv(key, raising=False)
+
+
+def test_quotes_proxy_defaults_to_the_standard_https_proxy(monkeypatch):
+    _clear_proxy_env(monkeypatch)
+    monkeypatch.setenv("HTTPS_PROXY", "http://127.0.0.1:7890")
+
+    assert get_settings().resolved_quotes_proxy == "http://127.0.0.1:7890"
+
+
+def test_explicit_quotes_proxy_wins_over_https_proxy(monkeypatch):
+    _clear_proxy_env(monkeypatch)
+    monkeypatch.setenv("HTTPS_PROXY", "http://general:1080")
+    monkeypatch.setenv("FDC_QUOTES_PROXY", "socks5://yahoo-only:1080")
+
+    assert get_settings().resolved_quotes_proxy == "socks5://yahoo-only:1080"
+
+
+def test_blank_quotes_proxy_falls_back_to_https_proxy(monkeypatch):
+    _clear_proxy_env(monkeypatch)
+    monkeypatch.setenv("HTTPS_PROXY", "http://127.0.0.1:7890")
+    monkeypatch.setenv("FDC_QUOTES_PROXY", "   ")
+
+    assert get_settings().resolved_quotes_proxy == "http://127.0.0.1:7890"
+
+
+def test_no_proxy_anywhere_resolves_to_none(monkeypatch):
+    _clear_proxy_env(monkeypatch)
+
+    assert get_settings().resolved_quotes_proxy is None

@@ -468,6 +468,17 @@ select {
   text-align: right;
 }
 
+/* A truncated narrative fact value sits in the value column the same way the
+   disclosure prose does, but tighter so the row stays scannable. */
+.fact-row .disclosure-copy {
+  margin: 0;
+  max-width: 54ch;
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
 .period-track {
   height: 5px;
   overflow: hidden;
@@ -588,6 +599,98 @@ td:nth-child(3) {
   font-size: 0.82rem;
 }
 
+/* Long parsed prose is truncated in place; the button and the full text are
+   handled by the modal. The paragraph keeps display: block — no line-clamp —
+   so the inline trigger stays visible. */
+.disclosure-copy.is-truncated {
+  margin-bottom: 0;
+}
+
+.expand-text {
+  margin: 8px 0 12px;
+  padding: 4px 11px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 7px;
+  background: var(--blue-wash);
+  color: var(--filing-blue);
+  font-size: 0.76rem;
+  cursor: pointer;
+}
+
+.expand-text:hover {
+  border-color: var(--filing-blue);
+  background: rgb(90 120 255 / 22%);
+}
+
+.full-text-modal {
+  position: fixed;
+  z-index: 40;
+  inset: 6vh 4vw;
+  width: min(74ch, calc(100vw - 8vw));
+  max-height: 88vh;
+  padding: 0;
+  border: 1px solid var(--rule-strong);
+  border-radius: 10px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 24px 80px rgb(0 0 0 / 70%);
+  display: none;
+}
+
+.full-text-modal.is-open {
+  display: flex;
+  flex-direction: column;
+  animation: full-text-in 160ms ease-out;
+}
+
+@keyframes full-text-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.full-text-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.full-text-header h3 {
+  margin: 0;
+  flex: 1 1 auto;
+  font-family: var(--serif);
+  font-size: 1.1rem;
+}
+
+#full-text-close {
+  flex: 0 0 auto;
+  padding: 6px 13px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 7px;
+  background: transparent;
+  color: var(--filing-blue);
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+#full-text-close:hover {
+  background: var(--blue-wash);
+}
+
+#full-text-body {
+  max-height: calc(88vh - 66px);
+  margin: 0;
+  padding: 18px;
+  overflow: auto;
+  font-family: var(--serif);
+  line-height: 1.62;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
 .state-message {
   margin: 0;
   padding: 16px;
@@ -664,12 +767,9 @@ td:nth-child(3) {
   font-variant-numeric: tabular-nums;
 }
 
-.evidence-excerpt {
-  margin: 16px 0;
-  padding: 0 0 0 13px;
+.evidence-record .disclosure-copy {
+  padding-left: 13px;
   border-left: 3px solid var(--filing-blue);
-  font-family: var(--serif);
-  line-height: 1.62;
 }
 
 @keyframes evidence-in {

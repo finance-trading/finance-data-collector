@@ -1,14 +1,21 @@
-import { apiGet } from "../api/client";
+import { apiGet, apiPost } from "../api/client";
 import type {
   CatalogLayerListView,
   CompanyDirectoryItem,
   CompanyDirectoryView,
   IngestionStatus,
+  QuotesPayload,
 } from "../api/types";
 import { renderDataState } from "../components/data-state";
 import { renderPagination } from "../components/pagination";
 
-export type DirectorySort = "market_cap_desc" | "market_cap_asc" | "change_pct_desc" | "change_pct_asc";
+export type DirectorySortKey =
+  | "market_cap"
+  | "change_pct"
+  | "week_change_pct"
+  | "change_52w_pct";
+
+export type DirectorySort = `${DirectorySortKey}_${"desc" | "asc"}`;
 
 export interface DirectoryState {
   query: string;
@@ -32,6 +39,10 @@ const sorts = new Set<DirectorySort>([
   "market_cap_asc",
   "change_pct_desc",
   "change_pct_asc",
+  "week_change_pct_desc",
+  "week_change_pct_asc",
+  "change_52w_pct_desc",
+  "change_52w_pct_asc",
 ]);
 
 export function readDirectoryState(search: URLSearchParams): DirectoryState {
@@ -83,6 +94,16 @@ function formatDate(value: string | null): string {
   }).format(new Date(`${value}T00:00:00Z`));
 }
 
+/** Last-refresh stamp for the quote cache; the refresh job runs post-close, so UTC reads naturally. */
+export function formatRefreshTime(value: string | null): string {
+  if (!value) return "";
+  return new Intl.DateTimeFormat("en", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: "UTC",
+  }).format(new Date(value));
+}
+
 function formatCompactUSD(value: number): string {
   if (value >= 1e12) return `$${(value / 1e12).toFixed(2)}T`;
   if (value >= 1e9) return `$${(value / 1e9).toFixed(2)}B`;
@@ -94,11 +115,56 @@ function formatCompactUSD(value: number): string {
   }).format(value);
 }
 
+/** Public quote page for a ticker, e.g. `ASML` -> https://stockanalysis.com/stocks/asml/ */
+export function stockAnalysisUrl(ticker: string): string {
+  const slug = ticker.trim().toLowerCase().replace(/[.\s]+/g, "-");
+  return `https://stockanalysis.com/stocks/${encodeURIComponent(slug)}/`;
+}
+
 function cell(label: string, className = ""): HTMLTableCellElement {
   const element = document.createElement("td");
   element.dataset.label = label;
   element.className = className;
   return element;
+}
+
+/** The sort key a `*_asc`/`*_desc` state value refers to, or null for catalog order. */
+export function sortKeyOf(sort: DirectoryState["sort"]): DirectorySortKey | null {
+  if (!sort) return null;
+  return sort.slice(0, sort.lastIndexOf("_")) as DirectorySortKey;
+}
+
+/**
+ * Next sort value after activating `key` from `sort`.
+ *
+ * A fresh column starts descending — biggest cap, biggest gainer first, matching
+ * the server default. Activating the column that is already sorted flips it.
+ */
+export function nextSort(
+  sort: DirectoryState["sort"],
+  key: DirectorySortKey,
+): DirectorySort {
+  const direction =
+    sortKeyOf(sort) === key && sort?.endsWith("_desc") ? "asc" : "desc";
+  return `${key}_${direction}` as DirectorySort;
+}
+
+/** Reflect the active sort onto the header cells: `aria-sort` plus a direction arrow. */
+export function syncSortHeaders(sort: DirectoryState["sort"]): void {
+  const active = sortKeyOf(sort);
+  document.querySelectorAll<HTMLTableCellElement>("th[data-sort-column]").forEach((header) => {
+    const order =
+      header.dataset.sortColumn !== active
+        ? "none"
+        : sort?.endsWith("_asc")
+          ? "ascending"
+          : "descending";
+    header.setAttribute("aria-sort", order);
+    const indicator = header.querySelector(".sort-indicator");
+    if (indicator) {
+      indicator.textContent = order === "ascending" ? "▲" : order === "descending" ? "▼" : "";
+    }
+  });
 }
 
 export function renderCompanies(
@@ -113,17 +179,16 @@ export function renderCompanies(
   companies.forEach((company) => {
     const row = document.createElement("tr");
     const companyCell = cell("Company", "company-cell");
-    const identity = company.research_available
-      ? document.createElement("a")
-      : document.createElement("div");
+    const identity = document.createElement("a");
     identity.className = "company-identity";
-    if (identity instanceof HTMLAnchorElement) {
-      identity.href = `company.html?ticker=${encodeURIComponent(company.ticker)}`;
-    }
+    identity.href = stockAnalysisUrl(company.ticker);
+    identity.target = "_blank";
+    identity.rel = "noopener noreferrer";
     const ticker = document.createElement("strong");
     ticker.textContent = company.ticker;
     const name = document.createElement("span");
     name.textContent = company.name;
+    name.title = company.name;
     identity.append(ticker, name);
     companyCell.append(identity);
 
@@ -156,17 +221,7 @@ export function renderCompanies(
       }).format(company.price);
       priceCell.append(price);
       if (company.change_pct !== null && company.change_pct !== undefined) {
-        const change = document.createElement("span");
-        change.className = `price-change ${
-          company.change_pct > 0 ? "up" : company.change_pct < 0 ? "down" : "flat"
-        }`;
-        change.textContent =
-          company.change_pct > 0
-            ? `+${company.change_pct.toFixed(2)}%`
-            : company.change_pct < 0
-              ? company.change_pct.toFixed(2) + "%"
-              : "0.00%";
-        priceCell.append(change);
+        priceCell.append(changeBadge(company.change_pct));
       }
     } else {
       const na = document.createElement("span");
@@ -192,19 +247,61 @@ export function renderCompanies(
     if (company.research_available) {
       const action = document.createElement("a");
       action.href = `company.html?ticker=${encodeURIComponent(company.ticker)}`;
-      action.setAttribute("aria-label", `Open ${company.ticker} research`);
+      action.setAttribute("aria-label", `Open ${company.ticker} filing workspace`);
       action.textContent = "Open";
       actionCell.append(action);
     } else {
+      // Coverage already reports "Not ingested"; do not shout it twice.
       const unavailable = document.createElement("span");
       unavailable.className = "availability availability-missing";
-      unavailable.textContent = "Not ingested";
+      unavailable.textContent = "—";
       actionCell.append(unavailable);
     }
 
-    row.append(companyCell, categoryCell, dateCell, statusCell, countCell, priceCell, capCell, actionCell);
+    row.append(
+      companyCell,
+      categoryCell,
+      dateCell,
+      statusCell,
+      countCell,
+      priceCell,
+      changeCell("1W", "week", company.week_change_pct),
+      changeCell("52W", "year", company.change_52w_pct),
+      capCell,
+      actionCell,
+    );
     target.append(row);
   });
+}
+
+/** A signed percentage badge: green up, red down, neutral flat. */
+function changeBadge(pct: number): HTMLSpanElement {
+  const badge = document.createElement("span");
+  badge.className = `price-change ${pct > 0 ? "up" : pct < 0 ? "down" : "flat"}`;
+  badge.textContent =
+    pct > 0
+      ? `▲ ${pct.toFixed(2)}%`
+      : pct < 0
+        ? `▼ ${Math.abs(pct).toFixed(2)}%`
+        : "— 0.00%";
+  return badge;
+}
+
+function changeCell(
+  label: string,
+  className: string,
+  pct: number | null | undefined,
+): HTMLTableCellElement {
+  const element = cell(label, `number-column change-cell ${className}-cell`);
+  if (pct !== null && pct !== undefined) {
+    element.append(changeBadge(pct));
+  } else {
+    const na = document.createElement("span");
+    na.className = "price-na";
+    na.textContent = "—";
+    element.append(na);
+  }
+  return element;
 }
 
 function option(value: string, label: string): HTMLOptionElement {
@@ -223,15 +320,33 @@ export async function mountDirectory(): Promise<void> {
   const layer = document.querySelector<HTMLSelectElement>("#layer-filter")!;
   const segment = document.querySelector<HTMLSelectElement>("#segment-filter")!;
   const status = document.querySelector<HTMLSelectElement>("#status-filter")!;
-  const sort = document.querySelector<HTMLSelectElement>("#sort-filter")!;
+  
   const pageSize = document.querySelector<HTMLSelectElement>("#page-size")!;
   const directoryState = document.querySelector<HTMLElement>("#directory-state")!;
   const pagination = document.querySelector<HTMLElement>("#directory-pagination")!;
   const companyTotal = document.querySelector<HTMLElement>("#company-total")!;
   const filingTotal = document.querySelector<HTMLElement>("#filing-total")!;
+  const quoteAsOf = document.querySelector<HTMLElement>("#quote-as-of")!;
+  const quoteRefresh = document.querySelector<HTMLButtonElement>("#quote-refresh")!;
   let state = readDirectoryState(new URL(window.location.href).searchParams);
   let controller: AbortController | null = null;
   let layers: CatalogLayerListView | null = null;
+  let quoteAsOfDate: string | null | undefined;
+  let refreshedAt: string | null = null;
+
+  const renderQuoteNote = (): void => {
+    const parts: string[] = [];
+    if (quoteAsOfDate) {
+      parts.push(
+        `Price, 1W, 52W and market cap as of ${formatDate(quoteAsOfDate)} close.`,
+      );
+    }
+    if (refreshedAt) {
+      parts.push(`Last refreshed ${formatRefreshTime(refreshedAt)}.`);
+    }
+    quoteAsOf.hidden = parts.length === 0;
+    quoteAsOf.textContent = parts.join(" ");
+  };
 
   const updateSegments = (): void => {
     const selected = state.segment;
@@ -249,9 +364,9 @@ export async function mountDirectory(): Promise<void> {
     query.value = state.query;
     layer.value = state.layer;
     status.value = state.status;
-    sort.value = state.sort;
     pageSize.value = String(state.pageSize);
     updateSegments();
+    syncSortHeaders(state.sort);
   };
 
   const load = async (openExact = false): Promise<void> => {
@@ -298,6 +413,9 @@ export async function mountDirectory(): Promise<void> {
       filingTotal.textContent = new Intl.NumberFormat("en").format(
         payload.companies.reduce((total, company) => total + company.filing_count, 0),
       );
+      quoteAsOfDate = payload.companies.find((company) => company.quote_as_of)
+        ?.quote_as_of;
+      renderQuoteNote();
       renderPagination(
         pagination,
         {page: state.page, pageSize: state.pageSize, total: payload.total},
@@ -336,19 +454,45 @@ export async function mountDirectory(): Promise<void> {
   } catch (error) {
     console.error(error);
   }
+  apiGet<QuotesPayload>("/api/v1/quotes")
+    .then((payload) => {
+      refreshedAt = payload.generated_at;
+      renderQuoteNote();
+    })
+    .catch((error) => console.error(error));
+  quoteRefresh.addEventListener("click", () => {
+    quoteRefresh.disabled = true;
+    quoteRefresh.textContent = "Refreshing…";
+    apiPost<QuotesPayload>("/api/v1/quotes/refresh")
+      .then((payload) => {
+        refreshedAt = payload.generated_at;
+        renderQuoteNote();
+        return load();
+      })
+      .catch((error) => {
+        console.error(error);
+        quoteAsOf.hidden = false;
+        quoteAsOf.textContent = "Price refresh failed — try again.";
+      })
+      .finally(() => {
+        quoteRefresh.disabled = false;
+        quoteRefresh.textContent = "Refresh prices";
+      });
+  });
   syncControls();
 
   const applyFilters = (openExact = false): void => {
     state = {
+      ...state,
       query: query.value.trim(),
       layer: layer.value,
       segment: segment.value,
       status: status.value as DirectoryState["status"],
-      sort: sort.value as DirectoryState["sort"],
       page: 1,
       pageSize: Number(pageSize.value) as DirectoryState["pageSize"],
     };
     updateSegments();
+    syncSortHeaders(state.sort);
     history.replaceState(null, "", `?${writeDirectoryState(state)}`);
     void load(openExact);
   };
@@ -366,7 +510,15 @@ export async function mountDirectory(): Promise<void> {
   });
   segment.addEventListener("change", () => applyFilters());
   status.addEventListener("change", () => applyFilters());
-  sort.addEventListener("change", () => applyFilters());
+  document.querySelectorAll<HTMLButtonElement>(".sort-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      const key = button.dataset.sort as DirectorySortKey;
+      state = { ...state, sort: nextSort(state.sort, key), page: 1 };
+      syncSortHeaders(state.sort);
+      history.replaceState(null, "", `?${writeDirectoryState(state)}`);
+      void load();
+    });
+  });
   pageSize.addEventListener("change", () => applyFilters());
   window.addEventListener("popstate", () => {
     state = readDirectoryState(new URL(window.location.href).searchParams);

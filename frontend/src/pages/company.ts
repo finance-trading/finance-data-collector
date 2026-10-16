@@ -176,6 +176,104 @@ function stateNode(message: string, className = ""): HTMLParagraphElement {
   return node;
 }
 
+/* ---- Full-text modal ------------------------------------------------ */
+/*
+ * Parsed disclosure prose runs several pages. It is displayed truncated in
+ * place, with the complete text opened in a modal on demand. The dialog is
+ * toggled by class instead of showModal() so the same code path runs in a
+ * browser and in jsdom, which has no modal support.
+ */
+
+const FULL_TEXT_THRESHOLD = 900;
+const FULL_TEXT_TRUNCATION = 420;
+const FULL_TEXT_ELLIPSIS = "…";
+
+// Narrative fact values sit in a narrow grid column, so they collapse earlier
+// than the full-width disclosure prose.
+const FACT_VALUE_THRESHOLD = 160;
+const FACT_VALUE_TRUNCATION = 140;
+
+function fullTextDialog(): HTMLElement {
+  return byId("full-text");
+}
+
+function openFullText(body: HTMLElement, label: string): void {
+  const dialog = fullTextDialog();
+  byId("full-text-title").textContent = label;
+  const bodyView = byId("full-text-body");
+  bodyView.textContent = body.getAttribute("data-full-text") || body.textContent || "—";
+  bodyView.setAttribute("aria-label", `${label} full text`);
+  dialog.classList.add("is-open");
+  dialog.setAttribute("aria-hidden", "false");
+  dialog.querySelector<HTMLElement>("#full-text-close")?.focus();
+}
+
+function closeFullText(): void {
+  const dialog = fullTextDialog();
+  if (!dialog.classList.contains("is-open")) return;
+  dialog.classList.remove("is-open");
+  dialog.setAttribute("aria-hidden", "true");
+  dialog.querySelector<HTMLElement>("#full-text-body")?.replaceChildren();
+}
+
+export function initializeFullTextModal(): void {
+  const dialog = fullTextDialog();
+  dialog.querySelector<HTMLElement>("#full-text-close")?.addEventListener("click", closeFullText);
+  dialog.addEventListener("click", (event) => {
+    // Only a click on the panel's own padding counts as a dismissal, not on
+    // the header or body controls.
+    if (event.target === dialog) closeFullText();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeFullText();
+  });
+}
+
+/** Cut at a word boundary so the displayed excerpt never ends mid-token. */
+function truncateProse(prose: string, limit: number): string {
+  const slice = prose.slice(0, limit);
+  const cut = slice.lastIndexOf(" ");
+  return `${slice.slice(0, cut > 0 ? cut : limit)}${FULL_TEXT_ELLIPSIS}`;
+}
+
+function fullTextTrigger(body: HTMLElement, label: string, count: number): HTMLButtonElement {
+  const button = textElement("button", "expand-text", `Full text (${count.toLocaleString("en-US")} characters)`);
+  button.type = "button";
+  button.addEventListener("click", () => openFullText(body, label));
+  return button;
+}
+
+interface DisclosureOptions {
+  threshold?: number;
+  truncation?: number;
+}
+
+/**
+ * Render prose truncated in place with a button for the complete text. The
+ * full text is kept on the element rather than in the DOM (where the button's
+ * own text would pollute `textContent`), so the modal shows exactly what was
+ * parsed. Short prose is returned unchanged — there is nothing to expand.
+ */
+export function disclosureBody(
+  text: unknown,
+  label: string,
+  options: DisclosureOptions = {},
+): HTMLElement {
+  const threshold = options.threshold ?? FULL_TEXT_THRESHOLD;
+  const truncation = options.truncation ?? FULL_TEXT_TRUNCATION;
+  const body = textElement("p", "disclosure-copy", text);
+  body.setAttribute("aria-label", label);
+  const prose = body.textContent || "";
+  if (prose.length <= threshold) return body;
+  body.setAttribute("data-full-text", prose);
+  body.classList.add("is-truncated");
+  body.replaceChildren(
+    document.createTextNode(truncateProse(prose, truncation)),
+    fullTextTrigger(body, label, prose.length),
+  );
+  return body;
+}
+
 function setCompanyFailure(error: unknown): void {
   const message = statusMessage(error, "Company record");
   byId("company-name").textContent = "Company unavailable";
@@ -304,7 +402,7 @@ function renderEvidence(evidence: EvidenceView): void {
   );
   record.append(details);
   if (evidence.excerpt) {
-    record.append(textElement("blockquote", "evidence-excerpt", evidence.excerpt));
+    record.append(disclosureBody(evidence.excerpt, "Evidence excerpt"));
   } else {
     record.append(stateNode("Unavailable: no excerpt was stored.", "unavailable"));
   }
@@ -344,6 +442,22 @@ function reportedValue(item: FactItem | StatementLine): string {
   return item.unit ? `${value} ${item.unit}` : String(value);
 }
 
+/**
+ * Render a reported fact value. Numeric values stay a compact right-aligned
+ * span; narrative values (e.g. TextBlock facts) are truncated in place and
+ * opened in the full-text modal, like disclosure prose.
+ */
+function factValue(fact: FactItem): HTMLElement {
+  const value = reportedValue(fact);
+  if (fact.value_numeric != null || value.length <= FACT_VALUE_THRESHOLD) {
+    return textElement("span", "fact-value", value);
+  }
+  return disclosureBody(value, "Reported value", {
+    threshold: FACT_VALUE_THRESHOLD,
+    truncation: FACT_VALUE_TRUNCATION,
+  });
+}
+
 function renderFacts(result: FactView): void {
   const chart = byId("fact-chart");
   if (!result.facts.length) {
@@ -371,7 +485,7 @@ function renderFacts(result: FactView): void {
         textElement("span", "fact-label", fact.label || fact.concept),
         track,
         textElement("span", "fact-period", period || "Unavailable"),
-        textElement("span", "fact-value", reportedValue(fact)),
+        factValue(fact),
         evidenceButton(fact.evidence, "Source"),
       );
       return row;
@@ -439,11 +553,7 @@ function renderSection(section: SectionView): void {
   heading.id = "section-title";
   article.replaceChildren(
     heading,
-    textElement(
-      "p",
-      "disclosure-copy",
-      section.text || "Unavailable: section text is empty.",
-    ),
+    disclosureBody(section.text || "Unavailable: section text is empty.", "Management discussion"),
     evidenceButton(section.evidence, "View section source"),
   );
 }
@@ -599,6 +709,7 @@ function initializeTabs(): void {
 export async function mountCompanyPage(): Promise<void> {
   markCurrentNav(window.location.pathname);
   initializeTabs();
+  initializeFullTextModal();
   const ticker = readTicker(new URL(window.location.href));
   if (!ticker) {
     setCompanyFailure(

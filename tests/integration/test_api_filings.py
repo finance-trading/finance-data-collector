@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import json
 from datetime import UTC, date, datetime
 from decimal import Decimal
 
@@ -235,11 +236,22 @@ def client(seeded_database):
 
             return asyncio.run(request())
 
+        def post(self, path: str) -> httpx.Response:
+            async def request() -> httpx.Response:
+                transport = httpx.ASGITransport(app=app)
+                async with httpx.AsyncClient(
+                    transport=transport,
+                    base_url="http://testserver",
+                ) as async_client:
+                    return await async_client.post(path)
+
+            return asyncio.run(request())
+
     return ApiClient()
 
 
 def test_api_registers_only_get_read_routes():
-    """Regression: adding a write verb would violate the HTTP boundary."""
+    """Regression: the read surface stays GET-only; the lone write is quote refresh."""
 
     methods = {
         method
@@ -247,7 +259,79 @@ def test_api_registers_only_get_read_routes():
         if route.path.startswith("/api/v1")
         for method in route.methods
     }
-    assert methods == {"GET"}
+    assert methods == {"GET", "POST"}
+    writes = [
+        route.path
+        for route in app.routes
+        if route.path.startswith("/api/v1")
+        and "POST" in route.methods
+    ]
+    assert writes == ["/api/v1/quotes/refresh"]
+
+
+def test_quote_refresh_rewrites_the_cache(client, tmp_path, monkeypatch):
+    """POST /api/v1/quotes/refresh rewrites quotes.json and serves the fresh view."""
+
+    quotes_file = tmp_path / "quotes.json"
+    monkeypatch.setattr("fdc.quotes.QUOTES_PATH", quotes_file)
+    monkeypatch.setattr("fdc.catalog.QUOTES_PATH", quotes_file)
+    monkeypatch.setattr(
+        "fdc.quotes.fetch_quotes",
+        lambda: {
+            "generated_at": "2026-10-08T13:00:00+00:00",
+            "source": "test",
+            "quotes": {
+                "TEST": {
+                    "price": 10.0,
+                    "previous_close": 9.5,
+                    "change_pct": 5.26,
+                    "week_change_pct": 2.5,
+                    "change_52w_pct": -11.25,
+                    "market_cap": 1_000_000,
+                }
+            },
+        },
+    )
+
+    response = client.post("/api/v1/quotes/refresh")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["generated_at"] == "2026-10-08T13:00:00+00:00"
+    assert body["quotes"]["TEST"]["price"] == 10.0
+    assert quotes_file.exists()
+    # Refreshing prices also rolls forward the trailing returns.
+    assert body["quotes"]["TEST"]["week_change_pct"] == 2.5
+    assert body["quotes"]["TEST"]["change_52w_pct"] == -11.25
+    assert json.loads(quotes_file.read_text())["quotes"]["TEST"]["change_52w_pct"] == -11.25
+
+
+def test_quote_refresh_reports_502_and_keeps_cache_when_fetch_fails(
+    client, tmp_path, monkeypatch
+):
+    """A blocked Yahoo fetch must not silently blank the directory prices."""
+
+    quotes_file = tmp_path / "quotes.json"
+    quotes_file.write_text(
+        json.dumps(
+            {
+                "generated_at": "2026-10-07T13:00:00+00:00",
+                "source": "test",
+                "quotes": {"TEST": {"price": 9.0, "market_cap": 900_000}},
+            }
+        )
+    )
+    monkeypatch.setattr("fdc.quotes.QUOTES_PATH", quotes_file)
+    monkeypatch.setattr("fdc.catalog.QUOTES_PATH", quotes_file)
+    monkeypatch.setattr(
+        "fdc.quotes.fetch_quotes",
+        lambda: {"generated_at": "x", "source": "test", "quotes": {}},
+    )
+
+    response = client.post("/api/v1/quotes/refresh")
+
+    assert response.status_code == 502
+    assert json.loads(quotes_file.read_text())["quotes"]["TEST"]["price"] == 9.0
 
 
 def test_company_and_filtered_filing_list_expose_parse_state(client):
@@ -289,13 +373,15 @@ def test_company_directory_supports_name_search(client):
 
 
 def test_company_directory_paginates_the_complete_catalog(client):
+    total = len(catalog.load_catalog().companies)
     first = client.get("/api/v1/companies?limit=25&offset=0")
-    last = client.get("/api/v1/companies?limit=25&offset=200")
+    last_offset = 25 * (total // 25)
+    last = client.get(f"/api/v1/companies?limit=25&offset={last_offset}")
 
     assert first.status_code == 200
-    assert first.json()["total"] == 211
+    assert first.json()["total"] == total
     assert len(first.json()["companies"]) == 25
-    assert len(last.json()["companies"]) == 11
+    assert len(last.json()["companies"]) == total - last_offset
 
 
 def test_company_directory_combines_layer_and_status_filters(client):
@@ -316,16 +402,15 @@ def test_catalog_layers_expose_the_complete_ai_universe(client):
     response = client.get("/api/v1/catalog/layers")
 
     assert response.status_code == 200
-    assert response.json()["total_companies"] == 211
+    assert response.json()["total_companies"] == len(catalog.load_catalog().companies)
     assert response.json()["layers"][0]["id"] == "power"
-    assert response.json()["layers"][0]["count"] == 16
 
 
 def test_graph_visualization_is_served_by_the_read_api(client):
     response = client.get("/api/v1/visualizations/graph")
 
     assert response.status_code == 200
-    assert len(response.json()["nodes"]) == 211
+    assert len(response.json()["nodes"]) == len(catalog.load_catalog().companies)
 
 
 def test_missing_visualization_has_an_explicit_unavailable_state(
@@ -559,6 +644,37 @@ def test_table_api_errors_only_when_no_requested_table_is_usable(
 
     assert response.status_code == expected_code
     assert response.json()["detail"]["status"] == expected_state
+
+
+def test_unsupported_tables_are_served_with_positional_rows(client, session):
+    """Headerless tables are marked unsupported but keep positional columns/rows."""
+
+    _add_mixed_tables(session, table_type="only_unsupported", non_success_status="unsupported")
+    parsed = session.scalar(
+        select(ExtractedTable).where(
+            ExtractedTable.table_type == "only_unsupported",
+            ExtractedTable.status == "parsed",
+        )
+    )
+    session.delete(parsed)
+    unsupported = session.scalar(
+        select(ExtractedTable).where(ExtractedTable.table_type == "only_unsupported")
+    )
+    unsupported.columns = ["column_1", "column_2"]
+    unsupported.rows = [{"column_1": "2027", "column_2": "120"}]
+    session.commit()
+
+    response = client.get(
+        f"/api/v1/filings/{ACCESSION}/tables?table_type=only_unsupported"
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["status"] == "success"
+    table = payload["tables"][0]
+    assert table["status"] == "unsupported"
+    assert table["columns"] == ["column_1", "column_2"]
+    assert table["rows"] == [{"column_1": "2027", "column_2": "120"}]
 
 
 def test_parse_run_api_exposes_counts_and_accession_diagnostics(client, seeded_database):

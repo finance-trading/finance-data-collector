@@ -106,10 +106,10 @@ main {
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.12fr) minmax(390px, 0.88fr);
-  gap: clamp(48px, 8vw, 112px);
-  align-items: end;
-  padding: clamp(70px, 10vw, 132px) 0 68px;
+  grid-template-columns: minmax(0, 1.05fr) minmax(340px, 0.95fr);
+  gap: clamp(36px, 5vw, 72px);
+  align-items: center;
+  padding: clamp(38px, 5vw, 62px) 0 44px;
 }
 
 .hero-copy {
@@ -140,23 +140,23 @@ h1, h2 {
 }
 
 h1 {
-  max-width: 720px;
+  max-width: 620px;
   margin: 0;
-  font-size: clamp(3rem, 6.8vw, 6.25rem);
-  line-height: 0.94;
+  font-size: clamp(2.6rem, 4.8vw, 4.1rem);
+  line-height: 1.02;
 }
 
 .hero-summary {
-  max-width: 620px;
-  margin: 28px 0 0;
+  max-width: 56ch;
+  margin: 20px 0 0;
   color: var(--muted);
   font-family: var(--serif);
-  font-size: clamp(1.08rem, 1.7vw, 1.32rem);
+  font-size: clamp(1rem, 1.35vw, 1.16rem);
   line-height: 1.55;
 }
 
 .search-panel {
-  padding: 24px;
+  padding: 22px;
   border: 1px solid var(--rule-strong);
   border-top: 5px solid var(--filing-blue);
   background: var(--paper);
@@ -208,13 +208,13 @@ h1 {
   align-items: end;
   justify-content: space-between;
   gap: 30px;
-  padding: 25px 0 20px;
+  padding: 22px 0 18px;
   border-top: 2px solid var(--ink);
 }
 
 .directory-heading h2 {
   margin: 0;
-  font-size: clamp(2rem, 3.6vw, 3.25rem);
+  font-size: clamp(1.9rem, 3vw, 2.7rem);
   line-height: 1;
 }
 
@@ -231,7 +231,7 @@ h1 {
 .directory-summary dd {
   margin: 0;
   font-family: var(--serif);
-  font-size: 1.8rem;
+  font-size: 1.7rem;
   font-variant-numeric: tabular-nums;
 }
 
@@ -255,33 +255,42 @@ h1 {
 }
 
 .directory-filters {
-  display: grid;
-  grid-template-columns: 1.15fr 1.15fr 1fr 0.75fr;
-  gap: 1px;
+  display: flex;
+  flex-wrap: wrap;
   margin-bottom: 18px;
   border: 1px solid var(--rule-strong);
-  background: var(--rule);
+  background: var(--paper);
+}
+
+.filter-group {
+  display: grid;
+  flex: 1 1 520px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .directory-filters label {
   display: grid;
-  gap: 7px;
-  padding: 12px 14px;
+  gap: 6px;
+  padding: 11px 14px;
+  border-left: 1px solid var(--rule);
   background: var(--paper);
   color: var(--muted);
   font-size: 0.74rem;
   font-weight: 750;
 }
 
+.directory-filters label:first-child { border-left: 0; }
+
 .directory-filters select {
   width: 100%;
   min-width: 0;
-  padding: 8px 28px 8px 0;
+  padding: 7px 26px 7px 0;
   border: 0;
   border-bottom: 1px solid var(--rule-strong);
   border-radius: 0;
   background-color: transparent;
   color: var(--ink);
+  font-weight: 600;
 }
 
 .directory-state.is-visible { display: block; }
@@ -291,6 +300,34 @@ h1 {
   background: var(--error-wash);
   color: var(--error);
 }
+
+.quote-note {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  text-align: right;
+}
+
+.quote-note-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 10px;
+}
+
+.quote-note-row .quote-note { margin: 0; }
+
+#quote-refresh {
+  padding: 3px 10px;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  font-size: 0.78rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+#quote-refresh:disabled { opacity: 0.5; cursor: wait; }
 
 .directory-frame {
   overflow-x: auto;
@@ -310,34 +347,91 @@ caption {
 }
 
 th, td {
-  padding: 16px 18px;
+  padding: 11px 16px;
   border-bottom: 1px solid var(--rule);
   text-align: left;
   vertical-align: middle;
 }
 
-th { color: var(--muted); font-size: 0.76rem; font-weight: 750; }
+th {
+  padding: 11px 16px;
+  border-bottom-color: var(--rule-strong);
+  color: var(--muted);
+  font-size: 0.73rem;
+  font-weight: 750;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+/* Sortable headers: the cell becomes the button's padding box so the header
+   row keeps the same height and the label stays optically aligned with the
+   numbers below it. */
+th[data-sort-column] { padding: 0; }
+
+.sort-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  padding: 11px 16px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  text-align: inherit;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+th[data-sort-column]:hover { background: rgb(90 120 255 / 7%); }
+
+.sort-button:hover { color: var(--ink); }
+
+.sort-indicator {
+  width: 0.62em;
+  color: var(--filing-blue);
+  font-size: 0.92em;
+}
+
+th[aria-sort="ascending"] .sort-button,
+th[aria-sort="descending"] .sort-button { color: var(--ink); }
+
 tbody tr:last-child td { border-bottom: 0; }
 tbody tr:hover { background: rgb(90 120 255 / 7%); }
-.company-cell { width: 31%; }
+.company-cell { width: 26%; }
 
 .company-identity {
   display: grid;
-  grid-template-columns: 72px minmax(150px, 1fr);
-  gap: 10px;
+  grid-template-columns: 62px minmax(0, 1fr);
+  gap: 12px;
   align-items: baseline;
   color: var(--ink);
   text-decoration: none;
 }
 
 .company-identity strong {
-  color: var(--filing-blue);
+  color: var(--ink);
   font-size: 1.02rem;
-  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
 }
 
-.company-identity span,
-.date-cell { color: var(--muted); }
+/* Ticker is the anchor and the link; the name is supporting context. */
+a.company-identity:hover strong,
+a.company-identity:hover span { color: var(--filing-blue); }
+
+.company-identity span {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.88rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.date-cell { color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
 
 .category-cell strong,
 .category-cell span { display: block; }
@@ -346,11 +440,14 @@ tbody tr:hover { background: rgb(90 120 255 / 7%); }
 .category-cell span { color: var(--muted); font-size: 0.76rem; }
 
 .number-column { text-align: right; font-variant-numeric: tabular-nums; }
+td.number-column { min-width: 74px; }
 
-.price-cell, .cap-cell { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.price-value { color: var(--ink); font-weight: 600; margin-right: 0.5em; }
+.price-cell, .cap-cell, .change-cell { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.price-value { color: var(--ink); font-weight: 600; margin-right: 0.45em; }
 .cap-value { color: var(--ink); font-weight: 600; }
 .price-change { font-size: 0.82em; margin-left: 0.35em; }
+/* A dedicated change column has nothing to sit beside, so drop the gutter. */
+.change-cell .price-change { margin-left: 0; }
 .price-change.up { color: var(--pine); }
 .price-change.down { color: var(--error); }
 .price-change.flat { color: var(--muted); }
@@ -358,32 +455,36 @@ tbody tr:hover { background: rgb(90 120 255 / 7%); }
 
 .parse-status {
   display: inline-flex;
-  min-height: 27px;
+  min-height: 24px;
   align-items: center;
-  padding: 2px 8px;
+  padding: 1px 8px;
   border-left: 3px solid currentColor;
   background: var(--pine-wash);
   color: var(--pine);
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 750;
+  white-space: nowrap;
 }
 
 .status-failed { background: var(--error-wash); color: var(--error); }
 
 .status-unavailable,
 .status-pending,
-.status-running,
-.status-not_ingested { background: var(--amber-wash); color: var(--amber); }
+.status-running { background: var(--amber-wash); color: var(--amber); }
 
-.action-cell { width: 74px; text-align: right; }
+/* Most of the universe is not ingested yet, so that state stays quiet and
+   lets the genuine problems — parse failures — carry the colour. */
+.status-not_ingested {
+  background: transparent;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.action-cell { width: 68px; text-align: right; }
 .action-cell a { font-weight: 750; text-underline-offset: 3px; }
 .loading-row td { color: var(--muted); }
 
-.availability-missing {
-  color: var(--muted);
-  font-size: 0.76rem;
-  white-space: nowrap;
-}
+.action-cell .availability-missing { color: var(--muted); }
 
 .directory-pagination {
   display: grid;
@@ -391,6 +492,35 @@ tbody tr:hover { background: rgb(90 120 255 / 7%); }
   gap: 16px;
   align-items: center;
   padding: 18px 0;
+}
+
+.directory-paging {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+}
+
+.directory-paging .directory-pagination { flex: 1 1 320px; }
+
+.page-size {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 750;
+}
+
+.page-size select {
+  padding: 7px 26px 7px 0;
+  border: 0;
+  border-bottom: 1px solid var(--rule-strong);
+  border-radius: 0;
+  background-color: transparent;
+  color: var(--ink);
+  font-weight: 600;
 }
 
 .directory-pagination button {
@@ -423,9 +553,9 @@ footer p { margin: 0; }
   nav { gap: 15px; overflow-x: auto; }
   nav a { padding: 10px 0 17px; white-space: nowrap; }
   main { width: min(100% - 30px, 1240px); }
-  .hero { grid-template-columns: 1fr; gap: 40px; padding: 58px 0 50px; }
+  .hero { grid-template-columns: 1fr; gap: 32px; padding: 38px 0 40px; }
   .directory-heading { align-items: flex-start; flex-direction: column; }
-  .directory-filters { grid-template-columns: 1fr 1fr; }
+  .filter-group { flex: 1 1 100%; grid-template-columns: 1fr 1fr; }
 
   thead {
     position: absolute;
@@ -435,13 +565,17 @@ footer p { margin: 0; }
     clip: rect(0, 0, 0, 0);
   }
 
+  /* The card layout has no header row, so the sort buttons must leave the tab
+     order with it — otherwise they stay focusable but invisible. */
+  .sort-button { display: none; }
+
   table, tbody, tr, td { display: block; width: 100%; }
 
   tbody tr {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 13px 20px;
-    padding: 20px;
+    padding: 18px;
     border-bottom: 1px solid var(--rule-strong);
   }
 
@@ -457,12 +591,15 @@ footer p { margin: 0; }
     font-weight: 750;
   }
 
-  .company-cell { grid-column: 1 / -1; }
+  .company-cell { grid-column: 1 / -1; width: auto; }
   .company-cell::before, .action-cell::before { display: none; }
-  .company-identity { grid-template-columns: 68px minmax(0, 1fr); }
-  .number-column, .price-cell, .action-cell { width: auto; text-align: left; }
+  .company-identity { grid-template-columns: 62px minmax(0, 1fr); }
+  .number-column, .price-cell, .action-cell { width: auto; min-width: 0; text-align: left; }
+  td.number-column { min-width: 0; }
   .action-cell { align-self: end; text-align: right; }
   .loading-row { display: block; }
+  .quote-note { text-align: left; }
+  .quote-note-row { justify-content: flex-start; }
   footer { flex-direction: column; gap: 8px; }
 }
 
@@ -470,16 +607,17 @@ footer p { margin: 0; }
   .site-header { gap: 14px; padding-right: 15px; padding-left: 15px; }
   nav { gap: 12px; }
   nav a { font-size: 0.78rem; }
-  h1 { font-size: clamp(2.75rem, 15vw, 4.4rem); }
+  h1 { font-size: clamp(2.2rem, 11vw, 3.2rem); }
   .hero-copy { padding-left: 24px; }
   .search-panel { padding: 18px; }
   .search-controls { grid-template-columns: 1fr; gap: 9px; }
   .search-controls input { border-right: 1px solid var(--rule-strong); }
   .directory-summary { width: 100%; gap: 20px; }
   .directory-summary div { flex: 1; }
-  .directory-filters { grid-template-columns: 1fr; }
-  tbody tr { grid-template-columns: 1fr; }
-  .action-cell { text-align: left; }
+  .filter-group { grid-template-columns: 1fr; }
+  .filter-group label + label { border-top: 1px solid var(--rule); border-left: 0; }
+  tbody tr { gap: 12px 14px; padding: 16px; }
+  .action-cell { text-align: right; }
   .directory-pagination { gap: 8px; }
   .directory-pagination button { min-width: 0; }
 }

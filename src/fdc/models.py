@@ -315,6 +315,7 @@ class FilingParse(TimestampMixin, Base):
             postgresql_where=text("is_current AND status = 'success'"),
         ),
         Index("ix_filing_parse_status", "status"),
+        Index("ix_filing_parse_parse_run_id", "parse_run_id"),
     )
 
 
@@ -369,6 +370,7 @@ class XbrlFact(TimestampMixin, Base):
         Index("ix_xbrl_fact_concept_namespace_concept", "concept_namespace", "concept"),
         Index("ix_xbrl_fact_concept_end_date", "concept", "end_date"),
         Index("ix_xbrl_fact_filing_parse_id", "filing_parse_id"),
+        Index("ix_xbrl_fact_evidence_filing", "evidence_locator_id", "source_filing_id"),
     )
 
 
@@ -420,6 +422,9 @@ class StatementLine(TimestampMixin, Base):
             "statement_type",
             "order_index",
         ),
+        Index("ix_statement_line_filing_parse_id", "filing_parse_id"),
+        Index("ix_statement_line_parse_run_id", "parse_run_id"),
+        Index("ix_statement_line_evidence_filing", "evidence_locator_id", "source_filing_id"),
     )
 
 
@@ -475,6 +480,8 @@ class FilingSection(TimestampMixin, Base):
             "source_filing_id",
             "section_type",
         ),
+        Index("ix_filing_section_parse_run_id", "parse_run_id"),
+        Index("ix_filing_section_evidence_filing", "evidence_locator_id", "source_filing_id"),
     )
 
 
@@ -529,6 +536,7 @@ class ExtractedTable(TimestampMixin, Base):
             "table_type",
         ),
         Index("ix_extracted_table_filing_parse_id", "filing_parse_id"),
+        Index("ix_extracted_table_evidence_filing", "evidence_locator_id", "source_filing_id"),
     )
 
 

@@ -19,7 +19,7 @@ from fdc.contracts import (
     RowStatus,
     SectionDraft,
 )
-from fdc.models import EvidenceLocator, Filing, FilingParse, FilingSection, XbrlFact
+from fdc.models import EvidenceLocator, Filing, FilingParse, FilingSection, Issuer, XbrlFact
 from fdc.parsers.service import ParseAttemptFailed, parse_one_filing, parser_modules_manifest
 
 FIXTURE_ROOT = __import__("pathlib").Path(__file__).resolve().parents[1] / "fixtures" / "filings"
@@ -118,6 +118,29 @@ def test_parse_one_filing_persists_every_row_with_run_artifact_and_evidence(
             assert evidence is not None
             assert evidence.artifact_id is not None
             assert evidence.filing_id == stored.filing_id
+
+
+def test_parse_uses_index_cik_when_accession_filer_differs(
+    engine, session_factory, database_url, monkeypatch
+):
+    local_filing = scan_ticker_archive(FIXTURE_ROOT, "MSFT").filings[0]
+    local_filing = replace(
+        local_filing,
+        accession="0000950170-25-100235",
+        index_record={"cik": "0000789019", "company_name": "Microsoft Corporation"},
+    )
+    xbrl, html = _outputs(local_filing)
+    monkeypatch.setattr("fdc.parsers.service.EdgarToolsAdapter.parse", lambda *_: xbrl)
+    monkeypatch.setattr("fdc.parsers.service.parse_html_document", lambda *_: html)
+
+    with session_factory() as session:
+        result = parse_one_filing(session, local_filing, _settings(database_url))
+
+    with session_factory() as session:
+        filing = session.get(Filing, result.filing_id)
+        issuer = session.get(Issuer, filing.issuer_id)
+        assert issuer.cik == "0000789019"
+        assert issuer.ticker_hint == "MSFT"
 
 
 def test_parse_persists_canonical_edgar_filing_and_artifact_urls(

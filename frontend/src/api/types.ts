@@ -6,7 +6,11 @@ export type IngestionStatus =
   | "unavailable"
   | "not_ingested";
 
-export type DirectorySortKey = "market_cap" | "change_pct";
+export type DirectorySortKey =
+  | "market_cap"
+  | "change_pct"
+  | "week_change_pct"
+  | "change_52w_pct";
 
 export type DirectoryOrder = "desc" | "asc";
 
@@ -29,6 +33,8 @@ export interface CompanyDirectoryItem {
   price?: number | null;
   market_cap?: number | null;
   change_pct?: number | null;
+  week_change_pct?: number | null;
+  change_52w_pct?: number | null;
   quote_as_of?: string | null;
 }
 
@@ -254,4 +260,16 @@ export interface LayersPayload {
     count: number;
     children: LayerNode[];
   };
+}
+
+export interface QuotesPayload {
+  generated_at: string | null;
+  quotes: Record<string, {
+    price?: number | null;
+    previous_close?: number | null;
+    change_pct?: number | null;
+    week_change_pct?: number | null;
+    change_52w_pct?: number | null;
+    market_cap?: number | null;
+  }>;
 }

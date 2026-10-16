@@ -1,7 +1,8 @@
-"""Read-only FastAPI application for current filing parse results."""
+"""FastAPI application serving filing parse results and quote refreshes."""
 
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 from typing import Annotated, Any, Callable, Literal, TypeVar
 
@@ -15,8 +16,10 @@ from fdc.catalog import (
     CompanyDirectoryView,
     IngestionStatus,
     Order,
+    QuotesView,
     SortKey,
 )
+from fdc.quotes import write_quotes
 from fdc.read_service import (
     CompanyView,
     EvidenceView,
@@ -31,6 +34,8 @@ from fdc.read_service import (
 )
 
 app = FastAPI(title="Finance Data Collector Read API", version="1.0.0")
+
+logger = logging.getLogger(__name__)
 
 ViewT = TypeVar("ViewT", bound=BaseModel)
 
@@ -70,6 +75,31 @@ def companies(
 @app.get("/api/v1/catalog/layers", response_model=CatalogLayerListView)
 def catalog_layers() -> CatalogLayerListView:
     return _read(catalog.list_layers)
+
+
+@app.get("/api/v1/quotes", response_model=QuotesView)
+def quotes() -> QuotesView:
+    return _read(catalog.read_quotes)
+
+
+@app.post("/api/v1/quotes/refresh", response_model=QuotesView)
+def refresh_quotes() -> QuotesView:
+    """Force a Yahoo Finance re-fetch and serve the rewritten cache.
+
+    The only write on this app; everything else stays read-only.  Runs in
+    FastAPI's thread pool, so the ~30 s yfinance fetch does not block the
+    event loop.  A failed fetch keeps the previous cache and reports 502 so the
+    page can say so instead of silently rendering empty prices.
+    """
+
+    try:
+        write_quotes(force=True)
+    except Exception as exc:
+        logger.exception("quote refresh failed")
+        raise HTTPException(
+            status_code=502, detail="Yahoo Finance refresh failed — prices unchanged"
+        ) from exc
+    return _read(catalog.read_quotes)
 
 
 @app.get("/api/v1/visualizations/{name}")

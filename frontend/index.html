@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="Browse 211 public companies across the AI stack and open evidence-linked SEC research.">
-  <title>AI company directory | Finance Data Collector</title>
+  <meta name="description" content="Browse every public company across the AI stack with price, market cap, and local SEC filing ingestion coverage.">
+  <title>AI companies | Finance Data Collector</title>
   <link rel="stylesheet" href="/src/styles/theme.css">
   <link rel="stylesheet" href="/src/styles/index.css">
   <script type="module" src="/src/pages/directory.ts"></script>
@@ -19,7 +19,7 @@
       <span>Finance Data Collector</span>
     </a>
     <nav aria-label="Primary navigation">
-      <a href="index.html" aria-current="page">Research</a>
+      <a href="index.html" aria-current="page">AI companies</a>
       <a href="graph.html">Company graph</a>
       <a href="layers.html">AI layers</a>
     </nav>
@@ -29,10 +29,11 @@
     <section class="hero" aria-labelledby="page-title">
       <div class="hero-copy">
         <p class="section-label">The public AI stack</p>
-        <h1 id="page-title">Research starts with the filing.</h1>
+        <h1 id="page-title">The AI company list.</h1>
         <p class="hero-summary">
-          Map 211 companies from power and silicon through models and applications,
-          then trace ingested financial evidence to its source filing.
+          Every public company from power and silicon through models and
+          applications — with price, market cap, and how far each one is
+          through local SEC filing ingestion.
         </p>
       </div>
 
@@ -42,10 +43,10 @@
           <input id="company-search" name="query" type="search"
                  placeholder="Try NVDA or Microsoft" autocomplete="off"
                  aria-describedby="search-guidance">
-          <button type="submit">Open company research</button>
+          <button type="submit">Open company</button>
         </div>
         <p id="search-guidance" class="search-guidance">
-          An exact ingested ticker opens its workspace. Any other query filters the directory.
+          An exact ingested ticker opens its filing workspace. Any other query filters the list.
         </p>
       </form>
     </section>
@@ -62,57 +63,47 @@
             <dd id="company-total">—</dd>
           </div>
           <div>
-            <dt>Page filings</dt>
+            <dt>Filings on page</dt>
             <dd id="filing-total">—</dd>
           </div>
         </dl>
       </header>
 
-      <div class="directory-filters" aria-label="Directory filters">
-        <label>
-          AI layer
-          <select id="layer-filter">
-            <option value="">All layers</option>
-          </select>
-        </label>
-        <label>
-          Segment
-          <select id="segment-filter">
-            <option value="">All segments</option>
-          </select>
-        </label>
-        <label>
-          Ingestion status
-          <select id="status-filter">
-            <option value="">All statuses</option>
-            <option value="parsed">Parsed</option>
-            <option value="failed">Parse failed</option>
-            <option value="unavailable">Unavailable</option>
-            <option value="not_ingested">Not ingested</option>
-          </select>
-        </label>
-        <label>
-          Sort by
-          <select id="sort-filter">
-            <option value="">Catalog order</option>
-            <option value="market_cap_desc">Market cap ↓</option>
-            <option value="market_cap_asc">Market cap ↑</option>
-            <option value="change_pct_desc">Daily change ↓</option>
-            <option value="change_pct_asc">Daily change ↑</option>
-          </select>
-        </label>
-        <label>
-          Rows per page
-          <select id="page-size">
-            <option value="25">25</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-          </select>
-        </label>
-      </div>
+      <form id="directory-filters" class="directory-filters" aria-label="Directory filters"
+            onsubmit="return false">
+        <div class="filter-group">
+          <label>
+            AI layer
+            <select id="layer-filter">
+              <option value="">All layers</option>
+            </select>
+          </label>
+          <label>
+            Segment
+            <select id="segment-filter">
+              <option value="">All segments</option>
+            </select>
+          </label>
+          <label>
+            Ingestion status
+            <select id="status-filter">
+              <option value="">All statuses</option>
+              <option value="parsed">Parsed</option>
+              <option value="failed">Parse failed</option>
+              <option value="unavailable">Unavailable</option>
+              <option value="not_ingested">Not ingested</option>
+            </select>
+          </label>
+        </div>
+        </form>
 
       <div id="directory-state" class="directory-state is-visible" role="status" aria-live="polite">
         Reading the AI company catalog…
+      </div>
+
+      <div class="quote-note-row">
+        <button id="quote-refresh" type="button">Refresh prices</button>
+        <p id="quote-as-of" class="quote-note" hidden></p>
       </div>
 
       <div class="directory-frame">
@@ -125,19 +116,59 @@
               <th scope="col">Latest filing</th>
               <th scope="col">Coverage</th>
               <th scope="col" class="number-column">Filings</th>
-              <th scope="col" class="number-column">Price</th>
-              <th scope="col" class="number-column">Market cap</th>
-              <th scope="col"><span class="visually-hidden">Open research</span></th>
+              <th scope="col" class="number-column"
+                  data-sort-column="change_pct" aria-sort="none">
+                <button type="button" class="sort-button" data-sort="change_pct"
+                        aria-label="Sort by daily change">
+                  Price
+                  <span class="sort-indicator" aria-hidden="true"></span>
+                </button>
+              </th>
+              <th scope="col" class="number-column"
+                  data-sort-column="week_change_pct" aria-sort="none">
+                <button type="button" class="sort-button" data-sort="week_change_pct"
+                        aria-label="Sort by one-week change">
+                  1W
+                  <span class="sort-indicator" aria-hidden="true"></span>
+                </button>
+              </th>
+              <th scope="col" class="number-column"
+                  data-sort-column="change_52w_pct" aria-sort="none">
+                <button type="button" class="sort-button" data-sort="change_52w_pct"
+                        aria-label="Sort by 52-week change">
+                  52W
+                  <span class="sort-indicator" aria-hidden="true"></span>
+                </button>
+              </th>
+              <th scope="col" class="number-column"
+                  data-sort-column="market_cap" aria-sort="none">
+                <button type="button" class="sort-button" data-sort="market_cap"
+                        aria-label="Sort by market cap">
+                  Market cap
+                  <span class="sort-indicator" aria-hidden="true"></span>
+                </button>
+              </th>
+              <th scope="col"><span class="visually-hidden">Open filing workspace</span></th>
             </tr>
           </thead>
           <tbody id="company-directory-body">
             <tr class="loading-row">
-              <td colspan="8">Loading companies…</td>
+              <td colspan="10">Loading companies…</td>
             </tr>
           </tbody>
         </table>
       </div>
-      <nav id="directory-pagination" class="directory-pagination" aria-label="Company pages"></nav>
+      <div class="directory-paging">
+        <nav id="directory-pagination" class="directory-pagination" aria-label="Company pages"></nav>
+        <label class="page-size">
+          Rows per page
+          <select id="page-size">
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+        </label>
+      </div>
     </section>
   </main>
 

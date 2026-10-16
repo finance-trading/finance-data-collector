@@ -20,7 +20,7 @@
     <input id="search" type="search" placeholder="Search ticker / company / description" aria-label="Search companies">
     <span id="stats"></span>
     <nav class="nav" aria-label="Primary navigation">
-      <a href="index.html">Research</a>
+      <a href="index.html">AI companies</a>
       <a href="graph.html">Company graph</a>
       <a href="layers.html" aria-current="page">AI layers</a>
     </nav>
@@ -31,13 +31,13 @@
   <pre id="mermaid" hidden aria-label="Mermaid source"></pre>
 
   <aside id="legend" class="panel" aria-label="Layer filters">
-    <h2>Layers (click to filter)</h2>
+    <h2>
+      <button id="legend-toggle" type="button" aria-expanded="true" aria-controls="legend-rows">
+        <span>Layers (click to filter)</span>
+        <span class="chevron" aria-hidden="true"></span>
+      </button>
+    </h2>
     <div id="legend-rows"></div>
-    <label class="row">
-      <input type="checkbox" id="show-cross" checked>
-      <span class="dot" style="background:#f6ad55"></span>
-      Cross-layer links (dashed)
-    </label>
   </aside>
 
   <aside id="card" class="panel" hidden aria-live="polite">

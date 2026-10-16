@@ -112,6 +112,24 @@ def _as_string(value: object | None) -> str | None:
     return None if value is None else str(value)
 
 
+def _issuer_cik(local_filing: LocalFiling) -> str:
+    """Resolve issuer CIK from index metadata before using the accession fallback.
+
+    An accession can be filed by a third-party agent whose CIK prefixes the
+    accession number.  Downloader indexes may carry the issuer CIK explicitly;
+    using it prevents those filings from being attached to the agent issuer.
+    """
+
+    for key in ("cik", "company_cik", "cik_str"):
+        raw = local_filing.index_record.get(key)
+        if raw is None:
+            continue
+        digits = "".join(character for character in str(raw) if character.isdigit())
+        if digits:
+            return digits.zfill(10)[-10:]
+    return local_filing.accession[:10]
+
+
 def _diagnostics(values: list[ParserDiagnostic] | tuple[ParserDiagnostic, ...]) -> list[dict]:
     return [value.as_dict() for value in values]
 
@@ -157,7 +175,7 @@ def _run_for_filing(
 def _upsert_filing_metadata(
     session: Session, local_filing: LocalFiling
 ) -> tuple[Filing, dict[tuple[str, str], Artifact]]:
-    cik = local_filing.accession[:10]
+    cik = _issuer_cik(local_filing)
     issuer = session.scalar(select(Issuer).where(Issuer.cik == cik))
     if issuer is None:
         issuer = Issuer(

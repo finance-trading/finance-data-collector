@@ -80,6 +80,26 @@ def test_real_universe_satisfies_layer_contract():
     ]
 
 
+def test_real_universe_includes_portfolio_layer_additions():
+    companies, _ = ai_layers.load_universe()
+    by_ticker = {company["ticker"]: company for company in companies}
+
+    expected = {
+        "XE": ("power", "发电与核电"),
+        "OKLO": ("power", "发电与核电"),
+        "BE": ("power", "发电与核电"),
+        "CBRS": ("silicon", "算力芯片"),
+        "CIFR": ("infra", "GPU 算力租赁"),
+        "CHRN": ("infra", "GPU 算力租赁"),
+        "XTND": ("edge", "自动驾驶与机器人"),
+    }
+
+    assert {
+        ticker: (by_ticker[ticker]["layer"], by_ticker[ticker]["segment"])
+        for ticker in expected
+    } == expected
+
+
 def test_real_universe_tree_is_ordered_and_complete():
     companies, layers = ai_layers.load_universe()
     fake_map = {company["ticker"].upper(): index + 1 for index, company in enumerate(companies)}

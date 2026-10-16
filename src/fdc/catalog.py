@@ -21,7 +21,9 @@ from fdc.models import Filing, FilingParse, Issuer
 from fdc.read_service import ReadServiceError
 
 IngestionStatus = Literal["parsed", "failed", "unavailable", "not_ingested"]
-SortKey = Literal["market_cap", "change_pct"]
+SortKey = Literal[
+    "market_cap", "change_pct", "week_change_pct", "change_52w_pct"
+]
 Order = Literal["desc", "asc"]
 
 
@@ -79,6 +81,8 @@ class CompanyDirectoryItem(CatalogCompany):
     price: float | None = None
     market_cap: int | None = None
     change_pct: float | None = None
+    week_change_pct: float | None = None
+    change_52w_pct: float | None = None
     quote_as_of: date | None = None
 
 
@@ -144,19 +148,27 @@ def _parse_key(result: FilingParse) -> tuple[int, datetime]:
     return (1 if current_success else 0, result.created_at)
 
 
-def _load_quotes() -> tuple[dict[str, dict[str, float | int | None]], date | None]:
-    """Return cached quotes per ticker plus the quote date; empty when absent."""
+def _load_quotes() -> tuple[
+    dict[str, dict[str, float | int | None]], date | None, str | None
+]:
+    """Return cached quotes, the session quote date, and the raw refresh stamp."""
 
     if not QUOTES_PATH.exists():
-        return {}, None
+        return {}, None, None
     try:
         payload = json.loads(QUOTES_PATH.read_text())
         quotes = payload.get("quotes", {})
         generated_at = payload.get("generated_at")
-        as_of = date.fromisoformat(generated_at[:10]) if generated_at else None
-        return quotes, as_of
+        # The daily job runs after the US close, so the UTC stamp lands on the
+        # next calendar day.  Report the local session date, not the UTC one.
+        as_of = (
+            datetime.fromisoformat(generated_at).astimezone().date()
+            if generated_at
+            else None
+        )
+        return quotes, as_of, generated_at
     except (OSError, json.JSONDecodeError, KeyError, ValueError):
-        return {}, None
+        return {}, None, None
 
 
 def _database_summaries(
@@ -274,7 +286,7 @@ def _quote_sort_key(
 ) -> tuple[bool, float]:
     """Sort by a quote field, keeping companies with no quote last."""
 
-    value = item.market_cap if sort_by == "market_cap" else item.change_pct
+    value: float | int | None = getattr(item, sort_by)
     if value is None:
         return (True, 0.0)
     return (False, -value if descending else value)
@@ -297,7 +309,7 @@ def list_companies(
 
     catalog = load_catalog(catalog_path)
     layer_names = {item.id: item.name for item in catalog.layers}
-    quotes, quote_as_of = _load_quotes()
+    quotes, quote_as_of, _ = _load_quotes()
     with session_factory() as session:
         summaries = _database_summaries(session)
 
@@ -335,6 +347,8 @@ def list_companies(
                 price=quote.get("price") if quote else None,
                 market_cap=quote.get("market_cap") if quote else None,
                 change_pct=quote.get("change_pct") if quote else None,
+                week_change_pct=quote.get("week_change_pct") if quote else None,
+                change_52w_pct=quote.get("change_52w_pct") if quote else None,
                 quote_as_of=quote_as_of,
             )
         )
@@ -360,6 +374,18 @@ def list_companies(
         total=len(companies),
         companies=companies[offset : offset + limit],
     )
+
+
+class QuotesView(BaseModel):
+    generated_at: str | None
+    quotes: dict[str, dict[str, float | int | None]]
+
+
+def read_quotes() -> QuotesView:
+    """Return the cached quotes as a standalone payload; empty when absent."""
+
+    quotes, _, generated_at = _load_quotes()
+    return QuotesView(generated_at=generated_at, quotes=quotes)
 
 
 def read_visualization(name: Literal["graph", "layers"]) -> dict[str, Any]:

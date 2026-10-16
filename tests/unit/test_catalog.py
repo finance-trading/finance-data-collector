@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 
 import fdc.catalog
-from fdc.catalog import list_companies, list_layers, load_catalog
+from fdc.catalog import list_companies, list_layers, load_catalog, read_quotes
 
 
 def _catalog_path(tmp_path):
@@ -129,12 +129,16 @@ def test_directory_merges_cached_quotes(tmp_path, engine, session_factory, monke
                         "price": 252.18,
                         "previous_close": 246.12,
                         "change_pct": 2.46,
+                        "week_change_pct": -1.87,
+                        "change_52w_pct": 34.5,
                         "market_cap": 97086314647,
                     },
                     "NVDA": {
                         "price": 233.95,
                         "previous_close": 230.86,
                         "change_pct": 1.34,
+                        "week_change_pct": 5.61,
+                        "change_52w_pct": -18.07,
                         "market_cap": 5649190576309,
                     },
                 },
@@ -158,13 +162,18 @@ def test_directory_merges_cached_quotes(tmp_path, engine, session_factory, monke
     assert by_ticker["VRT"].price == 252.18
     assert by_ticker["VRT"].market_cap == 97086314647
     assert by_ticker["VRT"].change_pct == 2.46
+    assert by_ticker["VRT"].week_change_pct == -1.87
+    assert by_ticker["VRT"].change_52w_pct == 34.5
     assert by_ticker["VRT"].quote_as_of.isoformat() == "2026-10-04"
     # AMD is in the fixture catalog but has no entry in quotes.json — nulls
     # are expected for it, not for VRT/NVDA which both have quotes.
     assert by_ticker["NVDA"].price == 233.95
     assert by_ticker["NVDA"].market_cap == 5649190576309
     assert by_ticker["NVDA"].change_pct == 1.34
+    assert by_ticker["NVDA"].week_change_pct == 5.61
+    assert by_ticker["NVDA"].change_52w_pct == -18.07
     assert by_ticker["AMD"].price is None
+    assert by_ticker["AMD"].week_change_pct is None
 
 
 def test_directory_sorts_globally_not_per_page(
@@ -283,6 +292,57 @@ def test_directory_sorts_by_daily_change_and_keeps_missing_last(
     assert tickers("asc") == ["NVDA", "VRT", "AMD"]
 
 
+def test_directory_sorts_by_trailing_returns_and_keeps_missing_last(
+    tmp_path, engine, session_factory, monkeypatch
+):
+    """Each trailing-return key sorts independently, not on change_pct."""
+
+    quotes = tmp_path / "quotes.json"
+    quotes.write_text(
+        json.dumps(
+            {
+                "generated_at": "2026-10-04T15:00:00+00:00",
+                "quotes": {
+                    # The two trailing columns disagree on the winner; AMD has none.
+                    "VRT": {
+                        "change_pct": 2.46,
+                        "week_change_pct": -1.87,
+                        "change_52w_pct": 34.5,
+                    },
+                    "NVDA": {
+                        "change_pct": -1.34,
+                        "week_change_pct": 5.61,
+                        "change_52w_pct": -18.07,
+                    },
+                },
+            }
+        )
+    )
+    monkeypatch.setattr(fdc.catalog, "QUOTES_PATH", quotes)
+
+    def tickers(sort_by, order):
+        return [
+            c.ticker
+            for c in list_companies(
+                query=None,
+                layer=None,
+                segment=None,
+                ingestion_status=None,
+                limit=25,
+                offset=0,
+                sort_by=sort_by,
+                order=order,
+                catalog_path=_catalog_path(tmp_path),
+                session_factory=session_factory,
+            ).companies
+        ]
+
+    assert tickers("week_change_pct", "desc") == ["NVDA", "VRT", "AMD"]
+    assert tickers("week_change_pct", "asc") == ["VRT", "NVDA", "AMD"]
+    assert tickers("change_52w_pct", "desc") == ["VRT", "NVDA", "AMD"]
+    assert tickers("change_52w_pct", "asc") == ["NVDA", "VRT", "AMD"]
+
+
 def test_directory_tolerates_quotes_without_market_cap(
     tmp_path, engine, session_factory, monkeypatch
 ):
@@ -313,6 +373,9 @@ def test_directory_tolerates_quotes_without_market_cap(
     by_ticker = {company.ticker: company for company in result.companies}
     assert by_ticker["VRT"].price == 252.18
     assert by_ticker["VRT"].market_cap is None
+    # A cache written before the trailing returns landed degrades to null too.
+    assert by_ticker["VRT"].week_change_pct is None
+    assert by_ticker["VRT"].change_52w_pct is None
     assert by_ticker["AMD"].price is None
     assert by_ticker["AMD"].market_cap is None
 
@@ -338,3 +401,37 @@ def test_directory_degrades_when_quotes_file_is_missing(
         assert company.price is None
         assert company.change_pct is None
         assert company.quote_as_of is None
+
+
+def test_read_quotes_returns_cached_quotes_with_date(tmp_path, monkeypatch):
+    quotes = tmp_path / "quotes.json"
+    quotes.write_text(
+        json.dumps(
+            {
+                "generated_at": "2026-10-04T15:00:00+00:00",
+                "quotes": {
+                    "NVDA": {
+                        "price": 233.95,
+                        "change_pct": 1.34,
+                        "market_cap": 5_649_190_576_309,
+                    },
+                },
+            }
+        )
+    )
+    monkeypatch.setattr(fdc.catalog, "QUOTES_PATH", quotes)
+
+    view = read_quotes()
+
+    assert view.generated_at == "2026-10-04T15:00:00+00:00"
+    assert view.quotes["NVDA"]["change_pct"] == 1.34
+
+
+def test_read_quotes_degrades_when_file_is_missing(tmp_path, monkeypatch):
+    monkeypatch.setattr(fdc.catalog, "QUOTES_PATH", tmp_path / "does_not_exist.json")
+
+    view = read_quotes()
+
+    assert view.generated_at is None
+    assert view.quotes == {}
+

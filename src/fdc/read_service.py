@@ -355,16 +355,7 @@ def _decimal(value: Decimal | float | None) -> str | None:
     return rendered or "0"
 
 
-def _evidence(
-    session: Session, filing: Filing, evidence_id: UUID
-) -> EvidenceView:
-    evidence = session.get(EvidenceLocator, evidence_id)
-    if evidence is None or evidence.filing_id != filing.id:
-        raise ReadServiceError(
-            404,
-            "not_found",
-            f"unknown evidence {evidence_id} for {filing.accession_number}",
-        )
+def _evidence_view(filing: Filing, evidence: EvidenceLocator) -> EvidenceView:
     return EvidenceView(
         evidence_id=str(evidence.id),
         accession=filing.accession_number,
@@ -375,6 +366,50 @@ def _evidence(
         content_sha256=evidence.content_sha256,
         excerpt=evidence.excerpt,
     )
+
+
+def _evidence(
+    session: Session, filing: Filing, evidence_id: UUID
+) -> EvidenceView:
+    evidence = session.get(EvidenceLocator, evidence_id)
+    if evidence is None or evidence.filing_id != filing.id:
+        raise ReadServiceError(
+            404,
+            "not_found",
+            f"unknown evidence {evidence_id} for {filing.accession_number}",
+        )
+    return _evidence_view(filing, evidence)
+
+
+def _evidence_map(
+    session: Session, filing: Filing, evidence_ids: list[UUID]
+) -> dict[UUID, EvidenceView]:
+    """Resolve a batch of evidence locators in one query, not one per row."""
+
+    unique_ids = set(evidence_ids)
+    located = {
+        evidence.id: evidence
+        for evidence in session.scalars(
+            select(EvidenceLocator).where(EvidenceLocator.id.in_(unique_ids))
+        )
+    }
+    if len(located) != len(unique_ids):
+        missing = next(iter(unique_ids - located.keys()))
+        raise ReadServiceError(
+            404,
+            "not_found",
+            f"unknown evidence {missing} for {filing.accession_number}",
+        )
+    views: dict[UUID, EvidenceView] = {}
+    for evidence in located.values():
+        if evidence.filing_id != filing.id:
+            raise ReadServiceError(
+                404,
+                "not_found",
+                f"unknown evidence {evidence.id} for {filing.accession_number}",
+            )
+        views[evidence.id] = _evidence_view(filing, evidence)
+    return views
 
 
 def _unavailable(
@@ -568,6 +603,9 @@ def get_statement(accession: str, statement_type: str) -> StatementView:
         ).all()
         if not rows:
             raise _unavailable(filing, result, "statement", normalized_type)
+        evidence_map = _evidence_map(
+            session, filing, [row.evidence_locator_id for row in rows]
+        )
         return StatementView(
             accession=filing.accession_number,
             statement_type=normalized_type,
@@ -588,7 +626,7 @@ def get_statement(accession: str, statement_type: str) -> StatementView:
                     period_type=row.period_type,
                     dimensions=row.dimensions,
                     parser_version=row.parser_version,
-                    evidence=_evidence(session, filing, row.evidence_locator_id),
+                    evidence=evidence_map[row.evidence_locator_id],
                 )
                 for row in rows
             ],
@@ -609,6 +647,9 @@ def get_facts(accession: str, concept: str | None) -> FactView:
         ).all()
         if not rows:
             raise _unavailable(filing, result, "facts", concept)
+        evidence_map = _evidence_map(
+            session, filing, [row.evidence_locator_id for row in rows]
+        )
         return FactView(
             accession=filing.accession_number,
             concept=concept,
@@ -629,7 +670,7 @@ def get_facts(accession: str, concept: str | None) -> FactView:
                     dimensions=row.dimensions,
                     extraction_method=row.extraction_method,
                     parser_version=row.parser_version,
-                    evidence=_evidence(session, filing, row.evidence_locator_id),
+                    evidence=evidence_map[row.evidence_locator_id],
                 )
                 for row in rows
             ],
@@ -684,8 +725,14 @@ def get_tables(accession: str, table_type: str | None) -> TableView:
         ).all()
         if not rows:
             raise _unavailable(filing, result, "tables", normalized_type)
-        usable = [row for row in rows if row.status == "parsed"]
-        non_success = [row for row in rows if row.status != "parsed"]
+        # Headerless tables are still marked "unsupported" even though the parser
+        # retains their positional columns/rows, so they are usable output.
+        usable = [
+            row for row in rows if row.status in ("parsed", "unsupported")
+        ]
+        non_success = [
+            row for row in rows if row.status not in ("parsed", "unsupported")
+        ]
         state_diagnostics = {
             "tables": [
                 {

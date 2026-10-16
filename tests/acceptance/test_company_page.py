@@ -3,6 +3,8 @@ from pathlib import Path
 import httpx
 from playwright.sync_api import expect
 
+from fdc import catalog
+
 FRONTEND_ROOT = Path(__file__).resolve().parents[2] / "frontend"
 
 
@@ -58,6 +60,7 @@ def test_read_app_serves_company_page_on_the_api_origin(live_server):
 
 
 def test_research_home_search_opens_the_company_workspace(browser, live_server):
+    total_companies = len(catalog.load_catalog().companies)
     page = browser.new_page(viewport={"width": 1280, "height": 800})
     console_errors = []
     page.on(
@@ -70,25 +73,24 @@ def test_research_home_search_opens_the_company_workspace(browser, live_server):
     page.goto(live_server)
     page.wait_for_load_state("networkidle")
 
-    expect(page.get_by_role("heading", name="Research starts with the filing.")).to_be_visible()
-    expect(page.locator("#company-total")).to_have_text("211")
+    expect(page.get_by_role("heading", name="The AI company list.")).to_be_visible()
+    expect(page.locator("#company-total")).to_have_text(str(total_companies))
     expect(page.locator("#company-directory-body tr")).to_have_count(25)
-    expect(page.locator("#directory-pagination")).to_contain_text("1–25 of 211")
+    expect(page.locator("#directory-pagination")).to_contain_text(f"1–25 of {total_companies}")
 
     page.get_by_role("button", name="Next").click()
     page.wait_for_function("location.search.includes('page=2')")
     assert "page=2" in page.url
-    expect(page.locator("#directory-pagination")).to_contain_text("26–50 of 211")
+    expect(page.locator("#directory-pagination")).to_contain_text(f"26–50 of {total_companies}")
 
     page.locator("#company-search").fill("VRT")
-    page.get_by_role("button", name="Open company research").click()
-    expect(page.locator("#company-total")).to_have_text("1")
+    page.get_by_role("button", name="Open company").click()
     expect(page.locator("#company-directory-body")).to_contain_text("VRT")
     expect(page.locator("#company-directory-body")).to_contain_text("Not ingested")
     expect(page.locator("#company-directory-body a[href*='company.html']")).to_have_count(0)
 
     page.locator("#company-search").fill("msft")
-    page.get_by_role("button", name="Open company research").click()
+    page.get_by_role("button", name="Open company").click()
     page.wait_for_load_state("networkidle")
 
     expect(page).to_have_url(f"{live_server}/company.html?ticker=MSFT")
@@ -111,7 +113,7 @@ def test_company_graph_renders_and_keeps_ticker_identity(browser, live_server):
     page.wait_for_function("Boolean(window.__graph)")
 
     expect(page.locator("#graph canvas")).to_have_count(1)
-    assert page.evaluate("window.__graph.graphData().nodes.length") == 211
+    assert page.evaluate("window.__graph.graphData().nodes.length") == len(catalog.load_catalog().companies)
 
     page.locator("#ft-crossref").uncheck()
     expect(page.locator("#ft-crossref")).not_to_be_checked()
@@ -127,6 +129,7 @@ def test_company_graph_renders_and_keeps_ticker_identity(browser, live_server):
 
 
 def test_ai_layers_modes_collapse_search_and_narrow_layout(browser, live_server):
+    total_companies = len(catalog.load_catalog().companies)
     page = browser.new_page(viewport={"width": 1280, "height": 800})
     console_errors = []
     page.on(
@@ -137,15 +140,15 @@ def test_ai_layers_modes_collapse_search_and_narrow_layout(browser, live_server)
     )
 
     page.goto(f"{live_server}/layers.html")
-    expect(page.locator("#stats")).to_contain_text("211 家公司")
+    expect(page.locator("#stats")).to_contain_text(f"{total_companies} companies")
     expect(page.locator("#view")).to_be_visible()
 
-    page.get_by_role("button", name="树状图").click()
-    expect(page.get_by_role("button", name="树状图")).to_have_class("mode active")
+    page.get_by_role("button", name="Tree").click()
+    expect(page.get_by_role("button", name="Tree")).to_have_class("mode active")
     page.get_by_role("button", name="Mermaid").click()
     expect(page.locator("#mermaid")).to_be_visible()
     expect(page.locator("#mermaid")).to_contain_text("graph LR")
-    page.get_by_role("button", name="分层图").click()
+    page.get_by_role("button", name="Columns").click()
     expect(page.locator("#view")).to_be_visible()
 
     first_layer = page.locator("[data-layer-id]").first
@@ -165,7 +168,7 @@ def test_ai_layers_modes_collapse_search_and_narrow_layout(browser, live_server)
 
     page.set_viewport_size({"width": 390, "height": 844})
     page.reload()
-    expect(page.locator("#stats")).to_contain_text("211 家公司")
+    expect(page.locator("#stats")).to_contain_text(f"{total_companies} companies")
     assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth")
     assert console_errors == []
     page.close()
@@ -194,7 +197,7 @@ def test_company_page_end_to_end_uses_persisted_statement_names(browser, live_se
     expect(page.locator("#selected-accession")).to_have_text(
         "0000000000-25-000002"
     )
-    expect(page.get_by_role("link", name="Research")).to_have_attribute(
+    expect(page.get_by_role("link", name="AI companies")).to_have_attribute(
         "href", "index.html"
     )
     page.locator('[data-accession="0000000000-24-000001"]').click()

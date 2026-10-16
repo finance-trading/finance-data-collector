@@ -1,224 +1,2274 @@
 {
-  "_comment": "Single source of truth for the AI value-chain universe served by the backend API. `layers` = 有序的 AI 产业链分层（上游 -> 下游），每层声明自己的 `segments`；每个 company 声明 layer + segment，可选 also_in = 该公司的跨层角色（层 id 数组）。sector/industry 使用 GICS 标签，description 为节点卡片文案。Ticker 到 CIK 在构建时解析（离线走 sec/.cache/company_tickers.json，否则 EDGAR）。",
-  "layers": [
-    {"id": "power", "name": "能源与电力", "name_en": "Energy & Power", "summary": "AI 算力的物理底座：发电、输电、配电与液冷散热。机柜功率密度上升后，电力供给成为算力扩张的第一约束。", "segments": ["数据中心电力与温控", "发电与核电", "电网与工程"]},
-    {"id": "silicon", "name": "芯片与半导体", "name_en": "Semiconductors & Silicon", "summary": "算力芯片、存储、模拟电源、晶圆代工、设备材料、EDA/IP 与光互连，是 AI 硬件价值链最上游。", "segments": ["算力芯片", "存储芯片", "模拟与电源芯片", "晶圆代工", "半导体设备与材料", "EDA 与 IP", "互连与光器件"]},
-    {"id": "infra", "name": "算力基础设施与云", "name_en": "Compute Infrastructure & Cloud", "summary": "AI 服务器整机、数据中心网络、超大规模云与 GPU 算力租赁，把芯片转化为可售算力。", "segments": ["云与超大规模", "GPU 算力租赁", "AI 服务器与整机", "数据中心网络", "电信与连接"]},
-    {"id": "model", "name": "模型与数据平台", "name_en": "Models & Data Platform", "summary": "基础大模型、数据云与 MLOps、AI 开发平台，处在算力与商业应用之间的中间层。", "segments": ["基础模型", "数据云与 MLOps", "AI 开发平台"]},
-    {"id": "app", "name": "AI 软件与应用", "name_en": "AI Software & Applications", "summary": "企业软件与 Agent、金融与医疗 AI、客服营销、开发工具、法律科技、垂直 SaaS、国防政府软件及消费应用，直接变现 AI 能力。", "segments": ["企业软件与 Agent", "广告与营销 AI", "安全与身份", "消费与内容应用", "IT 服务与集成", "金融 AI", "医疗 AI 与计算生物", "客服与联络中心 AI", "AI 开发工具", "法律科技 AI", "垂直 SaaS AI", "国防与政府 AI"]},
-    {"id": "edge", "name": "终端与具身智能", "name_en": "Edge & Embodied AI", "summary": "端侧设备、自动驾驶与机器人，把模型下沉到物理世界。", "segments": ["端侧设备", "自动驾驶与机器人"]}
-  ],
-  "companies": [
-    {"ticker":"VRT","name":"Vertiv","sector":"Industrials","industry":"Electrical Equipment","layer":"power","segment":"数据中心电力与温控","description":"数据中心配电、UPS 与液冷温控，AI 机柜功率密度提升的直接受益者。"},
-    {"ticker":"ETN","name":"Eaton","sector":"Industrials","industry":"Electrical Equipment","layer":"power","segment":"数据中心电力与温控","description":"电气设备与数据中心配电、UPS 及微电网。"},
-    {"ticker":"GEV","name":"GE Vernova","sector":"Industrials","industry":"Heavy Electrical Equipment","layer":"power","segment":"发电与核电","description":"燃气轮机、电网设备与核电技术，数据中心供电建设方。"},
-    {"ticker":"CEG","name":"Constellation Energy","sector":"Utilities","industry":"Power Generation","layer":"power","segment":"发电与核电","description":"美国最大核电运营商，向超大规模数据中心直供电。"},
-    {"ticker":"VST","name":"Vistra","sector":"Utilities","industry":"Power Generation","layer":"power","segment":"发电与核电","description":"独立发电商，核电、天然气与零售电力组合。"},
-    {"ticker":"TLN","name":"Talen Energy","sector":"Utilities","industry":"Power Generation","layer":"power","segment":"发电与核电","description":"核电资产，与 AWS 签订数据中心长期供电协议。"},
-    {"ticker":"NRG","name":"NRG Energy","sector":"Utilities","industry":"Power Generation","layer":"power","segment":"发电与核电","description":"发电与零售电力，布局数据中心供电交易。"},
-    {"ticker":"PWR","name":"Quanta Services","sector":"Industrials","industry":"Construction & Engineering","layer":"power","segment":"电网与工程","description":"电网建设与数据中心电力接入工程。"},
-    {"ticker":"DUK","name":"Duke Energy","sector":"Utilities","industry":"Electric Utilities","layer":"power","segment":"发电与核电","description":"美国大型公用事业，核电与燃气资产为数据中心提供稳定电力。"},
-    {"ticker":"SO","name":"Southern Company","sector":"Utilities","industry":"Electric Utilities","layer":"power","segment":"发电与核电","description":"美国电力公用事业与核电运营商，受益于 AI 数据中心负荷增长。"},
-    {"ticker":"AEP","name":"American Electric Power","sector":"Utilities","industry":"Electric Utilities","layer":"power","segment":"电网与工程","description":"美国输配电网络运营商，扩建 AI 数据中心接入容量。"},
-    {"ticker":"XEL","name":"Xcel Energy","sector":"Utilities","industry":"Electric Utilities","layer":"power","segment":"发电与核电","description":"美国电力公用事业，向大型科技客户提供低碳电力。"},
-    {"ticker":"AES","name":"AES Corporation","sector":"Utilities","industry":"Independent Power Producers","layer":"power","segment":"发电与核电","description":"发电与储能开发商，为数据中心建设可再生能源和电池容量。"},
-    {"ticker":"NEE","name":"NextEra Energy","sector":"Utilities","industry":"Electric Utilities","layer":"power","segment":"发电与核电","description":"可再生能源与电力公用事业龙头，承接 AI 负荷增长。"},
-    {"ticker":"EIX","name":"Edison International","sector":"Utilities","industry":"Electric Utilities","layer":"power","segment":"电网与工程","description":"加州电网与配电运营商，服务高密度数据中心用电需求。"},
-    {"ticker":"CNP","name":"CenterPoint Energy","sector":"Utilities","industry":"Multi-Utilities","layer":"power","segment":"电网与工程","description":"电力与天然气输配网络，为数据中心扩容提供基础设施。"},
-    {"ticker":"NVDA","name":"NVIDIA","sector":"Technology","industry":"Semiconductors","layer":"silicon","segment":"算力芯片","also_in":["infra"],"description":"GPU 与 AI 加速器龙头，数据中心与游戏芯片。"},
-    {"ticker":"AMD","name":"Advanced Micro Devices","sector":"Technology","industry":"Semiconductors","layer":"silicon","segment":"算力芯片","description":"x86 CPU 与数据中心 GPU，AI 芯片竞争者。"},
-    {"ticker":"AVGO","name":"Broadcom","sector":"Technology","industry":"Semiconductors","layer":"silicon","segment":"算力芯片","also_in":["infra"],"description":"半导体与基础设施软件（VMware），AI 网络互连。"},
-    {"ticker":"MRVL","name":"Marvell","sector":"Technology","industry":"Semiconductors","layer":"silicon","segment":"算力芯片","description":"定制 ASIC 与数据中心互连芯片。"},
-    {"ticker":"INTC","name":"Intel","sector":"Technology","industry":"Semiconductors","layer":"silicon","segment":"算力芯片","description":"CPU 大厂，转型 AI 与代工。"},
-    {"ticker":"QCOM","name":"Qualcomm","sector":"Technology","industry":"Semiconductors","layer":"silicon","segment":"算力芯片","also_in":["edge"],"description":"移动 SoC 与自研 AI 边缘芯片。"},
-    {"ticker":"MU","name":"Micron","sector":"Technology","industry":"Semiconductors","layer":"silicon","segment":"存储芯片","description":"内存/HBM 存储芯片，AI 算力关键。"},
-    {"ticker":"SNDK","name":"Sandisk","sector":"Technology","industry":"Semiconductors","layer":"silicon","segment":"存储芯片","description":"闪存存储产品。"},
-    {"ticker":"WDC","name":"Western Digital","sector":"Technology","industry":"Technology Hardware","layer":"silicon","segment":"存储芯片","description":"近线大容量 HDD，AI 数据存储需求受益。"},
-    {"ticker":"STX","name":"Seagate","sector":"Technology","industry":"Technology Hardware","layer":"silicon","segment":"存储芯片","description":"近线硬盘与存储系统，数据中心冷数据层。"},
-    {"ticker":"ADI","name":"Analog Devices","sector":"Technology","industry":"Semiconductors","layer":"silicon","segment":"模拟与电源芯片","description":"模拟芯片，数据中心电源管理。"},
-    {"ticker":"MPWR","name":"Monolithic Power Systems","sector":"Technology","industry":"Semiconductors","layer":"silicon","segment":"模拟与电源芯片","description":"电源管理芯片，AI 服务器多相供电模块。"},
-    {"ticker":"ON","name":"ON Semiconductor","sector":"Technology","industry":"Semiconductors","layer":"silicon","segment":"模拟与电源芯片","description":"功率半导体，数据中心与汽车电源。"},
-    {"ticker":"TXN","name":"Texas Instruments","sector":"Technology","industry":"Semiconductors","layer":"silicon","segment":"模拟与电源芯片","description":"模拟与嵌入式芯片龙头，AI 电源链间接受益。"},
-    {"ticker":"TSM","name":"TSMC","sector":"Technology","industry":"Semiconductors","layer":"silicon","segment":"晶圆代工","description":"全球最大晶圆代工，先进制程领先。"},
-    {"ticker":"GFS","name":"GlobalFoundries","sector":"Technology","industry":"Semiconductors","layer":"silicon","segment":"晶圆代工","description":"成熟制程代工，汽车、工业与硅光平台。"},
-    {"ticker":"ASML","name":"ASML","sector":"Technology","industry":"Semiconductor Equipment","layer":"silicon","segment":"半导体设备与材料","description":"EUV 光刻机独家供应商。"},
-    {"ticker":"AMAT","name":"Applied Materials","sector":"Technology","industry":"Semiconductor Equipment","layer":"silicon","segment":"半导体设备与材料","description":"沉积、刻蚀与离子注入设备，先进封装受益。"},
-    {"ticker":"LRCX","name":"Lam Research","sector":"Technology","industry":"Semiconductor Equipment","layer":"silicon","segment":"半导体设备与材料","description":"刻蚀与沉积设备，HBM 与 3D 封装关键。"},
-    {"ticker":"KLAC","name":"KLA","sector":"Technology","industry":"Semiconductor Equipment","layer":"silicon","segment":"半导体设备与材料","description":"量测与检测设备，先进制程良率控制。"},
-    {"ticker":"TER","name":"Teradyne","sector":"Technology","industry":"Semiconductor Equipment","layer":"silicon","segment":"半导体设备与材料","description":"半导体测试设备与协作机器人。"},
-    {"ticker":"ONTO","name":"Onto Innovation","sector":"Technology","industry":"Semiconductor Equipment","layer":"silicon","segment":"半导体设备与材料","description":"先进封装量测与检测设备。"},
-    {"ticker":"ENTG","name":"Entegris","sector":"Technology","industry":"Semiconductor Equipment","layer":"silicon","segment":"半导体设备与材料","description":"半导体材料、过滤与洁净方案。"},
-    {"ticker":"KEYS","name":"Keysight","sector":"Technology","industry":"Electronic Equipment","layer":"silicon","segment":"半导体设备与材料","description":"测试测量仪器，光模块与高速接口验证。"},
-    {"ticker":"SNPS","name":"Synopsys","sector":"Technology","industry":"System Software","layer":"silicon","segment":"EDA 与 IP","description":"EDA 龙头与芯片 IP，AI 芯片设计工具链。"},
-    {"ticker":"CDNS","name":"Cadence Design Systems","sector":"Technology","industry":"System Software","layer":"silicon","segment":"EDA 与 IP","description":"EDA 与仿真验证，AI 芯片与系统设计。"},
-    {"ticker":"ARM","name":"Arm","sector":"Technology","industry":"Semiconductors","layer":"silicon","segment":"EDA 与 IP","also_in":["edge"],"description":"CPU 架构授权，端侧 AI 核心。"},
-    {"ticker":"CRDO","name":"Credo Technology","sector":"Technology","industry":"Semiconductors","layer":"silicon","segment":"互连与光器件","description":"AI 互连芯片。"},
-    {"ticker":"ALAB","name":"Astera Labs","sector":"Technology","industry":"Semiconductors","layer":"silicon","segment":"互连与光器件","description":"AI 互连接口 IP/芯片。"},
-    {"ticker":"COHR","name":"Coherent","sector":"Technology","industry":"Electronic Components","layer":"silicon","segment":"互连与光器件","description":"光模块与激光器件，数据中心光互连。"},
-    {"ticker":"LITE","name":"Lumentum","sector":"Technology","industry":"Electronic Components","layer":"silicon","segment":"互连与光器件","description":"高速光模块与光器件。"},
-    {"ticker":"UMC","name":"United Microelectronics","sector":"Technology","industry":"Semiconductors","layer":"silicon","segment":"晶圆代工","description":"成熟制程晶圆代工，支撑电源、连接与边缘 AI 芯片。"},
-    {"ticker":"ASX","name":"ASE Technology","sector":"Technology","industry":"Semiconductors","layer":"silicon","segment":"半导体设备与材料","description":"全球封装测试龙头，承接 AI 芯片先进封装需求。"},
-    {"ticker":"SMTC","name":"Semtech","sector":"Technology","industry":"Semiconductors","layer":"silicon","segment":"互连与光器件","description":"高速连接与边缘通信芯片，面向数据中心和 AI 网络。"},
-    {"ticker":"MCHP","name":"Microchip Technology","sector":"Technology","industry":"Semiconductors","layer":"silicon","segment":"模拟与电源芯片","description":"微控制器与模拟芯片，服务边缘 AI、汽车和工业设备。"},
-    {"ticker":"NXPI","name":"NXP Semiconductors","sector":"Technology","industry":"Semiconductors","layer":"silicon","segment":"算力芯片","also_in":["edge"],"description":"汽车与工业边缘处理器，提供本地 AI 与感知芯片。"},
-    {"ticker":"STM","name":"STMicroelectronics","sector":"Technology","industry":"Semiconductors","layer":"silicon","segment":"算力芯片","also_in":["edge"],"description":"微控制器、传感器与边缘 AI 芯片供应商。"},
-    {"ticker":"WOLF","name":"Wolfspeed","sector":"Technology","industry":"Semiconductors","layer":"silicon","segment":"模拟与电源芯片","description":"碳化硅功率半导体，服务 AI 数据中心电源和电动车。"},
-    {"ticker":"LSCC","name":"Lattice Semiconductor","sector":"Technology","industry":"Semiconductors","layer":"silicon","segment":"算力芯片","also_in":["edge"],"description":"低功耗 FPGA 与边缘 AI 加速器。"},
-    {"ticker":"AMKR","name":"Amkor Technology","sector":"Technology","industry":"Semiconductors","layer":"silicon","segment":"半导体设备与材料","description":"先进封装与测试服务，支持 AI 芯片量产。"},
-    {"ticker":"ACLS","name":"Axcelis Technologies","sector":"Technology","industry":"Semiconductor Equipment","layer":"silicon","segment":"半导体设备与材料","description":"离子注入设备供应商，服务功率和先进半导体制造。"},
-    {"ticker":"GLW","name":"Corning","sector":"Technology","industry":"Electronic Components","layer":"silicon","segment":"互连与光器件","description":"光纤、光连接和玻璃材料，支撑 AI 数据中心带宽升级。"},
-    {"ticker":"FN","name":"Fabrinet","sector":"Technology","industry":"Electronic Components","layer":"silicon","segment":"互连与光器件","description":"光通信和精密光电产品代工，受益于 AI 光互连需求。"},
-    {"ticker":"APH","name":"Amphenol","sector":"Technology","industry":"Electronic Components","layer":"silicon","segment":"互连与光器件","description":"高速连接器与线缆，连接 AI 服务器、交换机和机柜。"},
-    {"ticker":"IPGP","name":"IPG Photonics","sector":"Technology","industry":"Electronic Components","layer":"silicon","segment":"互连与光器件","description":"光纤激光器与光电器件，服务先进制造和数据中心互连。"},
-    {"ticker":"UCTT","name":"Ultra Clean Holdings","sector":"Technology","industry":"Semiconductor Equipment","layer":"silicon","segment":"半导体设备与材料","description":"半导体设备子系统供应商，受益于先进制程和 AI 芯片扩产。"},
-    {"ticker":"FORM","name":"FormFactor","sector":"Technology","industry":"Semiconductor Equipment","layer":"silicon","segment":"半导体设备与材料","description":"晶圆探针与测试设备，支持高带宽存储和 AI 芯片验证。"},
-    {"ticker":"DIOD","name":"Diodes","sector":"Technology","industry":"Semiconductors","layer":"silicon","segment":"模拟与电源芯片","description":"分立器件和电源管理芯片，服务服务器与工业 AI 设备。"},
-    {"ticker":"QRVO","name":"Qorvo","sector":"Technology","industry":"Semiconductors","layer":"silicon","segment":"算力芯片","also_in":["edge"],"description":"射频和连接芯片，服务无线边缘设备与智能终端。"},
-    {"ticker":"SWKS","name":"Skyworks Solutions","sector":"Technology","industry":"Semiconductors","layer":"silicon","segment":"算力芯片","also_in":["edge"],"description":"无线连接和射频芯片，支持端侧 AI 设备。"},
-    {"ticker":"SIMO","name":"Silicon Motion Technology","sector":"Technology","industry":"Semiconductors","layer":"silicon","segment":"存储芯片","description":"NAND 闪存控制器，支撑 AI 数据密集型存储。"},
-    {"ticker":"PLAB","name":"Photronics","sector":"Technology","industry":"Semiconductor Equipment","layer":"silicon","segment":"半导体设备与材料","description":"光掩模制造商，服务先进逻辑和存储芯片。"},
-    {"ticker":"ICHR","name":"Ichor Holdings","sector":"Technology","industry":"Semiconductor Equipment","layer":"silicon","segment":"半导体设备与材料","description":"半导体设备流体输送系统，受益于 AI 晶圆厂扩产。"},
-    {"ticker":"CAMT","name":"Camtek","sector":"Technology","industry":"Semiconductor Equipment","layer":"silicon","segment":"半导体设备与材料","description":"先进封装和计量检测设备，服务 AI 芯片良率提升。"},
-    {"ticker":"AEHR","name":"Aehr Test Systems","sector":"Technology","industry":"Semiconductor Equipment","layer":"silicon","segment":"半导体设备与材料","description":"功率和半导体老化测试设备，服务 AI 电源链和汽车芯片。"},
-    {"ticker":"MSFT","name":"Microsoft","sector":"Technology","industry":"System Software","layer":"infra","segment":"云与超大规模","also_in":["model"],"description":"Azure、Windows、Copilot 与 OpenAI 合资。"},
-    {"ticker":"GOOGL","name":"Alphabet","sector":"Communication Services","industry":"Interactive Media","layer":"infra","segment":"云与超大规模","also_in":["model"],"description":"Google 搜索、Gemini 大模型与云计算。"},
-    {"ticker":"GOOG","name":"Alphabet Class C","sector":"Communication Services","industry":"Interactive Media","layer":"infra","segment":"云与超大规模","also_in":["model"],"description":"Alphabet 的 C 类无表决权股。"},
-    {"ticker":"AMZN","name":"Amazon","sector":"Consumer Discretionary","industry":"Commerce","layer":"infra","segment":"云与超大规模","also_in":["model"],"description":"电商、AWS 与生成式 AI（Bedrock）。"},
-    {"ticker":"ORCL","name":"Oracle","sector":"Technology","industry":"Data & Application Svc","layer":"infra","segment":"云与超大规模","description":"云数据库与 OCI 大算力中心。"},
-    {"ticker":"BABA","name":"Alibaba","sector":"Communication Services","industry":"Commerce","layer":"infra","segment":"云与超大规模","also_in":["model"],"description":"通义千问与阿里云。"},
-    {"ticker":"CRWV","name":"CoreWeave","sector":"Technology","industry":"Data & Application Svc","layer":"infra","segment":"GPU 算力租赁","description":"GPU 云（Neocloud）龙头，为大模型公司提供专属算力。"},
-    {"ticker":"NBIS","name":"Nebius","sector":"Technology","industry":"Data & Application Svc","layer":"infra","segment":"GPU 算力租赁","description":"欧洲 GPU 云与 AI 基础设施（原 Yandex 海外业务）。"},
-    {"ticker":"SMCI","name":"Super Micro Computer","sector":"Technology","industry":"Technology Hardware","layer":"infra","segment":"AI 服务器与整机","description":"AI 服务器整机与液冷。"},
-    {"ticker":"DELL","name":"Dell Technologies","sector":"Technology","industry":"Technology Hardware","layer":"infra","segment":"AI 服务器与整机","description":"AI 服务器（PowerEdge）与企业硬件。"},
-    {"ticker":"HPE","name":"Hewlett Packard Enterprise","sector":"Technology","industry":"Technology Hardware","layer":"infra","segment":"AI 服务器与整机","description":"企业硬件与 HPC。"},
-    {"ticker":"ANET","name":"Arista Networks","sector":"Technology","industry":"Communication Equipment","layer":"infra","segment":"数据中心网络","description":"云数据中心交换机。"},
-    {"ticker":"CSCO","name":"Cisco","sector":"Technology","industry":"Communication Equipment","layer":"infra","segment":"数据中心网络","description":"网络设备与基础设施软件。"},
-    {"ticker":"CIEN","name":"Ciena","sector":"Technology","industry":"Communication Equipment","layer":"infra","segment":"数据中心网络","description":"光传输与 DCI，数据中心互联。"},
-    {"ticker":"NOK","name":"Nokia","sector":"Technology","industry":"Communication Equipment","layer":"infra","segment":"数据中心网络","description":"网络设备，5G 与数据中心光网络。"},
-    {"ticker":"T","name":"AT&T","sector":"Communication Services","industry":"Telecom Services","layer":"infra","segment":"电信与连接","description":"美国无线/宽带运营商。"},
-    {"ticker":"VZ","name":"Verizon","sector":"Communication Services","industry":"Telecom Services","layer":"infra","segment":"电信与连接","description":"美国无线/宽带运营商。"},
-    {"ticker":"TMUS","name":"T-Mobile US","sector":"Communication Services","industry":"Telecom Services","layer":"infra","segment":"电信与连接","description":"美国无线运营商。"},
-    {"ticker":"CHTR","name":"Charter Communications","sector":"Communication Services","industry":"Telecom Services","layer":"infra","segment":"电信与连接","description":"宽带电视运营商（Spectrum）。"},
-    {"ticker":"EQIX","name":"Equinix","sector":"Real Estate","industry":"REITs","layer":"infra","segment":"云与超大规模","also_in":["power"],"description":"全球数据中心与互联平台，为 AI 云和企业算力提供机房。"},
-    {"ticker":"DLR","name":"Digital Realty","sector":"Real Estate","industry":"REITs","layer":"infra","segment":"云与超大规模","also_in":["power"],"description":"全球数据中心 REIT，承载超大规模 AI 训练和推理。"},
-    {"ticker":"AMT","name":"American Tower","sector":"Real Estate","industry":"REITs","layer":"infra","segment":"电信与连接","description":"无线通信基础设施，为边缘计算和连接提供站点。"},
-    {"ticker":"BIDU","name":"Baidu","sector":"Communication Services","industry":"Interactive Media","layer":"infra","segment":"云与超大规模","also_in":["model"],"description":"百度智能云与文心大模型，提供中国 AI 云和模型服务。"},
-    {"ticker":"JD","name":"JD.com","sector":"Consumer Discretionary","industry":"Commerce","layer":"infra","segment":"云与超大规模","also_in":["app"],"description":"电商与物流智能化平台，使用 AI 优化供应链和推荐。"},
-    {"ticker":"IREN","name":"IREN","sector":"Technology","industry":"Data & Application Svc","layer":"infra","segment":"GPU 算力租赁","description":"数据中心运营商，向 AI 云和高性能计算扩展。"},
-    {"ticker":"APLD","name":"Applied Digital","sector":"Technology","industry":"Data & Application Svc","layer":"infra","segment":"GPU 算力租赁","description":"高密度数据中心与 GPU 云基础设施开发商。"},
-    {"ticker":"HUT","name":"Hut 8","sector":"Technology","industry":"Data & Application Svc","layer":"infra","segment":"GPU 算力租赁","description":"能源与数据中心平台，转向 AI 算力租赁。"},
-    {"ticker":"CORZ","name":"Core Scientific","sector":"Technology","industry":"Data & Application Svc","layer":"infra","segment":"GPU 算力租赁","description":"大规模数据中心运营商，为 AI 客户部署 GPU 机群。"},
-    {"ticker":"WULF","name":"TeraWulf","sector":"Technology","industry":"Data & Application Svc","layer":"infra","segment":"GPU 算力租赁","description":"低碳数据中心和 AI 高性能计算基础设施。"},
-    {"ticker":"VNET","name":"VNET Group","sector":"Technology","industry":"Data & Application Svc","layer":"infra","segment":"GPU 算力租赁","description":"中国数据中心运营商，提供云和 AI 托管算力。"},
-    {"ticker":"NTAP","name":"NetApp","sector":"Technology","industry":"Technology Hardware","layer":"infra","segment":"AI 服务器与整机","also_in":["model"],"description":"企业数据存储和 AI 数据管理平台。"},
-    {"ticker":"FLEX","name":"Flex","sector":"Technology","industry":"Technology Hardware","layer":"infra","segment":"AI 服务器与整机","description":"电子制造服务与数据中心硬件供应链。"},
-    {"ticker":"FFIV","name":"F5","sector":"Technology","industry":"Communication Equipment","layer":"infra","segment":"数据中心网络","description":"应用交付与 AI 流量安全，连接企业数据中心。"},
-    {"ticker":"AKAM","name":"Akamai Technologies","sector":"Technology","industry":"Data & Application Svc","layer":"infra","segment":"数据中心网络","also_in":["edge"],"description":"边缘云、内容分发和 AI 推理网络。"},
-    {"ticker":"ERIC","name":"Ericsson","sector":"Technology","industry":"Communication Equipment","layer":"infra","segment":"电信与连接","description":"5G 无线网络和边缘计算基础设施。"},
-    {"ticker":"RBBN","name":"Ribbon Communications","sector":"Technology","industry":"Communication Equipment","layer":"infra","segment":"电信与连接","description":"电信软件与实时通信网络，支持边缘 AI 连接。"},
-    {"ticker":"KD","name":"Kyndryl","sector":"Technology","industry":"IT Svc","layer":"infra","segment":"云与超大规模","also_in":["app"],"description":"企业 IT 基础设施托管与云迁移，帮助客户部署 AI 工作负载。"},
-    {"ticker":"RXT","name":"Rackspace Technology","sector":"Technology","industry":"IT Svc","layer":"infra","segment":"云与超大规模","also_in":["app"],"description":"多云托管与生成式 AI 服务，为企业运营 AI 算力。"},
-    {"ticker":"GDS","name":"GDS Holdings","sector":"Technology","industry":"Data & Application Svc","layer":"infra","segment":"云与超大规模","also_in":["power"],"description":"中国高性能数据中心运营商，承载云和 AI 训练需求。"},
-    {"ticker":"LUMN","name":"Lumen Technologies","sector":"Communication Services","industry":"Telecom Services","layer":"infra","segment":"电信与连接","description":"光纤网络和边缘连接，为数据中心和 AI 推理提供带宽。"},
-    {"ticker":"META","name":"Meta","sector":"Communication Services","industry":"Internet Content","layer":"model","segment":"基础模型","also_in":["infra"],"description":"社交与 Llama 开源大模型。"},
-    {"ticker":"SNOW","name":"Snowflake","sector":"Technology","industry":"Data & Application Svc","layer":"model","segment":"数据云与 MLOps","description":"云数据仓库，AI 数据平台。"},
-    {"ticker":"MDB","name":"MongoDB","sector":"Technology","industry":"Data & Application Svc","layer":"model","segment":"数据云与 MLOps","description":"文档数据库与 Atlas Vector Search，RAG 数据层。"},
-    {"ticker":"DDOG","name":"Datadog","sector":"Technology","industry":"IT Svc","layer":"model","segment":"数据云与 MLOps","description":"可观测性与云监控。"},
-    {"ticker":"ESTC","name":"Elastic","sector":"Technology","industry":"Application Svc","layer":"model","segment":"数据云与 MLOps","description":"搜索/观测/AI 检索平台。"},
-    {"ticker":"AI","name":"C3.ai","sector":"Technology","industry":"Application Svc","layer":"model","segment":"AI 开发平台","description":"企业 AI 应用开发平台（C3 Agentic AI）。"},
-    {"ticker":"GTLB","name":"GitLab","sector":"Technology","industry":"System Software","layer":"model","segment":"AI 开发平台","description":"DevSecOps 平台与 AI 编码助手（Duo）。"},
-    {"ticker":"SAP","name":"SAP","sector":"Technology","industry":"Application Svc","layer":"model","segment":"数据云与 MLOps","also_in":["app"],"description":"企业数据平台与 Joule AI 助手，连接业务数据和模型。"},
-    {"ticker":"HUBS","name":"HubSpot","sector":"Technology","industry":"Application Svc","layer":"model","segment":"AI 开发平台","description":"CRM 与营销自动化平台，内置生成式 AI 工具。"},
-    {"ticker":"ZM","name":"Zoom Communications","sector":"Technology","industry":"Application Svc","layer":"app","segment":"客服与联络中心 AI","description":"协作与联络中心平台，提供 AI Companion 和企业智能。"},
-    {"ticker":"CRM","name":"Salesforce","sector":"Technology","industry":"Application Svc","layer":"app","segment":"企业软件与 Agent","description":"CRM SaaS 与 Agentforce AI，面向销售和客户运营。"},
-    {"ticker":"NOW","name":"ServiceNow","sector":"Technology","industry":"Application Svc","layer":"app","segment":"企业软件与 Agent","description":"企业工作流 SaaS 与 AI 代理。"},
-    {"ticker":"MNDY","name":"monday.com","sector":"Technology","industry":"Application Svc","layer":"app","segment":"垂直 SaaS AI","description":"工作协作平台与 AI 自动化。"},
-    {"ticker":"FRSH","name":"Freshworks","sector":"Technology","industry":"Application Svc","layer":"app","segment":"客服与联络中心 AI","description":"SaaS 客服、IT 服务台与 AI 自动化。"},
-    {"ticker":"DOCU","name":"DocuSign","sector":"Technology","industry":"Application Svc","layer":"app","segment":"法律科技 AI","description":"电子签名、合同生命周期与 AI 合同分析工作流。"},
-    {"ticker":"PATH","name":"UiPath","sector":"Technology","industry":"Application Svc","layer":"app","segment":"AI 开发工具","description":"RPA、工作流编排与 Agentic AI 自动化开发平台。"},
-    {"ticker":"U","name":"Unity Software","sector":"Technology","industry":"Application Svc","layer":"app","segment":"AI 开发工具","description":"游戏引擎与实时 3D，提供 Unity AI 开发工具。"},
-    {"ticker":"PLTR","name":"Palantir","sector":"Technology","industry":"Application Svc","layer":"app","segment":"国防与政府 AI","description":"数据平台与 AIP 商业、国防和政府 AI。"},
-    {"ticker":"SOUN","name":"SoundHound AI","sector":"Technology","industry":"Application Svc","layer":"app","segment":"客服与联络中心 AI","description":"语音 AI 助手与联络中心自动化（汽车、餐饮与客服）。"},
-    {"ticker":"APP","name":"AppLovin","sector":"Communication Services","industry":"Media","layer":"app","segment":"广告与营销 AI","description":"移动广告与 AI 推荐引擎。"},
-    {"ticker":"TTD","name":"The Trade Desk","sector":"Technology","industry":"Application Svc","layer":"app","segment":"广告与营销 AI","description":"程序化广告 DSP 与 AI 编排。"},
-    {"ticker":"CRWD","name":"CrowdStrike","sector":"Technology","industry":"IT Svc","layer":"app","segment":"安全与身份","description":"云安全与 Falcon 平台。"},
-    {"ticker":"PANW","name":"Palo Alto Networks","sector":"Technology","industry":"IT Svc","layer":"app","segment":"安全与身份","description":"网络安全平台。"},
-    {"ticker":"ZS","name":"Zscaler","sector":"Technology","industry":"IT Svc","layer":"app","segment":"安全与身份","description":"零信任云安全。"},
-    {"ticker":"OKTA","name":"Okta","sector":"Technology","industry":"IT Svc","layer":"app","segment":"安全与身份","description":"身份管理与 SSO。"},
-    {"ticker":"NET","name":"Cloudflare","sector":"Technology","industry":"Data & Application Svc","layer":"app","segment":"安全与身份","description":"边缘云、Workers 与 AI 网关。"},
-    {"ticker":"DUOL","name":"Duolingo","sector":"Communication Services","industry":"Interactive Media","layer":"app","segment":"消费与内容应用","description":"语言学习，AI 个性化课程。"},
-    {"ticker":"SHOP","name":"Shopify","sector":"Technology","industry":"Commerce","layer":"app","segment":"消费与内容应用","description":"电商平台，Sidekick AI。"},
-    {"ticker":"UBER","name":"Uber","sector":"Communication Services","industry":"Commerce","layer":"app","segment":"消费与内容应用","also_in":["edge"],"description":"出行与即时配送。"},
-    {"ticker":"RDDT","name":"Reddit","sector":"Communication Services","industry":"Interactive Media","layer":"app","segment":"消费与内容应用","description":"社交通讯，AI 检索变现。"},
-    {"ticker":"RBLX","name":"Roblox","sector":"Communication Services","industry":"Entertainment","layer":"app","segment":"消费与内容应用","description":"UGC 平台与生成式 AI 内容。"},
-    {"ticker":"TTWO","name":"Take-Two Interactive","sector":"Communication Services","industry":"Entertainment","layer":"app","segment":"消费与内容应用","description":"游戏发行，AI 辅助开发。"},
-    {"ticker":"NFLX","name":"Netflix","sector":"Communication Services","industry":"Entertainment","layer":"app","segment":"消费与内容应用","description":"流媒体与个性化推荐 AI。"},
-    {"ticker":"SPOT","name":"Spotify","sector":"Communication Services","industry":"Interactive Media","layer":"app","segment":"消费与内容应用","description":"音乐流媒体与 AI 播客。"},
-    {"ticker":"PDD","name":"Pinduoduo","sector":"Communication Services","industry":"Commerce","layer":"app","segment":"消费与内容应用","description":"拼多多/Temu 电商。"},
-    {"ticker":"ACN","name":"Accenture","sector":"Technology","industry":"IT Svc","layer":"app","segment":"IT 服务与集成","description":"IT 咨询与实施，企业 AI 落地。"},
-    {"ticker":"INFY","name":"Infosys","sector":"Technology","industry":"IT Svc","layer":"app","segment":"IT 服务与集成","description":"IT 服务外包，AI 转型交付。"},
-    {"ticker":"EPAM","name":"EPAM Systems","sector":"Technology","industry":"IT Svc","layer":"app","segment":"IT 服务与集成","description":"软件工程服务，AI 工程能力。"},
-    {"ticker":"IBM","name":"IBM","sector":"Technology","industry":"IT Svc","layer":"app","segment":"IT 服务与集成","description":"混合云、watsonx 与 AI 咨询。"},
-    {"ticker":"ADBE","name":"Adobe","sector":"Technology","industry":"Application Svc","layer":"app","segment":"垂直 SaaS AI","description":"Creative Cloud、Firefly 生成式 AI 与企业内容工作流。"},
-    {"ticker":"INTU","name":"Intuit","sector":"Technology","industry":"Application Svc","layer":"app","segment":"金融 AI","description":"财税与小企业软件，使用生成式 AI 提供专家助手。"},
-    {"ticker":"WDAY","name":"Workday","sector":"Technology","industry":"Application Svc","layer":"app","segment":"垂直 SaaS AI","description":"人力与财务 SaaS，加入 AI 代理和人才智能。"},
-    {"ticker":"ASAN","name":"Asana","sector":"Technology","industry":"Application Svc","layer":"app","segment":"垂直 SaaS AI","description":"项目管理与工作流软件，提供 AI teammate。"},
-    {"ticker":"TWLO","name":"Twilio","sector":"Technology","industry":"Application Svc","layer":"app","segment":"客服与联络中心 AI","description":"云通信和客户数据平台，提供 AI 客服与语音能力。"},
-    {"ticker":"BILL","name":"BILL Holdings","sector":"Technology","industry":"Application Svc","layer":"app","segment":"金融 AI","description":"中小企业财务自动化平台，使用 AI 处理支付和账单。"},
-    {"ticker":"TEM","name":"Tempus AI","sector":"Health Care","industry":"Health Information Services","layer":"app","segment":"医疗 AI 与计算生物","description":"临床数据与精准医疗 AI 平台。"},
-    {"ticker":"RXRX","name":"Recursion Pharmaceuticals","sector":"Health Care","industry":"Biotechnology","layer":"app","segment":"医疗 AI 与计算生物","description":"用机器学习和自动化实验进行药物发现。"},
-    {"ticker":"SDGR","name":"Schrodinger","sector":"Health Care","industry":"Biotechnology","layer":"app","segment":"医疗 AI 与计算生物","description":"计算化学和机器学习药物研发平台。"},
-    {"ticker":"BBAI","name":"BigBear.ai","sector":"Technology","industry":"Application Svc","layer":"app","segment":"国防与政府 AI","description":"国防、供应链和决策智能 AI 软件。"},
-    {"ticker":"VERI","name":"Veritone","sector":"Technology","industry":"Application Svc","layer":"app","segment":"客服与联络中心 AI","description":"企业 AI 运营平台和语音、视频智能。"},
-    {"ticker":"AISP","name":"Airship AI","sector":"Technology","industry":"Application Svc","layer":"app","segment":"国防与政府 AI","description":"面向公共安全和国防的视频分析 AI。"},
-    {"ticker":"RXST","name":"RxSight","sector":"Health Care","industry":"Medical Devices","layer":"app","segment":"医疗 AI 与计算生物","description":"眼科医疗设备公司，将 AI 辅助规划用于个性化治疗。"},
-    {"ticker":"GENI","name":"Genius Sports","sector":"Communication Services","industry":"Interactive Media","layer":"app","segment":"广告与营销 AI","description":"体育数据与媒体技术，使用 AI 做内容和广告编排。"},
-    {"ticker":"AFRM","name":"Affirm","sector":"Technology","industry":"Consumer Finance","layer":"app","segment":"金融 AI","description":"数字消费金融平台，用机器学习进行授信和风控。"},
-    {"ticker":"UPST","name":"Upstart","sector":"Technology","industry":"Consumer Finance","layer":"app","segment":"金融 AI","description":"AI 信贷决策平台，向银行提供机器学习承保。"},
-    {"ticker":"ETSY","name":"Etsy","sector":"Consumer Discretionary","industry":"Commerce","layer":"app","segment":"消费与内容应用","description":"创意电商平台，使用 AI 做搜索、推荐和卖家工具。"},
-    {"ticker":"ROKU","name":"Roku","sector":"Communication Services","industry":"Entertainment","layer":"app","segment":"消费与内容应用","description":"流媒体平台，使用 AI 做内容推荐和广告投放。"},
-    {"ticker":"FVRR","name":"Fiverr","sector":"Consumer Discretionary","industry":"Interactive Media","layer":"app","segment":"消费与内容应用","description":"自由职业平台，提供 AI 服务目录和智能匹配。"},
-    {"ticker":"TCOM","name":"Trip.com Group","sector":"Consumer Discretionary","industry":"Hotels & Travel","layer":"app","segment":"消费与内容应用","description":"在线旅行平台，使用 AI 做行程规划和个性化推荐。"},
-    {"ticker":"NTES","name":"NetEase","sector":"Communication Services","industry":"Interactive Media","layer":"app","segment":"消费与内容应用","description":"游戏与内容平台，使用生成式 AI 辅助研发和运营。"},
-    {"ticker":"BILI","name":"Bilibili","sector":"Communication Services","industry":"Interactive Media","layer":"app","segment":"消费与内容应用","description":"视频与社区平台，使用 AI 推荐、审核和内容生成。"},
-    {"ticker":"WB","name":"Weibo","sector":"Communication Services","industry":"Interactive Media","layer":"app","segment":"消费与内容应用","description":"社交媒体平台，使用 AI 做内容推荐、广告和审核。"},
-    {"ticker":"S","name":"SentinelOne","sector":"Technology","industry":"IT Svc","layer":"app","segment":"安全与身份","description":"端点安全平台，以 AI 检测和响应网络威胁。"},
-    {"ticker":"TENB","name":"Tenable Holdings","sector":"Technology","industry":"IT Svc","layer":"app","segment":"安全与身份","description":"暴露面管理和云安全平台，使用机器学习识别风险。"},
-    {"ticker":"RPD","name":"Rapid7","sector":"Technology","industry":"IT Svc","layer":"app","segment":"安全与身份","description":"安全运营与漏洞管理软件，提供 AI 辅助检测和响应。"},
-    {"ticker":"CHKP","name":"Check Point Software","sector":"Technology","industry":"IT Svc","layer":"app","segment":"安全与身份","description":"网络安全平台，将 AI 用于威胁预防和云防护。"},
-    {"ticker":"RLAY","name":"Relay Therapeutics","sector":"Health Care","industry":"Biotechnology","layer":"app","segment":"医疗 AI 与计算生物","description":"计算结构生物学和机器学习药物发现公司。"},
-    {"ticker":"ABCL","name":"AbCellera Biologics","sector":"Health Care","industry":"Biotechnology","layer":"app","segment":"医疗 AI 与计算生物","description":"抗体发现平台，结合机器学习和自动化实验筛选药物。"},
-    {"ticker":"LMND","name":"Lemonade","sector":"Financials","industry":"Insurance","layer":"app","segment":"金融 AI","description":"数字保险平台，以机器学习进行定价、核保和理赔自动化。"},
-    {"ticker":"ROOT","name":"Root","sector":"Financials","industry":"Insurance","layer":"app","segment":"金融 AI","description":"按驾驶行为定价的数字汽车保险，使用数据和机器学习承保。"},
-    {"ticker":"SOFI","name":"SoFi Technologies","sector":"Financials","industry":"Consumer Finance","layer":"app","segment":"金融 AI","description":"数字金融平台，将数据和自动化用于贷款、风控和个性化服务。"},
-    {"ticker":"GH","name":"Guardant Health","sector":"Health Care","industry":"Health Information Services","layer":"app","segment":"医疗 AI 与计算生物","description":"液体活检和精准肿瘤学平台，利用算法辅助癌症检测和治疗决策。"},
-    {"ticker":"RNG","name":"RingCentral","sector":"Technology","industry":"Application Svc","layer":"app","segment":"客服与联络中心 AI","description":"云通信和联络中心平台，提供 AI 会议、转录与客服自动化。"},
-    {"ticker":"FIVN","name":"Five9","sector":"Technology","industry":"Application Svc","layer":"app","segment":"客服与联络中心 AI","description":"云联络中心软件，提供 AI 语音、质检和客服代理。"},
-    {"ticker":"CXM","name":"Sprinklr","sector":"Technology","industry":"Application Svc","layer":"app","segment":"客服与联络中心 AI","description":"统一客户体验管理平台，使用 AI 处理社交、客服和营销对话。"},
-    {"ticker":"FROG","name":"JFrog","sector":"Technology","industry":"System Software","layer":"app","segment":"AI 开发工具","description":"DevOps 和软件供应链平台，支持 AI 模型与应用的构建部署。"},
-    {"ticker":"BOX","name":"Box","sector":"Technology","industry":"Data & Application Svc","layer":"app","segment":"AI 开发工具","description":"企业内容云与 Box AI，帮助团队检索、生成和治理企业知识。"},
-    {"ticker":"TEAM","name":"Atlassian","sector":"Technology","industry":"Application Svc","layer":"app","segment":"AI 开发工具","description":"软件研发协作平台，提供 Jira、Confluence 与 Rovo AI 工具。"},
-    {"ticker":"LAW","name":"CS Disco","sector":"Technology","industry":"Application Svc","layer":"app","segment":"法律科技 AI","description":"法律诉讼管理平台，使用 AI 做文档审阅、检索和案件协作。"},
-    {"ticker":"TRI","name":"Thomson Reuters","sector":"Communication Services","industry":"Publishing","layer":"app","segment":"法律科技 AI","description":"法律、税务和专业信息服务，提供 CoCounsel 生成式 AI。"},
-    {"ticker":"VEEV","name":"Veeva Systems","sector":"Technology","industry":"Application Svc","layer":"app","segment":"垂直 SaaS AI","description":"生命科学行业 SaaS，使用 AI 优化临床、质量和商业流程。"},
-    {"ticker":"CSGP","name":"CoStar Group","sector":"Technology","industry":"Data & Application Svc","layer":"app","segment":"垂直 SaaS AI","description":"商业地产数据和软件平台，使用 AI 做估值、搜索和营销。"},
-    {"ticker":"TOST","name":"Toast","sector":"Technology","industry":"Application Svc","layer":"app","segment":"垂直 SaaS AI","description":"餐饮行业 SaaS 和支付平台，使用 AI 做经营分析与客户营销。"},
-    {"ticker":"LDOS","name":"Leidos Holdings","sector":"Industrials","industry":"IT Svc","layer":"app","segment":"国防与政府 AI","description":"国防、情报和政府 IT 服务商，提供任务分析与 AI 决策系统。"},
-    {"ticker":"BAH","name":"Booz Allen Hamilton","sector":"Industrials","industry":"IT Svc","layer":"app","segment":"国防与政府 AI","description":"政府和国防技术咨询商，为联邦客户部署 AI 与数据平台。"},
-    {"ticker":"KTOS","name":"Kratos Defense & Security Solutions","sector":"Industrials","industry":"Aerospace & Defense","layer":"app","segment":"国防与政府 AI","description":"无人系统、高超声速和国防电子，推动自主系统与 AI 感知。"},
-    {"ticker":"AVAV","name":"AeroVironment","sector":"Industrials","industry":"Aerospace & Defense","layer":"app","segment":"国防与政府 AI","description":"无人机和自主系统供应商，提供 AI 辅助侦察与打击平台。"},
-    {"ticker":"MRCY","name":"Mercury Systems","sector":"Industrials","industry":"Aerospace & Defense","layer":"app","segment":"国防与政府 AI","description":"国防计算和传感器系统，为任务关键型 AI 提供硬件平台。"},
-    {"ticker":"AAPL","name":"Apple","sector":"Technology","industry":"Consumer Electronics","layer":"edge","segment":"端侧设备","description":"iOS 生态、Mac 与 Apple Intelligence。"},
-    {"ticker":"HPQ","name":"HP Inc","sector":"Technology","industry":"Technology Hardware","layer":"edge","segment":"端侧设备","description":"PC 与企业计算硬件。"},
-    {"ticker":"SONO","name":"Sonos","sector":"Technology","industry":"Consumer Electronics","layer":"edge","segment":"端侧设备","description":"智能音箱与音频产品。"},
-    {"ticker":"TSLA","name":"Tesla","sector":"Consumer Discretionary","industry":"Auto","layer":"edge","segment":"自动驾驶与机器人","also_in":["power"],"description":"电动车与自动驾驶、机器人 Optimus。"},
-    {"ticker":"MBLY","name":"Mobileye","sector":"Consumer Discretionary","industry":"Auto","layer":"edge","segment":"自动驾驶与机器人","description":"ADAS/自动驾驶芯片与算法。"}
-    ,{"ticker":"NIO","name":"NIO","sector":"Consumer Discretionary","industry":"Auto","layer":"edge","segment":"自动驾驶与机器人","description":"智能电动车与辅助驾驶软件，持续部署端侧 AI。"}
-    ,{"ticker":"LI","name":"Li Auto","sector":"Consumer Discretionary","industry":"Auto","layer":"edge","segment":"自动驾驶与机器人","description":"智能电动车和辅助驾驶系统，使用 AI 做感知与座舱交互。"}
-    ,{"ticker":"XPEV","name":"XPeng","sector":"Consumer Discretionary","industry":"Auto","layer":"edge","segment":"自动驾驶与机器人","description":"智能汽车与自动驾驶软件，推进端到端 AI 辅助驾驶。"}
-    ,{"ticker":"AUR","name":"Aurora Innovation","sector":"Technology","industry":"Application Svc","layer":"edge","segment":"自动驾驶与机器人","description":"自动驾驶卡车和软件平台，专注感知、规划与车队运营 AI。"}
-    ,{"ticker":"SERV","name":"Serve Robotics","sector":"Industrials","industry":"Machinery","layer":"edge","segment":"自动驾驶与机器人","description":"人行道配送机器人，使用视觉和导航 AI 实现无人配送。"}
-    ,{"ticker":"SYM","name":"Symbotic","sector":"Industrials","industry":"Machinery","layer":"edge","segment":"自动驾驶与机器人","description":"仓储自动化机器人和软件，使用 AI 优化物流编排。"}
-    ,{"ticker":"ISRG","name":"Intuitive Surgical","sector":"Health Care","industry":"Medical Devices","layer":"edge","segment":"自动驾驶与机器人","description":"手术机器人平台，结合计算机视觉和智能辅助手术。"}
-  ]
+ "_comment": "Single source of truth for the AI value-chain universe served by the backend API. `layers` = 有序的 AI 产业链分层（上游 -> 下游），每层声明自己的 `segments`；每个 company 声明 layer + segment，可选 also_in = 该公司的跨层角色（层 id 数组）。sector/industry 使用 GICS 标签，description 为节点卡片文案。Ticker 到 CIK 在构建时解析（离线走 sec/.cache/company_tickers.json，否则 EDGAR）。",
+ "layers": [
+  {
+   "id": "power",
+   "name": "能源与电力",
+   "name_en": "Energy & Power",
+   "summary": "AI 算力的物理底座：发电、输电、配电与液冷散热。机柜功率密度上升后，电力供给成为算力扩张的第一约束。",
+   "segments": [
+    "数据中心电力与温控",
+    "发电与核电",
+    "电网与工程"
+   ]
+  },
+  {
+   "id": "silicon",
+   "name": "芯片与半导体",
+   "name_en": "Semiconductors & Silicon",
+   "summary": "算力芯片、存储、模拟电源、晶圆代工、设备材料、EDA/IP 与光互连，是 AI 硬件价值链最上游。",
+   "segments": [
+    "算力芯片",
+    "存储芯片",
+    "模拟与电源芯片",
+    "晶圆代工",
+    "半导体设备与材料",
+    "EDA 与 IP",
+    "互连与光器件"
+   ]
+  },
+  {
+   "id": "infra",
+   "name": "算力基础设施与云",
+   "name_en": "Compute Infrastructure & Cloud",
+   "summary": "AI 服务器整机、数据中心网络、超大规模云与 GPU 算力租赁，把芯片转化为可售算力。",
+   "segments": [
+    "云与超大规模",
+    "GPU 算力租赁",
+    "AI 服务器与整机",
+    "数据中心网络",
+    "电信与连接"
+   ]
+  },
+  {
+   "id": "model",
+   "name": "模型与数据平台",
+   "name_en": "Models & Data Platform",
+   "summary": "基础大模型、数据云与 MLOps、AI 开发平台，处在算力与商业应用之间的中间层。",
+   "segments": [
+    "基础模型",
+    "数据云与 MLOps",
+    "AI 开发平台"
+   ]
+  },
+  {
+   "id": "app",
+   "name": "AI 软件与应用",
+   "name_en": "AI Software & Applications",
+   "summary": "企业软件与 Agent、金融与医疗 AI、客服营销、开发工具、法律科技、垂直 SaaS、国防政府软件及消费应用，直接变现 AI 能力。",
+   "segments": [
+    "企业软件与 Agent",
+    "广告与营销 AI",
+    "安全与身份",
+    "消费与内容应用",
+    "IT 服务与集成",
+    "金融 AI",
+    "医疗 AI 与计算生物",
+    "客服与联络中心 AI",
+    "AI 开发工具",
+    "法律科技 AI",
+    "垂直 SaaS AI",
+    "国防与政府 AI"
+   ]
+  },
+  {
+   "id": "edge",
+   "name": "终端与具身智能",
+   "name_en": "Edge & Embodied AI",
+   "summary": "端侧设备、自动驾驶与机器人，把模型下沉到物理世界。",
+   "segments": [
+    "端侧设备",
+    "自动驾驶与机器人"
+   ]
+  }
+ ],
+ "companies": [
+  {
+   "ticker": "VRT",
+   "name": "Vertiv",
+   "sector": "Industrials",
+   "industry": "Electrical Equipment",
+   "layer": "power",
+   "segment": "数据中心电力与温控",
+   "description": "数据中心配电、UPS 与液冷温控，AI 机柜功率密度提升的直接受益者。"
+  },
+  {
+   "ticker": "ETN",
+   "name": "Eaton",
+   "sector": "Industrials",
+   "industry": "Electrical Equipment",
+   "layer": "power",
+   "segment": "数据中心电力与温控",
+   "description": "电气设备与数据中心配电、UPS 及微电网。"
+  },
+  {
+   "ticker": "GEV",
+   "name": "GE Vernova",
+   "sector": "Industrials",
+   "industry": "Heavy Electrical Equipment",
+   "layer": "power",
+   "segment": "发电与核电",
+   "description": "燃气轮机、电网设备与核电技术，数据中心供电建设方。"
+  },
+  {
+   "ticker": "CEG",
+   "name": "Constellation Energy",
+   "sector": "Utilities",
+   "industry": "Power Generation",
+   "layer": "power",
+   "segment": "发电与核电",
+   "description": "美国最大核电运营商，向超大规模数据中心直供电。"
+  },
+  {
+   "ticker": "VST",
+   "name": "Vistra",
+   "sector": "Utilities",
+   "industry": "Power Generation",
+   "layer": "power",
+   "segment": "发电与核电",
+   "description": "独立发电商，核电、天然气与零售电力组合。"
+  },
+  {
+   "ticker": "TLN",
+   "name": "Talen Energy",
+   "sector": "Utilities",
+   "industry": "Power Generation",
+   "layer": "power",
+   "segment": "发电与核电",
+   "description": "核电资产，与 AWS 签订数据中心长期供电协议。"
+  },
+  {
+   "ticker": "NRG",
+   "name": "NRG Energy",
+   "sector": "Utilities",
+   "industry": "Power Generation",
+   "layer": "power",
+   "segment": "发电与核电",
+   "description": "发电与零售电力，布局数据中心供电交易。"
+  },
+  {
+   "ticker": "PWR",
+   "name": "Quanta Services",
+   "sector": "Industrials",
+   "industry": "Construction & Engineering",
+   "layer": "power",
+   "segment": "电网与工程",
+   "description": "电网建设与数据中心电力接入工程。"
+  },
+  {
+   "ticker": "DUK",
+   "name": "Duke Energy",
+   "sector": "Utilities",
+   "industry": "Electric Utilities",
+   "layer": "power",
+   "segment": "发电与核电",
+   "description": "美国大型公用事业，核电与燃气资产为数据中心提供稳定电力。"
+  },
+  {
+   "ticker": "SO",
+   "name": "Southern Company",
+   "sector": "Utilities",
+   "industry": "Electric Utilities",
+   "layer": "power",
+   "segment": "发电与核电",
+   "description": "美国电力公用事业与核电运营商，受益于 AI 数据中心负荷增长。"
+  },
+  {
+   "ticker": "AEP",
+   "name": "American Electric Power",
+   "sector": "Utilities",
+   "industry": "Electric Utilities",
+   "layer": "power",
+   "segment": "电网与工程",
+   "description": "美国输配电网络运营商，扩建 AI 数据中心接入容量。"
+  },
+  {
+   "ticker": "XEL",
+   "name": "Xcel Energy",
+   "sector": "Utilities",
+   "industry": "Electric Utilities",
+   "layer": "power",
+   "segment": "发电与核电",
+   "description": "美国电力公用事业，向大型科技客户提供低碳电力。"
+  },
+  {
+   "ticker": "AES",
+   "name": "AES Corporation",
+   "sector": "Utilities",
+   "industry": "Independent Power Producers",
+   "layer": "power",
+   "segment": "发电与核电",
+   "description": "发电与储能开发商，为数据中心建设可再生能源和电池容量。"
+  },
+  {
+   "ticker": "NEE",
+   "name": "NextEra Energy",
+   "sector": "Utilities",
+   "industry": "Electric Utilities",
+   "layer": "power",
+   "segment": "发电与核电",
+   "description": "可再生能源与电力公用事业龙头，承接 AI 负荷增长。"
+  },
+  {
+   "ticker": "EIX",
+   "name": "Edison International",
+   "sector": "Utilities",
+   "industry": "Electric Utilities",
+   "layer": "power",
+   "segment": "电网与工程",
+   "description": "加州电网与配电运营商，服务高密度数据中心用电需求。"
+  },
+  {
+   "ticker": "CNP",
+   "name": "CenterPoint Energy",
+   "sector": "Utilities",
+   "industry": "Multi-Utilities",
+   "layer": "power",
+   "segment": "电网与工程",
+   "description": "电力与天然气输配网络，为数据中心扩容提供基础设施。"
+  },
+  {
+   "ticker": "NVDA",
+   "name": "NVIDIA",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "算力芯片",
+   "also_in": [
+    "infra"
+   ],
+   "description": "GPU 与 AI 加速器龙头，数据中心与游戏芯片。"
+  },
+  {
+   "ticker": "AMD",
+   "name": "Advanced Micro Devices",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "算力芯片",
+   "description": "x86 CPU 与数据中心 GPU，AI 芯片竞争者。"
+  },
+  {
+   "ticker": "AVGO",
+   "name": "Broadcom",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "算力芯片",
+   "also_in": [
+    "infra"
+   ],
+   "description": "半导体与基础设施软件（VMware），AI 网络互连。"
+  },
+  {
+   "ticker": "MRVL",
+   "name": "Marvell",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "算力芯片",
+   "description": "定制 ASIC 与数据中心互连芯片。"
+  },
+  {
+   "ticker": "INTC",
+   "name": "Intel",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "算力芯片",
+   "description": "CPU 大厂，转型 AI 与代工。"
+  },
+  {
+   "ticker": "QCOM",
+   "name": "Qualcomm",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "算力芯片",
+   "also_in": [
+    "edge"
+   ],
+   "description": "移动 SoC 与自研 AI 边缘芯片。"
+  },
+  {
+   "ticker": "MU",
+   "name": "Micron",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "存储芯片",
+   "description": "内存/HBM 存储芯片，AI 算力关键。"
+  },
+  {
+   "ticker": "SNDK",
+   "name": "Sandisk",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "存储芯片",
+   "description": "闪存存储产品。"
+  },
+  {
+   "ticker": "WDC",
+   "name": "Western Digital",
+   "sector": "Technology",
+   "industry": "Technology Hardware",
+   "layer": "silicon",
+   "segment": "存储芯片",
+   "description": "近线大容量 HDD，AI 数据存储需求受益。"
+  },
+  {
+   "ticker": "STX",
+   "name": "Seagate",
+   "sector": "Technology",
+   "industry": "Technology Hardware",
+   "layer": "silicon",
+   "segment": "存储芯片",
+   "description": "近线硬盘与存储系统，数据中心冷数据层。"
+  },
+  {
+   "ticker": "ADI",
+   "name": "Analog Devices",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "模拟与电源芯片",
+   "description": "模拟芯片，数据中心电源管理。"
+  },
+  {
+   "ticker": "MPWR",
+   "name": "Monolithic Power Systems",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "模拟与电源芯片",
+   "description": "电源管理芯片，AI 服务器多相供电模块。"
+  },
+  {
+   "ticker": "ON",
+   "name": "ON Semiconductor",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "模拟与电源芯片",
+   "description": "功率半导体，数据中心与汽车电源。"
+  },
+  {
+   "ticker": "TXN",
+   "name": "Texas Instruments",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "模拟与电源芯片",
+   "description": "模拟与嵌入式芯片龙头，AI 电源链间接受益。"
+  },
+  {
+   "ticker": "TSM",
+   "name": "TSMC",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "晶圆代工",
+   "description": "全球最大晶圆代工，先进制程领先。"
+  },
+  {
+   "ticker": "GFS",
+   "name": "GlobalFoundries",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "晶圆代工",
+   "description": "成熟制程代工，汽车、工业与硅光平台。"
+  },
+  {
+   "ticker": "ASML",
+   "name": "ASML",
+   "sector": "Technology",
+   "industry": "Semiconductor Equipment",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "EUV 光刻机独家供应商。"
+  },
+  {
+   "ticker": "AMAT",
+   "name": "Applied Materials",
+   "sector": "Technology",
+   "industry": "Semiconductor Equipment",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "沉积、刻蚀与离子注入设备，先进封装受益。"
+  },
+  {
+   "ticker": "LRCX",
+   "name": "Lam Research",
+   "sector": "Technology",
+   "industry": "Semiconductor Equipment",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "刻蚀与沉积设备，HBM 与 3D 封装关键。"
+  },
+  {
+   "ticker": "KLAC",
+   "name": "KLA",
+   "sector": "Technology",
+   "industry": "Semiconductor Equipment",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "量测与检测设备，先进制程良率控制。"
+  },
+  {
+   "ticker": "TER",
+   "name": "Teradyne",
+   "sector": "Technology",
+   "industry": "Semiconductor Equipment",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "半导体测试设备与协作机器人。"
+  },
+  {
+   "ticker": "ONTO",
+   "name": "Onto Innovation",
+   "sector": "Technology",
+   "industry": "Semiconductor Equipment",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "先进封装量测与检测设备。"
+  },
+  {
+   "ticker": "ENTG",
+   "name": "Entegris",
+   "sector": "Technology",
+   "industry": "Semiconductor Equipment",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "半导体材料、过滤与洁净方案。"
+  },
+  {
+   "ticker": "KEYS",
+   "name": "Keysight",
+   "sector": "Technology",
+   "industry": "Electronic Equipment",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "测试测量仪器，光模块与高速接口验证。"
+  },
+  {
+   "ticker": "SNPS",
+   "name": "Synopsys",
+   "sector": "Technology",
+   "industry": "System Software",
+   "layer": "silicon",
+   "segment": "EDA 与 IP",
+   "description": "EDA 龙头与芯片 IP，AI 芯片设计工具链。"
+  },
+  {
+   "ticker": "CDNS",
+   "name": "Cadence Design Systems",
+   "sector": "Technology",
+   "industry": "System Software",
+   "layer": "silicon",
+   "segment": "EDA 与 IP",
+   "description": "EDA 与仿真验证，AI 芯片与系统设计。"
+  },
+  {
+   "ticker": "ARM",
+   "name": "Arm",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "EDA 与 IP",
+   "also_in": [
+    "edge"
+   ],
+   "description": "CPU 架构授权，端侧 AI 核心。"
+  },
+  {
+   "ticker": "CRDO",
+   "name": "Credo Technology",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "互连与光器件",
+   "description": "AI 互连芯片。"
+  },
+  {
+   "ticker": "ALAB",
+   "name": "Astera Labs",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "互连与光器件",
+   "description": "AI 互连接口 IP/芯片。"
+  },
+  {
+   "ticker": "COHR",
+   "name": "Coherent",
+   "sector": "Technology",
+   "industry": "Electronic Components",
+   "layer": "silicon",
+   "segment": "互连与光器件",
+   "description": "光模块与激光器件，数据中心光互连。"
+  },
+  {
+   "ticker": "LITE",
+   "name": "Lumentum",
+   "sector": "Technology",
+   "industry": "Electronic Components",
+   "layer": "silicon",
+   "segment": "互连与光器件",
+   "description": "高速光模块与光器件。"
+  },
+  {
+   "ticker": "UMC",
+   "name": "United Microelectronics",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "晶圆代工",
+   "description": "成熟制程晶圆代工，支撑电源、连接与边缘 AI 芯片。"
+  },
+  {
+   "ticker": "ASX",
+   "name": "ASE Technology",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "全球封装测试龙头，承接 AI 芯片先进封装需求。"
+  },
+  {
+   "ticker": "SMTC",
+   "name": "Semtech",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "互连与光器件",
+   "description": "高速连接与边缘通信芯片，面向数据中心和 AI 网络。"
+  },
+  {
+   "ticker": "MCHP",
+   "name": "Microchip Technology",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "模拟与电源芯片",
+   "description": "微控制器与模拟芯片，服务边缘 AI、汽车和工业设备。"
+  },
+  {
+   "ticker": "NXPI",
+   "name": "NXP Semiconductors",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "算力芯片",
+   "also_in": [
+    "edge"
+   ],
+   "description": "汽车与工业边缘处理器，提供本地 AI 与感知芯片。"
+  },
+  {
+   "ticker": "STM",
+   "name": "STMicroelectronics",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "算力芯片",
+   "also_in": [
+    "edge"
+   ],
+   "description": "微控制器、传感器与边缘 AI 芯片供应商。"
+  },
+  {
+   "ticker": "WOLF",
+   "name": "Wolfspeed",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "模拟与电源芯片",
+   "description": "碳化硅功率半导体，服务 AI 数据中心电源和电动车。"
+  },
+  {
+   "ticker": "LSCC",
+   "name": "Lattice Semiconductor",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "算力芯片",
+   "also_in": [
+    "edge"
+   ],
+   "description": "低功耗 FPGA 与边缘 AI 加速器。"
+  },
+  {
+   "ticker": "AMKR",
+   "name": "Amkor Technology",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "先进封装与测试服务，支持 AI 芯片量产。"
+  },
+  {
+   "ticker": "ACLS",
+   "name": "Axcelis Technologies",
+   "sector": "Technology",
+   "industry": "Semiconductor Equipment",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "离子注入设备供应商，服务功率和先进半导体制造。"
+  },
+  {
+   "ticker": "GLW",
+   "name": "Corning",
+   "sector": "Technology",
+   "industry": "Electronic Components",
+   "layer": "silicon",
+   "segment": "互连与光器件",
+   "description": "光纤、光连接和玻璃材料，支撑 AI 数据中心带宽升级。"
+  },
+  {
+   "ticker": "FN",
+   "name": "Fabrinet",
+   "sector": "Technology",
+   "industry": "Electronic Components",
+   "layer": "silicon",
+   "segment": "互连与光器件",
+   "description": "光通信和精密光电产品代工，受益于 AI 光互连需求。"
+  },
+  {
+   "ticker": "APH",
+   "name": "Amphenol",
+   "sector": "Technology",
+   "industry": "Electronic Components",
+   "layer": "silicon",
+   "segment": "互连与光器件",
+   "description": "高速连接器与线缆，连接 AI 服务器、交换机和机柜。"
+  },
+  {
+   "ticker": "IPGP",
+   "name": "IPG Photonics",
+   "sector": "Technology",
+   "industry": "Electronic Components",
+   "layer": "silicon",
+   "segment": "互连与光器件",
+   "description": "光纤激光器与光电器件，服务先进制造和数据中心互连。"
+  },
+  {
+   "ticker": "UCTT",
+   "name": "Ultra Clean Holdings",
+   "sector": "Technology",
+   "industry": "Semiconductor Equipment",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "半导体设备子系统供应商，受益于先进制程和 AI 芯片扩产。"
+  },
+  {
+   "ticker": "FORM",
+   "name": "FormFactor",
+   "sector": "Technology",
+   "industry": "Semiconductor Equipment",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "晶圆探针与测试设备，支持高带宽存储和 AI 芯片验证。"
+  },
+  {
+   "ticker": "DIOD",
+   "name": "Diodes",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "模拟与电源芯片",
+   "description": "分立器件和电源管理芯片，服务服务器与工业 AI 设备。"
+  },
+  {
+   "ticker": "QRVO",
+   "name": "Qorvo",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "算力芯片",
+   "also_in": [
+    "edge"
+   ],
+   "description": "射频和连接芯片，服务无线边缘设备与智能终端。"
+  },
+  {
+   "ticker": "SWKS",
+   "name": "Skyworks Solutions",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "算力芯片",
+   "also_in": [
+    "edge"
+   ],
+   "description": "无线连接和射频芯片，支持端侧 AI 设备。"
+  },
+  {
+   "ticker": "SIMO",
+   "name": "Silicon Motion Technology",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "存储芯片",
+   "description": "NAND 闪存控制器，支撑 AI 数据密集型存储。"
+  },
+  {
+   "ticker": "PLAB",
+   "name": "Photronics",
+   "sector": "Technology",
+   "industry": "Semiconductor Equipment",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "光掩模制造商，服务先进逻辑和存储芯片。"
+  },
+  {
+   "ticker": "ICHR",
+   "name": "Ichor Holdings",
+   "sector": "Technology",
+   "industry": "Semiconductor Equipment",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "半导体设备流体输送系统，受益于 AI 晶圆厂扩产。"
+  },
+  {
+   "ticker": "CAMT",
+   "name": "Camtek",
+   "sector": "Technology",
+   "industry": "Semiconductor Equipment",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "先进封装和计量检测设备，服务 AI 芯片良率提升。"
+  },
+  {
+   "ticker": "AEHR",
+   "name": "Aehr Test Systems",
+   "sector": "Technology",
+   "industry": "Semiconductor Equipment",
+   "layer": "silicon",
+   "segment": "半导体设备与材料",
+   "description": "功率和半导体老化测试设备，服务 AI 电源链和汽车芯片。"
+  },
+  {
+   "ticker": "MSFT",
+   "name": "Microsoft",
+   "sector": "Technology",
+   "industry": "System Software",
+   "layer": "infra",
+   "segment": "云与超大规模",
+   "also_in": [
+    "model"
+   ],
+   "description": "Azure、Windows、Copilot 与 OpenAI 合资。"
+  },
+  {
+   "ticker": "GOOGL",
+   "name": "Alphabet",
+   "sector": "Communication Services",
+   "industry": "Interactive Media",
+   "layer": "infra",
+   "segment": "云与超大规模",
+   "also_in": [
+    "model"
+   ],
+   "description": "Google 搜索、Gemini 大模型与云计算。"
+  },
+  {
+   "ticker": "GOOG",
+   "name": "Alphabet Class C",
+   "sector": "Communication Services",
+   "industry": "Interactive Media",
+   "layer": "infra",
+   "segment": "云与超大规模",
+   "also_in": [
+    "model"
+   ],
+   "description": "Alphabet 的 C 类无表决权股。"
+  },
+  {
+   "ticker": "AMZN",
+   "name": "Amazon",
+   "sector": "Consumer Discretionary",
+   "industry": "Commerce",
+   "layer": "infra",
+   "segment": "云与超大规模",
+   "also_in": [
+    "model"
+   ],
+   "description": "电商、AWS 与生成式 AI（Bedrock）。"
+  },
+  {
+   "ticker": "ORCL",
+   "name": "Oracle",
+   "sector": "Technology",
+   "industry": "Data & Application Svc",
+   "layer": "infra",
+   "segment": "云与超大规模",
+   "description": "云数据库与 OCI 大算力中心。"
+  },
+  {
+   "ticker": "BABA",
+   "name": "Alibaba",
+   "sector": "Communication Services",
+   "industry": "Commerce",
+   "layer": "infra",
+   "segment": "云与超大规模",
+   "also_in": [
+    "model"
+   ],
+   "description": "通义千问与阿里云。"
+  },
+  {
+   "ticker": "CRWV",
+   "name": "CoreWeave",
+   "sector": "Technology",
+   "industry": "Data & Application Svc",
+   "layer": "infra",
+   "segment": "GPU 算力租赁",
+   "description": "GPU 云（Neocloud）龙头，为大模型公司提供专属算力。"
+  },
+  {
+   "ticker": "NBIS",
+   "name": "Nebius",
+   "sector": "Technology",
+   "industry": "Data & Application Svc",
+   "layer": "infra",
+   "segment": "GPU 算力租赁",
+   "description": "欧洲 GPU 云与 AI 基础设施（原 Yandex 海外业务）。"
+  },
+  {
+   "ticker": "SMCI",
+   "name": "Super Micro Computer",
+   "sector": "Technology",
+   "industry": "Technology Hardware",
+   "layer": "infra",
+   "segment": "AI 服务器与整机",
+   "description": "AI 服务器整机与液冷。"
+  },
+  {
+   "ticker": "DELL",
+   "name": "Dell Technologies",
+   "sector": "Technology",
+   "industry": "Technology Hardware",
+   "layer": "infra",
+   "segment": "AI 服务器与整机",
+   "description": "AI 服务器（PowerEdge）与企业硬件。"
+  },
+  {
+   "ticker": "HPE",
+   "name": "Hewlett Packard Enterprise",
+   "sector": "Technology",
+   "industry": "Technology Hardware",
+   "layer": "infra",
+   "segment": "AI 服务器与整机",
+   "description": "企业硬件与 HPC。"
+  },
+  {
+   "ticker": "ANET",
+   "name": "Arista Networks",
+   "sector": "Technology",
+   "industry": "Communication Equipment",
+   "layer": "infra",
+   "segment": "数据中心网络",
+   "description": "云数据中心交换机。"
+  },
+  {
+   "ticker": "CSCO",
+   "name": "Cisco",
+   "sector": "Technology",
+   "industry": "Communication Equipment",
+   "layer": "infra",
+   "segment": "数据中心网络",
+   "description": "网络设备与基础设施软件。"
+  },
+  {
+   "ticker": "CIEN",
+   "name": "Ciena",
+   "sector": "Technology",
+   "industry": "Communication Equipment",
+   "layer": "infra",
+   "segment": "数据中心网络",
+   "description": "光传输与 DCI，数据中心互联。"
+  },
+  {
+   "ticker": "NOK",
+   "name": "Nokia",
+   "sector": "Technology",
+   "industry": "Communication Equipment",
+   "layer": "infra",
+   "segment": "数据中心网络",
+   "description": "网络设备，5G 与数据中心光网络。"
+  },
+  {
+   "ticker": "T",
+   "name": "AT&T",
+   "sector": "Communication Services",
+   "industry": "Telecom Services",
+   "layer": "infra",
+   "segment": "电信与连接",
+   "description": "美国无线/宽带运营商。"
+  },
+  {
+   "ticker": "VZ",
+   "name": "Verizon",
+   "sector": "Communication Services",
+   "industry": "Telecom Services",
+   "layer": "infra",
+   "segment": "电信与连接",
+   "description": "美国无线/宽带运营商。"
+  },
+  {
+   "ticker": "TMUS",
+   "name": "T-Mobile US",
+   "sector": "Communication Services",
+   "industry": "Telecom Services",
+   "layer": "infra",
+   "segment": "电信与连接",
+   "description": "美国无线运营商。"
+  },
+  {
+   "ticker": "CHTR",
+   "name": "Charter Communications",
+   "sector": "Communication Services",
+   "industry": "Telecom Services",
+   "layer": "infra",
+   "segment": "电信与连接",
+   "description": "宽带电视运营商（Spectrum）。"
+  },
+  {
+   "ticker": "EQIX",
+   "name": "Equinix",
+   "sector": "Real Estate",
+   "industry": "REITs",
+   "layer": "infra",
+   "segment": "云与超大规模",
+   "also_in": [
+    "power"
+   ],
+   "description": "全球数据中心与互联平台，为 AI 云和企业算力提供机房。"
+  },
+  {
+   "ticker": "DLR",
+   "name": "Digital Realty",
+   "sector": "Real Estate",
+   "industry": "REITs",
+   "layer": "infra",
+   "segment": "云与超大规模",
+   "also_in": [
+    "power"
+   ],
+   "description": "全球数据中心 REIT，承载超大规模 AI 训练和推理。"
+  },
+  {
+   "ticker": "AMT",
+   "name": "American Tower",
+   "sector": "Real Estate",
+   "industry": "REITs",
+   "layer": "infra",
+   "segment": "电信与连接",
+   "description": "无线通信基础设施，为边缘计算和连接提供站点。"
+  },
+  {
+   "ticker": "BIDU",
+   "name": "Baidu",
+   "sector": "Communication Services",
+   "industry": "Interactive Media",
+   "layer": "infra",
+   "segment": "云与超大规模",
+   "also_in": [
+    "model"
+   ],
+   "description": "百度智能云与文心大模型，提供中国 AI 云和模型服务。"
+  },
+  {
+   "ticker": "JD",
+   "name": "JD.com",
+   "sector": "Consumer Discretionary",
+   "industry": "Commerce",
+   "layer": "infra",
+   "segment": "云与超大规模",
+   "also_in": [
+    "app"
+   ],
+   "description": "电商与物流智能化平台，使用 AI 优化供应链和推荐。"
+  },
+  {
+   "ticker": "IREN",
+   "name": "IREN",
+   "sector": "Technology",
+   "industry": "Data & Application Svc",
+   "layer": "infra",
+   "segment": "GPU 算力租赁",
+   "description": "数据中心运营商，向 AI 云和高性能计算扩展。"
+  },
+  {
+   "ticker": "APLD",
+   "name": "Applied Digital",
+   "sector": "Technology",
+   "industry": "Data & Application Svc",
+   "layer": "infra",
+   "segment": "GPU 算力租赁",
+   "description": "高密度数据中心与 GPU 云基础设施开发商。"
+  },
+  {
+   "ticker": "HUT",
+   "name": "Hut 8",
+   "sector": "Technology",
+   "industry": "Data & Application Svc",
+   "layer": "infra",
+   "segment": "GPU 算力租赁",
+   "description": "能源与数据中心平台，转向 AI 算力租赁。"
+  },
+  {
+   "ticker": "CORZ",
+   "name": "Core Scientific",
+   "sector": "Technology",
+   "industry": "Data & Application Svc",
+   "layer": "infra",
+   "segment": "GPU 算力租赁",
+   "description": "大规模数据中心运营商，为 AI 客户部署 GPU 机群。"
+  },
+  {
+   "ticker": "WULF",
+   "name": "TeraWulf",
+   "sector": "Technology",
+   "industry": "Data & Application Svc",
+   "layer": "infra",
+   "segment": "GPU 算力租赁",
+   "description": "低碳数据中心和 AI 高性能计算基础设施。"
+  },
+  {
+   "ticker": "VNET",
+   "name": "VNET Group",
+   "sector": "Technology",
+   "industry": "Data & Application Svc",
+   "layer": "infra",
+   "segment": "GPU 算力租赁",
+   "description": "中国数据中心运营商，提供云和 AI 托管算力。"
+  },
+  {
+   "ticker": "NTAP",
+   "name": "NetApp",
+   "sector": "Technology",
+   "industry": "Technology Hardware",
+   "layer": "infra",
+   "segment": "AI 服务器与整机",
+   "also_in": [
+    "model"
+   ],
+   "description": "企业数据存储和 AI 数据管理平台。"
+  },
+  {
+   "ticker": "FLEX",
+   "name": "Flex",
+   "sector": "Technology",
+   "industry": "Technology Hardware",
+   "layer": "infra",
+   "segment": "AI 服务器与整机",
+   "description": "电子制造服务与数据中心硬件供应链。"
+  },
+  {
+   "ticker": "FFIV",
+   "name": "F5",
+   "sector": "Technology",
+   "industry": "Communication Equipment",
+   "layer": "infra",
+   "segment": "数据中心网络",
+   "description": "应用交付与 AI 流量安全，连接企业数据中心。"
+  },
+  {
+   "ticker": "AKAM",
+   "name": "Akamai Technologies",
+   "sector": "Technology",
+   "industry": "Data & Application Svc",
+   "layer": "infra",
+   "segment": "数据中心网络",
+   "also_in": [
+    "edge"
+   ],
+   "description": "边缘云、内容分发和 AI 推理网络。"
+  },
+  {
+   "ticker": "ERIC",
+   "name": "Ericsson",
+   "sector": "Technology",
+   "industry": "Communication Equipment",
+   "layer": "infra",
+   "segment": "电信与连接",
+   "description": "5G 无线网络和边缘计算基础设施。"
+  },
+  {
+   "ticker": "RBBN",
+   "name": "Ribbon Communications",
+   "sector": "Technology",
+   "industry": "Communication Equipment",
+   "layer": "infra",
+   "segment": "电信与连接",
+   "description": "电信软件与实时通信网络，支持边缘 AI 连接。"
+  },
+  {
+   "ticker": "KD",
+   "name": "Kyndryl",
+   "sector": "Technology",
+   "industry": "IT Svc",
+   "layer": "infra",
+   "segment": "云与超大规模",
+   "also_in": [
+    "app"
+   ],
+   "description": "企业 IT 基础设施托管与云迁移，帮助客户部署 AI 工作负载。"
+  },
+  {
+   "ticker": "RXT",
+   "name": "Rackspace Technology",
+   "sector": "Technology",
+   "industry": "IT Svc",
+   "layer": "infra",
+   "segment": "云与超大规模",
+   "also_in": [
+    "app"
+   ],
+   "description": "多云托管与生成式 AI 服务，为企业运营 AI 算力。"
+  },
+  {
+   "ticker": "GDS",
+   "name": "GDS Holdings",
+   "sector": "Technology",
+   "industry": "Data & Application Svc",
+   "layer": "infra",
+   "segment": "云与超大规模",
+   "also_in": [
+    "power"
+   ],
+   "description": "中国高性能数据中心运营商，承载云和 AI 训练需求。"
+  },
+  {
+   "ticker": "LUMN",
+   "name": "Lumen Technologies",
+   "sector": "Communication Services",
+   "industry": "Telecom Services",
+   "layer": "infra",
+   "segment": "电信与连接",
+   "description": "光纤网络和边缘连接，为数据中心和 AI 推理提供带宽。"
+  },
+  {
+   "ticker": "META",
+   "name": "Meta",
+   "sector": "Communication Services",
+   "industry": "Internet Content",
+   "layer": "model",
+   "segment": "基础模型",
+   "also_in": [
+    "infra"
+   ],
+   "description": "社交与 Llama 开源大模型。"
+  },
+  {
+   "ticker": "SNOW",
+   "name": "Snowflake",
+   "sector": "Technology",
+   "industry": "Data & Application Svc",
+   "layer": "model",
+   "segment": "数据云与 MLOps",
+   "description": "云数据仓库，AI 数据平台。"
+  },
+  {
+   "ticker": "MDB",
+   "name": "MongoDB",
+   "sector": "Technology",
+   "industry": "Data & Application Svc",
+   "layer": "model",
+   "segment": "数据云与 MLOps",
+   "description": "文档数据库与 Atlas Vector Search，RAG 数据层。"
+  },
+  {
+   "ticker": "DDOG",
+   "name": "Datadog",
+   "sector": "Technology",
+   "industry": "IT Svc",
+   "layer": "model",
+   "segment": "数据云与 MLOps",
+   "description": "可观测性与云监控。"
+  },
+  {
+   "ticker": "ESTC",
+   "name": "Elastic",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "model",
+   "segment": "数据云与 MLOps",
+   "description": "搜索/观测/AI 检索平台。"
+  },
+  {
+   "ticker": "AI",
+   "name": "C3.ai",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "model",
+   "segment": "AI 开发平台",
+   "description": "企业 AI 应用开发平台（C3 Agentic AI）。"
+  },
+  {
+   "ticker": "GTLB",
+   "name": "GitLab",
+   "sector": "Technology",
+   "industry": "System Software",
+   "layer": "model",
+   "segment": "AI 开发平台",
+   "description": "DevSecOps 平台与 AI 编码助手（Duo）。"
+  },
+  {
+   "ticker": "SAP",
+   "name": "SAP",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "model",
+   "segment": "数据云与 MLOps",
+   "also_in": [
+    "app"
+   ],
+   "description": "企业数据平台与 Joule AI 助手，连接业务数据和模型。"
+  },
+  {
+   "ticker": "HUBS",
+   "name": "HubSpot",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "model",
+   "segment": "AI 开发平台",
+   "description": "CRM 与营销自动化平台，内置生成式 AI 工具。"
+  },
+  {
+   "ticker": "ZM",
+   "name": "Zoom Communications",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "客服与联络中心 AI",
+   "description": "协作与联络中心平台，提供 AI Companion 和企业智能。"
+  },
+  {
+   "ticker": "CRM",
+   "name": "Salesforce",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "企业软件与 Agent",
+   "description": "CRM SaaS 与 Agentforce AI，面向销售和客户运营。"
+  },
+  {
+   "ticker": "NOW",
+   "name": "ServiceNow",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "企业软件与 Agent",
+   "description": "企业工作流 SaaS 与 AI 代理。"
+  },
+  {
+   "ticker": "MNDY",
+   "name": "monday.com",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "垂直 SaaS AI",
+   "description": "工作协作平台与 AI 自动化。"
+  },
+  {
+   "ticker": "FRSH",
+   "name": "Freshworks",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "客服与联络中心 AI",
+   "description": "SaaS 客服、IT 服务台与 AI 自动化。"
+  },
+  {
+   "ticker": "DOCU",
+   "name": "DocuSign",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "法律科技 AI",
+   "description": "电子签名、合同生命周期与 AI 合同分析工作流。"
+  },
+  {
+   "ticker": "PATH",
+   "name": "UiPath",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "AI 开发工具",
+   "description": "RPA、工作流编排与 Agentic AI 自动化开发平台。"
+  },
+  {
+   "ticker": "U",
+   "name": "Unity Software",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "AI 开发工具",
+   "description": "游戏引擎与实时 3D，提供 Unity AI 开发工具。"
+  },
+  {
+   "ticker": "PLTR",
+   "name": "Palantir",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "国防与政府 AI",
+   "description": "数据平台与 AIP 商业、国防和政府 AI。"
+  },
+  {
+   "ticker": "SOUN",
+   "name": "SoundHound AI",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "客服与联络中心 AI",
+   "description": "语音 AI 助手与联络中心自动化（汽车、餐饮与客服）。"
+  },
+  {
+   "ticker": "APP",
+   "name": "AppLovin",
+   "sector": "Communication Services",
+   "industry": "Media",
+   "layer": "app",
+   "segment": "广告与营销 AI",
+   "description": "移动广告与 AI 推荐引擎。"
+  },
+  {
+   "ticker": "TTD",
+   "name": "The Trade Desk",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "广告与营销 AI",
+   "description": "程序化广告 DSP 与 AI 编排。"
+  },
+  {
+   "ticker": "CRWD",
+   "name": "CrowdStrike",
+   "sector": "Technology",
+   "industry": "IT Svc",
+   "layer": "app",
+   "segment": "安全与身份",
+   "description": "云安全与 Falcon 平台。"
+  },
+  {
+   "ticker": "PANW",
+   "name": "Palo Alto Networks",
+   "sector": "Technology",
+   "industry": "IT Svc",
+   "layer": "app",
+   "segment": "安全与身份",
+   "description": "网络安全平台。"
+  },
+  {
+   "ticker": "ZS",
+   "name": "Zscaler",
+   "sector": "Technology",
+   "industry": "IT Svc",
+   "layer": "app",
+   "segment": "安全与身份",
+   "description": "零信任云安全。"
+  },
+  {
+   "ticker": "OKTA",
+   "name": "Okta",
+   "sector": "Technology",
+   "industry": "IT Svc",
+   "layer": "app",
+   "segment": "安全与身份",
+   "description": "身份管理与 SSO。"
+  },
+  {
+   "ticker": "NET",
+   "name": "Cloudflare",
+   "sector": "Technology",
+   "industry": "Data & Application Svc",
+   "layer": "app",
+   "segment": "安全与身份",
+   "description": "边缘云、Workers 与 AI 网关。"
+  },
+  {
+   "ticker": "DUOL",
+   "name": "Duolingo",
+   "sector": "Communication Services",
+   "industry": "Interactive Media",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "语言学习，AI 个性化课程。"
+  },
+  {
+   "ticker": "SHOP",
+   "name": "Shopify",
+   "sector": "Technology",
+   "industry": "Commerce",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "电商平台，Sidekick AI。"
+  },
+  {
+   "ticker": "UBER",
+   "name": "Uber",
+   "sector": "Communication Services",
+   "industry": "Commerce",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "also_in": [
+    "edge"
+   ],
+   "description": "出行与即时配送。"
+  },
+  {
+   "ticker": "RDDT",
+   "name": "Reddit",
+   "sector": "Communication Services",
+   "industry": "Interactive Media",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "社交通讯，AI 检索变现。"
+  },
+  {
+   "ticker": "RBLX",
+   "name": "Roblox",
+   "sector": "Communication Services",
+   "industry": "Entertainment",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "UGC 平台与生成式 AI 内容。"
+  },
+  {
+   "ticker": "TTWO",
+   "name": "Take-Two Interactive",
+   "sector": "Communication Services",
+   "industry": "Entertainment",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "游戏发行，AI 辅助开发。"
+  },
+  {
+   "ticker": "NFLX",
+   "name": "Netflix",
+   "sector": "Communication Services",
+   "industry": "Entertainment",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "流媒体与个性化推荐 AI。"
+  },
+  {
+   "ticker": "SPOT",
+   "name": "Spotify",
+   "sector": "Communication Services",
+   "industry": "Interactive Media",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "音乐流媒体与 AI 播客。"
+  },
+  {
+   "ticker": "PDD",
+   "name": "Pinduoduo",
+   "sector": "Communication Services",
+   "industry": "Commerce",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "拼多多/Temu 电商。"
+  },
+  {
+   "ticker": "ACN",
+   "name": "Accenture",
+   "sector": "Technology",
+   "industry": "IT Svc",
+   "layer": "app",
+   "segment": "IT 服务与集成",
+   "description": "IT 咨询与实施，企业 AI 落地。"
+  },
+  {
+   "ticker": "INFY",
+   "name": "Infosys",
+   "sector": "Technology",
+   "industry": "IT Svc",
+   "layer": "app",
+   "segment": "IT 服务与集成",
+   "description": "IT 服务外包，AI 转型交付。"
+  },
+  {
+   "ticker": "EPAM",
+   "name": "EPAM Systems",
+   "sector": "Technology",
+   "industry": "IT Svc",
+   "layer": "app",
+   "segment": "IT 服务与集成",
+   "description": "软件工程服务，AI 工程能力。"
+  },
+  {
+   "ticker": "IBM",
+   "name": "IBM",
+   "sector": "Technology",
+   "industry": "IT Svc",
+   "layer": "app",
+   "segment": "IT 服务与集成",
+   "description": "混合云、watsonx 与 AI 咨询。"
+  },
+  {
+   "ticker": "ADBE",
+   "name": "Adobe",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "垂直 SaaS AI",
+   "description": "Creative Cloud、Firefly 生成式 AI 与企业内容工作流。"
+  },
+  {
+   "ticker": "INTU",
+   "name": "Intuit",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "金融 AI",
+   "description": "财税与小企业软件，使用生成式 AI 提供专家助手。"
+  },
+  {
+   "ticker": "WDAY",
+   "name": "Workday",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "垂直 SaaS AI",
+   "description": "人力与财务 SaaS，加入 AI 代理和人才智能。"
+  },
+  {
+   "ticker": "ASAN",
+   "name": "Asana",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "垂直 SaaS AI",
+   "description": "项目管理与工作流软件，提供 AI teammate。"
+  },
+  {
+   "ticker": "TWLO",
+   "name": "Twilio",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "客服与联络中心 AI",
+   "description": "云通信和客户数据平台，提供 AI 客服与语音能力。"
+  },
+  {
+   "ticker": "BILL",
+   "name": "BILL Holdings",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "金融 AI",
+   "description": "中小企业财务自动化平台，使用 AI 处理支付和账单。"
+  },
+  {
+   "ticker": "TEM",
+   "name": "Tempus AI",
+   "sector": "Health Care",
+   "industry": "Health Information Services",
+   "layer": "app",
+   "segment": "医疗 AI 与计算生物",
+   "description": "临床数据与精准医疗 AI 平台。"
+  },
+  {
+   "ticker": "RXRX",
+   "name": "Recursion Pharmaceuticals",
+   "sector": "Health Care",
+   "industry": "Biotechnology",
+   "layer": "app",
+   "segment": "医疗 AI 与计算生物",
+   "description": "用机器学习和自动化实验进行药物发现。"
+  },
+  {
+   "ticker": "SDGR",
+   "name": "Schrodinger",
+   "sector": "Health Care",
+   "industry": "Biotechnology",
+   "layer": "app",
+   "segment": "医疗 AI 与计算生物",
+   "description": "计算化学和机器学习药物研发平台。"
+  },
+  {
+   "ticker": "BBAI",
+   "name": "BigBear.ai",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "国防与政府 AI",
+   "description": "国防、供应链和决策智能 AI 软件。"
+  },
+  {
+   "ticker": "VERI",
+   "name": "Veritone",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "客服与联络中心 AI",
+   "description": "企业 AI 运营平台和语音、视频智能。"
+  },
+  {
+   "ticker": "AISP",
+   "name": "Airship AI",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "国防与政府 AI",
+   "description": "面向公共安全和国防的视频分析 AI。"
+  },
+  {
+   "ticker": "RXST",
+   "name": "RxSight",
+   "sector": "Health Care",
+   "industry": "Medical Devices",
+   "layer": "app",
+   "segment": "医疗 AI 与计算生物",
+   "description": "眼科医疗设备公司，将 AI 辅助规划用于个性化治疗。"
+  },
+  {
+   "ticker": "GENI",
+   "name": "Genius Sports",
+   "sector": "Communication Services",
+   "industry": "Interactive Media",
+   "layer": "app",
+   "segment": "广告与营销 AI",
+   "description": "体育数据与媒体技术，使用 AI 做内容和广告编排。"
+  },
+  {
+   "ticker": "AFRM",
+   "name": "Affirm",
+   "sector": "Technology",
+   "industry": "Consumer Finance",
+   "layer": "app",
+   "segment": "金融 AI",
+   "description": "数字消费金融平台，用机器学习进行授信和风控。"
+  },
+  {
+   "ticker": "UPST",
+   "name": "Upstart",
+   "sector": "Technology",
+   "industry": "Consumer Finance",
+   "layer": "app",
+   "segment": "金融 AI",
+   "description": "AI 信贷决策平台，向银行提供机器学习承保。"
+  },
+  {
+   "ticker": "ETSY",
+   "name": "Etsy",
+   "sector": "Consumer Discretionary",
+   "industry": "Commerce",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "创意电商平台，使用 AI 做搜索、推荐和卖家工具。"
+  },
+  {
+   "ticker": "ROKU",
+   "name": "Roku",
+   "sector": "Communication Services",
+   "industry": "Entertainment",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "流媒体平台，使用 AI 做内容推荐和广告投放。"
+  },
+  {
+   "ticker": "FVRR",
+   "name": "Fiverr",
+   "sector": "Consumer Discretionary",
+   "industry": "Interactive Media",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "自由职业平台，提供 AI 服务目录和智能匹配。"
+  },
+  {
+   "ticker": "TCOM",
+   "name": "Trip.com Group",
+   "sector": "Consumer Discretionary",
+   "industry": "Hotels & Travel",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "在线旅行平台，使用 AI 做行程规划和个性化推荐。"
+  },
+  {
+   "ticker": "NTES",
+   "name": "NetEase",
+   "sector": "Communication Services",
+   "industry": "Interactive Media",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "游戏与内容平台，使用生成式 AI 辅助研发和运营。"
+  },
+  {
+   "ticker": "BILI",
+   "name": "Bilibili",
+   "sector": "Communication Services",
+   "industry": "Interactive Media",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "视频与社区平台，使用 AI 推荐、审核和内容生成。"
+  },
+  {
+   "ticker": "WB",
+   "name": "Weibo",
+   "sector": "Communication Services",
+   "industry": "Interactive Media",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "社交媒体平台，使用 AI 做内容推荐、广告和审核。"
+  },
+  {
+   "ticker": "S",
+   "name": "SentinelOne",
+   "sector": "Technology",
+   "industry": "IT Svc",
+   "layer": "app",
+   "segment": "安全与身份",
+   "description": "端点安全平台，以 AI 检测和响应网络威胁。"
+  },
+  {
+   "ticker": "TENB",
+   "name": "Tenable Holdings",
+   "sector": "Technology",
+   "industry": "IT Svc",
+   "layer": "app",
+   "segment": "安全与身份",
+   "description": "暴露面管理和云安全平台，使用机器学习识别风险。"
+  },
+  {
+   "ticker": "RPD",
+   "name": "Rapid7",
+   "sector": "Technology",
+   "industry": "IT Svc",
+   "layer": "app",
+   "segment": "安全与身份",
+   "description": "安全运营与漏洞管理软件，提供 AI 辅助检测和响应。"
+  },
+  {
+   "ticker": "CHKP",
+   "name": "Check Point Software",
+   "sector": "Technology",
+   "industry": "IT Svc",
+   "layer": "app",
+   "segment": "安全与身份",
+   "description": "网络安全平台，将 AI 用于威胁预防和云防护。"
+  },
+  {
+   "ticker": "RLAY",
+   "name": "Relay Therapeutics",
+   "sector": "Health Care",
+   "industry": "Biotechnology",
+   "layer": "app",
+   "segment": "医疗 AI 与计算生物",
+   "description": "计算结构生物学和机器学习药物发现公司。"
+  },
+  {
+   "ticker": "ABCL",
+   "name": "AbCellera Biologics",
+   "sector": "Health Care",
+   "industry": "Biotechnology",
+   "layer": "app",
+   "segment": "医疗 AI 与计算生物",
+   "description": "抗体发现平台，结合机器学习和自动化实验筛选药物。"
+  },
+  {
+   "ticker": "LMND",
+   "name": "Lemonade",
+   "sector": "Financials",
+   "industry": "Insurance",
+   "layer": "app",
+   "segment": "金融 AI",
+   "description": "数字保险平台，以机器学习进行定价、核保和理赔自动化。"
+  },
+  {
+   "ticker": "ROOT",
+   "name": "Root",
+   "sector": "Financials",
+   "industry": "Insurance",
+   "layer": "app",
+   "segment": "金融 AI",
+   "description": "按驾驶行为定价的数字汽车保险，使用数据和机器学习承保。"
+  },
+  {
+   "ticker": "SOFI",
+   "name": "SoFi Technologies",
+   "sector": "Financials",
+   "industry": "Consumer Finance",
+   "layer": "app",
+   "segment": "金融 AI",
+   "description": "数字金融平台，将数据和自动化用于贷款、风控和个性化服务。"
+  },
+  {
+   "ticker": "GH",
+   "name": "Guardant Health",
+   "sector": "Health Care",
+   "industry": "Health Information Services",
+   "layer": "app",
+   "segment": "医疗 AI 与计算生物",
+   "description": "液体活检和精准肿瘤学平台，利用算法辅助癌症检测和治疗决策。"
+  },
+  {
+   "ticker": "RNG",
+   "name": "RingCentral",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "客服与联络中心 AI",
+   "description": "云通信和联络中心平台，提供 AI 会议、转录与客服自动化。"
+  },
+  {
+   "ticker": "FIVN",
+   "name": "Five9",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "客服与联络中心 AI",
+   "description": "云联络中心软件，提供 AI 语音、质检和客服代理。"
+  },
+  {
+   "ticker": "CXM",
+   "name": "Sprinklr",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "客服与联络中心 AI",
+   "description": "统一客户体验管理平台，使用 AI 处理社交、客服和营销对话。"
+  },
+  {
+   "ticker": "FROG",
+   "name": "JFrog",
+   "sector": "Technology",
+   "industry": "System Software",
+   "layer": "app",
+   "segment": "AI 开发工具",
+   "description": "DevOps 和软件供应链平台，支持 AI 模型与应用的构建部署。"
+  },
+  {
+   "ticker": "BOX",
+   "name": "Box",
+   "sector": "Technology",
+   "industry": "Data & Application Svc",
+   "layer": "app",
+   "segment": "AI 开发工具",
+   "description": "企业内容云与 Box AI，帮助团队检索、生成和治理企业知识。"
+  },
+  {
+   "ticker": "TEAM",
+   "name": "Atlassian",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "AI 开发工具",
+   "description": "软件研发协作平台，提供 Jira、Confluence 与 Rovo AI 工具。"
+  },
+  {
+   "ticker": "LAW",
+   "name": "CS Disco",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "法律科技 AI",
+   "description": "法律诉讼管理平台，使用 AI 做文档审阅、检索和案件协作。"
+  },
+  {
+   "ticker": "TRI",
+   "name": "Thomson Reuters",
+   "sector": "Communication Services",
+   "industry": "Publishing",
+   "layer": "app",
+   "segment": "法律科技 AI",
+   "description": "法律、税务和专业信息服务，提供 CoCounsel 生成式 AI。"
+  },
+  {
+   "ticker": "VEEV",
+   "name": "Veeva Systems",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "垂直 SaaS AI",
+   "description": "生命科学行业 SaaS，使用 AI 优化临床、质量和商业流程。"
+  },
+  {
+   "ticker": "CSGP",
+   "name": "CoStar Group",
+   "sector": "Technology",
+   "industry": "Data & Application Svc",
+   "layer": "app",
+   "segment": "垂直 SaaS AI",
+   "description": "商业地产数据和软件平台，使用 AI 做估值、搜索和营销。"
+  },
+  {
+   "ticker": "TOST",
+   "name": "Toast",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "app",
+   "segment": "垂直 SaaS AI",
+   "description": "餐饮行业 SaaS 和支付平台，使用 AI 做经营分析与客户营销。"
+  },
+  {
+   "ticker": "LDOS",
+   "name": "Leidos Holdings",
+   "sector": "Industrials",
+   "industry": "IT Svc",
+   "layer": "app",
+   "segment": "国防与政府 AI",
+   "description": "国防、情报和政府 IT 服务商，提供任务分析与 AI 决策系统。"
+  },
+  {
+   "ticker": "BAH",
+   "name": "Booz Allen Hamilton",
+   "sector": "Industrials",
+   "industry": "IT Svc",
+   "layer": "app",
+   "segment": "国防与政府 AI",
+   "description": "政府和国防技术咨询商，为联邦客户部署 AI 与数据平台。"
+  },
+  {
+   "ticker": "KTOS",
+   "name": "Kratos Defense & Security Solutions",
+   "sector": "Industrials",
+   "industry": "Aerospace & Defense",
+   "layer": "app",
+   "segment": "国防与政府 AI",
+   "description": "无人系统、高超声速和国防电子，推动自主系统与 AI 感知。"
+  },
+  {
+   "ticker": "AVAV",
+   "name": "AeroVironment",
+   "sector": "Industrials",
+   "industry": "Aerospace & Defense",
+   "layer": "app",
+   "segment": "国防与政府 AI",
+   "description": "无人机和自主系统供应商，提供 AI 辅助侦察与打击平台。"
+  },
+  {
+   "ticker": "MRCY",
+   "name": "Mercury Systems",
+   "sector": "Industrials",
+   "industry": "Aerospace & Defense",
+   "layer": "app",
+   "segment": "国防与政府 AI",
+   "description": "国防计算和传感器系统，为任务关键型 AI 提供硬件平台。"
+  },
+  {
+   "ticker": "AAPL",
+   "name": "Apple",
+   "sector": "Technology",
+   "industry": "Consumer Electronics",
+   "layer": "edge",
+   "segment": "端侧设备",
+   "description": "iOS 生态、Mac 与 Apple Intelligence。"
+  },
+  {
+   "ticker": "HPQ",
+   "name": "HP Inc",
+   "sector": "Technology",
+   "industry": "Technology Hardware",
+   "layer": "edge",
+   "segment": "端侧设备",
+   "description": "PC 与企业计算硬件。"
+  },
+  {
+   "ticker": "SONO",
+   "name": "Sonos",
+   "sector": "Technology",
+   "industry": "Consumer Electronics",
+   "layer": "edge",
+   "segment": "端侧设备",
+   "description": "智能音箱与音频产品。"
+  },
+  {
+   "ticker": "TSLA",
+   "name": "Tesla",
+   "sector": "Consumer Discretionary",
+   "industry": "Auto",
+   "layer": "edge",
+   "segment": "自动驾驶与机器人",
+   "also_in": [
+    "power"
+   ],
+   "description": "电动车与自动驾驶、机器人 Optimus。"
+  },
+  {
+   "ticker": "MBLY",
+   "name": "Mobileye",
+   "sector": "Consumer Discretionary",
+   "industry": "Auto",
+   "layer": "edge",
+   "segment": "自动驾驶与机器人",
+   "description": "ADAS/自动驾驶芯片与算法。"
+  },
+  {
+   "ticker": "NIO",
+   "name": "NIO",
+   "sector": "Consumer Discretionary",
+   "industry": "Auto",
+   "layer": "edge",
+   "segment": "自动驾驶与机器人",
+   "description": "智能电动车与辅助驾驶软件，持续部署端侧 AI。"
+  },
+  {
+   "ticker": "LI",
+   "name": "Li Auto",
+   "sector": "Consumer Discretionary",
+   "industry": "Auto",
+   "layer": "edge",
+   "segment": "自动驾驶与机器人",
+   "description": "智能电动车和辅助驾驶系统，使用 AI 做感知与座舱交互。"
+  },
+  {
+   "ticker": "XPEV",
+   "name": "XPeng",
+   "sector": "Consumer Discretionary",
+   "industry": "Auto",
+   "layer": "edge",
+   "segment": "自动驾驶与机器人",
+   "description": "智能汽车与自动驾驶软件，推进端到端 AI 辅助驾驶。"
+  },
+  {
+   "ticker": "AUR",
+   "name": "Aurora Innovation",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "edge",
+   "segment": "自动驾驶与机器人",
+   "description": "自动驾驶卡车和软件平台，专注感知、规划与车队运营 AI。"
+  },
+  {
+   "ticker": "SERV",
+   "name": "Serve Robotics",
+   "sector": "Industrials",
+   "industry": "Machinery",
+   "layer": "edge",
+   "segment": "自动驾驶与机器人",
+   "description": "人行道配送机器人，使用视觉和导航 AI 实现无人配送。"
+  },
+  {
+   "ticker": "SYM",
+   "name": "Symbotic",
+   "sector": "Industrials",
+   "industry": "Machinery",
+   "layer": "edge",
+   "segment": "自动驾驶与机器人",
+   "description": "仓储自动化机器人和软件，使用 AI 优化物流编排。"
+  },
+  {
+   "ticker": "ISRG",
+   "name": "Intuitive Surgical",
+   "sector": "Health Care",
+   "industry": "Medical Devices",
+   "layer": "edge",
+   "segment": "自动驾驶与机器人",
+   "description": "手术机器人平台，结合计算机视觉和智能辅助手术。"
+  },
+  {
+   "ticker": "ADSK",
+   "name": "Autodesk",
+   "sector": "Technology",
+   "industry": "Software—Application",
+   "layer": "app",
+   "segment": "企业软件与 Agent",
+   "description": "CAD/设计与建筑基础设施软件，行业垂直 AI 与传统企业软件叠加的核心质量公司。"
+  },
+  {
+   "ticker": "FTNT",
+   "name": "Fortinet",
+   "sector": "Technology",
+   "industry": "Communication Equipment",
+   "layer": "app",
+   "segment": "安全与身份",
+   "description": "网络安全设备与防火墙领导者，AI 安全检测与零信任部署。"
+  },
+  {
+   "ticker": "VRSN",
+   "name": "VeriSign",
+   "sector": "Communication Services",
+   "industry": "Internet Content & Information",
+   "layer": "app",
+   "segment": "安全与身份",
+   "description": "域名与数字身份服务（GoDaddy/Identity），身份验证与互联网基础设施。"
+  },
+  {
+   "ticker": "FICO",
+   "name": "FICO",
+   "sector": "Communication Services",
+   "industry": "Internet Content & Information",
+   "layer": "app",
+   "segment": "金融 AI",
+   "description": "信用评分与金融决策模型，金融 AI 的数据与算法标准。"
+  },
+  {
+   "ticker": "VRSK",
+   "name": "Verisk",
+   "sector": "Communication Services",
+   "industry": "Internet Content & Information",
+   "layer": "app",
+   "segment": "金融 AI",
+   "description": "风险与信用数据公司，保险与金融 AI 的数据服务。"
+  },
+  {
+   "ticker": "IDXX",
+   "name": "IDEXX Laboratories",
+   "sector": "Health Care",
+   "industry": "Technology & Scientific",
+   "layer": "app",
+   "segment": "医疗 AI 与计算生物",
+   "description": "兽医诊断设备、耗材与参考实验室，安装基础与重复使用关系。"
+  },
+  {
+   "ticker": "VRTX",
+   "name": "Vertex Pharmaceuticals",
+   "sector": "Health Care",
+   "industry": "Drug",
+   "layer": "app",
+   "segment": "医疗 AI 与计算生物",
+   "description": "sRNA 平台与研发管线，区分单次试验失败和平台/集中度风险。"
+  },
+  {
+   "ticker": "RMD",
+   "name": "ResMed",
+   "sector": "Health Care",
+   "industry": "Medical Devices",
+   "layer": "app",
+   "segment": "医疗 AI 与计算生物",
+   "description": "睡眠呼吸与远程医疗设备及软件平台。"
+  },
+  {
+   "ticker": "BKNG",
+   "name": "Booking Holdings",
+   "sector": "Consumer Services",
+   "industry": "Travel",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "在线旅游平台，规模与分发优势，价格与预订量可持续追踪。"
+  },
+  {
+   "ticker": "LULU",
+   "name": "lululemon",
+   "sector": "Consumer Discretionary",
+   "industry": "Apparel",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "运动服饰品牌，消费品牌运营质量案例。"
+  },
+  {
+   "ticker": "PAYX",
+   "name": "Paychex",
+   "sector": "Finance",
+   "industry": "Data Processing & Outsourced",
+   "layer": "app",
+   "segment": "垂直 SaaS AI",
+   "description": "中小企业薪酬与人力资源 SaaS，重复使用与合规工作流。"
+  },
+  {
+   "ticker": "ROL",
+   "name": "Rolls-Royce",
+   "sector": "Industrials",
+   "industry": "Aerospace & Defense",
+   "layer": "app",
+   "segment": "国防与政府 AI",
+   "description": "航空发动机与国防系统，AI 维护与数字化服务。"
+  },
+  {
+   "ticker": "V",
+   "name": "Visa",
+   "sector": "Finance",
+   "industry": "Credit Services",
+   "layer": "app",
+   "segment": "金融 AI",
+   "description": "全球支付网络，规模与分发优势。"
+  },
+  {
+   "ticker": "COST",
+   "name": "Costco",
+   "sector": "Consumer Staples",
+   "industry": "Retail—Food & Consumer",
+   "layer": "app",
+   "segment": "消费与内容应用",
+   "description": "折扣零售俱乐部，会员留存与定价权可追踪。"
+  },
+  {
+   "ticker": "ROP",
+   "name": "Roper Technologies",
+   "sector": "Technology",
+   "industry": "Diversified",
+   "layer": "app",
+   "segment": "垂直 SaaS AI",
+   "description": "多元化工业与 B2B 软件控股公司，多垂直 SaaS 布局。"
+  },
+  {
+   "ticker": "LIN",
+   "name": "Linde",
+   "sector": "Materials",
+   "industry": "Chemicals",
+   "layer": "power",
+   "segment": "数据中心电力与温控",
+   "description": "工业气体公司，含数据中心相关冷却与特气供应。"
+  },
+  {
+   "ticker": "XE",
+   "name": "X-Energy",
+   "sector": "Industrials",
+   "industry": "Specialty Industrial Machinery",
+   "layer": "power",
+   "segment": "发电与核电",
+   "description": "先进核能技术公司，面向数据中心与工业负荷的模块化核能方案。"
+  },
+  {
+   "ticker": "OKLO",
+   "name": "Oklo",
+   "sector": "Utilities",
+   "industry": "Utilities—Independent Power Producers",
+   "layer": "power",
+   "segment": "发电与核电",
+   "description": "先进裂变能源公司，开发小型模块化核能发电系统。"
+  },
+  {
+   "ticker": "BE",
+   "name": "Bloom Energy",
+   "sector": "Industrials",
+   "industry": "Electrical Equipment",
+   "layer": "power",
+   "segment": "发电与核电",
+   "description": "燃料电池与分布式发电平台，为高密度数据中心提供现场电力。"
+  },
+  {
+   "ticker": "CBRS",
+   "name": "Cerebras Systems",
+   "sector": "Technology",
+   "industry": "Semiconductors",
+   "layer": "silicon",
+   "segment": "算力芯片",
+   "description": "面向 AI 训练与推理的大规模晶圆级加速器平台。"
+  },
+  {
+   "ticker": "CIFR",
+   "name": "Cipher Digital",
+   "sector": "Technology",
+   "industry": "Information Technology Services",
+   "layer": "infra",
+   "segment": "GPU 算力租赁",
+   "description": "数据中心基础设施运营商，组合中归入 GPU 算力租赁观察组。"
+  },
+  {
+   "ticker": "CHRN",
+   "name": "ChronoScale Holdings",
+   "sector": "Technology",
+   "industry": "Information Technology Services",
+   "layer": "infra",
+   "segment": "GPU 算力租赁",
+   "description": "AI 数据中心与算力基础设施运营商，组合中归入 GPU 算力租赁观察组。"
+  },
+  {
+   "ticker": "XTND",
+   "name": "Xtend AI Robotics",
+   "sector": "Technology",
+   "industry": "Software—Application",
+   "layer": "edge",
+   "segment": "自动驾驶与机器人",
+   "description": "AI 机器人公司，组合中归入自动驾驶与机器人观察组。"
+  }
+ ]
 }
