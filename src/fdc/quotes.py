@@ -212,7 +212,7 @@ def check_connection(ticker: str = "AAPL") -> bool:
     """
 
     proxy = apply_proxy()
-    print(f"Proxy: {proxy or 'none (direct)'}")
+    print(f"Proxy: {_redact(proxy) if proxy else 'none (direct)'}")
     try:
         frame = yf.download(
             ticker,
