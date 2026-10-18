@@ -77,13 +77,6 @@ export function writeDirectoryState(state: DirectoryState): URLSearchParams {
   return params;
 }
 
-const statusLabels: Record<IngestionStatus, string> = {
-  parsed: "Parsed",
-  failed: "Parse failed",
-  unavailable: "Unavailable",
-  not_ingested: "Not ingested",
-};
-
 function formatDate(value: string | null): string {
   if (!value) return "No filing date";
   return new Intl.DateTimeFormat("en", {
@@ -104,15 +97,18 @@ export function formatRefreshTime(value: string | null): string {
   }).format(new Date(value));
 }
 
-function formatCompactUSD(value: number): string {
-  if (value >= 1e12) return `$${(value / 1e12).toFixed(2)}T`;
-  if (value >= 1e9) return `$${(value / 1e9).toFixed(2)}B`;
-  if (value >= 1e6) return `$${(value / 1e6).toFixed(1)}M`;
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0,
-  }).format(value);
+/** Market cap in millions of USD ("$5,574,102M"). */
+function formatMarketCapMillions(value: number): string {
+  const millions = value / 1e6;
+  return millions >= 1000
+    ? `$${Math.round(millions).toLocaleString("en-US")}M`
+    : `$${millions.toFixed(1)}M`;
+}
+
+/** Two decimals with separators: P/E and EPS columns. */
+function formatRatio(value: number | null | undefined): string {
+  if (value === null || value === undefined) return "—";
+  return value.toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
 }
 
 /** Public quote page for a ticker, e.g. `ASML` -> https://stockanalysis.com/stocks/asml/ */
@@ -202,15 +198,6 @@ export function renderCompanies(
     const dateCell = cell("Latest filing", "date-cell");
     dateCell.textContent = formatDate(company.latest_filing_date);
 
-    const statusCell = cell("Coverage");
-    const badge = document.createElement("span");
-    badge.className = `parse-status status-${company.ingestion_status}`;
-    badge.textContent = statusLabels[company.ingestion_status];
-    statusCell.append(badge);
-
-    const countCell = cell("Filings", "number-column");
-    countCell.textContent = new Intl.NumberFormat("en").format(company.filing_count);
-
     const priceCell = cell("Price", "number-column price-cell");
     if (company.price !== null && company.price !== undefined) {
       const price = document.createElement("span");
@@ -234,7 +221,7 @@ export function renderCompanies(
     if (company.market_cap !== null && company.market_cap !== undefined) {
       const cap = document.createElement("span");
       cap.className = "cap-value";
-      cap.textContent = formatCompactUSD(company.market_cap);
+      cap.textContent = formatMarketCapMillions(company.market_cap);
       capCell.append(cap);
     } else {
       const na = document.createElement("span");
@@ -251,7 +238,6 @@ export function renderCompanies(
       action.textContent = "Open";
       actionCell.append(action);
     } else {
-      // Coverage already reports "Not ingested"; do not shout it twice.
       const unavailable = document.createElement("span");
       unavailable.className = "availability availability-missing";
       unavailable.textContent = "—";
@@ -262,11 +248,13 @@ export function renderCompanies(
       companyCell,
       categoryCell,
       dateCell,
-      statusCell,
-      countCell,
       priceCell,
-      changeCell("1W", "week", company.week_change_pct),
-      changeCell("52W", "year", company.change_52w_pct),
+      rangeCell("1W", "week", company.week_change_pct, company.week_rise_pct),
+      rangeCell("52W", "year", company.change_52w_pct, company.rise_52w_pct),
+      ratioCell("P/E", company.pe),
+      ratioCell("EPS", company.eps_ttm),
+      ratioCell("Fwd P/E", company.forward_pe),
+      ratioCell("Fwd EPS", company.forward_eps),
       capCell,
       actionCell,
     );
@@ -304,6 +292,29 @@ function changeCell(
   return element;
 }
 
+function rangeCell(
+  label: string,
+  className: string,
+  drawdown: number | null | undefined,
+  rise: number | null | undefined,
+): HTMLTableCellElement {
+  const element = cell(label, `number-column change-cell ${className}-cell`);
+  const format = (value: number | null | undefined): string => {
+    if (value === null || value === undefined) return "—";
+    return `${value >= 0 ? "+" : ""}${value.toFixed(2)}%`;
+  };
+  element.textContent = `${format(drawdown)} / ${format(rise)}`;
+  return element;
+}
+
+function ratioCell(label: string, value: number | null | undefined): HTMLTableCellElement {
+  const element = cell(label, "number-column ratio-cell");
+  const span = document.createElement("span");
+  span.textContent = formatRatio(value);
+  element.append(span);
+  return element;
+}
+
 function option(value: string, label: string): HTMLOptionElement {
   const element = document.createElement("option");
   element.value = value;
@@ -338,7 +349,7 @@ export async function mountDirectory(): Promise<void> {
     const parts: string[] = [];
     if (quoteAsOfDate) {
       parts.push(
-        `Price, 1W, 52W and market cap as of ${formatDate(quoteAsOfDate)} close.`,
+        `Price, 1W/52W drawdown from period high, and market cap as of ${formatDate(quoteAsOfDate)} close.`,
       );
     }
     if (refreshedAt) {

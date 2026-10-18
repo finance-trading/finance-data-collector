@@ -16,12 +16,16 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import re
+import time
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
 import yfinance as yf
 from yfinance.config import YfConfig
+from requests import Session
+from bs4 import BeautifulSoup
 
 from fdc.config import get_settings
 from fdc.data_files import CATALOG_PATH, QUOTES_PATH
@@ -109,6 +113,105 @@ def _pct_change(price: float, base: float | None) -> float | None:
     return round((price - base) / base * 100, 2)
 
 
+def _drawdown_from_high(price: float, high: float | None) -> float | None:
+    """Return the percentage drawdown from a period high to `price`."""
+
+    if high is None or high <= 0:
+        return None
+    return round((price / high - 1) * 100, 2)
+
+
+def _rise_from_low(price: float, low: float | None) -> float | None:
+    """Return the percentage rise from a period low to `price`."""
+
+    if low is None or low <= 0:
+        return None
+    return round((price / low - 1) * 100, 2)
+
+
+FINVIZ_QUOTE_URL = "https://finviz.com/quote.ashx?t={ticker}"
+# Valuation metrics live in Finviz's "snapshot" table as label/value cell pairs.
+FINVIZ_LABEL_TO_KEY = {
+    "P/E": "pe",
+    "EPS (ttm)": "eps_ttm",
+    "Forward P/E": "forward_pe",
+    "EPS next Y": "forward_eps",
+}
+
+
+def _parse_finviz_metrics(html: str) -> dict[str, float]:
+    """Return numeric Finviz snapshot metrics from one quote page.
+
+    Finviz renders the snapshot table with a plain label cell followed by a
+    value cell, so a linear scan keeps the parser immune to layout shifts and
+    avoids CSS-class coupling. Missing or dash placeholders are simply absent
+    from the result — callers treat absent keys as unavailable.
+    """
+
+    soup = BeautifulSoup(html, "html.parser")
+    cells: list[str] = []
+    for table in soup.find_all("table", class_=re.compile(r"snapshot-table2")):
+        cells.extend(cell.get_text(strip=True) for cell in table.find_all("td"))
+    if not cells:
+        return {}
+    metrics: dict[str, float] = {}
+    for label, key in FINVIZ_LABEL_TO_KEY.items():
+        if label not in cells:
+            continue
+        index = cells.index(label)
+        if index + 1 >= len(cells):
+            continue
+        raw = cells[index + 1]
+        try:
+            metrics[key] = float(raw.replace(",", "").replace("%", ""))
+        except ValueError:
+            continue
+    return metrics
+
+
+def _finviz_metrics(
+    tickers: list[str], workers: int = 8, retries: int = 2
+) -> dict[str, dict[str, float]]:
+    """Return Finviz valuation metrics per ticker; absent keys are unavailable.
+
+    Finviz serves a static snapshot page per quote; 227 pages through a small
+    thread pool with browser-style headers stay well inside polite request
+    volume for a once-daily job. A failed page drops only that ticker's
+    metrics, never the whole refresh.
+    """
+
+    headers = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"}
+
+    def fetch(ticker: str) -> tuple[str, dict[str, float]]:
+        session = Session()
+        try:
+            for attempt in range(retries + 1):
+                try:
+                    response = session.get(
+                        FINVIZ_QUOTE_URL.format(ticker=ticker), headers=headers, timeout=15
+                    )
+                    response.raise_for_status()
+                    values = _parse_finviz_metrics(response.text)
+                    if values:
+                        return ticker, values
+                except Exception:
+                    pass
+                if attempt < retries:
+                    time.sleep(1.5 * (attempt + 1))
+            return ticker, {}
+        except Exception:
+            return ticker, {}
+        finally:
+            session.close()
+
+    metrics: dict[str, dict[str, float]] = {}
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        for ticker, values in pool.map(fetch, tickers):
+            if values:
+                metrics[ticker] = values
+    return metrics
+
+
 def _close_before(closes: Any, weeks: int) -> float | None:
     """Return the last close on or before `weeks` before the latest session.
 
@@ -122,6 +225,30 @@ def _close_before(closes: Any, weeks: int) -> float | None:
     if prior.empty:
         return None
     return round(float(prior.iloc[-1]), 2)
+
+
+def _period_high(closes: Any, weeks: int) -> float | None:
+    """Return the high since the calendar-period start, or None if incomplete."""
+
+    if closes.empty:
+        return None
+    target = closes.index[-1] - timedelta(weeks=weeks)
+    if closes.index[0] > target:
+        return None
+    window = closes.loc[target:]
+    return round(float(window.max()), 2) if not window.empty else None
+
+
+def _period_low(closes: Any, weeks: int) -> float | None:
+    """Return the low since the calendar-period start, or None if incomplete."""
+
+    if closes.empty:
+        return None
+    target = closes.index[-1] - timedelta(weeks=weeks)
+    if closes.index[0] > target:
+        return None
+    window = closes.loc[target:]
+    return round(float(window.min()), 2) if not window.empty else None
 
 
 def fetch_quotes() -> dict[str, Any]:
@@ -156,6 +283,9 @@ def fetch_quotes() -> dict[str, Any]:
     caps = _market_caps(tickers)
     logger.info("%d tickers have market cap data", len(caps))
 
+    valuation = _finviz_metrics(tickers)
+    logger.info("%d tickers have Finviz valuation data", len(valuation))
+
     quotes: dict[str, dict[str, float | int | None]] = {}
     for tk in tickers:
         try:
@@ -168,17 +298,28 @@ def fetch_quotes() -> dict[str, Any]:
             prev = (
                 round(float(closes.iloc[-2]), 2) if len(closes) >= 2 else None
             )
-            # "This week" is the last five trading sessions.
-            week_base = (
-                round(float(closes.iloc[-6]), 2) if len(closes) >= 6 else None
+            # 1W and 52W are drawdowns from the highest close in each period.
+            week_high = (
+                round(float(closes.iloc[-5:].max()), 2) if len(closes) >= 5 else None
             )
+            week_low = (
+                round(float(closes.iloc[-5:].min()), 2) if len(closes) >= 5 else None
+            )
+            year_high = _period_high(closes, 52)
+            year_low = _period_low(closes, 52)
             quotes[tk] = {
                 "price": price,
                 "previous_close": prev,
                 "change_pct": _pct_change(price, prev),
-                "week_change_pct": _pct_change(price, week_base),
-                "change_52w_pct": _pct_change(price, _close_before(closes, 52)),
+                "week_change_pct": _drawdown_from_high(price, week_high),
+                "week_rise_pct": _rise_from_low(price, week_low),
+                "change_52w_pct": _drawdown_from_high(price, year_high),
+                "rise_52w_pct": _rise_from_low(price, year_low),
                 "market_cap": caps.get(tk),
+                "pe": valuation.get(tk, {}).get("pe"),
+                "eps_ttm": valuation.get(tk, {}).get("eps_ttm"),
+                "forward_pe": valuation.get(tk, {}).get("forward_pe"),
+                "forward_eps": valuation.get(tk, {}).get("forward_eps"),
             }
         except Exception:
             logger.warning("skipping ticker %s (no usable close data)", tk)
@@ -192,6 +333,30 @@ def fetch_quotes() -> dict[str, Any]:
 
 def _has_quotes(payload: dict[str, Any]) -> bool:
     return bool(payload.get("quotes"))
+
+
+def refresh_valuation_metrics() -> str:
+    """Fetch Finviz valuation metrics and merge into the existing cache.
+
+    Yahoo rate limits make a full quote refresh unreliable during market
+    hours, while Finviz metrics are the piece users usually need sooner.
+    This keeps prices and trailing returns exactly as cached and rewrites
+    only the four valuation fields. Returns the cache path.
+    """
+
+    if not QUOTES_PATH.exists():
+        raise RuntimeError("quotes.json does not exist yet — run a full refresh first")
+    payload = json.loads(QUOTES_PATH.read_text())
+    quotes: dict[str, dict[str, Any]] = payload.get("quotes", {})
+    valuation = _finviz_metrics(sorted(quotes))
+    merged = 0
+    for tk, values in valuation.items():
+        quotes[tk].update(values)
+        merged += 1
+    payload["valuation_refreshed_at"] = datetime.now(timezone.utc).isoformat()
+    QUOTES_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=1) + "\n")
+    logger.info("merged valuation metrics for %d tickers into %s", merged, QUOTES_PATH)
+    return str(QUOTES_PATH)
 
 
 def _cached_quotes_exist() -> bool:
@@ -286,9 +451,17 @@ def main() -> None:
         action="store_true",
         help="probe Yahoo with one ticker and exit; validates the proxy route",
     )
+    parser.add_argument(
+        "--metrics-only",
+        action="store_true",
+        help="refresh Finviz valuation metrics only, keeping cached prices intact",
+    )
     args = parser.parse_args()
     if args.check:
         raise SystemExit(0 if check_connection() else 1)
+    if args.metrics_only:
+        print(f"Wrote {refresh_valuation_metrics()}")  # noqa: T201
+        return
     try:
         result = write_quotes(force=args.force)
     except RuntimeError as exc:

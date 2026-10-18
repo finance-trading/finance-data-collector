@@ -34,7 +34,13 @@ export interface CompanyDirectoryItem {
   market_cap?: number | null;
   change_pct?: number | null;
   week_change_pct?: number | null;
+  week_rise_pct?: number | null;
   change_52w_pct?: number | null;
+  rise_52w_pct?: number | null;
+  pe?: number | null;
+  eps_ttm?: number | null;
+  forward_pe?: number | null;
+  forward_eps?: number | null;
   quote_as_of?: string | null;
 }
 
@@ -269,7 +275,13 @@ export interface QuotesPayload {
     previous_close?: number | null;
     change_pct?: number | null;
     week_change_pct?: number | null;
+    week_rise_pct?: number | null;
     change_52w_pct?: number | null;
+    rise_52w_pct?: number | null;
+    pe?: number | null;
+    eps_ttm?: number | null;
+    forward_pe?: number | null;
+    forward_eps?: number | null;
     market_cap?: number | null;
   }>;
 }

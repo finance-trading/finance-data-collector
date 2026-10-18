@@ -86,7 +86,6 @@ def test_research_home_search_opens_the_company_workspace(browser, live_server):
     page.locator("#company-search").fill("VRT")
     page.get_by_role("button", name="Open company").click()
     expect(page.locator("#company-directory-body")).to_contain_text("VRT")
-    expect(page.locator("#company-directory-body")).to_contain_text("Not ingested")
     expect(page.locator("#company-directory-body a[href*='company.html']")).to_have_count(0)
 
     page.locator("#company-search").fill("msft")

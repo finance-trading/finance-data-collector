@@ -114,8 +114,6 @@
               <th scope="col">Company</th>
               <th scope="col">AI layer</th>
               <th scope="col">Latest filing</th>
-              <th scope="col">Coverage</th>
-              <th scope="col" class="number-column">Filings</th>
               <th scope="col" class="number-column"
                   data-sort-column="change_pct" aria-sort="none">
                 <button type="button" class="sort-button" data-sort="change_pct"
@@ -127,24 +125,28 @@
               <th scope="col" class="number-column"
                   data-sort-column="week_change_pct" aria-sort="none">
                 <button type="button" class="sort-button" data-sort="week_change_pct"
-                        aria-label="Sort by one-week change">
-                  1W
+                        aria-label="Sort by one-week drawdown from high">
+                  1W DD / Rise
                   <span class="sort-indicator" aria-hidden="true"></span>
                 </button>
               </th>
               <th scope="col" class="number-column"
                   data-sort-column="change_52w_pct" aria-sort="none">
                 <button type="button" class="sort-button" data-sort="change_52w_pct"
-                        aria-label="Sort by 52-week change">
-                  52W
+                        aria-label="Sort by 52-week drawdown from high">
+                  52W DD / Rise
                   <span class="sort-indicator" aria-hidden="true"></span>
                 </button>
               </th>
+              <th scope="col" class="number-column">P/E</th>
+              <th scope="col" class="number-column">EPS</th>
+              <th scope="col" class="number-column">Fwd P/E</th>
+              <th scope="col" class="number-column">Fwd EPS</th>
               <th scope="col" class="number-column"
                   data-sort-column="market_cap" aria-sort="none">
                 <button type="button" class="sort-button" data-sort="market_cap"
                         aria-label="Sort by market cap">
-                  Market cap
+                  Market cap ($M)
                   <span class="sort-indicator" aria-hidden="true"></span>
                 </button>
               </th>
@@ -153,7 +155,7 @@
           </thead>
           <tbody id="company-directory-body">
             <tr class="loading-row">
-              <td colspan="10">Loading companies…</td>
+              <td colspan="14">Loading companies…</td>
             </tr>
           </tbody>
         </table>

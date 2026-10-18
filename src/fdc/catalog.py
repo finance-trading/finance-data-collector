@@ -82,7 +82,13 @@ class CompanyDirectoryItem(CatalogCompany):
     market_cap: int | None = None
     change_pct: float | None = None
     week_change_pct: float | None = None
+    week_rise_pct: float | None = None
     change_52w_pct: float | None = None
+    rise_52w_pct: float | None = None
+    pe: float | None = None
+    eps_ttm: float | None = None
+    forward_pe: float | None = None
+    forward_eps: float | None = None
     quote_as_of: date | None = None
 
 
@@ -348,7 +354,13 @@ def list_companies(
                 market_cap=quote.get("market_cap") if quote else None,
                 change_pct=quote.get("change_pct") if quote else None,
                 week_change_pct=quote.get("week_change_pct") if quote else None,
+                week_rise_pct=quote.get("week_rise_pct") if quote else None,
                 change_52w_pct=quote.get("change_52w_pct") if quote else None,
+                rise_52w_pct=quote.get("rise_52w_pct") if quote else None,
+                pe=quote.get("pe") if quote else None,
+                eps_ttm=quote.get("eps_ttm") if quote else None,
+                forward_pe=quote.get("forward_pe") if quote else None,
+                forward_eps=quote.get("forward_eps") if quote else None,
                 quote_as_of=quote_as_of,
             )
         )

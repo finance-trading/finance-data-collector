@@ -126,10 +126,10 @@ export function compareByMarketCap(
 /** Compact market cap, matching the directory page ("$5.57T", "$938.33B"). */
 export function formatCompactUSD(value: number | null): string {
   if (value === null) return "—";
-  if (value >= 1e12) return `$${(value / 1e12).toFixed(2)}T`;
-  if (value >= 1e9) return `$${(value / 1e9).toFixed(2)}B`;
-  if (value >= 1e6) return `$${(value / 1e6).toFixed(1)}M`;
-  return `$${Math.round(value).toLocaleString("en-US")}`;
+  const millions = value / 1e6;
+  return millions >= 1000
+    ? `$${Math.round(millions).toLocaleString("en-US")}M`
+    : `$${millions.toFixed(1)}M`;
 }
 
 /** Latest close with thousands separators, matching the directory page. */
