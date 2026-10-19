@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>AI 产业链｜经营证据与现金回收</title>
+  <style>
+    :root { --ink:#142b3c; --muted:#536a78; --paper:#f4f8f8; --white:#fff; --line:#d6e2e5; --teal:#087e83; --cyan:#c5e9e7; --amber:#ac6723; --gold:#f3d9af; --blue:#235a87; --violet:#6d598e; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--ink); background:var(--paper); font:16px/1.65 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif; }
+    button,input { font:inherit; }
+    button { cursor:pointer; }
+    a { color:var(--blue); text-underline-offset:3px; }
+    :focus-visible { outline:3px solid #ed9d3a; outline-offset:3px; }
+    .wrap { max-width:1480px; margin:auto; padding:0 28px; }
+    .top { background:#142b3c; color:#f6fcfd; }
+    .topline { display:flex; justify-content:space-between; align-items:center; gap:20px; padding:15px 0; border-bottom:1px solid #45606d; font-size:.83rem; }
+    .topline strong { letter-spacing:.03em; }
+    .topline nav { display:flex; flex-wrap:wrap; gap:8px 16px; }
+    .topline nav a[aria-current="page"] { text-decoration:underline; text-decoration-thickness:2px; }
+    .topline a { color:#e3f5f4; }
+    .hero { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr); gap:40px; align-items:end; padding:32px 0 38px; }
+    h1 { margin:0; font-size:clamp(2.1rem,5vw,4.4rem); line-height:1.12; letter-spacing:-.055em; font-weight:700; }
+    .hero p { margin:17px 0 0; max-width:710px; color:#d0e2e6; font-size:1.04rem; }
+    .scope { padding-left:22px; border-left:2px solid #61b9b7; color:#d0e2e6; font-size:.87rem; }
+    .scope strong { display:block; margin-bottom:5px; color:white; font-size:1rem; }
+    main { padding:30px 0 70px; }
+    .section-head { display:flex; justify-content:space-between; align-items:end; gap:20px; margin-bottom:16px; }
+    h2 { margin:0; font-size:1.42rem; line-height:1.28; letter-spacing:-.025em; }
+    .section-head p,.subtext { margin:5px 0 0; color:var(--muted); font-size:.86rem; }
+    .module-workbench { display:grid; grid-template-columns:minmax(0,1fr); gap:12px; margin-bottom:30px; }
+    .module-panel,.module-detail { min-width:0; border:1px solid var(--line); background:#fff; }
+    .route-tabs { display:flex; flex-wrap:wrap; gap:7px; padding:13px; border-bottom:1px solid var(--line); }
+    .route-tabs button { min-height:40px; padding:7px 13px; border:1px solid #bdd1d5; background:white; color:var(--ink); border-radius:4px; font-size:.81rem; }
+    .route-tabs button[aria-pressed="true"] { border-color:var(--teal); background:#dff2f0; color:#075c60; font-weight:700; }
+    .route-intro { display:flex; justify-content:space-between; align-items:baseline; gap:12px; padding:13px 20px 0; }
+    .route-intro strong { font-size:1rem; }
+    .route-intro span { color:var(--muted); font-size:.78rem; }
+    .route-scroll { max-width:100%; overflow-x:auto; padding:14px 18px 22px; }
+    .route-graph { position:relative; display:grid; gap:24px; min-height:390px; margin:auto; padding:18px; background:#f6fafa; border:1px solid #e1ebed; }
+    .route-edges { position:absolute; inset:0; z-index:1; width:100%; height:100%; pointer-events:none; }
+    .route-edges path { fill:none; stroke:#7caeb0; stroke-width:2.1; marker-end:url(#route-arrow); opacity:.75; }
+    .route-edges path.dim { opacity:.12; }
+    .route-edges path.focus { stroke:var(--teal); stroke-width:3; opacity:1; }
+    .route-stage { position:relative; display:flex; flex-direction:column; justify-content:space-around; gap:14px; min-width:0; padding:12px; background:#edf5f5; border-top:3px solid #a8c9ce; }
+    .route-stage h3 { position:relative; z-index:2; margin:0; color:#405d69; font-size:.76rem; line-height:1.3; font-weight:700; }
+    .route-nodes { position:relative; z-index:2; display:flex; flex-direction:column; justify-content:space-around; gap:12px; flex:1; }
+    .route-node,.route-group { position:relative; width:100%; min-height:53px; padding:9px 10px; border:1px solid #a9c9cc; background:#fff; color:var(--ink); text-align:left; font-size:.83rem; line-height:1.35; box-shadow:0 3px 0 rgba(20,43,60,.04); }
+    .route-node:hover,.route-node[aria-pressed="true"],.route-group button:hover,.route-group button[aria-pressed="true"] { border-color:var(--teal); background:#dff2f0; }
+    .route-node[aria-pressed="true"],.route-group button[aria-pressed="true"] { box-shadow:inset 3px 0 var(--teal); font-weight:700; }
+    .module-label { display:block; font-weight:700; }
+    .route-node small { display:block; margin-top:2px; color:var(--muted); font-size:.68rem; }
+    .stock-association { display:block; margin-top:7px; padding-top:6px; border-top:1px solid #dbe5eb; color:#315d85; text-align:center; line-height:1.3; }
+    .stock-association .stock-arrow { display:block; color:#6087a5; font-size:1rem; line-height:1; }
+    .stock-tickers { display:flex; flex-wrap:wrap; justify-content:center; gap:4px; margin-top:4px; }
+    .stock-ticker { padding:2px 5px; background:#e5eef7; color:#164f82; font-size:.73rem; font-weight:800; letter-spacing:.02em; }
+    .stock-ticker.extra { background:#fbf2e5; color:#855019; }
+    .stock-association .stock-flag { display:block; margin-top:4px; color:#995816; font-size:.66rem; }
+    .route-group { padding:10px; }
+    .route-group summary { cursor:pointer; font-size:.78rem; font-weight:700; color:#075c60; }
+    .route-group[open] summary { margin-bottom:8px; }
+    .route-group button { display:block; width:100%; margin-top:5px; padding:7px; border:1px solid #d0e0e2; background:#fff; color:var(--ink); text-align:left; font-size:.73rem; line-height:1.25; }
+    .route-group button .stock-association { margin-top:5px; padding-top:4px; }
+    .module-index { border-top:1px solid var(--line); }
+    .module-index > summary { padding:12px 18px; cursor:pointer; font-size:.83rem; font-weight:700; }
+    .module-scroll { max-width:100%; overflow-x:auto; padding:0 18px 16px; }
+    .module-canvas { display:grid; grid-template-columns:repeat(6,minmax(170px,1fr)); gap:10px; min-width:1110px; }
+    .module-column { align-self:start; border:1px solid #bed0d4; background:#fff; }
+    .layer-toggle { display:flex; justify-content:space-between; align-items:center; gap:5px; width:100%; min-height:62px; padding:10px; border:0; border-bottom:1px solid var(--line); background:#eaf2f3; color:var(--ink); text-align:left; font-size:.86rem; font-weight:700; line-height:1.3; }
+    .layer-toggle small { flex:none; color:var(--muted); font-size:.7rem; font-weight:500; }
+    .layer-toggle::after { content:"⌄"; color:var(--teal); font-size:1.05rem; }
+    .layer-toggle[aria-expanded="false"]::after { content:"›"; }
+    .module-items { display:grid; gap:5px; padding:10px; }
+    .module-node { min-height:38px; padding:6px 7px; border:1px solid #c8d9dc; background:#fff; color:var(--ink); text-align:left; font-size:.75rem; line-height:1.3; }
+    .module-node .stock-association { margin-top:5px; padding-top:4px; }
+    .module-node:hover,.module-node[aria-pressed="true"],.module-node.is-route { border-color:var(--teal); background:#e9f6f4; }
+    .module-node[aria-pressed="true"] { box-shadow:inset 3px 0 var(--teal); font-weight:700; }
+    .module-foot { padding:12px 14px; border-top:1px solid var(--line); color:var(--muted); font-size:.77rem; }
+    .module-detail { padding:16px 20px; }
+    .module-detail .tag { margin:0 0 8px; color:var(--teal); font-size:.75rem; font-weight:700; }
+    .module-detail h3 { margin:0 0 8px; font-size:1.3rem; line-height:1.32; }
+    .module-detail p { margin:0 0 13px; color:var(--muted); font-size:.84rem; }
+    .module-detail h4 { margin:20px 0 7px; padding-top:12px; border-top:1px solid var(--line); font-size:.81rem; }
+    .module-detail ul { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:3px 30px; margin:0; padding-left:19px; font-size:.82rem; }
+    .module-detail li { margin:6px 0; }
+    .module-detail li span { color:var(--muted); }
+    .stock-candidates { display:flex; flex-wrap:wrap; gap:7px; }
+    .stock-candidates span { padding:5px 8px; background:#e5eef7; color:#164f82; font-size:.78rem; }
+    .stock-candidates span:first-child { box-shadow:inset 3px 0 #235a87; font-weight:700; }
+    .module-detail .stock-method { margin:9px 0 0; font-size:.75rem; }
+    .graph-layout { display:grid; grid-template-columns:minmax(0,1fr) 314px; gap:18px; align-items:stretch; }
+    .map-shell,.inspector,.note-panel,.cash-panel { min-width:0; background:var(--white); border:1px solid var(--line); }
+    .map-toolbar { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 14px; border-bottom:1px solid var(--line); }
+    .map-toolbar span { color:var(--muted); font-size:.79rem; }
+    .map-toolbar button { padding:5px 10px; border:1px solid var(--line); background:white; color:var(--ink); border-radius:4px; font-size:.78rem; }
+    .map-scroll { overflow:auto; }
+    .map { position:relative; width:1070px; height:576px; background-image:radial-gradient(#d9e8e9 .8px,transparent .8px); background-size:20px 20px; }
+    .edges { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+    .edges > path { fill:none; stroke:#90b5bc; stroke-width:2.3; marker-end:url(#arrow); transition:opacity .2s,stroke .2s,stroke-width .2s; }
+    .map.is-focused .edges > path { opacity:.16; }
+    .map.is-focused .edges > path.active { opacity:1; stroke:#087e83; stroke-width:3.5; }
+    .stage { position:absolute; width:190px; padding:11px; border:1px solid #bdd1d5; background:#fff; box-shadow:0 4px 0 rgba(20,43,60,.045); transition:opacity .2s,border-color .2s; }
+    .stage h3 { display:flex; align-items:baseline; justify-content:space-between; gap:6px; margin:0 0 8px; font-size:.83rem; line-height:1.25; }
+    .stage h3 small { color:var(--muted); font-size:.68rem; font-weight:500; }
+    .stage > p { margin:0; color:var(--muted); font-size:.75rem; line-height:1.5; }
+    .stage .chips { display:grid; gap:5px; }
+    .company { display:flex; align-items:center; justify-content:space-between; min-height:37px; width:100%; padding:5px 8px; border:1px solid #cbdcde; background:#f7fbfb; color:var(--ink); text-align:left; font-size:.79rem; font-weight:700; }
+    .company span { color:var(--muted); font-size:.67rem; font-weight:500; }
+    .company:hover,.company[aria-pressed="true"] { border-color:var(--teal); background:#e0f4f2; }
+    .map.is-focused .stage.active { border-color:var(--teal); box-shadow:0 0 0 2px #c5e9e7; }
+    .stage.demand { left:20px; top:237px; border-left:5px solid var(--ink); }
+    .stage.app { left:235px; top:62px; border-left:5px solid var(--violet); }
+    .stage.cloud { left:235px; top:246px; border-left:5px solid var(--teal); }
+    .stage.compute { left:465px; top:67px; border-left:5px solid var(--blue); }
+    .stage.network { left:465px; top:295px; border-left:5px solid var(--blue); }
+    .stage.facility { left:465px; top:409px; border-left:5px solid var(--amber); }
+    .stage.foundry { left:690px; top:195px; border-left:5px solid var(--blue); }
+    .stage.equipment { left:905px; top:195px; width:145px; border-left:5px solid var(--blue); }
+    .inspector { display:flex; flex-direction:column; min-height:636px; padding:20px; }
+    .inspect-kicker { margin:0 0 15px; color:var(--teal); font-size:.74rem; font-weight:700; }
+    .inspector h3 { margin:0 0 6px; font-size:1.46rem; line-height:1.3; }
+    .inspector .period { color:var(--muted); font-size:.8rem; }
+    .metric { margin:24px 0 4px; color:var(--teal); font-size:2.1rem; font-weight:750; line-height:1.15; letter-spacing:-.045em; }
+    .metric-label { margin:0 0 18px; color:var(--muted); font-size:.77rem; }
+    .inspect-block { padding:13px 0; border-top:1px solid var(--line); }
+    .inspect-block strong { display:block; margin-bottom:4px; font-size:.8rem; }
+    .inspect-block p { margin:0; font-size:.84rem; }
+    .inspect-block.caution strong { color:var(--amber); }
+    .source-link { margin-top:auto; padding-top:14px; font-size:.84rem; }
+    .legend { display:flex; flex-wrap:wrap; gap:8px 20px; padding:11px 14px; border-top:1px solid var(--line); color:var(--muted); font-size:.73rem; }
+    .legend b { display:inline-block; width:18px; height:3px; margin:0 5px 3px 0; background:#90b5bc; }
+    .legend b.teal { background:var(--teal); }
+    .legend strong { color:var(--ink); }
+    .after-map { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:18px; }
+    .note-panel,.cash-panel { padding:22px; }
+    .note-panel h2,.cash-panel h2 { font-size:1.16rem; }
+    .note-panel p,.cash-panel p { margin:10px 0 0; color:var(--muted); font-size:.88rem; }
+    .equation { display:flex; align-items:center; flex-wrap:wrap; gap:7px; margin:20px 0 12px; }
+    .equation span { padding:5px 8px; background:#e8f3f3; font-size:.78rem; font-weight:700; }
+    .equation em { color:var(--teal); font-style:normal; font-weight:700; }
+    .cash-row { display:grid; grid-template-columns:65px 1fr auto; gap:8px; align-items:center; margin-top:12px; font-size:.81rem; }
+    .cash-row .track { height:8px; background:#e6eff0; }
+    .cash-row .fill { display:block; height:100%; background:var(--teal); }
+    .cash-row.negative .fill { background:var(--amber); }
+    .cash-row strong { font-variant-numeric:tabular-nums; }
+    .boundary { margin-top:28px; padding-top:20px; border-top:1px solid var(--line); }
+    .boundary-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; margin-top:16px; background:var(--line); border:1px solid var(--line); }
+    .boundary-grid article { padding:17px; background:#fff; }
+    .boundary-grid strong { display:block; color:var(--blue); font-size:.91rem; }
+    .boundary-grid p { margin:7px 0 0; color:var(--muted); font-size:.81rem; }
+    .references { margin-top:30px; padding:20px 0 0; border-top:1px solid var(--line); }
+    .references details { background:#fff; border:1px solid var(--line); padding:11px 16px; }
+    .references summary { cursor:pointer; font-weight:700; }
+    .references ol { columns:2; column-gap:34px; padding-left:20px; color:var(--muted); font-size:.79rem; }
+    .references li { break-inside:avoid; margin:10px 0; }
+    .bottom { margin-top:16px; color:var(--muted); font-size:.76rem; }
+    @media (max-width:1150px) { .graph-layout { grid-template-columns:minmax(0,1fr); } .inspector { min-height:0; } .inspector .source-link { margin-top:10px; } }
+    @media (max-width:700px) { .wrap { padding:0 17px; } .topline,.map-toolbar { flex-wrap:wrap; } .hero { grid-template-columns:1fr; gap:22px; } .scope { padding-left:12px; } .section-head { display:block; } .route-intro { display:block; } .route-intro span { display:block; } .module-detail ul { grid-template-columns:1fr; } .after-map,.boundary-grid { grid-template-columns:1fr; } .references ol { columns:1; } .map-scroll { scroll-snap-type:x proximity; } .inspector { padding:17px; } }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } .edges > path,.stage { transition:none; } }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <div class="topline"><strong>AI 产业链研究图谱</strong><nav aria-label="Primary navigation"><a href="index.html">AI companies</a><a href="graph.html">Company graph</a><a href="layers.html">AI layers</a><a href="research.html" aria-current="page">Research</a></nav><span>资料时点 2026-10-18 · <a href="research-assets/ai-industry-chain-report-2026-10-18.pdf">原 PDF（未含子模块关系图）</a></span></div>
+      <div class="hero">
+        <div><h1>一笔 AI 支出，<br>如何穿过整条产业链</h1><p>先看 32 个子模块之间的功能关系，再点选代表公司，检查已实现经营证据和现金回收。连线是产业结构示意，不表示已核验的公司间采购合同。</p></div>
+        <div class="scope"><strong>研究边界</strong>全球价值链，美股可交易代表公司。财报期间和币种保留发行人原口径；没有用产业链收入之和估算 AI 市场，也没有据此给出买入价。</div>
+      </div>
+    </div>
+  </header>
+  <main class="wrap">
+    <div class="section-head"><div><h2>子模块如何互相支撑</h2><p>每次聚焦一条路线，沿箭头从左向右读。点模块查看直接输入与输出；完整 32 模块索引可展开。</p></div></div>
+    <div class="module-workbench">
+      <section class="module-panel" aria-label="AI 产业链子模块关系图">
+        <div class="route-tabs" id="route-tabs" aria-label="关系路线"></div>
+        <div class="route-intro"><strong id="route-heading">算力制造</strong><span>横向箭头＝模块通路；卡片内 ↓ ＝至少 3 只关联股票。点击模块可看公司名称。窄屏可左右滑动。</span></div>
+        <div class="route-scroll"><div class="route-graph" id="route-graph" aria-label="当前路线的模块关系图"><svg class="route-edges" id="route-edges" aria-hidden="true"><defs><marker id="route-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#087e83"></path></marker></defs></svg></div></div>
+        <div class="module-foot">图谱覆盖 <strong>6 层、32 个子模块</strong>。横向箭头是典型技术或采购通路；卡内箭头仅表示股票归类，均不代表公司间合同。蓝色股票来自本地候选清单，按 2026-10-16 市值排序；棕色股票由本地公司目录补充，未列入原前三代表名单。候选不等于全市场公认龙头；COST、VRTX 的模块归类待复核。<a href="research-assets/ai-layer-leaders-supply-chain-architecture.html">查看候选排名与方法</a></div>
+        <details class="module-index" id="module-index"><summary>展开全部 32 个子模块（按产业层级）</summary><div class="module-scroll"><div class="module-canvas" id="module-canvas"></div></div></details>
+      </section>
+      <aside class="module-detail" aria-live="polite"><p class="tag" id="module-tag">关系路线</p><h3 id="module-title">算力制造</h3><p id="module-description">从芯片设计、制造到服务器与云集群的投入链。</p><section id="module-stock-panel" hidden><h4>模块关联的代表股票</h4><div class="stock-candidates" id="module-stocks"></div><p class="stock-method" id="module-stock-method"></p></section><h4 id="module-relations-title">关键连接</h4><ul id="module-relations"></ul></aside>
+    </div>
+    <div class="section-head"><div><h2>代表公司：经营证据落在哪一环</h2><p>下面只展示 10 家已核对的一手业绩样本。选公司可看经营事实、现金口径与限制。</p></div></div>
+    <div class="graph-layout">
+      <section class="map-shell" aria-label="AI 产业链交互图">
+        <div class="map-toolbar"><span>可左右滚动查看完整链条 · 点公司展开</span><button id="reset" type="button">显示全图</button></div>
+        <div class="map-scroll"><div class="map" id="map">
+          <svg class="edges" viewBox="0 0 1070 576" aria-hidden="true"><defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#90b5bc"></path></marker></defs>
+            <path data-from="demand" data-to="app" d="M210 267 C228 267 215 120 235 120"></path>
+            <path data-from="demand" data-to="cloud" d="M210 285 C222 285 222 339 235 339"></path>
+            <path data-from="app" data-to="cloud" d="M330 155 C330 194 330 211 330 246"></path>
+            <path data-from="cloud" data-to="compute" d="M425 312 C455 312 438 138 465 138"></path>
+            <path data-from="cloud" data-to="network" d="M425 345 C445 345 445 345 465 345"></path>
+            <path data-from="cloud" data-to="facility" d="M425 372 C452 372 438 457 465 457"></path>
+            <path data-from="compute" data-to="foundry" d="M655 143 C678 143 668 245 690 245"></path>
+            <path data-from="foundry" data-to="equipment" d="M880 245 L905 245"></path>
+          </svg>
+          <div class="stage demand" data-stage="demand"><h3>终端需求 <small>预算来源</small></h3><p>企业与开发者为模型、软件和云服务付费。</p></div>
+          <div class="stage app" data-stage="app"><h3>应用与平台 <small>变现</small></h3><div class="chips"><button class="company" type="button" data-id="PLTR" aria-pressed="false">PLTR <span>企业 AI 平台</span></button></div></div>
+          <div class="stage cloud" data-stage="cloud"><h3>云平台 <small>建设 / 服务</small></h3><div class="chips"><button class="company" type="button" data-id="MSFT" aria-pressed="false">MSFT <span>Azure</span></button><button class="company" type="button" data-id="GOOGL" aria-pressed="false">GOOGL <span>Google Cloud</span></button><button class="company" type="button" data-id="AMZN" aria-pressed="false">AMZN <span>AWS</span></button></div></div>
+          <div class="stage compute" data-stage="compute"><h3>加速器 / CPU <small>计算</small></h3><div class="chips"><button class="company" type="button" data-id="NVDA" aria-pressed="false">NVDA <span>GPU</span></button><button class="company" type="button" data-id="AMD" aria-pressed="false">AMD <span>GPU / CPU</span></button></div></div>
+          <div class="stage network" data-stage="network"><h3>数据中心网络 <small>连接</small></h3><div class="chips"><button class="company" type="button" data-id="ANET" aria-pressed="false">ANET <span>交换机</span></button></div></div>
+          <div class="stage facility" data-stage="facility"><h3>电力与散热 <small>机房</small></h3><div class="chips"><button class="company" type="button" data-id="VRT" aria-pressed="false">VRT <span>供配电 / 温控</span></button></div></div>
+          <div class="stage foundry" data-stage="foundry"><h3>先进制程 <small>制造</small></h3><div class="chips"><button class="company" type="button" data-id="TSM" aria-pressed="false">TSM <span>晶圆代工</span></button></div></div>
+          <div class="stage equipment" data-stage="equipment"><h3>制造设备</h3><div class="chips"><button class="company" type="button" data-id="ASML" aria-pressed="false">ASML <span>光刻</span></button></div></div>
+        </div></div>
+        <div class="legend"><span><b></b>经济需求传导</span><span><b class="teal"></b>所选公司的直接关联路径</span><span><strong>注意：</strong>行业结构示意，并非供应合同清单</span></div>
+      </section>
+      <aside class="inspector" id="inspector" aria-live="polite"><p class="inspect-kicker" id="detail-kicker">阅读提示</p><h3 id="detail-title">先看关系，再看现金</h3><div class="period" id="detail-period">点选任一公司开始探索</div><div class="metric" id="detail-metric">10 家</div><p class="metric-label" id="detail-metric-label">代表公司，覆盖七个经营环节</p><div class="inspect-block"><strong>图中最重要的关系</strong><p id="detail-proof">同一笔终端 AI 支出，会在云、芯片、代工、网络和机房设备层面多次形成收入。</p></div><div class="inspect-block caution"><strong>不能直接推断</strong><p id="detail-limit">产业链公司增速不能相加得到 AI 总市场增速；已实现增长也不等于当前股价有安全边际。</p></div><div class="inspect-block"><strong>现金与口径</strong><p id="detail-cash">先确认收入，再核对资本开支、租赁、股权稀释和股东现金回报。</p></div><div class="source-link" id="detail-source"></div></aside>
+    </div>
+    <div class="after-map">
+      <section class="note-panel"><h2>为什么不能把各层收入相加？</h2><div class="equation"><span>云平台 CapEx</span><em>→</em><span>芯片 / 网络 / 机房收入</span><em>→</em><span>云服务收入</span></div><p>这些收入可能来自同一最终工作负载。图中的箭头表示经济依赖，不能当作公司间合同、市场份额或收入归因的证明。</p></section>
+      <section class="cash-panel"><h2>云平台：现金回收是下一道门</h2><p>截至 2026-06-30 的 TTM，全公司 CFO 减现金购建固定资产，单位 USD bn。不是云分部 FCF，也不包含全部融资租赁或股权稀释。</p><div class="cash-row"><span>MSFT</span><div class="track"><span class="fill" style="width:100%"></span></div><strong>+66.987</strong></div><div class="cash-row"><span>GOOGL</span><div class="track"><span class="fill" style="width:79.5%"></span></div><strong>+53.273</strong></div><div class="cash-row negative"><span>AMZN</span><div class="track"><span class="fill" style="width:17.4%"></span></div><strong>-11.625</strong></div><p>AMZN 公司定义的 TTM FCF 为 -7.604，因其固定资产净购置口径不同。<a href="research-assets/cloud-platform-raw-inputs-2026-10-18.md">查看计算底稿</a></p></section>
+    </div>
+    <section class="boundary"><h2>读这张图时，保留四个边界</h2><div class="boundary-grid"><article><strong>收入 ≠ AI 专属收入</strong><p>Data Center、Cloud、先进制程等分部均含非 AI 业务。</p></article><article><strong>指引 ≠ 已实现</strong><p>管理层预测、年化运行率和订单不能替代已确认收入。</p></article><article><strong>经营利润 ≠ FCF</strong><p>建设现金支出、租赁和营运资本会改变股东现金回报。</p></article><article><strong>增长 ≠ 买入价</strong><p>估值仍需股数、净债务、汇率及正常化现金流。</p></article></div></section>
+    <section class="references"><details><summary>资料来源与方法（点击展开）</summary><ol><li><a href="research-assets/ai-build-position-primary-sources-2026-10-17.md">AI 价值链一手证据底稿</a>：各公司最新已实现经营事实与限制。</li><li><a href="research-assets/ai-noncloud-valuation-raw-inputs-2026-10-18.md">非云公司 TTM 输入</a>：NVDA、TSM、ASML 的现金与估值缺口。</li><li><a href="research-assets/cloud-platform-raw-inputs-2026-10-18.md">云平台原始输入</a>：MSFT、GOOGL、AMZN 的 TTM 拼接。</li><li><a href="research-assets/ai-other-candidates-primary-screen-2026-10-18.md">非云候选初筛</a>：AMD、ANET、VRT、PLTR。</li><li>页面金额、报告期间和 GAAP / 非 GAAP 标识保持原始披露口径；详情卡中的链接直达发行人或 SEC 原文。</li></ol></details><div class="bottom">研究时点：2026-10-18 PDT。此页为经营证据图谱，不构成投资建议；截至该时点未完成统一估值或建仓授权。</div></section>
+  </main>
+  <script>
+    const moduleLayers=[
+      {id:"power",name:"能源与电力",segments:[["p_dc","数据中心电力与温控"],["p_gen","发电与核电"],["p_grid","电网与工程"]]},
+      {id:"silicon",name:"芯片与半导体",segments:[["s_compute","算力芯片"],["s_mem","存储芯片"],["s_analog","模拟与电源芯片"],["s_foundry","晶圆代工"],["s_equip","半导体设备与材料"],["s_eda","EDA 与 IP"],["s_optical","互连与光器件"]]},
+      {id:"infra",name:"算力基础设施与云",segments:[["i_cloud","云与超大规模"],["i_rental","GPU 算力租赁"],["i_server","AI 服务器与整机"],["i_network","数据中心网络"],["i_telecom","电信与连接"]]},
+      {id:"model",name:"模型与数据平台",segments:[["m_foundation","基础模型"],["m_data","数据云与 MLOps"],["m_dev","AI 开发平台"]]},
+      {id:"app",name:"AI 软件与应用",segments:[["a_enterprise","企业软件与 Agent"],["a_ads","广告与营销 AI"],["a_security","安全与身份"],["a_consumer","消费与内容应用"],["a_it","IT 服务与集成"],["a_finance","金融 AI"],["a_health","医疗 AI 与计算生物"],["a_contact","客服与联络中心 AI"],["a_devtools","AI 开发工具"],["a_legal","法律科技 AI"],["a_vertical","垂直 SaaS AI"],["a_gov","国防与政府 AI"]]},
+      {id:"edge",name:"终端与具身智能",segments:[["e_device","端侧设备"],["e_robot","自动驾驶与机器人"]]}
+    ];
+    const routeInfo={
+      manufacture:{name:"算力制造",description:"从设计工具、设备、晶圆和存储，走向服务器、网络与云集群。"},
+      facility:{name:"机房交付",description:"发电与电网为数据中心供电；服务器、网络和温控共同形成可部署的算力。"},
+      monetize:{name:"模型变现",description:"云与算力支撑模型训练和推理；数据平台与开发平台再把能力带到应用场景。"},
+      edge:{name:"端侧落地",description:"芯片、模型和连接能力共同支撑终端设备与具身场景。"}
+    };
+    const R=(from,to,label,routes)=>({from,to,label,routes:routes.split(" ")});
+    const moduleRelations=[
+      R("s_eda","s_compute","设计工具与 IP","manufacture"),
+      R("s_equip","s_foundry","制造设备与材料","manufacture"),
+      R("s_equip","s_mem","存储制造设备","manufacture"),
+      R("s_foundry","s_compute","晶圆制造","manufacture"),
+      R("s_compute","i_server","加速器 / CPU","manufacture"),
+      R("s_mem","i_server","HBM 与系统存储","manufacture"),
+      R("s_analog","i_server","电源管理芯片","manufacture"),
+      R("s_optical","i_network","光互连","manufacture"),
+      R("i_server","i_cloud","服务器部署","manufacture facility"),
+      R("i_network","i_cloud","集群互联","manufacture facility"),
+      R("p_gen","p_grid","电力供给","facility"),
+      R("p_grid","p_dc","接入与配电","facility"),
+      R("p_dc","i_cloud","供电与散热","facility"),
+      R("p_dc","i_rental","供电与散热","facility"),
+      R("i_server","i_rental","服务器部署","facility"),
+      R("i_network","i_rental","集群互联","facility"),
+      R("i_telecom","i_cloud","网络接入","facility"),
+      R("i_cloud","m_foundation","训练与推理算力","monetize"),
+      R("i_rental","m_foundation","算力供给","monetize"),
+      R("i_cloud","m_data","数据存储与处理","monetize"),
+      R("m_data","m_foundation","数据治理与评估","monetize"),
+      R("m_foundation","m_dev","模型能力接口","monetize"),
+      R("m_data","m_dev","部署与监控","monetize"),
+      R("m_dev","a_enterprise","企业工作流集成","monetize"),
+      R("m_dev","a_devtools","开发能力封装","monetize"),
+      R("m_foundation","a_ads","内容与投放能力","monetize"),
+      R("m_foundation","a_security","检测与自动化能力","monetize"),
+      R("m_foundation","a_consumer","用户交互能力","monetize"),
+      R("m_foundation","a_it","交付与集成能力","monetize"),
+      R("m_foundation","a_finance","行业任务能力","monetize"),
+      R("m_foundation","a_health","行业任务能力","monetize"),
+      R("m_foundation","a_contact","对话与自动化能力","monetize"),
+      R("m_foundation","a_legal","文档任务能力","monetize"),
+      R("m_foundation","a_vertical","垂直工作流能力","monetize"),
+      R("m_foundation","a_gov","行业任务能力","monetize"),
+      R("s_compute","e_device","端侧计算芯片","edge"),
+      R("s_compute","e_robot","板载推理芯片","edge"),
+      R("i_telecom","e_device","连接与回传","edge"),
+      R("i_telecom","e_robot","远程连接","edge"),
+      R("m_foundation","e_device","端侧模型能力","edge"),
+      R("m_foundation","e_robot","感知与规划能力","edge")
+    ];
+    const moduleNames=new Map(moduleLayers.flatMap(layer=>layer.segments));
+    const moduleLayerNames=new Map(moduleLayers.flatMap(layer=>layer.segments.map(([id])=>[id,layer.name])));
+    const moduleStocks={"p_dc":[["ETN","Eaton"],["VRT","Vertiv"],["LIN","Linde"]],"p_gen":[["GEV","GE Vernova"],["NEE","NextEra Energy"],["SO","Southern Company"]],"p_grid":[["PWR","Quanta Services"],["AEP","American Electric Power"],["CNP","CenterPoint Energy"]],"s_compute":[["NVDA","NVIDIA"],["AVGO","Broadcom"],["AMD","Advanced Micro Devices"],["INTC","Intel"],["MRVL","Marvell"],["QCOM","Qualcomm"]],"s_mem":[["MU","Micron"],["SNDK","Sandisk"],["STX","Seagate"]],"s_analog":[["TXN","Texas Instruments"],["ADI","Analog Devices"],["MPWR","Monolithic Power Systems"]],"s_foundry":[["TSM","TSMC"],["ASX","ASE Technology"],["UMC","United Microelectronics"]],"s_equip":[["ASML","ASML"],["LRCX","Lam Research"],["AMAT","Applied Materials"]],"s_eda":[["ARM","Arm"],["CDNS","Cadence Design Systems"],["SNPS","Synopsys"]],"s_optical":[["APH","Amphenol"],["GLW","Corning"],["LITE","Lumentum"]],"i_cloud":[["GOOGL","Alphabet"],["MSFT","Microsoft"],["AMZN","Amazon"],["ORCL","Oracle"]],"i_rental":[["NBIS","Nebius"],["CRWV","CoreWeave"],["IREN","IREN"]],"i_server":[["DELL","Dell Technologies"],["HPE","Hewlett Packard Enterprise"],["NTAP","NetApp"]],"i_network":[["CSCO","Cisco"],["ANET","Arista Networks"],["NOK","Nokia"]],"i_telecom":[["VZ","Verizon"],["TMUS","T-Mobile US"],["T","AT&T"]],"m_foundation":[["META","Meta"],["GOOGL","Alphabet"],["MSFT","Microsoft"]],"m_data":[["SAP","SAP"],["SNOW","Snowflake"],["DDOG","Datadog"]],"m_dev":[["HUBS","HubSpot"],["GTLB","GitLab"],["AI","C3.ai"]],"a_enterprise":[["CRM","Salesforce"],["NOW","ServiceNow"],["FTNT","Fortinet"]],"a_ads":[["APP","AppLovin"],["TTD","The Trade Desk"],["GENI","Genius Sports"]],"a_security":[["PANW","Palo Alto Networks"],["CRWD","CrowdStrike"],["NET","Cloudflare"]],"a_consumer":[["COST","Costco"],["NFLX","Netflix"],["SHOP","Shopify"]],"a_it":[["IBM","IBM"],["ACN","Accenture"],["INFY","Infosys"]],"a_finance":[["V","Visa"],["INTU","Intuit"],["AFRM","Affirm"]],"a_health":[["VRTX","Vertex Pharmaceuticals"],["IDXX","IDEXX Laboratories"],["RMD","ResMed"]],"a_contact":[["TWLO","Twilio"],["ZM","Zoom Communications"],["RNG","RingCentral"]],"a_devtools":[["TEAM","Atlassian"],["U","Unity Software"],["FROG","JFrog"]],"a_legal":[["TRI","Thomson Reuters"],["DOCU","DocuSign"],["LAW","CS Disco"]],"a_vertical":[["ADBE","Adobe"],["VEEV","Veeva Systems"],["WDAY","Workday"]],"a_gov":[["PLTR","Palantir"],["ROL","Rolls-Royce"],["LDOS","Leidos Holdings"]],"e_device":[["AAPL","Apple"],["HPQ","HP Inc"],["SONO","Sonos"]],"e_robot":[["TSLA","Tesla"],["ISRG","Intuitive Surgical"],["LI","Li Auto"]]};
+    const moduleButtons=new Map();
+    const supplementalStocks={p_dc:new Set(["LIN"]),s_compute:new Set(["INTC","MRVL","QCOM"]),i_cloud:new Set(["ORCL"]),m_foundation:new Set(["GOOGL","MSFT"])};
+    function stockMark(id){
+      const row=document.createElement("span");row.className="stock-association";
+      const arrow=document.createElement("span");arrow.className="stock-arrow";arrow.setAttribute("aria-hidden","true");arrow.textContent="↓";
+      const tickers=document.createElement("span");tickers.className="stock-tickers";
+      for(const [ticker] of moduleStocks[id]){
+        const code=document.createElement("span");code.className="stock-ticker";code.textContent=ticker;
+        if(supplementalStocks[id]?.has(ticker)) code.classList.add("extra");
+        tickers.append(code);
+      }
+      row.append(arrow,tickers);
+      if(id==="a_consumer"||id==="a_health"){
+        const flag=document.createElement("span");flag.className="stock-flag";flag.textContent="分类待复核";row.append(flag);
+      }
+      return row;
+    }
+    const moduleCanvas=document.getElementById("module-canvas");
+    const routeGraph=document.getElementById("route-graph");
+    const routeSvg=document.getElementById("route-edges");
+    const routeLayouts={
+      manufacture:[
+        {name:"设计与上游材料",ids:["s_eda","s_equip","s_analog","s_optical"]},
+        {name:"晶圆与存储制造",ids:["s_foundry","s_mem"]},
+        {name:"计算核心",ids:["s_compute"]},
+        {name:"集群硬件",ids:["i_server","i_network"]},
+        {name:"云集群",ids:["i_cloud"]}
+      ],
+      facility:[
+        {name:"电力来源",ids:["p_gen"]},
+        {name:"电网交付",ids:["p_grid"]},
+        {name:"机房与设备投入",ids:["p_dc","i_server","i_network","i_telecom"]},
+        {name:"算力交付",ids:["i_cloud","i_rental"]}
+      ],
+      monetize:[
+        {name:"算力与云",ids:["i_cloud","i_rental"]},
+        {name:"数据平台",ids:["m_data"]},
+        {name:"模型能力",ids:["m_foundation"]},
+        {name:"开发封装",ids:["m_dev"]},
+        {name:"应用场景",ids:["g_dev","g_foundation"]}
+      ],
+      edge:[
+        {name:"芯片、连接与模型",ids:["s_compute","i_telecom","m_foundation"]},
+        {name:"终端落地",ids:["e_device","e_robot"]}
+      ]
+    };
+    const appGroups={
+      g_dev:{name:"开发平台接入的应用",source:"m_dev"},
+      g_foundation:{name:"基础模型直达的应用",source:"m_foundation"}
+    };
+    const graphRefs=new Map();
+    let currentRoute="manufacture",selectedModule=null;
+    for(const layer of moduleLayers){
+      const column=document.createElement("section"); column.className="module-column";
+      const toggle=document.createElement("button"); toggle.className="layer-toggle"; toggle.type="button"; toggle.setAttribute("aria-expanded","true");
+      const name=document.createElement("span"); name.textContent=layer.name;
+      const count=document.createElement("small"); count.textContent=`${layer.segments.length} 个模块`;
+      toggle.append(name,count);
+      const items=document.createElement("div"); items.className="module-items";
+      for(const [id,label] of layer.segments){
+        const button=document.createElement("button"); button.className="module-node"; button.type="button"; button.setAttribute("aria-pressed","false");
+        const title=document.createElement("span");title.className="module-label";title.textContent=label;button.append(title,stockMark(id));
+        button.addEventListener("click",()=>selectModule(id));
+        moduleButtons.set(id,button); items.append(button);
+      }
+      toggle.addEventListener("click",()=>{items.hidden=!items.hidden;toggle.setAttribute("aria-expanded",String(!items.hidden));});
+      column.append(toggle,items); moduleCanvas.append(column);
+    }
+    for(const [id,route] of Object.entries(routeInfo)){
+      const button=document.createElement("button"); button.type="button"; button.dataset.route=id; button.textContent=route.name; button.setAttribute("aria-pressed",String(id===currentRoute));
+      button.addEventListener("click",()=>{currentRoute=id;selectedModule=null;renderModules();});
+      document.getElementById("route-tabs").append(button);
+    }
+    function selectModule(id){
+      selectedModule=id;
+      if(!moduleRelations.some(r=>r.routes.includes(currentRoute)&&(r.from===id||r.to===id))) currentRoute=moduleRelations.find(r=>r.from===id||r.to===id).routes[0];
+      renderModules();
+    }
+    function activeModuleRelations(){return selectedModule?moduleRelations.filter(relation=>relation.from===selectedModule||relation.to===selectedModule):moduleRelations.filter(relation=>relation.routes.includes(currentRoute));}
+    function routeEdges(){
+      const edges=moduleRelations.filter(r=>r.routes.includes(currentRoute)).map(r=>({...r,graphTo:currentRoute==="monetize"&&r.to.startsWith("a_")?(r.from==="m_dev"?"g_dev":"g_foundation"):r.to}));
+      return edges.filter((edge,index)=>edges.findIndex(other=>other.from===edge.from&&other.graphTo===edge.graphTo)===index);
+    }
+    function renderGraph(){
+      graphRefs.clear();
+      routeGraph.querySelectorAll(".route-stage").forEach(stage=>stage.remove());
+      const columns=routeLayouts[currentRoute];
+      routeGraph.style.gridTemplateColumns=`repeat(${columns.length},minmax(0,1fr))`;
+      routeGraph.style.minWidth=`${Math.max(680,columns.length*212)}px`;
+      routeGraph.setAttribute("aria-label",`${routeInfo[currentRoute].name}：从左向右的模块关系图`);
+      document.getElementById("route-heading").textContent=routeInfo[currentRoute].name;
+      for(const column of columns){
+        const stage=document.createElement("section");stage.className="route-stage";
+        const title=document.createElement("h3");title.textContent=column.name;
+        const nodes=document.createElement("div");nodes.className="route-nodes";
+        for(const id of column.ids){
+          if(appGroups[id]){
+            const group=appGroups[id];
+            const card=document.createElement("details");card.className="route-group";
+            const children=moduleRelations.filter(r=>r.routes.includes(currentRoute)&&r.from===group.source&&r.to.startsWith("a_"));
+            card.open=id==="g_dev"||children.some(r=>r.to===selectedModule);
+            card.addEventListener("toggle",()=>requestAnimationFrame(drawRouteEdges));
+            const heading=document.createElement("summary");heading.textContent=`${group.name} · ${children.length} 个`;
+            card.append(heading);
+            for(const relation of children){
+              const button=document.createElement("button");button.type="button";button.dataset.module=relation.to;
+              const label=document.createElement("span");label.className="module-label";label.textContent=moduleNames.get(relation.to);
+              button.append(label,stockMark(relation.to));button.addEventListener("click",()=>selectModule(relation.to));card.append(button);
+            }
+            graphRefs.set(id,card);nodes.append(card);
+          }else{
+            const button=document.createElement("button");button.type="button";button.className="route-node";button.dataset.module=id;
+            const label=document.createElement("span");label.className="module-label";label.textContent=moduleNames.get(id);
+            const small=document.createElement("small");small.textContent=moduleLayerNames.get(id);button.append(label,small,stockMark(id));
+            button.addEventListener("click",()=>selectModule(id));graphRefs.set(id,button);nodes.append(button);
+          }
+        }
+        stage.append(title,nodes);routeGraph.append(stage);
+      }
+      routeGraph.querySelectorAll("[data-module]").forEach(button=>button.setAttribute("aria-pressed",String(button.dataset.module===selectedModule)));
+      requestAnimationFrame(drawRouteEdges);
+    }
+    function drawRouteEdges(){
+      routeSvg.querySelectorAll("path[data-edge]").forEach(path=>path.remove());
+      const box=routeGraph.getBoundingClientRect();
+      routeSvg.setAttribute("viewBox",`0 0 ${box.width} ${box.height}`);
+      for(const edge of routeEdges()){
+        const from=graphRefs.get(edge.from),to=graphRefs.get(edge.graphTo);
+        if(!from||!to) continue;
+        const a=from.getBoundingClientRect(),b=to.getBoundingClientRect();
+        const x1=a.right-box.left+3,x2=b.left-box.left-7,y1=a.top+25-box.top,y2=b.top+(to.classList.contains("route-group")?22:25)-box.top;
+        const bend=x1+Math.max(13,(x2-x1)/2);
+        const path=document.createElementNS("http://www.w3.org/2000/svg","path");
+        path.setAttribute("d",`M${x1},${y1} H${bend} V${y2} H${x2}`);
+        path.setAttribute("data-edge","");
+        if(selectedModule){
+          const related=edge.from===selectedModule||edge.graphTo===selectedModule||appGroups[edge.graphTo]&&moduleRelations.some(r=>r.from===edge.from&&r.to===selectedModule&&r.routes.includes(currentRoute));
+          path.classList.add(related?"focus":"dim");
+        }
+        routeSvg.append(path);
+      }
+    }
+    function renderModules(){
+      const active=activeModuleRelations();
+      for(const [id,button] of moduleButtons){button.setAttribute("aria-pressed",String(id===selectedModule));button.classList.toggle("is-route",active.some(relation=>relation.from===id||relation.to===id));}
+      document.querySelectorAll("#route-tabs button").forEach(button=>button.setAttribute("aria-pressed",String(button.dataset.route===currentRoute)));
+      renderGraph();
+      const list=document.getElementById("module-relations"); list.replaceChildren();
+      document.getElementById("module-tag").textContent=selectedModule?"子模块 · 直接关系":"关系路线 · 功能依赖";
+      document.getElementById("module-title").textContent=selectedModule?moduleNames.get(selectedModule):routeInfo[currentRoute].name;
+      document.getElementById("module-description").textContent=selectedModule?`直接输入 ${active.filter(r=>r.to===selectedModule).length} 条；直接输出 ${active.filter(r=>r.from===selectedModule).length} 条。关系是产业结构判断，不代表具体公司间合同。`:routeInfo[currentRoute].description;
+      const stockPanel=document.getElementById("module-stock-panel");stockPanel.hidden=!selectedModule;
+      if(selectedModule){
+        const companies=moduleStocks[selectedModule];
+        const holder=document.getElementById("module-stocks");holder.replaceChildren();
+        for(const [ticker,name] of companies){const item=document.createElement("span");item.textContent=`${ticker} · ${name}${supplementalStocks[selectedModule]?.has(ticker)?"（目录补充）":""}`;holder.append(item);}
+        document.getElementById("module-stock-method").textContent=`蓝色股票来自本地候选清单，按 2026-10-16 市值排序；棕色股票由本地公司目录补充，未列入原前三代表名单。${selectedModule==="m_foundation"?"GOOGL、MSFT 依据目录中的跨层模型角色纳入。":""}${selectedModule==="a_consumer"||selectedModule==="a_health"?"COST、VRTX 的 AI 模块归类待复核。":""}股票归类不代表上下游交易已核验。`;
+      }
+      document.getElementById("module-relations-title").textContent=selectedModule?"输入与输出":"关键连接";
+      for(const relation of active){const item=document.createElement("li");item.textContent=`${moduleNames.get(relation.from)} → ${moduleNames.get(relation.to)}：${relation.label}`;list.append(item);}
+    }
+    window.addEventListener("resize",()=>requestAnimationFrame(drawRouteEdges));
+    renderModules();
+    const facts = {
+      PLTR:{stage:"app",name:"Palantir · PLTR",period:"2026 Q2 已实现业绩",metric:"$1.935bn",label:"季度总收入，同比 +93%",proof:"美国商业收入 $0.764bn，同比 +149%；说明平台业务正在增长。",limit:"美国商业收入与合同价值都不是独立的 AIP / AI 产品收入或利润。",cash:"同期经营现金流 $1.216bn；调整后 FCF $1.220bn 为非 GAAP，不能直接与其他公司横比。",source:"https://www.sec.gov/Archives/edgar/data/1321655/000132165526000039/a2026q2ex991pressrelease.htm"},
+      MSFT:{stage:"cloud",name:"Microsoft · MSFT",period:"FY2026 Q4 / FY2026",metric:"+43%",label:"Q4 Azure 等云服务收入同比",proof:"FY2026 Azure 收入首次超过 $100bn；这是云需求增长的已实现证据。",limit:"Azure 并非独立利润分部；付费席位不等于净新增利润。",cash:"FY2026 全公司 CFO $182.935bn，现金 PPE $115.948bn；简单差额 $66.987bn，未扣除全部租赁本金。",source:"https://www.sec.gov/Archives/edgar/data/789019/000119312526323660/msft-20260630.htm"},
+      GOOGL:{stage:"cloud",name:"Alphabet · GOOGL",period:"2026 Q2 已实现业绩",metric:"$24.768bn",label:"Google Cloud 季度收入，同比 +82%",proof:"同期 Google Cloud 分部经营利润 $8.814bn。",limit:"Cloud 包含 GCP 和 Workspace，并非 AI 单独收入；2026 Q2 起对外 TPU 系统销售影响可比性。",cash:"截至 2026-06-30 TTM 全公司 CFO 减现金 PPE 为 $53.273bn；不是 Cloud 独立 FCF。",source:"https://www.sec.gov/Archives/edgar/data/1652044/000165204426000071/goog-20260630.htm"},
+      AMZN:{stage:"cloud",name:"Amazon · AMZN",period:"2026 Q2 已实现业绩",metric:"$42.232bn",label:"AWS 季度收入，同比 +37%",proof:"同期 AWS 营业利润 $16.621bn。管理层称 AWS AI 业务年化收入运行率超过 $25bn。",limit:"$25bn 是年化运行率，不是已确认全年收入；与芯片业务运行率可能重叠，不能相加。",cash:"公司自定义截至 2026-06-30 的 TTM FCF 为 -$7.604bn；未披露 AWS 独立 FCF。",source:"https://www.sec.gov/Archives/edgar/data/1018724/000101872426000026/amzn-20260630.htm",source2:"https://www.sec.gov/Archives/edgar/data/1018724/000101872426000024/amzn-20260630xex991.htm"},
+      NVDA:{stage:"compute",name:"NVIDIA · NVDA",period:"FY2027 Q2 已实现业绩",metric:"$89.0bn",label:"季度 Data Center 收入，同比 +117%",proof:"季度总收入 $96.221bn，同比 +106%；GAAP 毛利率 75.0%。",limit:"Data Center 不全等于 AI。FY27 Q3 $108bn ±2% 为管理层指引，非已实现收入。",cash:"截至 2026-07-26 TTM 公司定义 FCF $126.886bn；不能机械永久化当季利润率。",source:"https://nvidianews.nvidia.com/news/nvidia-announces-financial-results-for-second-quarter-fiscal-2027"},
+      AMD:{stage:"compute",name:"AMD · AMD",period:"2026 Q2 已实现业绩",metric:"$6.7bn",label:"季度 Data Center 收入，同比 +107%",proof:"季度总收入 $11.536bn，同比 +50%。",limit:"Data Center 同时含 EPYC CPU 与 Instinct GPU，不是纯 AI 加速器收入；上年出口管制费用影响利润同比基数。",cash:"本轮底稿未核对正常化 FCF、资本支出和稀释股数，不能用收入增速代替现金质量。",source:"https://ir.amd.com/news-events/press-releases/detail/1295/amd-reports-second-quarter-2026-financial-results"},
+      ANET:{stage:"network",name:"Arista · ANET",period:"2026 Q2 已实现业绩",metric:"$3.036bn",label:"季度收入，同比 +37.7%",proof:"GAAP 经营利润率 45.4%；推出 1.6Tbps AI fabric 产品。",limit:"收入混合数据中心、园区和路由；产品发布不是已兑现的 AI 独立收入。",cash:"本轮底稿未核对正常化 FCF、资本支出和稀释股数。",source:"https://www.sec.gov/Archives/edgar/data/1596532/000159653226000174/ex991q226-earningsrelease.htm"},
+      VRT:{stage:"facility",name:"Vertiv · VRT",period:"2026 Q2 已实现业绩",metric:"$3.274bn",label:"季度收入，同比 +24%",proof:"收入增长中有机 +18%、收购 +5%、汇率 +1%。",limit:"未单列 AI 数据中心收入；订单、管线、交付和收现时点不同。",cash:"季度 CFO $1.100bn；调整后 FCF $0.925bn 为非 GAAP。",source:"https://www.sec.gov/Archives/edgar/data/1674101/000162828026050323/q22026exhibit991vrt07292026.htm"},
+      TSM:{stage:"foundry",name:"TSMC · TSM ADR",period:"2026 Q3 已实现业绩",metric:"NT$1,494bn",label:"季度收入，同比 +50.9%",proof:"毛利率 66.4%；7nm 及更先进制程占晶圆收入 79%。",limit:"先进制程并不全由 AI 驱动。美元 ADR 估值须处理 TWD 汇率和 1 ADS = 5 普通股。",cash:"截至 2026-09-30 TTM 公司定义 FCF NT$1,480.725bn；不能直接与美元数字比收益率。",source:"https://www.sec.gov/Archives/edgar/data/1046179/000104617926000726/a3q26e_withguidancexfinal.htm"},
+      ASML:{stage:"equipment",name:"ASML · 普通股",period:"2026 Q3 已实现业绩",metric:"€11.662bn",label:"季度销售额",proof:"季度毛利率 57.5%；2026 全年 €44-45bn 销售为管理层指引。",limit:"客户的 AI 建设意向不能当已签订单；纳斯达克交易的是普通股，不是 ADR。",cash:"单季 CFO 受 €7.009bn 资产负债变动正贡献影响，不能年化；TTM 简单现金差额也不可直接外推。",source:"https://www.sec.gov/Archives/edgar/data/937966/000162828026065813/financial_statementsxusx.htm"}
+    };
+    const map=document.getElementById("map");
+    const buttons=[...document.querySelectorAll(".company")];
+    const stages=[...document.querySelectorAll(".stage")];
+    const paths=[...document.querySelectorAll(".edges path[data-from]")];
+    const fields={kicker:"detail-kicker",title:"detail-title",period:"detail-period",metric:"detail-metric",label:"detail-metric-label",proof:"detail-proof",limit:"detail-limit",cash:"detail-cash"};
+    function select(id) {
+      const fact=facts[id];
+      map.classList.toggle("is-focused",!!fact);
+      buttons.forEach(button=>button.setAttribute("aria-pressed",String(button.dataset.id===id)));
+      stages.forEach(stage=>stage.classList.toggle("active",!!fact&&(stage.dataset.stage===fact.stage||paths.some(path=>(path.dataset.from===fact.stage||path.dataset.to===fact.stage)&&(path.dataset.from===stage.dataset.stage||path.dataset.to===stage.dataset.stage)))));
+      paths.forEach(path=>path.classList.toggle("active",!!fact&&(path.dataset.from===fact.stage||path.dataset.to===fact.stage)));
+      if (!fact) {
+        document.getElementById("detail-kicker").textContent="阅读提示";
+        document.getElementById("detail-title").textContent="先看关系，再看现金";
+        document.getElementById("detail-period").textContent="点选任一公司开始探索";
+        document.getElementById("detail-metric").textContent="10 家";
+        document.getElementById("detail-metric-label").textContent="代表公司，覆盖七个经营环节";
+        document.getElementById("detail-proof").textContent="同一笔终端 AI 支出，会在云、芯片、代工、网络和机房设备层面多次形成收入。";
+        document.getElementById("detail-limit").textContent="产业链公司增速不能相加得到 AI 总市场增速；已实现增长也不等于当前股价有安全边际。";
+        document.getElementById("detail-cash").textContent="先确认收入，再核对资本开支、租赁、股权稀释和股东现金回报。";
+        document.getElementById("detail-source").replaceChildren();
+        return;
+      }
+      for (const [key,elementId] of Object.entries(fields)) document.getElementById(elementId).textContent=key==="kicker"?"公司证据 · 点击其他节点切换":key==="title"?fact.name:fact[key];
+      const link=document.createElement("a"); link.href=fact.source; link.target="_blank"; link.rel="noopener noreferrer"; link.textContent="查看发行人 / SEC 原文 ↗";
+      const sourceBox=document.getElementById("detail-source"); sourceBox.replaceChildren(link);
+      if(fact.source2){const extra=document.createElement("a"); extra.href=fact.source2; extra.target="_blank"; extra.rel="noopener noreferrer"; extra.textContent="业绩新闻稿 ↗"; sourceBox.append(document.createTextNode("　"),extra);}
+    }
+    buttons.forEach(button=>button.addEventListener("click",()=>select(button.dataset.id)));
+    document.getElementById("reset").addEventListener("click",()=>select(null));
+    document.addEventListener("keydown",event=>{if(event.key==="Escape") select(null);});
+  </script>
+</body>
+</html>
