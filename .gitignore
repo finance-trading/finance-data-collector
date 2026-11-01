@@ -228,3 +228,9 @@ sec/
 # Frontend dependencies and compiled assets
 node_modules/
 frontend/dist/
+data/
+
+*.png
+outputs/
+.superpowers/
+sec_archive/

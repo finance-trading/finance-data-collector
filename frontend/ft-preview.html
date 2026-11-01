@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Full text preview</title>
+  <link rel="stylesheet" href="/src/styles/theme.css">
+  <link rel="stylesheet" href="/src/styles/company.css">
+</head>
+<body>
+<main class="research-shell" style="max-width:820px;margin:0 auto;padding:24px 20px">
+  <section class="disclosure-section" aria-labelledby="h">
+    <div class="section-heading"><div>
+      <h3 id="h">Disclosures and tables</h3>
+      <p>Parsed narrative and tabular evidence for the selected filing.</p>
+    </div></div>
+    <div class="disclosure-grid">
+      <article id="section-result" aria-labelledby="section-title">
+        <h4 id="section-title">Management discussion</h4>
+      </article>
+    </div>
+  </section>
+  <aside id="evidence" class="evidence-rail" aria-labelledby="eh">
+    <div class="evidence-heading-row"><h2 id="eh">Evidence</h2></div>
+    <div id="evidence-content" aria-live="polite"></div>
+  </aside>
+  <div id="full-text" class="full-text-modal" role="dialog" aria-modal="true"
+       aria-labelledby="full-text-title" aria-hidden="true">
+    <div class="full-text-header">
+      <h3 id="full-text-title">Full text</h3>
+      <button id="full-text-close" type="button">Close</button>
+    </div>
+    <article id="full-text-body"></article>
+  </div>
+</main>
+<script type="module">
+  import { disclosureBody, initializeFullTextModal } from "/src/pages/company.ts";
+
+  const LONG =
+    "Operating costs for the period totaled $12.4 billion, an increase of 19 percent over the prior year and " +
+    "reflecting higher investment in research, development, and manufacturing capacity. The increase was " +
+    "driven primarily by the Company's continued investment in accelerated computing platforms, including " +
+    "new data center architectures and software toolchains. Research and development expenses increased by " +
+    "$1.6 billion, or 24 percent, reflecting a 1,400-person headcount increase concentrated in compute and " +
+    "systems engineering. Cost of sales increased $1.1 billion, or 11 percent, at a lower rate than revenue " +
+    "growth as gross margin expanded to 56.4 percent from 54.9 percent, reflecting favorable product mix " +
+    "toward higher-margin data center products and lower wafer procurement costs.\n\n" +
+    "The Company continued to invest in supply chain resilience, including dual-sourcing of key components " +
+    "and advanced packaging capacity at a second assembly partner. Working capital increased $2.1 billion, " +
+    "primarily from inventory build of $940 million and accounts receivable growth of $780 million. " +
+    "Free cash flow was $6.2 billion for the period, and the Company repurchased $4.0 billion of shares.\n\n" +
+    "Segment revenue for data center grew to $22.8 billion, up 62 percent, and now represents 75 percent of " +
+    "total revenue. The Company ended the period with $52.3 billion in cash, cash equivalents, and marketable " +
+    "securities. The Company expects revenue for the full fiscal year of approximately $156 billion, with " +
+    "non-GAAP operating margin expected in the 62 to 63 percent range.\n\n";
+
+  initializeFullTextModal();
+
+  document.getElementById("section-result").append(
+    disclosureBody("Net revenue was $30 billion for the period.", "Management discussion"),
+    disclosureBody(LONG.repeat(4), "Management discussion"),
+  );
+  document.getElementById("evidence-content").append(disclosureBody(LONG, "Evidence excerpt"));
+</script>
+</body>
+</html>

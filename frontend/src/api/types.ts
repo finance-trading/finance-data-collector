@@ -10,7 +10,9 @@ export type DirectorySortKey =
   | "market_cap"
   | "change_pct"
   | "week_change_pct"
-  | "change_52w_pct";
+  | "week_rise_pct"
+  | "change_52w_pct"
+  | "rise_52w_pct";
 
 export type DirectoryOrder = "desc" | "asc";
 

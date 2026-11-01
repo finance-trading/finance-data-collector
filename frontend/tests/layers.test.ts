@@ -136,11 +136,10 @@ describe("column label truncation", () => {
 });
 
 describe("market cap formatting", () => {
-  it("matches the directory page's compact scale", () => {
-    expect(formatCompactUSD(5_570_000_000_000)).toBe("$5.57T");
-    expect(formatCompactUSD(93_833_165_760)).toBe("$93.83B");
+  it("matches the directory page's millions scale", () => {
+    expect(formatCompactUSD(5_570_000_000_000)).toBe("$5,570,000M");
+    expect(formatCompactUSD(93_833_165_760)).toBe("$93,833M");
     expect(formatCompactUSD(1_500_000)).toBe("$1.5M");
-    expect(formatCompactUSD(950)).toBe("$950");
   });
 
   it("falls back to a placeholder when no quote is cached", () => {

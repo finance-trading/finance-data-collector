@@ -303,16 +303,20 @@ def test_directory_sorts_by_trailing_returns_and_keeps_missing_last(
             {
                 "generated_at": "2026-10-04T15:00:00+00:00",
                 "quotes": {
-                    # The two trailing columns disagree on the winner; AMD has none.
+                    # dd and rise disagree on the winner; AMD has none.
                     "VRT": {
                         "change_pct": 2.46,
                         "week_change_pct": -1.87,
+                        "week_rise_pct": 1.2,
                         "change_52w_pct": 34.5,
+                        "rise_52w_pct": 41.0,
                     },
                     "NVDA": {
                         "change_pct": -1.34,
                         "week_change_pct": 5.61,
+                        "week_rise_pct": 8.9,
                         "change_52w_pct": -18.07,
+                        "rise_52w_pct": -12.0,
                     },
                 },
             }
@@ -339,8 +343,12 @@ def test_directory_sorts_by_trailing_returns_and_keeps_missing_last(
 
     assert tickers("week_change_pct", "desc") == ["NVDA", "VRT", "AMD"]
     assert tickers("week_change_pct", "asc") == ["VRT", "NVDA", "AMD"]
+    assert tickers("week_rise_pct", "desc") == ["NVDA", "VRT", "AMD"]
+    assert tickers("week_rise_pct", "asc") == ["VRT", "NVDA", "AMD"]
     assert tickers("change_52w_pct", "desc") == ["VRT", "NVDA", "AMD"]
     assert tickers("change_52w_pct", "asc") == ["NVDA", "VRT", "AMD"]
+    assert tickers("rise_52w_pct", "desc") == ["VRT", "NVDA", "AMD"]
+    assert tickers("rise_52w_pct", "asc") == ["NVDA", "VRT", "AMD"]
 
 
 def test_directory_tolerates_quotes_without_market_cap(

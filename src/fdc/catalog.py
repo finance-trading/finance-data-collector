@@ -22,7 +22,8 @@ from fdc.read_service import ReadServiceError
 
 IngestionStatus = Literal["parsed", "failed", "unavailable", "not_ingested"]
 SortKey = Literal[
-    "market_cap", "change_pct", "week_change_pct", "change_52w_pct"
+    "market_cap", "change_pct", "week_change_pct", "week_rise_pct",
+    "change_52w_pct", "rise_52w_pct",
 ]
 Order = Literal["desc", "asc"]
 

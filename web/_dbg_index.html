@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>美股科技公司关系图 · 3D</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #0a0e1a; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; }
+  #graph { width: 100%; height: 100%; display: block; }
+  .panel {
+    position: fixed; z-index: 10; background: rgba(15, 20, 35, 0.92);
+    border: 1px solid rgba(90, 120, 255, 0.35); border-radius: 10px;
+    padding: 14px 16px; color: #dfe6ff; max-width: 340px;
+    box-shadow: 0 8px 32px rgba(0,0,0,.5); backdrop-filter: blur(6px);
+  }
+  .panel h2 { font-size: 15px; margin-bottom: 8px; color: #fff; }
+  .panel .sub { color: #8b96c2; font-size: 12px; margin: 2px 0 8px; }
+  .panel p { font-size: 13px; line-height: 1.5; }
+  .panel .meta { margin-top: 10px; font-size: 11px; color: #7f8ab5; }
+  .panel a { color: #7fa2ff; text-decoration: none; }
+  .panel .close { position: absolute; top: 8px; right: 12px; cursor: pointer; color: #8b96c2; font-size: 14px; }
+  #card { top: 16px; left: 16px; display: none; }
+  #link { bottom: 16px; left: 16px; right: auto; display: none; }
+  #legend { top: 16px; right: 16px; width: 210px; }
+  #legend h2 { font-size: 13px; margin-bottom: 6px; }
+  .row { display: flex; align-items: center; gap: 7px; font-size: 12px; margin: 4px 0; cursor: pointer; user-select: none; }
+  .row input { accent-color: #7fa2ff; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  #title { position: fixed; bottom: 14px; right: 16px; color: #5c679a; font-size: 11px; z-index: 5; }
+  .badge { display: inline-block; padding: 1px 7px; border-radius: 9px; font-size: 11px; background: rgba(90,120,255,.18); color: #9db4ff; margin-right: 5px; }
+</style>
+</head>
+<body>
+<canvas id="graph"></canvas>
+
+<div id="card" class="panel">
+  <span class="close" onclick="this.parentElement.style.display='none'">✕</span>
+  <h2 id="card-name"></h2>
+  <div class="sub" id="card-sector"></div>
+  <p id="card-desc"></p>
+  <div class="meta" id="card-meta"></div>
+</div>
+
+<div id="link" class="panel">
+  <span class="close" onclick="this.parentElement.style.display='none'">✕</span>
+  <h2 id="link-title"></h2>
+  <p id="link-desc"></p>
+</div>
+
+<div id="legend" class="panel">
+  <h2>着色 / 过滤</h2>
+  <div class="row" style="gap:12px">
+    <label style="display:flex;align-items:center;gap:4px"><input type="radio" name="dim" value="sector" checked>行业</label>
+    <label style="display:flex;align-items:center;gap:4px"><input type="radio" name="dim" value="layer">AI 分层</label>
+  </div>
+  <div id="legend-rows"></div>
+  <h2 style="margin-top:10px">连线类型</h2>
+  <div class="row"><input type="checkbox" id="ft-industry" checked><span class="dot" style="background:#3a4a80"></span>同子行业</div>
+  <div class="row"><input type="checkbox" id="ft-crossref" checked><span class="dot" style="background:#f6ad55"></span>10-K 互提及</div>
+  <div class="row"><input type="checkbox" id="ft-coholding"><span class="dot" style="background:#4fd1c5"></span>13F 共同持仓 <span style="color:#5c679a;font-size:10px">(密)</span></div>
+</div>
+
+<div id="title"><a href="layers.html" style="color:#7fa2ff;text-decoration:none">AI 产业分层 &rarr;</a> · 3d-force-graph · EDGAR 数据 · <span id="gen-time"></span></div>
+
+<script type="module">
+import ThreeForceGraph from "https://esm.sh/3d-force-graph@1.80.0?target=es2022";
+
+// Served over HTTP the payload comes from data/<name>.json. Opening this page
+// straight from disk (file://) blocks fetch(), so fall back to data/<name>.js,
+// which assigns window.__FDC_DATA__[<name>] through a plain script tag.
+async function loadData(name) {
+  if (location.protocol !== "file:") {
+    try {
+      const res = await fetch(`data/${name}.json`);
+      if (res.ok) return await res.json();
+    } catch (err) { /* fall through to the script shim */ }
+  }
+  await new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = `data/${name}.js`;
+    script.onload = resolve;
+    script.onerror = () => reject(new Error(`无法加载 data/${name}.js`));
+    document.head.appendChild(script);
+  });
+  const payload = (window.__FDC_DATA__ || {})[name];
+  if (!payload) throw new Error(`data/${name}.js 没有提供 ${name} 数据`);
+  return payload;
+}
+
+(async () => {
+  const data = await loadData("graph");
+  document.getElementById("gen-time").textContent = data.generated_at || "";
+
+  // colouring dimension: GICS sector (default) or AI value-chain layer
+  const palette = ["#7f8dff","#4fd1c5","#f6ad55","#fc8181","#9f7aea","#68d391","#f687b3","#4299e1","#fbd38d","#63b3ed"];
+  const dims = {
+    sector: { of: n => n.sector || "未分类" },
+    layer: { of: n => n.layer_name || n.layer || "未分层" },
+  };
+  let dim = "sector";
+  const colorOf = {};
+
+  const hidden = new Set();
+  // coholding off by default (Vanguard/BlackRock connect everything)
+  const enabledTypes = new Set(["industry", "crossref"]);
+  const LINK_COLORS = {
+    industry: "#3a4a80", crossref: "#f6ad55", coholding: "#4fd1c5", "industry+crossref": "#f59e0b",
+  };
+  // link types are filtered through accessors (not by re-binding graph data:
+  // three-forcegraph throws when the link set changes during a live update).
+  // Links whose endpoints are filtered out are hidden as well.
+  const byId = new Map(data.nodes.map(node => [node.id, node]));
+  const hiddenRef = ref => {
+    const node = ref && typeof ref === "object" ? ref : byId.get(ref);
+    return hidden.has(dims[dim].of(node || {}));
+  };
+  const linkShown = link =>
+    enabledTypes.has(link.type) && !hiddenRef(link.source) && !hiddenRef(link.target);
+  const applyFilters = () => {
+    Graph.nodeVisibility(n => !hidden.has(dims[dim].of(n)));
+    Graph.d3Force("charge").distanceMax(300);
+  };
+  const Graph = ThreeForceGraph()(document.getElementById("graph"))
+    .graphData(data)
+    .nodeId("id")
+    .nodeLabel(n => `${n.name} (${n.ticker})${n.layer_name ? " · " + n.layer_name : ""}`)
+    .nodeRelSize(d => 2 + Math.min(6, (degree[d.id] || 0) * 0.5))
+    .nodeColor(n => n.color)
+    .linkColor(link => (linkShown(link) ? LINK_COLORS[link.type] || "#556" : "#0a0e1a"))
+    .linkOpacity(link => (linkShown(link) ? 0.55 : 0))
+    .linkWidth(link => (linkShown(link) ? Math.min(3, 0.6 + link.weight * 0.35) : 0))
+    .backgroundColor("#0a0e1a")
+    .showNavInfo(false);
+  setTimeout(() => console.log("nodes:", data.nodes.length, "links:", data.links.length), 1500);
+
+  Graph.camera().position.z = 190;
+  window.__graph = Graph;  // TEMP debug hook
+
+  // degree (links still carry raw ids here; force-graph swaps them in its own copy)
+  const degree = {};
+  data.links.forEach(l => {
+    degree[l.source] = (degree[l.source] || 0) + 1;
+    degree[l.target] = (degree[l.target] || 0) + 1;
+  });
+
+  Graph.onNodeClick(node => {
+    const el = document.getElementById("card");
+    document.getElementById("card-name").textContent = `${node.name} (${node.ticker})`;
+    document.getElementById("card-sector").textContent =
+      `${node.layer_name ? node.layer_name + " · " : ""}${node.segment ? node.segment + " · " : ""}${node.sector} · ${node.industry}`;
+    document.getElementById("card-desc").textContent = node.description || "";
+    document.getElementById("card-meta").innerHTML =
+      `CIK ${node.id} · 度 ${degree[node.id] || 1}<br><a href="${node.edgar}" target="_blank">EDGAR 档案 →</a>`;
+    el.style.display = "block";
+    document.getElementById("link").style.display = "none";
+  });
+
+  Graph.onLinkClick(link => {
+    const el = document.getElementById("link");
+    document.getElementById("link-title").textContent =
+      `${link.source.name || link.source.id} ⟷ ${link.target.name || link.target.id}`;
+    document.getElementById("link-desc").innerHTML =
+      `<span class="badge">${link.type}</span>${link.desc || ""}`;
+    el.style.display = "block";
+    document.getElementById("card").style.display = "none";
+  });
+
+  // legend (rebuilt whenever the colouring dimension changes)
+  const buildLegend = () => {
+    const rows = document.getElementById("legend-rows");
+    rows.innerHTML = "";
+    const keys = [...new Set(data.nodes.map(dims[dim].of))].sort();
+    keys.forEach((key, i) => { colorOf[key] = palette[i % palette.length]; });
+    data.nodes.forEach(n => n.color = colorOf[dims[dim].of(n)]);
+    Graph.nodeColor(n => n.color);
+    keys.forEach(key => {
+      const count = data.nodes.filter(n => dims[dim].of(n) === key).length;
+      const row = document.createElement("div");
+      row.className = "row";
+      row.innerHTML = `<input type="checkbox" checked><span class="dot" style="background:${colorOf[key]}"></span>${key}` +
+        `<span style="color:#5c679a;font-size:10px">${count}</span>`;
+      row.querySelector("input").onchange = e => {
+        e.target.checked ? hidden.delete(key) : hidden.add(key);
+        applyFilters();
+      };
+      rows.appendChild(row);
+    });
+  };
+  document.querySelectorAll("input[name=dim]").forEach(radio => {
+    radio.onchange = () => { dim = radio.value; hidden.clear(); buildLegend(); applyFilters(); };
+  });
+  buildLegend();
+
+  for (const t of ["industry", "crossref", "coholding"]) {
+    const cb = document.getElementById(`ft-${t}`);
+    cb.onchange = e => {
+      e.target.checked ? enabledTypes.add(t) : enabledTypes.delete(t);
+      applyFilters();
+    };
+  }
+  applyFilters();  // applies the default node visibility + link accessors
+})();
+</script>
+<script>
+window.__errs = [];
+window.addEventListener('error', e => window.__errs.push(e.message));
+setTimeout(() => {
+  const out = [];
+  const g = window.__graph;
+  if (!g) { out.push('no __graph'); }
+  else {
+    const d = g.graphData();
+    out.push(`nodes=${d.nodes.length} links=${d.links.length}`);
+    out.push('pos sample=' + d.nodes.slice(0,3).map(n => `${n.ticker}:${[n.x,n.y,n.z].map(v => (typeof v === 'number' ? v.toFixed(1) : String(v))).join(',')}`).join(' '));
+    out.push('nonFinite=' + d.nodes.filter(n => ![n.x,n.y,n.z].every(Number.isFinite)).length);
+    const scene = g.scene();
+    let meshes = 0, lines = 0, nan = 0;
+    scene.traverse(o => {
+      if (o.isMesh) { meshes++; const p = o.geometry && o.geometry.parameters || {}; if ([p.radius, p.width, p.height, p.depth].some(v => typeof v === 'number' && !Number.isFinite(v))) nan++; }
+      if (o.isLine || o.isLineSegments) lines++;
+    });
+    out.push(`sceneChildren=${scene.children.length} meshes=${meshes} lines=${lines} nanGeom=${nan}`);
+    out.push('cam=' + [g.camera().position.x, g.camera().position.y, g.camera().position.z].map(v => v.toFixed(1)).join(','));
+    const node0 = d.nodes[0];
+    out.push('node0 keys=' + Object.keys(node0).join(','));
+  }
+  const cv = document.querySelector('canvas');
+  out.push(`canvas=${cv.width}x${cv.height} css=${cv.clientWidth}x${cv.clientHeight}`);
+  out.push('errs=' + JSON.stringify(window.__errs));
+  const el = document.createElement('div'); el.id = 'probe'; el.textContent = out.join(' || ');
+  document.body.appendChild(el);
+}, 9000);
+</script>
+</body>
+</html>

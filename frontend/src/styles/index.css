@@ -448,6 +448,10 @@ td.number-column { min-width: 74px; }
 .price-change { font-size: 0.82em; margin-left: 0.35em; }
 /* A dedicated change column has nothing to sit beside, so drop the gutter. */
 .change-cell .price-change { margin-left: 0; }
+/* The 1W/52W dd and rise columns hold a single compact badge, so keep their
+   header buttons and cells tighter than the other numeric columns. */
+th.change-col .sort-button { padding: 11px 8px; gap: 4px; }
+td.change-cell { min-width: 56px; padding: 11px 12px; }
 .price-change.up { color: var(--pine); }
 .price-change.down { color: var(--error); }
 .price-change.flat { color: var(--muted); }
@@ -580,7 +584,7 @@ footer p { margin: 0; }
   }
 
   tbody tr:last-child { border-bottom: 0; }
-  td { padding: 0; border: 0; }
+  td, td.change-cell { padding: 0; border: 0; }
 
   td::before {
     content: attr(data-label);

@@ -13,7 +13,9 @@ export type DirectorySortKey =
   | "market_cap"
   | "change_pct"
   | "week_change_pct"
-  | "change_52w_pct";
+  | "week_rise_pct"
+  | "change_52w_pct"
+  | "rise_52w_pct";
 
 export type DirectorySort = `${DirectorySortKey}_${"desc" | "asc"}`;
 
@@ -41,8 +43,12 @@ const sorts = new Set<DirectorySort>([
   "change_pct_asc",
   "week_change_pct_desc",
   "week_change_pct_asc",
+  "week_rise_pct_desc",
+  "week_rise_pct_asc",
   "change_52w_pct_desc",
   "change_52w_pct_asc",
+  "rise_52w_pct_desc",
+  "rise_52w_pct_asc",
 ]);
 
 export function readDirectoryState(search: URLSearchParams): DirectoryState {
@@ -249,8 +255,10 @@ export function renderCompanies(
       categoryCell,
       dateCell,
       priceCell,
-      rangeCell("1W", "week", company.week_change_pct, company.week_rise_pct),
-      rangeCell("52W", "year", company.change_52w_pct, company.rise_52w_pct),
+      changeCell("1W DD", company.week_change_pct),
+      changeCell("1W Rise", company.week_rise_pct),
+      changeCell("52W DD", company.change_52w_pct),
+      changeCell("52W Rise", company.rise_52w_pct),
       ratioCell("P/E", company.pe),
       ratioCell("EPS", company.eps_ttm),
       ratioCell("Fwd P/E", company.forward_pe),
@@ -275,12 +283,8 @@ function changeBadge(pct: number): HTMLSpanElement {
   return badge;
 }
 
-function changeCell(
-  label: string,
-  className: string,
-  pct: number | null | undefined,
-): HTMLTableCellElement {
-  const element = cell(label, `number-column change-cell ${className}-cell`);
+function changeCell(label: string, pct: number | null | undefined): HTMLTableCellElement {
+  const element = cell(label, "number-column change-cell");
   if (pct !== null && pct !== undefined) {
     element.append(changeBadge(pct));
   } else {
@@ -289,21 +293,6 @@ function changeCell(
     na.textContent = "—";
     element.append(na);
   }
-  return element;
-}
-
-function rangeCell(
-  label: string,
-  className: string,
-  drawdown: number | null | undefined,
-  rise: number | null | undefined,
-): HTMLTableCellElement {
-  const element = cell(label, `number-column change-cell ${className}-cell`);
-  const format = (value: number | null | undefined): string => {
-    if (value === null || value === undefined) return "—";
-    return `${value >= 0 ? "+" : ""}${value.toFixed(2)}%`;
-  };
-  element.textContent = `${format(drawdown)} / ${format(rise)}`;
   return element;
 }
 
@@ -349,7 +338,7 @@ export async function mountDirectory(): Promise<void> {
     const parts: string[] = [];
     if (quoteAsOfDate) {
       parts.push(
-        `Price, 1W/52W drawdown from period high, and market cap as of ${formatDate(quoteAsOfDate)} close.`,
+        `Price, 1W/52W drawdown and rise, and market cap as of ${formatDate(quoteAsOfDate)} close.`,
       );
     }
     if (refreshedAt) {
@@ -380,7 +369,7 @@ export async function mountDirectory(): Promise<void> {
     syncSortHeaders(state.sort);
   };
 
-  const load = async (openExact = false): Promise<void> => {
+  const load = async (): Promise<void> => {
     controller?.abort();
     controller = new AbortController();
     const request = controller;
@@ -408,15 +397,6 @@ export async function mountDirectory(): Promise<void> {
       if (payload.total && payload.companies.length === 0 && state.page > 1) {
         state.page = Math.ceil(payload.total / state.pageSize);
         await load();
-        return;
-      }
-      const exact = payload.companies.find(
-        (company) => company.ticker === state.query.toUpperCase(),
-      );
-      if (openExact && exact?.research_available) {
-        window.location.assign(
-          `company.html?ticker=${encodeURIComponent(exact.ticker)}`,
-        );
         return;
       }
       renderCompanies(payload.companies);
@@ -492,7 +472,7 @@ export async function mountDirectory(): Promise<void> {
   });
   syncControls();
 
-  const applyFilters = (openExact = false): void => {
+  const applyFilters = (): void => {
     state = {
       ...state,
       query: query.value.trim(),
@@ -505,12 +485,12 @@ export async function mountDirectory(): Promise<void> {
     updateSegments();
     syncSortHeaders(state.sort);
     history.replaceState(null, "", `?${writeDirectoryState(state)}`);
-    void load(openExact);
+    void load();
   };
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
-    applyFilters(true);
+    applyFilters();
   });
   query.addEventListener("search", () => applyFilters());
   layer.addEventListener("change", () => {

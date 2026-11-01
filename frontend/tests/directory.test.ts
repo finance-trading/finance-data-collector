@@ -69,6 +69,12 @@ describe("directory URL state", () => {
     expect(readDirectoryState(new URLSearchParams("sort=market_cap_asc")).sort).toBe(
       "market_cap_asc",
     );
+    expect(readDirectoryState(new URLSearchParams("sort=week_rise_pct_asc")).sort).toBe(
+      "week_rise_pct_asc",
+    );
+    expect(readDirectoryState(new URLSearchParams("sort=rise_52w_pct_desc")).sort).toBe(
+      "rise_52w_pct_desc",
+    );
   });
 
   it("normalizes invalid page values to supported defaults", () => {
@@ -101,10 +107,10 @@ describe("directory sorting", () => {
       <table>
         <thead><tr>
           <th data-sort-column="change_pct" aria-sort="none">
-            <button class="sort-button">Price<span class="sort-indicator"></span></button>
+            <button class="sort-button" data-sort="change_pct">Price<span class="sort-indicator"></span></button>
           </th>
           <th data-sort-column="market_cap" aria-sort="none">
-            <button class="sort-button">Market cap<span class="sort-indicator"></span></button>
+            <button class="sort-button" data-sort="market_cap">Market cap<span class="sort-indicator"></span></button>
           </th>
         </tr></thead>
       </table>`;
@@ -144,7 +150,8 @@ describe("directory rendering", () => {
     renderCompanies([catalogOnlyCompany]);
 
     expect(document.querySelector(".company-identity[href*='company.html']")).toBeNull();
-    expect(document.body.textContent).toContain("Not ingested");
+    const unavailable = document.querySelector(".availability-missing") as HTMLElement;
+    expect(unavailable.textContent).toBe("—");
   });
 
   it("links companies with research data to the company workspace", () => {
@@ -180,7 +187,7 @@ describe("directory rendering", () => {
     expect(document.querySelector(".price-value")).toBeNull();
   });
 
-  it("renders market cap in compact units next to the price", () => {
+  it("renders market cap in millions next to the price", () => {
     const trillion = { ...catalogOnlyCompany, ticker: "NVDA", market_cap: 5_649_190_576_309 };
     const billion = { ...catalogOnlyCompany, ticker: "VRT", market_cap: 97_086_314_647 };
     const million = { ...catalogOnlyCompany, ticker: "RGTI", market_cap: 985_200_000 };
@@ -192,40 +199,49 @@ describe("directory rendering", () => {
     const values = Array.from(document.querySelectorAll(".cap-value")).map(
       (element) => element.textContent,
     );
-    expect(values).toEqual(["$5.65T", "$97.09B", "$985.2M"]);
+    expect(values).toEqual(["$5,649,191M", "$97,086M", "$985.2M"]);
 
-    // Column order follows the header: Company, layer, date, coverage, filings,
-    // price, 1W, 52W, market cap, action.
-    expect(cells[0].cellIndex).toBe(8);
+    // Column order follows the header: Company, layer, date, price,
+    // 1W DD, 1W Rise, 52W DD, 52W Rise, P/E, EPS, Fwd P/E, Fwd EPS,
+    // market cap, action.
+    expect(cells[0].cellIndex).toBe(12);
 
     const missing = document.querySelector(".cap-na") as HTMLElement;
     expect(missing.textContent).toBe("—");
   });
 
-  it("renders one-week and 52-week changes in their own signed cells", () => {
+  it("renders one-week and 52-week drawdown and rise as separate columns", () => {
     renderCompanies([
       {
         ...catalogOnlyCompany,
         ticker: "NVDA",
         week_change_pct: 3.42,
+        week_rise_pct: 9.8,
         change_52w_pct: -18.07,
+        rise_52w_pct: 41.0,
       },
       catalogOnlyCompany,
     ]);
 
-    const week = document.querySelectorAll<HTMLTableCellElement>(".week-cell");
-    const year = document.querySelectorAll<HTMLTableCellElement>(".year-cell");
-    expect(week.length).toBe(2);
-    expect(year.length).toBe(2);
+    const text = (label: string): string | null =>
+      document.querySelector(`td[data-label="${label}"]`)?.textContent ?? null;
 
-    expect(week[0].querySelector(".price-change.up")?.textContent).toBe("▲ 3.42%");
-    expect(year[0].querySelector(".price-change.down")?.textContent).toBe("▼ 18.07%");
-    expect(week[0].cellIndex).toBe(6);
-    expect(year[0].cellIndex).toBe(7);
+    expect(text("1W DD")).toBe("▲ 3.42%");
+    expect(text("1W Rise")).toBe("▲ 9.80%");
+    expect(text("52W DD")).toBe("▼ 18.07%");
+    expect(text("52W Rise")).toBe("▲ 41.00%");
+
+    // The four columns sit between price and P/E.
+    expect(
+      (document.querySelector('td[data-label="1W DD"]') as HTMLTableCellElement).cellIndex,
+    ).toBe(4);
+    expect(
+      (document.querySelector('td[data-label="52W Rise"]') as HTMLTableCellElement).cellIndex,
+    ).toBe(7);
 
     // A stale cache without the new keys degrades to the muted placeholder.
-    expect(week[1].querySelector(".price-na")?.textContent).toBe("—");
-    expect(year[1].querySelector(".price-na")?.textContent).toBe("—");
+    const missing = document.querySelectorAll('tr td[data-label="1W DD"]')[1];
+    expect(missing.textContent).toBe("—");
   });
 });
 

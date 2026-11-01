@@ -123,7 +123,7 @@ export function compareByMarketCap(
   };
 }
 
-/** Compact market cap, matching the directory page ("$5.57T", "$938.33B"). */
+/** Market cap in millions, matching the directory page ("$5,570,000M", "$985.2M"). */
 export function formatCompactUSD(value: number | null): string {
   if (value === null) return "—";
   const millions = value / 1e6;
