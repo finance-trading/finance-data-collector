@@ -70,8 +70,8 @@ def test_missing_market_cap_sorts_last_and_ticker_breaks_ties():
 
 
 def test_manual_override_wins_and_is_marked():
-    companies = [_company("BIG"), _company("SMALL")]
-    quotes = _quotes(BIG=1_000, SMALL=1)
+    companies = [_company("BIG"), _company("MID"), _company("SMALL")]
+    quotes = _quotes(BIG=1_000, MID=500, SMALL=1)
     overrides = {"SMALL": {"tier": 1, "note": "生态不可替代"}}
 
     rows = build_rows(companies, LAYERS, quotes, overrides)

@@ -116,6 +116,32 @@ PWR / AES / KEYS / FVRR / TCOM / TRI），全图 676 条边、度数中位数 6�
 EFTS 响应缓存在 `sec/.cache/efts/`（随 `sec/` 一起不进 Git），所以重跑 `fdc.graph` 秒级完成、
 改阈值调参完全离线，要重新抓 EDGAR 才加 `--refresh-cache`。
 
+## AI 产业链公司漏斗（`fdc.funnel`）
+
+把 234 家全量公司压成**分层漏斗**：6 条产业链层各自独立，层内按市值自动分 3 档
+（T1 核心 / T2 重要 / T3 观察），绑定研究深度、更新频率与价格触发带。档位只决定覆盖
+深度，不构成买入授权——买价判断仍走 [`four-layer-screening-rules-v0.md`](docs/strategy/four-layer-screening-rules-v0.md)。
+完整定义见 [`ai-chain-company-funnel-v0.md`](docs/strategy/ai-chain-company-funnel-v0.md)。
+
+```bash
+uv run python -m fdc.quotes             # 每日刷新报价（可跳过，已当日则 no-op）
+uv run python -m fdc.funnel             # 重算漏斗，写 JSON + Excel + 当日变化
+uv run python -m fdc.funnel --check     # 只告警；行情过旧 / 缺价时非零退出（适合定时任务）
+bash scripts/update_funnel.sh           # 一键：刷新报价 -> 重算 -> 检查
+```
+
+产出：
+
+- `data/generated/funnel.json` 机器快照（次日用于 diff）；
+- `outputs/ai-funnel/ai-chain-company-funnel.xlsx` 五个 sheet：漏斗定义 / 分层汇总 /
+  公司表（234 行，可筛选）/ 人工覆盖 / 每日变化；
+- `outputs/ai-funnel/daily-changes.csv` 当日变化日志（档位升降、触发研究、缺报价、价格异动）。
+
+**人工覆盖改写档位**：编辑 `config/funnel_overrides.json`，
+`{"CDNS": {"tier": 1, "note": "EDA 双寡头，生态核心"}}`——覆盖值优先于自动档位，适合
+市值偏小但生态不可替代的公司（EDA、光互连、电力温控等）。`config/` 目录随 Git 走，改动即
+版本化；`data/` 被 ignore，所以覆盖文件不放进 `data/`。
+
 ## Local SEC Data
 
 SEC filing packages are centralized under `sec/<company>/`. The directory is

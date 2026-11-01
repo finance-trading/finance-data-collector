@@ -31,7 +31,7 @@ import math
 import statistics
 import sys
 from collections import defaultdict
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -70,6 +70,7 @@ TRIGGER_ACTION = {
     2: "回撤 ≥20% 启动研究，研究后决定是否升 T1",
     3: "回撤 ≥30% 升级审视，无独立行动资格",
 }
+TIER_ACTION = {1: "可进入 Layer 4 事件研究", 2: "研究后决定是否升级", 3: "无独立行动资格"}
 
 
 def load_overrides(path: Path | str = OVERRIDES_PATH) -> dict[str, dict[str, Any]]:
@@ -302,9 +303,17 @@ def detect_changes(
 
         if old.get("price") is not None and new.get("price") is None:
             add(ticker, "缺报价", old.get("price"), "", "本次无可用收盘价")
-        change_pct = new.get("change_pct")
-        if change_pct is not None and abs(change_pct) >= PRICE_ALERT_PCT:
-            add(ticker, "价格异动", "", f"{change_pct:+.2f}%", f"当日涨跌幅 ≥{PRICE_ALERT_PCT:g}%")
+        old_change = old.get("change_pct")
+        new_change = new.get("change_pct")
+        if (
+            new_change is not None
+            and abs(new_change) >= PRICE_ALERT_PCT
+            and (old_change is None or abs(old_change) < PRICE_ALERT_PCT)
+        ):
+            add(
+                ticker, "价格异动", old_change, f"{new_change:+.2f}%",
+                f"当日涨跌幅跨入 ±{PRICE_ALERT_PCT:g}%",
+            )
 
         trigger = TRIGGER_DRAWDOWN.get(new.get("tier", 3))
         old_dd = old.get("drawdown_52w_pct")
@@ -378,7 +387,7 @@ def _definition_sheet(wb: Workbook, layers: list[dict]) -> None:
                 RESEARCH_DEPTH[tier],
                 UPDATE_CADENCE[tier],
                 TRIGGER_ACTION[tier],
-                "可进入 Layer 4 事件研究" if tier == 1 else "研究后决定是否升级" if tier == 2 else "无独立行动资格",
+                TIER_ACTION[tier],
             ]
         )
         for cell in ws[ws.max_row]:
@@ -387,11 +396,11 @@ def _definition_sheet(wb: Workbook, layers: list[dict]) -> None:
 
     ws.append([])
     notes = [
-        ("自动规则", "每层独立排序：市值降序，前 20% → T1，20%–50% → T2，其余 → T3；市值缺失排最后。"),
+        ("自动规则", "层内市值降序：前20%→T1，20%–50%→T2，其余→T3；缺市值排最后。"),
         ("人工覆盖", "config/funnel_overrides.json 中的 tier 优先于自动档位；note 记录原因。"),
         ("股价区间", "展示当前价、52 周高/低（由回撤与低点涨幅反推）、回撤%、52 周分位%。"),
-        ("边界", "档位只决定覆盖深度，不构成买入授权；买入仍须通过四层筛选的 Layer 2–4。"),
-        ("数据来源", "data/ai_companies.json（universe）+ data/generated/quotes.json（价格/市值）。"),
+        ("边界", "档位只决定覆盖深度，不构成买入授权；买入仍须过四层筛选 Layer 2–4。"),
+        ("数据来源", "ai_companies.json（universe）+ generated/quotes.json（价格/市值）。"),
     ]
     for label, text in notes:
         ws.append([label, text])
@@ -471,13 +480,18 @@ def _companies_sheet(wb: Workbook, rows: list[dict[str, Any]]) -> None:
     ws.auto_filter.ref = f"A1:R{ws.max_row}"
 
 
-def _overrides_sheet(wb: Workbook, overrides: dict[str, dict[str, Any]], rows: list[dict[str, Any]]) -> None:
+def _overrides_sheet(
+    wb: Workbook, overrides: dict[str, dict[str, Any]], rows: list[dict[str, Any]]
+) -> None:
     ws = wb.create_sheet("人工覆盖")
     ws.column_dimensions["A"].width = 100
-    ws["A1"] = f"编辑 {OVERRIDES_PATH}，格式：{{\"TICKER\": {{\"tier\": 1|2|3, \"note\": \"原因\"}}}}"
+    instruction = '改 config/funnel_overrides.json，格式 "TICKER": {"tier":1|2|3,"note":"原因"}'
+    ws["A1"] = instruction
     ws["A1"].font = Font(bold=True)
     ws.append([])
-    _header(ws, ["代码", "产业链层", "公司", "自动档位", "最终档位", "说明"], [10, 18, 28, 10, 10, 40])
+    headers = ["代码", "产业链层", "公司", "自动档位", "最终档位", "说明"]
+    widths = [10, 18, 28, 10, 10, 40]
+    _header(ws, headers, widths)
     by_ticker = {row["ticker"]: row for row in rows}
     for ticker in sorted(overrides):
         row = by_ticker.get(ticker, {})
@@ -668,7 +682,10 @@ def main(argv: list[str] | None = None) -> None:
                 file=sys.stderr,
             )
         if stats["missing_price"]:
-            print(f"  ! {stats['missing_price']} company(ies) have no usable price", file=sys.stderr)
+            print(
+                f"  ! {stats['missing_price']} company(ies) have no usable price",
+                file=sys.stderr,
+            )
         if stale or stats["missing_price"]:
             raise SystemExit(1)
 
