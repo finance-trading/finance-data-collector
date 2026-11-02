@@ -327,12 +327,7 @@ def list_companies(
     with session_factory() as session:
         summaries = _database_summaries(session)
 
-    tier_map = tier_index(
-        [company.model_dump() for company in catalog.companies],
-        [item.model_dump() for item in catalog.layers],
-        quotes,
-        load_overrides(),
-    )
+    tier_map = _resolve_tiers(catalog, quotes)
 
     needle = query.strip().casefold() if query and query.strip() else None
     normalized_layer = layer.strip() if layer and layer.strip() else None
@@ -409,6 +404,30 @@ def list_companies(
         total=len(companies),
         companies=companies[offset : offset + limit],
     )
+
+
+def _resolve_tiers(catalog: CatalogView, quotes: dict) -> dict[str, dict[str, Any]]:
+    """TICKER -> resolved tier for a catalog snapshot, with its quotes applied."""
+
+    return tier_index(
+        [company.model_dump() for company in catalog.companies],
+        [item.model_dump() for item in catalog.layers],
+        quotes,
+        load_overrides(),
+    )
+
+
+def funnel_tier_index() -> dict[str, dict[str, Any]]:
+    """Ticker -> resolved funnel tier for the whole universe.
+
+    The single place tiers are resolved for the read API, so the directory page
+    and the layers visualization join the *same* tiers off catalog + quotes +
+    overrides and stay in sync by construction rather than a baked snapshot.
+    """
+
+    catalog = load_catalog()
+    quotes, _, _ = _load_quotes()
+    return _resolve_tiers(catalog, quotes)
 
 
 class QuotesView(BaseModel):

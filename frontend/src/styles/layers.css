@@ -69,6 +69,23 @@ button.mode.active { background: #3a4a80; color: #fff; }
 .badge.price-change.up { background: rgb(104 211 145 / 16%); color: #68d391; }
 .badge.price-change.down { background: rgb(252 129 129 / 16%); color: #fc8181; }
 .badge.price-change.flat { background: rgb(139 150 194 / 16%); color: #8b96c2; }
+
+/* Funnel tier badge in the company card; swatches mirror the directory page. */
+.badge.tier { font-weight: 700; }
+.badge.tier.tier-1 { background: rgb(214 240 138 / 18%); color: #d6f08a; }
+.badge.tier.tier-2 { background: rgb(148 210 190 / 18%); color: #94d2be; }
+.badge.tier.tier-3 { background: rgb(120 130 160 / 22%); color: #8b96c2; }
+/* A manual override gets a ring so it reads as "edited", not auto. */
+.badge.tier[data-source="人工"] { box-shadow: 0 0 0 2px rgb(90 120 255 / 45%); }
+
+/* Funnel tier legend rows under the layer filters. */
+.legend-section { margin-top: 12px; padding-top: 10px; border-top: 1px solid rgb(90 120 255 / 22%); }
+.legend-section h3 { margin: 0 0 4px; color: #fff; font-size: 11px; font-weight: 700; }
+.legend-tier { display: flex; align-items: center; gap: 8px; margin: 4px 0; color: #9db4ff; font-size: 11px; }
+.legend-tier .tier-chip { width: 18px; padding: 0 5px; border-radius: 5px; text-align: center; font-weight: 700; }
+.legend-tier .tier-chip.tier-1 { background: rgb(214 240 138 / 20%); color: #d6f08a; }
+.legend-tier .tier-chip.tier-2 { background: rgb(148 210 190 / 20%); color: #94d2be; }
+.legend-tier .tier-chip.tier-3 { background: rgb(120 130 160 / 26%); color: #8b96c2; }
 #hint { position: fixed; z-index: 5; bottom: 14px; left: 50%; color: #5c679a; font-size: 11px; transform: translateX(-50%); white-space: nowrap; }
 
 #layers-state { position: fixed; z-index: 30; top: 62px; left: 50%; display: none; max-width: min(520px, calc(100vw - 32px)); padding: 10px 13px; border-left: 4px solid #7fa2ff; background: #151c32; transform: translateX(-50%); }

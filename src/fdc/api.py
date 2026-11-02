@@ -87,6 +87,16 @@ def quotes() -> QuotesView:
     return _read(catalog.read_quotes)
 
 
+@app.get("/api/v1/funnel/tiers")
+def funnel_tiers() -> dict[str, Any]:
+    """TICKER -> resolved funnel tier, live off catalog + quotes + overrides.
+
+    Serves the layers visualization, which badges each company with the same
+    tier the directory page shows rather than a stale baked snapshot.
+    """
+    return catalog.funnel_tier_index()
+
+
 @app.post("/api/v1/quotes/refresh", response_model=QuotesView)
 def refresh_quotes() -> QuotesView:
     """Force a Yahoo Finance re-fetch and serve the rewritten cache.

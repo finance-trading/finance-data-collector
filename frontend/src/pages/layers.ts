@@ -2,6 +2,7 @@ import * as d3 from "d3";
 
 import { apiGet } from "../api/client";
 import type {
+  FunnelTierInfo,
   LayerCompanyNode,
   LayerNode,
   LayerSegmentNode,
@@ -65,6 +66,14 @@ const palette = [
   "#fbd38d",
   "#63b3ed",
 ];
+
+// Funnel tier colours, matching the directory page badges (index.css). Indexed
+// by tier so `tierColors[tier.tier]` reads the right swatch.
+const tierColors = ["", "#d6f08a", "#94d2be", "#7882a0"];
+const tierFill = (tier: FunnelTierInfo | undefined): string | null =>
+  tier ? tierColors[tier.tier] ?? null : null;
+const tierLabel = (tier: FunnelTierInfo | undefined): string =>
+  tier ? `T${tier.tier}` : "";
 
 function element<T extends HTMLElement = HTMLElement>(id: string): T {
   const value = document.getElementById(id);
@@ -184,10 +193,12 @@ export function fitText(
 export function mountLayers(
   payload: LayersPayload,
   quotes: QuotesPayload["quotes"] = {},
+  tiers: Record<string, FunnelTierInfo> = {},
 ): void {
   const {layers, companies} = flattenLayers(payload);
   const byTicker = new Map(companies.map((company) => [company.ticker, company] as const));
   const changeOf = (ticker: string): number | null | undefined => quotes[ticker]?.change_pct;
+  const tierOf = (ticker: string): FunnelTierInfo | undefined => tiers[ticker];
   const colorOf = new Map(
     layers.map((layer, index) => [layer.id, palette[index % palette.length]] as const),
   );
@@ -225,6 +236,17 @@ export function mountLayers(
     const badges = element("card-badges");
     badges.replaceChildren();
     appendText(badges, "badge", company.industry);
+    const tier = tierOf(company.ticker);
+    if (tier) {
+      const tierBadge = document.createElement("span");
+      tierBadge.className = `badge tier tier-${tier.tier}`;
+      if (tier.source) tierBadge.dataset.source = tier.source;
+      tierBadge.title =
+        [`T${tier.tier} ${tier.tier_name}`, `来源: ${tier.source}`, tier.note]
+          .filter(Boolean).join(" · ");
+      tierBadge.textContent = `T${tier.tier} ${tier.tier_name}`;
+      badges.append(tierBadge);
+    }
     const changePct = changeOf(company.ticker);
     if (changePct !== null && changePct !== undefined) {
       appendText(
@@ -272,7 +294,8 @@ export function mountLayers(
     const tickerX = 11;
     const nameX = 56;
     const valueRight = columnWidth - 12;
-    const nameMaxWidth = valueRight - 8 - nameX;
+    // Reserve the right edge of line 1 for the tier chip; the name stops short.
+    const nameMaxWidth = valueRight - 20 - nameX;
     // Widest price in the universe is "$1,783.31"; the fixed offset keeps the
     // market-cap column aligned down the layer instead of ragged per row.
     const capX = nameX + 58;
@@ -337,17 +360,24 @@ export function mountLayers(
           if (!segmentCollapsed) {
             members.forEach((company) => {
               const cy = y + rowHeight / 2;
+              const tier = tierOf(company.ticker);
               const node = chart.append("g")
                 .attr("data-company-ticker", company.ticker)
                 .style("cursor", "pointer")
                 .on("click", () => showCard(company));
               node.append("circle").attr("cx", x).attr("cy", cy).attr("r", 5)
-                .attr("fill", color).attr("stroke", "#0a0e1a");
+                .attr("fill", tierFill(tier) ?? color).attr("stroke", "#0a0e1a");
               node.append("text").attr("x", x + tickerX).attr("y", cy + identityY).attr("fill", "#e6ecff")
                 .style("font-size", "12px").text(company.ticker);
               node.append("text").attr("x", x + nameX).attr("y", cy + identityY).attr("fill", "#8b96c2")
                 .style("font-size", "11.5px")
                 .text(fitText(company.name, nameMaxWidth, labelWidth));
+              if (tier) {
+                node.append("text").attr("x", x + valueRight).attr("y", cy + identityY)
+                  .attr("text-anchor", "end").attr("fill", tierFill(tier) ?? color)
+                  .style("font-size", "10px").style("font-weight", "700")
+                  .text(tierLabel(tier));
+              }
               const changePct = changeOf(company.ticker);
               const marketCap = quotes[company.ticker]?.market_cap ?? null;
               node.append("text").attr("x", x + nameX).attr("y", cy + valueY).attr("fill", "#cbd5ff")
@@ -365,6 +395,10 @@ export function mountLayers(
                 .append("title")
                 .text(
                   `${company.ticker} ${company.name}\n${company.description}` +
+                    (tier
+                      ? `\nTier: T${tier.tier} ${tier.tier_name} (${tier.source})` +
+                        (tier.note ? ` · ${tier.note}` : "")
+                      : "") +
                     (quotes[company.ticker]?.price === null ||
                     quotes[company.ticker]?.price === undefined
                       ? "\nPrice: no quote cached"
@@ -433,8 +467,9 @@ export function mountLayers(
         ? layers.flatMap((item) => item.children).find((item) => item.id === key.slice(8))
         : undefined;
       const companyChange = company ? formatChangePct(changeOf(company.ticker)) : null;
+      const companyTier = company ? tierOf(company.ticker) : undefined;
       const label = company
-        ? `${company.ticker} ${company.name}${companyChange === "—" ? "" : ` (${companyChange})`}`
+        ? `${companyTier ? tierLabel(companyTier) + " · " : ""}${company.ticker} ${company.name}${companyChange === "—" ? "" : ` (${companyChange})`}`
         : layer
           ? `${collapse.isLayerCollapsed(layer.id) ? "▸" : "▾"} ${layer.name} (${layer.count})`
           : segment
@@ -448,7 +483,9 @@ export function mountLayers(
           if (layer || segment) render();
         });
       node.append("circle").attr("cx", position.x).attr("cy", position.y).attr("r", company ? 4 : 5.5)
-        .attr("fill", company ? colorOf.get(company.layer) ?? palette[0] : "#9db4ff");
+        .attr("fill", company
+          ? tierFill(companyTier) ?? colorOf.get(company.layer) ?? palette[0]
+          : "#9db4ff");
       node.append("text").attr("x", position.x + 11).attr("y", position.y + 4)
         .attr("fill", company ? "#cbd5ff" : "#fff")
         .style("font-size", company ? "11.5px" : "12.5px").text(label);
@@ -471,7 +508,9 @@ export function mountLayers(
           const id = `n_${company.ticker.replace(/[^A-Za-z0-9]/g, "_")}`;
           const companyChange = formatChangePct(changeOf(company.ticker));
           const changeSuffix = companyChange === "—" ? "" : ` (${companyChange})`;
-          lines.push(`  ${id}[\"${company.ticker} ${company.name}${changeSuffix}\"]`);
+          const tier = tierOf(company.ticker);
+          const tierPrefix = tier ? `T${tier.tier} · ` : "";
+          lines.push(`  ${id}[\"${tierPrefix}${company.ticker} ${company.name}${changeSuffix}\"]`);
           lines.push(`  L${layerIndex}S${segmentIndex} --> ${id}`);
         });
       });
@@ -519,7 +558,7 @@ const fit = (): void => {
     `${payload.stats.companies} companies · ${payload.stats.layers} layers · ` +
     `${payload.stats.segments} segments · ${payload.stats.cross_layer} cross-layer roles`;
   element("hint").textContent =
-    "Click a company for details · click a layer or segment title to collapse";
+    "T1/T2/T3 = funnel tier · click a company for details · click a layer or segment title to collapse";
 
   const legendToggle = element<HTMLButtonElement>("legend-toggle");
   const legendRows = element("legend-rows");
@@ -548,6 +587,28 @@ const fit = (): void => {
     appendText(row, "n", String(layer.count));
     legendRows.append(row);
   });
+
+  if (Object.keys(tiers).length) {
+    const section = document.createElement("div");
+    section.className = "legend-section";
+    const title = document.createElement("h3");
+    title.textContent = "Funnel tier";
+    section.append(title);
+    ([[1, "Core"], [2, "Major"], [3, "Watch"]] as [number, string][]).forEach(
+      ([tier, label]) => {
+        const line = document.createElement("div");
+        line.className = "legend-tier";
+        const chip = document.createElement("span");
+        chip.className = `tier-chip tier-${tier}`;
+        chip.textContent = `T${tier}`;
+        const desc = document.createElement("span");
+        desc.textContent = label;
+        line.append(chip, desc);
+        section.append(line);
+      },
+    );
+    legendRows.append(section);
+  }
 
   element<HTMLInputElement>("search").addEventListener("input", () => {
     needsFit = true;
@@ -587,14 +648,15 @@ async function loadLayers(): Promise<void> {
   const status = element("layers-state");
   renderDataState(status, "loading", "Reading the AI industry layers…");
   try {
-    const [payload, quotes] = await Promise.all([
+    const [payload, quotes, tiers] = await Promise.all([
       apiGet<LayersPayload>("/api/v1/visualizations/layers"),
       apiGet<QuotesPayload>("/api/v1/quotes").catch(() => ({
         generated_at: null,
         quotes: {},
       })) as Promise<QuotesPayload>,
+      apiGet<Record<string, FunnelTierInfo>>("/api/v1/funnel/tiers").catch(() => ({})),
     ]);
-    mountLayers(payload, quotes.quotes);
+    mountLayers(payload, quotes.quotes, tiers);
     renderDataState(status, "ready", "");
   } catch (error) {
     renderDataState(

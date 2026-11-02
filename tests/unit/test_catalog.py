@@ -215,6 +215,34 @@ def test_directory_joins_funnel_tier_and_filters(
     assert [company.ticker for company in filtered.companies] == ["AMD"]
 
 
+def test_funnel_tier_index_resolves_tiers(tmp_path, monkeypatch):
+    """The endpoint helper resolves tiers off catalog + quotes + overrides."""
+    catalog_path = _catalog_path(tmp_path)
+    monkeypatch.setattr(fdc.catalog, "CATALOG_PATH", catalog_path)
+    quotes = tmp_path / "quotes.json"
+    quotes.write_text(
+        json.dumps(
+            {
+                "generated_at": "2026-10-04T15:00:00+00:00",
+                "quotes": {
+                    "VRT": {"market_cap": 100},
+                    "NVDA": {"market_cap": 300},
+                    "AMD": {"market_cap": 200},
+                },
+            }
+        )
+    )
+    monkeypatch.setattr(fdc.catalog, "QUOTES_PATH", quotes)
+    monkeypatch.setattr(fdc.catalog, "load_overrides", lambda: {})
+
+    tiers = fdc.catalog.funnel_tier_index()
+    # Power has one member (T1); silicon ranks NVDA(300) > AMD(200) -> T1/T2.
+    assert tiers["VRT"]["tier"] == 1
+    assert tiers["NVDA"]["tier"] == 1
+    assert tiers["AMD"]["tier"] == 2
+    assert tiers["AMD"]["source"] == "自动"
+
+
 def test_directory_sorts_globally_not_per_page(
     tmp_path, engine, session_factory, monkeypatch
 ):

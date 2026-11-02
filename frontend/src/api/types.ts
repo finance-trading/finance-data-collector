@@ -274,6 +274,15 @@ export interface LayersPayload {
   };
 }
 
+/** One company's resolved funnel tier (GET /api/v1/funnel/tiers, keyed by ticker). */
+export interface FunnelTierInfo {
+  tier: number;
+  tier_name: string;
+  source: string;
+  note: string;
+  auto_tier: number;
+}
+
 export interface QuotesPayload {
   generated_at: string | null;
   quotes: Record<string, {
