@@ -28,8 +28,11 @@ import argparse
 import csv
 import json
 import math
+import os
 import statistics
 import sys
+import tempfile
+import threading
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
@@ -54,6 +57,7 @@ TIER_SHARE = (0.20, 0.50)  # cumulative market-cap cutoffs inside one layer
 TRIGGER_DRAWDOWN = {1: 15.0, 2: 20.0, 3: 30.0}
 PRICE_ALERT_PCT = 5.0
 DEFAULT_MAX_QUOTE_AGE_DAYS = 2
+_OVERRIDE_LOCK = threading.Lock()
 
 RESEARCH_DEPTH = {
     1: "完整 dossier：业务拆解、5 年财务、KPI、竞争格局、估值区间、证伪条件",
@@ -98,6 +102,59 @@ def load_overrides(path: Path | str = OVERRIDES_PATH) -> dict[str, dict[str, Any
             raise ValueError(f"{ticker}: override tier must be 1, 2 or 3, got {tier!r}")
         overrides[ticker] = {"tier": tier, "note": (value.get("note") or "").strip()}
     return overrides
+
+
+def _read_raw_overrides(path: Path | str = OVERRIDES_PATH) -> dict[str, Any]:
+    """Raw overrides file (including ``_``-prefixed doc keys); ``{}`` when absent."""
+
+    resolved = Path(path)
+    if not resolved.exists():
+        return {}
+    return json.loads(resolved.read_text())
+
+
+def _write_raw_overrides(raw: dict[str, Any], path: Path | str = OVERRIDES_PATH) -> None:
+    """Rewrite the overrides file atomically, keeping unrelated keys intact."""
+
+    resolved = Path(path)
+    resolved.parent.mkdir(parents=True, exist_ok=True)
+    fd, name = tempfile.mkstemp(prefix=f".{resolved.name}.", dir=resolved.parent)
+    try:
+        with os.fdopen(fd, "w") as handle:
+            json.dump(raw, handle, ensure_ascii=False, indent=2)
+            handle.write("\n")
+        os.replace(name, resolved)
+    finally:
+        if os.path.exists(name):
+            os.unlink(name)
+
+
+def upsert_override(
+    ticker: str, tier: int, note: str = "", path: Path | str = OVERRIDES_PATH
+) -> dict[str, Any]:
+    """Write one company's manual tier; other keys (e.g. the ``_说明`` note) are kept."""
+
+    if type(tier) is not int or tier not in TIER_NAMES:
+        raise ValueError(f"override tier must be 1, 2 or 3, got {tier!r}")
+    key = ticker.upper()
+    with _OVERRIDE_LOCK:
+        raw = _read_raw_overrides(path)
+        raw[key] = {"tier": tier, "note": note.strip()}
+        _write_raw_overrides(raw, path)
+    return {"tier": tier, "note": note.strip()}
+
+
+def remove_override(ticker: str, path: Path | str = OVERRIDES_PATH) -> bool:
+    """Drop a manual tier so the company falls back to its auto tier. True if removed."""
+
+    key = ticker.upper()
+    with _OVERRIDE_LOCK:
+        raw = _read_raw_overrides(path)
+        if key not in raw:
+            return False
+        del raw[key]
+        _write_raw_overrides(raw, path)
+    return True
 
 
 def auto_tier_map(

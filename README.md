@@ -137,10 +137,12 @@ bash scripts/update_funnel.sh           # 一键：刷新报价 -> 重算 -> 检
   公司表（234 行，可筛选）/ 人工覆盖 / 每日变化；
 - `outputs/ai-funnel/daily-changes.csv` 当日变化日志（档位升降、触发研究、缺报价、价格异动）。
 
-**人工覆盖改写档位**：编辑 `config/funnel_overrides.json`，
-`{"CDNS": {"tier": 1, "note": "EDA 双寡头，生态核心"}}`——覆盖值优先于自动档位，适合
-市值偏小但生态不可替代的公司（EDA、光互连、电力温控等）。`config/` 目录随 Git 走，改动即
-版本化；`data/` 被 ignore，所以覆盖文件不放进 `data/`。
+**人工覆盖改写档位**：公司列表的 Tier 列点击徽章，选档位、填写调整原因并保存；选择
+「自动分档」可撤销人工覆盖。写入接口只允许本机连接及同源页面，不支持通过代理/远程访问编辑。
+也可直接编辑 `config/funnel_overrides.json`，
+`{"CDNS": {"tier": 1, "note": "EDA 双寡头，生态核心"}}`。覆盖值优先于自动档位，
+列表和 layers 页面下次请求即生效；每日 Excel/JSON 快照仍需运行 `fdc.funnel` 更新。
+`config/` 目录随 Git 走，改动须自行提交才能版本化；`data/` 被 ignore。
 
 ## Local SEC Data
 

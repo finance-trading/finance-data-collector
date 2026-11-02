@@ -54,6 +54,7 @@ describe("directory URL state", () => {
       query: "nvda",
       layer: "silicon",
       segment: "Compute",
+      tier: "",
       status: "parsed",
       sort: "market_cap_desc",
       page: 2,
@@ -132,6 +133,61 @@ describe("directory sorting", () => {
 describe("directory rendering", () => {
   beforeEach(() => {
     document.body.innerHTML = '<table><tbody id="company-directory-body"></tbody></table>';
+    vi.restoreAllMocks();
+  });
+
+  it("saves a manual tier with a reason, then resets to auto", async () => {
+    const company = {
+      ...catalogOnlyCompany, funnel_tier: 2, funnel_tier_name: "重要", funnel_tier_source: "自动",
+    };
+    const fetchMock = vi.spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        tier: 1, tier_name: "核心", source: "人工", note: "关键客户", auto_tier: 2,
+      }), {status: 200}))
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        tier: 2, tier_name: "重要", source: "自动", note: "", auto_tier: 2,
+      }), {status: 200}));
+    renderCompanies([company]);
+    const badge = () => document.querySelector<HTMLButtonElement>(".tier-cell button.tier-badge")!;
+    badge().click();
+    const form = document.querySelector<HTMLFormElement>(".tier-editor")!;
+    const select = form.querySelector("select")!;
+    const note = form.querySelector("input")!;
+    expect(select.value).toBe("auto");
+    select.value = "1";
+    select.dispatchEvent(new Event("change"));
+    note.value = "关键客户";
+    form.dispatchEvent(new Event("submit", {bubbles: true, cancelable: true}));
+    await vi.waitFor(() => expect(badge().textContent).toBe("T1 核心"));
+    expect(badge().dataset.source).toBe("人工");
+    expect(fetchMock.mock.calls[0][1]?.headers).toEqual({"Content-Type": "application/json"});
+    expect(JSON.parse(String(fetchMock.mock.calls[0][1]?.body))).toEqual({
+      ticker: "VRT", tier: 1, note: "关键客户",
+    });
+    badge().click();
+    const resetForm = document.querySelector<HTMLFormElement>(".tier-editor")!;
+    expect(resetForm.querySelector("select")?.value).toBe("1");
+    const resetSelect = resetForm.querySelector("select")!;
+    resetSelect.value = "auto";
+    resetSelect.dispatchEvent(new Event("change"));
+    resetForm.dispatchEvent(new Event("submit", {bubbles: true, cancelable: true}));
+    await vi.waitFor(() => expect(badge().textContent).toBe("T2 重要"));
+    expect(JSON.parse(String(fetchMock.mock.calls[1][1]?.body)).tier).toBeNull();
+  });
+
+  it("keeps the tier editor open when saving fails", async () => {
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response("error", {status: 500}));
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    renderCompanies([{...catalogOnlyCompany, funnel_tier: 2, funnel_tier_name: "重要"}]);
+    document.querySelector<HTMLButtonElement>(".tier-cell button")!.click();
+    const form = document.querySelector<HTMLFormElement>(".tier-editor")!;
+    const select = form.querySelector("select")!;
+    select.value = "1";
+    select.dispatchEvent(new Event("change"));
+    form.querySelector("input")!.value = "原因";
+    form.dispatchEvent(new Event("submit", {bubbles: true, cancelable: true}));
+    await vi.waitFor(() => expect(form.querySelector(".tier-error")?.textContent).toContain("保存失败"));
+    expect(form.querySelector<HTMLButtonElement>('button[type="submit"]')?.disabled).toBe(false);
   });
 
   it("links every company to its stockanalysis quote page", () => {
@@ -201,10 +257,10 @@ describe("directory rendering", () => {
     );
     expect(values).toEqual(["$5,649,191M", "$97,086M", "$985.2M"]);
 
-    // Column order follows the header: Company, layer, date, price,
+    // Column order follows the header: Company, layer, tier, date, price,
     // 1W DD, 1W Rise, 52W DD, 52W Rise, P/E, EPS, Fwd P/E, Fwd EPS,
     // market cap, action.
-    expect(cells[0].cellIndex).toBe(12);
+    expect(cells[0].cellIndex).toBe(13);
 
     const missing = document.querySelector(".cap-na") as HTMLElement;
     expect(missing.textContent).toBe("—");
@@ -234,10 +290,10 @@ describe("directory rendering", () => {
     // The four columns sit between price and P/E.
     expect(
       (document.querySelector('td[data-label="1W DD"]') as HTMLTableCellElement).cellIndex,
-    ).toBe(4);
+    ).toBe(5);
     expect(
       (document.querySelector('td[data-label="52W Rise"]') as HTMLTableCellElement).cellIndex,
-    ).toBe(7);
+    ).toBe(8);
 
     // A stale cache without the new keys degrades to the muted placeholder.
     const missing = document.querySelectorAll('tr td[data-label="1W DD"]')[1];

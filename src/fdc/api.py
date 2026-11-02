@@ -6,11 +6,11 @@ import logging
 from pathlib import Path
 from typing import Annotated, Any, Callable, Literal, TypeVar
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Request
 from pydantic import BaseModel
 from starlette.staticfiles import StaticFiles
 
-from fdc import catalog, read_service
+from fdc import catalog, funnel, read_service
 from fdc.catalog import (
     CatalogLayerListView,
     CompanyDirectoryView,
@@ -97,12 +97,62 @@ def funnel_tiers() -> dict[str, Any]:
     return catalog.funnel_tier_index()
 
 
+class FunnelOverrideIn(BaseModel):
+    """Set or reset one company's manual tier. ``tier=None`` clears the override.
+
+    ``note=None`` keeps the existing note so a tier-only edit does not clobber it.
+    """
+
+    ticker: str
+    tier: int | None
+    note: str | None = None
+
+
+@app.post("/api/v1/funnel/overrides")
+def set_funnel_override(payload: FunnelOverrideIn, request: Request) -> dict[str, Any]:
+    """Persist a manual funnel tier to ``config/funnel_overrides.json``.
+
+    The single config write on the app: it edits the same file the funnel CLI and
+    the tier badge read from, so the change is live everywhere on the next tier
+    resolution. Returns the company's resulting (auto-or-manual) tier.
+    """
+    if (
+        request.client is None
+        or request.client.host not in {"127.0.0.1", "::1"}
+        or request.url.hostname not in {"127.0.0.1", "localhost", "::1"}
+    ):
+        raise HTTPException(status_code=403, detail="Tier edits require a local connection")
+    origin = request.headers.get("origin")
+    if origin is not None and origin != str(request.base_url).rstrip("/"):
+        raise HTTPException(status_code=403, detail="Tier edits require the same origin")
+
+    ticker = payload.ticker.upper()
+    known = {company.ticker.upper() for company in catalog.load_catalog().companies}
+    if ticker not in known:
+        raise HTTPException(status_code=404, detail=f"{ticker} is not in the AI universe")
+
+    if payload.tier is None:
+        funnel.remove_override(ticker)
+    else:
+        if type(payload.tier) is not int or payload.tier not in (1, 2, 3):
+            raise HTTPException(
+                status_code=400, detail="tier must be 1, 2 or 3 (null resets to auto)"
+            )
+        existing = funnel.load_overrides().get(ticker, {})
+        note = payload.note if payload.note is not None else existing.get("note", "")
+        if not note.strip():
+            raise HTTPException(status_code=400, detail="Manual tier requires a reason")
+        funnel.upsert_override(ticker, payload.tier, note)
+
+    resolved = catalog.funnel_tier_index().get(ticker, {})
+    return {"ticker": ticker, **resolved}
+
+
 @app.post("/api/v1/quotes/refresh", response_model=QuotesView)
 def refresh_quotes() -> QuotesView:
     """Force a Yahoo Finance re-fetch and serve the rewritten cache.
 
-    The only write on this app; everything else stays read-only.  Runs in
-    FastAPI's thread pool, so the ~30 s yfinance fetch does not block the
+    Runs in FastAPI's thread pool, so the ~30 s yfinance fetch does not block the
     event loop.  A failed fetch keeps the previous cache and reports 502 so the
     page can say so instead of silently rendering empty prices.
     """

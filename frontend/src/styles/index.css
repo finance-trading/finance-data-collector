@@ -457,6 +457,21 @@ a.company-identity:hover span { color: var(--filing-blue); }
 .tier-badge.tier-2 { background: rgb(148 210 190 / 30%); }
 .tier-badge.tier-3 { background: rgb(120 130 160 / 18%); color: var(--muted); }
 .tier-badge[data-source="人工"] { box-shadow: 0 0 0 2px rgb(90 120 255 / 45%); }
+/* Edit a tier in place; the reason stays visible until the save succeeds. */
+.tier-badge.tier-editable { border: 0; cursor: pointer; }
+.tier-badge.tier-editable:hover { filter: brightness(0.95); }
+.tier-editor { display: flex; flex-wrap: wrap; gap: 5px; min-width: 180px; }
+.tier-editor select, .tier-editor input, .tier-editor button {
+  padding: 4px 6px;
+  border: 1px solid var(--rule-strong);
+  background: var(--paper);
+  font-size: 0.78rem;
+}
+.tier-editor input { min-width: 140px; flex: 1; }
+.tier-editor button { cursor: pointer; }
+.tier-editor button:disabled { cursor: wait; opacity: 0.5; }
+.tier-error { flex-basis: 100%; color: var(--error); font-size: 0.75rem; }
+.tier-error:empty { display: none; }
 
 .number-column { text-align: right; font-variant-numeric: tabular-nums; }
 td.number-column { min-width: 74px; }

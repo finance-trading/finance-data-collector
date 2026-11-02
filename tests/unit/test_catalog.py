@@ -510,3 +510,57 @@ def test_read_quotes_degrades_when_file_is_missing(tmp_path, monkeypatch):
     assert view.generated_at is None
     assert view.quotes == {}
 
+
+def test_funnel_override_api_persists_and_resets(tmp_path, monkeypatch):
+    from fastapi.testclient import TestClient
+
+    from fdc import funnel
+    from fdc.api import app
+
+    original_upsert = funnel.upsert_override
+    original_remove = funnel.remove_override
+    original_load = funnel.load_overrides
+    path = tmp_path / "overrides.json"
+    path.write_text(json.dumps({"_说明": "keep"}))
+    monkeypatch.setattr(fdc.catalog, "CATALOG_PATH", _catalog_path(tmp_path))
+    monkeypatch.setattr(fdc.catalog, "QUOTES_PATH", tmp_path / "missing-quotes.json")
+    monkeypatch.setattr(
+        funnel, "upsert_override",
+        lambda ticker, tier, note: original_upsert(ticker, tier, note, path),
+    )
+    monkeypatch.setattr(funnel, "remove_override", lambda ticker: original_remove(ticker, path))
+    monkeypatch.setattr(funnel, "load_overrides", lambda: original_load(path))
+    monkeypatch.setattr(fdc.catalog, "load_overrides", lambda: original_load(path))
+    client = TestClient(app, base_url="http://127.0.0.1:8000", client=("127.0.0.1", 51515))
+    endpoint = "/api/v1/funnel/overrides"
+
+    assert client.post(endpoint, json={"ticker": "VRT", "tier": 2}).status_code == 400
+    assert client.post(
+        endpoint, json={"ticker": "BAD", "tier": 2, "note": "reason"}
+    ).status_code == 404
+    assert json.loads(path.read_text()) == {"_说明": "keep"}
+    assert TestClient(app).post(
+        endpoint, json={"ticker": "VRT", "tier": 2, "note": "reason"}
+    ).status_code == 403
+    assert TestClient(app, base_url="http://remote.test", client=("127.0.0.1", 51515)).post(
+        endpoint, json={"ticker": "VRT", "tier": 2, "note": "reason"}
+    ).status_code == 403
+    assert client.post(
+        endpoint, headers={"Origin": "http://another-site.test"},
+        json={"ticker": "VRT", "tier": 2, "note": "reason"},
+    ).status_code == 403
+    assert json.loads(path.read_text()) == {"_说明": "keep"}
+
+    saved = client.post(endpoint, json={"ticker": "vrt", "tier": 2, "note": "priority"})
+    assert saved.status_code == 200
+    assert saved.json()["tier"] == 2
+    assert saved.json()["source"] == "人工"
+    assert client.get("/api/v1/funnel/tiers").json()["VRT"]["tier"] == 2
+    assert json.loads(path.read_text())["VRT"] == {"tier": 2, "note": "priority"}
+
+    reset = client.post(endpoint, json={"ticker": "VRT", "tier": None})
+    assert reset.status_code == 200
+    assert reset.json()["tier"] == 1
+    assert reset.json()["source"] == "自动"
+    assert json.loads(path.read_text()) == {"_说明": "keep"}
+

@@ -3,6 +3,7 @@ import type {
   CatalogLayerListView,
   CompanyDirectoryItem,
   CompanyDirectoryView,
+  FunnelTierInfo,
   IngestionStatus,
   QuotesPayload,
 } from "../api/types";
@@ -182,6 +183,7 @@ export function renderCompanies(
   target: HTMLTableSectionElement | null = document.querySelector(
     "#company-directory-body",
   ),
+  onTierSaved?: () => void,
 ): void {
   if (!target) return;
   target.replaceChildren();
@@ -209,26 +211,7 @@ export function renderCompanies(
     segment.textContent = company.segment;
     categoryCell.append(layer, segment);
 
-    const tierCell = cell("Funnel tier", "tier-cell");
-    if (company.funnel_tier !== null && company.funnel_tier !== undefined) {
-      const badge = document.createElement("span");
-      badge.className = `tier-badge tier-${company.funnel_tier}`;
-      if (company.funnel_tier_source) badge.dataset.source = company.funnel_tier_source;
-      const title = [
-        `T${company.funnel_tier} ${company.funnel_tier_name ?? ""}`,
-        company.funnel_tier_source ? `Source: ${company.funnel_tier_source}` : "",
-        company.funnel_tier_note ? company.funnel_tier_note : "",
-      ].filter(Boolean).join("\n");
-      badge.title = title;
-      badge.textContent =
-        company.funnel_tier_name ? `T${company.funnel_tier} ${company.funnel_tier_name}` : `T${company.funnel_tier}`;
-      tierCell.append(badge);
-    } else {
-      const na = document.createElement("span");
-      na.className = "price-na";
-      na.textContent = "—";
-      tierCell.append(na);
-    }
+    const tierCell = makeTierCell(company, onTierSaved);
 
     const dateCell = cell("Latest filing", "date-cell");
     dateCell.textContent = formatDate(company.latest_filing_date);
@@ -334,6 +317,123 @@ function ratioCell(label: string, value: number | null | undefined): HTMLTableCe
   return element;
 }
 
+/**
+ * The Tier column cell: a badge that toggles into an inline editor. Picking a
+ * tier (or 自动) persists to `config/funnel_overrides.json` via the API and
+ * re-renders the badge from the returned resolved tier, so the change shows up
+ * live without a page reload.
+ */
+function makeTierCell(company: CompanyDirectoryItem, onSaved?: () => void): HTMLTableCellElement {
+  const td = cell("Funnel tier", "tier-cell");
+  td.dataset.ticker = company.ticker;
+
+  const tierBadge = (): HTMLButtonElement => {
+    const badge = document.createElement("button");
+    badge.type = "button";
+    badge.className = `tier-badge tier-${company.funnel_tier ?? "na"} tier-editable`;
+    if (company.funnel_tier_source) badge.dataset.source = company.funnel_tier_source;
+    badge.title =
+      [
+        company.funnel_tier === null || company.funnel_tier === undefined
+          ? ""
+          : `T${company.funnel_tier} ${company.funnel_tier_name ?? ""}`.trim(),
+        company.funnel_tier_source ? `Source: ${company.funnel_tier_source}` : "",
+        company.funnel_tier_note ? company.funnel_tier_note : "",
+        "Click to edit tier",
+      ]
+        .filter(Boolean)
+        .join("\n");
+    badge.textContent =
+      company.funnel_tier === null || company.funnel_tier === undefined
+        ? "—"
+        : company.funnel_tier_name
+          ? `T${company.funnel_tier} ${company.funnel_tier_name}`
+          : `T${company.funnel_tier}`;
+    badge.addEventListener("click", () => toggleEditor());
+    return badge;
+  };
+
+  const toggleEditor = (): void => {
+    const form = document.createElement("form");
+    form.className = "tier-editor";
+    const select = document.createElement("select");
+    select.setAttribute("aria-label", `${company.ticker} tier`);
+    (["1", "2", "3", "auto"] as const).forEach((value) => {
+      select.append(option(value, value === "auto" ? "自动分档" : `T${value} ${tierName(value)}`));
+    });
+    select.value = company.funnel_tier_source === "人工" ? String(company.funnel_tier) : "auto";
+    const note = document.createElement("input");
+    note.type = "text";
+    note.placeholder = "调整原因";
+    note.setAttribute("aria-label", `${company.ticker} 调整原因`);
+    note.value = company.funnel_tier_note ?? "";
+    note.hidden = select.value === "auto";
+    note.required = !note.hidden;
+    select.addEventListener("change", () => {
+      note.hidden = select.value === "auto";
+      note.required = !note.hidden;
+    });
+    const save = document.createElement("button");
+    save.type = "submit";
+    save.textContent = "保存";
+    const cancel = document.createElement("button");
+    cancel.type = "button";
+    cancel.textContent = "取消";
+    cancel.addEventListener("click", () => td.replaceChildren(tierBadge()));
+    const error = document.createElement("span");
+    error.className = "tier-error";
+    error.setAttribute("role", "alert");
+    form.append(select, note, save, cancel, error);
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const tier = select.value === "auto" ? null : Number(select.value);
+      if (tier !== null && !note.value.trim()) {
+        error.textContent = "请填写调整原因";
+        note.focus();
+        return;
+      }
+      save.disabled = true;
+      cancel.disabled = true;
+      select.disabled = true;
+      note.disabled = true;
+      error.textContent = "保存中…";
+      try {
+        const resolved = await apiPost<FunnelTierInfo>("/api/v1/funnel/overrides", {
+          body: {ticker: company.ticker, tier, note: tier === null ? null : note.value.trim()},
+        });
+        company.funnel_tier = resolved.tier;
+        company.funnel_tier_name = resolved.tier_name;
+        company.funnel_tier_source = resolved.source;
+        company.funnel_tier_note = resolved.note || null;
+        if (onSaved) onSaved();
+        else td.replaceChildren(tierBadge());
+      } catch (cause) {
+        console.error(cause);
+        error.textContent = "保存失败，请重试";
+        save.disabled = false;
+        cancel.disabled = false;
+        select.disabled = false;
+        note.disabled = false;
+      }
+    });
+    td.replaceChildren(form);
+    select.focus();
+  };
+
+  td.append(tierBadge());
+  return td;
+}
+
+const TIER_NAMES: Record<string, string> = {
+  "1": "核心",
+  "2": "重要",
+  "3": "观察",
+};
+
+function tierName(value: string): string {
+  return TIER_NAMES[value] ?? "";
+}
+
 function option(value: string, label: string): HTMLOptionElement {
   const element = document.createElement("option");
   element.value = value;
@@ -432,7 +532,7 @@ export async function mountDirectory(): Promise<void> {
         await load();
         return;
       }
-      renderCompanies(payload.companies);
+      renderCompanies(payload.companies, undefined, () => void load());
       companyTotal.textContent = new Intl.NumberFormat("en").format(payload.total);
       filingTotal.textContent = new Intl.NumberFormat("en").format(
         payload.companies.reduce((total, company) => total + company.filing_count, 0),

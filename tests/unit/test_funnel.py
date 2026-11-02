@@ -13,7 +13,9 @@ from fdc.funnel import (
     build_rows,
     detect_changes,
     load_overrides,
+    remove_override,
     summarize,
+    upsert_override,
     write_excel,
 )
 
@@ -152,3 +154,31 @@ def test_payload_and_excel_export(tmp_path):
     wb = load_workbook(path)
     assert wb.sheetnames == ["漏斗定义", "分层汇总", "公司表", "人工覆盖", "每日变化"]
     assert wb["公司表"].max_row == 3
+
+
+def test_upsert_and_remove_override_preserve_doc_key(tmp_path):
+    path = tmp_path / "overrides.json"
+    path.write_text(json.dumps({"_说明": "keep me", "CDNS": {"tier": 1, "note": "EDA"}}))
+
+    upsert_override("ALAB", 1, "optical", path=path)
+    raw = json.loads(path.read_text())
+    assert raw["_说明"] == "keep me"            # doc key survives a write
+    assert raw["ALAB"] == {"tier": 1, "note": "optical"}
+    assert load_overrides(path)["ALAB"]["tier"] == 1
+
+    upsert_override("alab", 2, "", path=path)   # ticker is case-insensitive
+    assert json.loads(path.read_text())["ALAB"]["tier"] == 2
+
+    assert remove_override("ALAB", path=path) is True
+    raw = json.loads(path.read_text())
+    assert "ALAB" not in raw and raw["_说明"] == "keep me"
+    assert remove_override("ALAB", path=path) is False
+
+
+def test_override_write_refuses_invalid_existing_file(tmp_path):
+    path = tmp_path / "overrides.json"
+    path.write_text("{broken json")
+
+    with pytest.raises(json.JSONDecodeError):
+        upsert_override("AMD", 2, "reason", path=path)
+    assert path.read_text() == "{broken json"

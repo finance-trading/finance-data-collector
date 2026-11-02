@@ -27,8 +27,17 @@ export async function apiGet<T>(
   return response.json() as Promise<T>;
 }
 
-export async function apiPost<T>(path: string, signal?: AbortSignal): Promise<T> {
-  const response = await fetch(path, {method: "POST", signal});
+export async function apiPost<T>(
+  path: string,
+  init?: { body?: unknown; signal?: AbortSignal },
+): Promise<T> {
+  const hasBody = init?.body !== undefined;
+  const response = await fetch(path, {
+    method: "POST",
+    signal: init?.signal,
+    headers: hasBody ? {"Content-Type": "application/json"} : {},
+    body: hasBody ? JSON.stringify(init.body) : undefined,
+  });
   if (!response.ok) {
     let detail: unknown = null;
     try {

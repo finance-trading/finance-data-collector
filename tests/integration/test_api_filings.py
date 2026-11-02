@@ -251,7 +251,7 @@ def client(seeded_database):
 
 
 def test_api_registers_only_get_read_routes():
-    """Regression: the read surface stays GET-only; the lone write is quote refresh."""
+    """Read routes stay GET-only; writes are explicit quote refresh and tier edits."""
 
     methods = {
         method
@@ -266,7 +266,7 @@ def test_api_registers_only_get_read_routes():
         if route.path.startswith("/api/v1")
         and "POST" in route.methods
     ]
-    assert writes == ["/api/v1/quotes/refresh"]
+    assert writes == ["/api/v1/funnel/overrides", "/api/v1/quotes/refresh"]
 
 
 def test_quote_refresh_rewrites_the_cache(client, tmp_path, monkeypatch):
