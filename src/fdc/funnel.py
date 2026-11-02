@@ -220,6 +220,31 @@ def _price_range(values: list[float]) -> str:
     return f"${min(clean):,.2f}–${max(clean):,.2f}"
 
 
+def tier_index(
+    companies: list[dict],
+    layers: list[dict],
+    quotes: dict[str, dict[str, Any]],
+    overrides: dict[str, dict[str, Any]],
+) -> dict[str, dict[str, Any]]:
+    """TICKER -> ``{tier, tier_name, source, note, auto_tier}`` for the whole universe.
+
+    One resolution pass over every company, so the directory API can join a
+    stable tier onto each row without recomputing per page or per filter.
+    """
+
+    rows = build_rows(companies, layers, quotes, overrides)
+    return {
+        row["ticker"]: {
+            "tier": row["tier"],
+            "tier_name": row["tier_name"],
+            "source": row["source"],
+            "note": row["note"],
+            "auto_tier": row["auto_tier"],
+        }
+        for row in rows
+    }
+
+
 def summarize(rows: list[dict[str, Any]], layers: list[dict]) -> list[dict[str, Any]]:
     """Per-layer counts, price ranges and the largest names in each tier."""
 

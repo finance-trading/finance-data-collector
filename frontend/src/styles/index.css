@@ -439,6 +439,25 @@ a.company-identity:hover span { color: var(--filing-blue); }
 .category-cell strong { color: var(--ink); font-size: 0.82rem; }
 .category-cell span { color: var(--muted); font-size: 0.76rem; }
 
+.tier-cell { white-space: nowrap; }
+.tier-badge {
+  display: inline-block;
+  min-width: 2.6em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 0.02em;
+  background: rgb(90 120 255 / 12%);
+  color: var(--ink);
+}
+/* Manual overrides get a ring so they read as "edited", not auto. */
+.tier-badge.tier-1 { background: rgb(214 240 138 / 40%); }
+.tier-badge.tier-2 { background: rgb(148 210 190 / 30%); }
+.tier-badge.tier-3 { background: rgb(120 130 160 / 18%); color: var(--muted); }
+.tier-badge[data-source="人工"] { box-shadow: 0 0 0 2px rgb(90 120 255 / 45%); }
+
 .number-column { text-align: right; font-variant-numeric: tabular-nums; }
 td.number-column { min-width: 74px; }
 

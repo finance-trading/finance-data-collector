@@ -23,11 +23,14 @@ export interface DirectoryState {
   query: string;
   layer: string;
   segment: string;
+  tier: "" | "1" | "2" | "3";
   status: "" | IngestionStatus;
   sort: "" | DirectorySort;
   page: number;
   pageSize: 25 | 50 | 100;
 }
+
+const tiers = new Set<DirectoryState["tier"]>(["", "1", "2", "3"]);
 
 const statuses = new Set<IngestionStatus>([
   "parsed",
@@ -56,10 +59,14 @@ export function readDirectoryState(search: URLSearchParams): DirectoryState {
   const rawSort = search.get("sort") ?? "";
   const rawPage = Number(search.get("page") ?? "1");
   const rawPageSize = Number(search.get("pageSize") ?? "25");
+  const rawTier = search.get("tier") ?? "";
   return {
     query: search.get("query")?.trim() ?? "",
     layer: search.get("layer") ?? "",
     segment: search.get("segment") ?? "",
+    tier: tiers.has(rawTier as DirectoryState["tier"])
+      ? (rawTier as DirectoryState["tier"])
+      : "",
     status: statuses.has(rawStatus as IngestionStatus)
       ? (rawStatus as IngestionStatus)
       : "",
@@ -76,6 +83,7 @@ export function writeDirectoryState(state: DirectoryState): URLSearchParams {
   if (state.query) params.set("query", state.query);
   if (state.layer) params.set("layer", state.layer);
   if (state.segment) params.set("segment", state.segment);
+  if (state.tier) params.set("tier", state.tier);
   if (state.status) params.set("status", state.status);
   if (state.sort) params.set("sort", state.sort);
   params.set("page", String(state.page));
@@ -201,6 +209,26 @@ export function renderCompanies(
     segment.textContent = company.segment;
     categoryCell.append(layer, segment);
 
+    const tierCell = cell("Funnel tier", "tier-cell");
+    if (company.funnel_tier !== null && company.funnel_tier !== undefined) {
+      const badge = document.createElement("span");
+      badge.className = `tier-badge tier-${company.funnel_tier}`;
+      if (company.funnel_tier_source) badge.dataset.source = company.funnel_tier_source;
+      const title = [
+        `T${company.funnel_tier} ${company.funnel_tier_name ?? ""}`,
+        company.funnel_tier_source ? `Source: ${company.funnel_tier_source}` : "",
+        company.funnel_tier_note ? company.funnel_tier_note : "",
+      ].filter(Boolean).join("\n");
+      badge.title = title;
+      badge.textContent = `T${company.funnel_tier}`;
+      tierCell.append(badge);
+    } else {
+      const na = document.createElement("span");
+      na.className = "price-na";
+      na.textContent = "—";
+      tierCell.append(na);
+    }
+
     const dateCell = cell("Latest filing", "date-cell");
     dateCell.textContent = formatDate(company.latest_filing_date);
 
@@ -253,6 +281,7 @@ export function renderCompanies(
     row.append(
       companyCell,
       categoryCell,
+      tierCell,
       dateCell,
       priceCell,
       changeCell("1W DD", company.week_change_pct),
@@ -319,6 +348,7 @@ export async function mountDirectory(): Promise<void> {
   const query = document.querySelector<HTMLInputElement>("#company-search")!;
   const layer = document.querySelector<HTMLSelectElement>("#layer-filter")!;
   const segment = document.querySelector<HTMLSelectElement>("#segment-filter")!;
+  const tier = document.querySelector<HTMLSelectElement>("#tier-filter")!;
   const status = document.querySelector<HTMLSelectElement>("#status-filter")!;
   
   const pageSize = document.querySelector<HTMLSelectElement>("#page-size")!;
@@ -363,6 +393,7 @@ export async function mountDirectory(): Promise<void> {
   const syncControls = (): void => {
     query.value = state.query;
     layer.value = state.layer;
+    tier.value = state.tier;
     status.value = state.status;
     pageSize.value = String(state.pageSize);
     updateSegments();
@@ -378,6 +409,7 @@ export async function mountDirectory(): Promise<void> {
     if (state.query) params.set("query", state.query);
     if (state.layer) params.set("layer", state.layer);
     if (state.segment) params.set("segment", state.segment);
+    if (state.tier) params.set("funnel_tier", state.tier);
     if (state.status) params.set("ingestion_status", state.status);
     if (state.sort) {
       const separator = state.sort.endsWith("_desc") ? "_desc" : "_asc";
@@ -478,6 +510,7 @@ export async function mountDirectory(): Promise<void> {
       query: query.value.trim(),
       layer: layer.value,
       segment: segment.value,
+      tier: tier.value as DirectoryState["tier"],
       status: status.value as DirectoryState["status"],
       page: 1,
       pageSize: Number(pageSize.value) as DirectoryState["pageSize"],
@@ -500,6 +533,7 @@ export async function mountDirectory(): Promise<void> {
     applyFilters();
   });
   segment.addEventListener("change", () => applyFilters());
+  tier.addEventListener("change", () => applyFilters());
   status.addEventListener("change", () => applyFilters());
   document.querySelectorAll<HTMLButtonElement>(".sort-button").forEach((button) => {
     button.addEventListener("click", () => {

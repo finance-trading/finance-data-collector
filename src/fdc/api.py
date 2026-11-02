@@ -55,6 +55,10 @@ def companies(
     ingestion_status: Annotated[IngestionStatus | None, Query()] = None,
     sort_by: Annotated[SortKey | None, Query()] = None,
     order: Order = "desc",
+    funnel_tier: Annotated[
+        int | None,
+        Query(ge=1, le=3, description="Funnel tier: 1 core, 2 major, 3 watch"),
+    ] = None,
     limit: Annotated[int, Query(ge=1, le=100)] = 25,
     offset: Annotated[int, Query(ge=0)] = 0,
 ) -> CompanyDirectoryView:
@@ -68,6 +72,7 @@ def companies(
             offset,
             sort_by=sort_by,
             order=order,
+            funnel_tier=funnel_tier,
         )
     )
 

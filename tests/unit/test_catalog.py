@@ -176,6 +176,45 @@ def test_directory_merges_cached_quotes(tmp_path, engine, session_factory, monke
     assert by_ticker["AMD"].week_change_pct is None
 
 
+def test_directory_joins_funnel_tier_and_filters(
+    tmp_path, engine, session_factory, monkeypatch
+):
+    quotes = tmp_path / "quotes.json"
+    quotes.write_text(
+        json.dumps(
+            {
+                "generated_at": "2026-10-04T15:00:00+00:00",
+                "quotes": {
+                    "VRT": {"market_cap": 100},
+                    "NVDA": {"market_cap": 300},
+                    "AMD": {"market_cap": 200},
+                },
+            }
+        )
+    )
+    monkeypatch.setattr(fdc.catalog, "QUOTES_PATH", quotes)
+    # Deterministic: ignore whatever is in the tracked overrides file.
+    monkeypatch.setattr(fdc.catalog, "load_overrides", lambda: {})
+
+    result = list_companies(
+        None, None, None, None, 25, 0,
+        catalog_path=_catalog_path(tmp_path), session_factory=session_factory,
+    )
+    by_ticker = {company.ticker: company for company in result.companies}
+    # Power has one member (T1); silicon ranks NVDA(300) > AMD(200) -> T1/T2.
+    assert by_ticker["VRT"].funnel_tier == 1
+    assert by_ticker["NVDA"].funnel_tier == 1
+    assert by_ticker["AMD"].funnel_tier == 2
+    assert by_ticker["AMD"].funnel_tier_name == "重要"
+    assert by_ticker["AMD"].funnel_tier_source == "自动"
+
+    filtered = list_companies(
+        None, None, None, None, 25, 0, funnel_tier=2,
+        catalog_path=_catalog_path(tmp_path), session_factory=session_factory,
+    )
+    assert [company.ticker for company in filtered.companies] == ["AMD"]
+
+
 def test_directory_sorts_globally_not_per_page(
     tmp_path, engine, session_factory, monkeypatch
 ):

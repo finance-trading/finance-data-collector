@@ -44,6 +44,10 @@ export interface CompanyDirectoryItem {
   forward_pe?: number | null;
   forward_eps?: number | null;
   quote_as_of?: string | null;
+  funnel_tier?: number | null;
+  funnel_tier_name?: string | null;
+  funnel_tier_source?: string | null;
+  funnel_tier_note?: string | null;
 }
 
 export interface CompanyDirectoryView {

@@ -17,6 +17,7 @@ from fdc.ai_layers import validate_universe
 from fdc.config import get_settings
 from fdc.data_files import CATALOG_PATH, GRAPH_PATH, LAYERS_PATH, QUOTES_PATH
 from fdc.db import SessionLocal
+from fdc.funnel import load_overrides, tier_index
 from fdc.models import Filing, FilingParse, Issuer
 from fdc.read_service import ReadServiceError
 
@@ -91,6 +92,10 @@ class CompanyDirectoryItem(CatalogCompany):
     forward_pe: float | None = None
     forward_eps: float | None = None
     quote_as_of: date | None = None
+    funnel_tier: int | None = None
+    funnel_tier_name: str | None = None
+    funnel_tier_source: str | None = None
+    funnel_tier_note: str | None = None
 
 
 class CompanyDirectoryView(BaseModel):
@@ -98,6 +103,7 @@ class CompanyDirectoryView(BaseModel):
     layer: str | None
     segment: str | None
     ingestion_status: IngestionStatus | None
+    funnel_tier: int | None = None
     sort_by: SortKey | None = None
     order: Order = "desc"
     limit: int
@@ -309,6 +315,7 @@ def list_companies(
     *,
     sort_by: SortKey | None = None,
     order: Order = "desc",
+    funnel_tier: int | None = None,
     catalog_path: Path | str | None = None,
     session_factory: Callable[..., Session] = SessionLocal,
 ) -> CompanyDirectoryView:
@@ -320,6 +327,13 @@ def list_companies(
     with session_factory() as session:
         summaries = _database_summaries(session)
 
+    tier_map = tier_index(
+        [company.model_dump() for company in catalog.companies],
+        [item.model_dump() for item in catalog.layers],
+        quotes,
+        load_overrides(),
+    )
+
     needle = query.strip().casefold() if query and query.strip() else None
     normalized_layer = layer.strip() if layer and layer.strip() else None
     normalized_segment = segment.strip() if segment and segment.strip() else None
@@ -329,6 +343,7 @@ def list_companies(
         summary = summaries.get(ticker)
         status = _status(summary)
         quote = quotes.get(ticker)
+        tier = tier_map.get(ticker)
         if (
             needle
             and needle not in company.ticker.casefold()
@@ -340,6 +355,8 @@ def list_companies(
         if normalized_segment and company.segment != normalized_segment:
             continue
         if ingestion_status and status != ingestion_status:
+            continue
+        if funnel_tier is not None and (tier is None or tier["tier"] != funnel_tier):
             continue
         companies.append(
             CompanyDirectoryItem(
@@ -363,6 +380,10 @@ def list_companies(
                 forward_pe=quote.get("forward_pe") if quote else None,
                 forward_eps=quote.get("forward_eps") if quote else None,
                 quote_as_of=quote_as_of,
+                funnel_tier=tier["tier"] if tier else None,
+                funnel_tier_name=tier["tier_name"] if tier else None,
+                funnel_tier_source=tier["source"] if tier else None,
+                funnel_tier_note=(tier["note"] or None) if tier else None,
             )
         )
 
@@ -380,6 +401,7 @@ def list_companies(
         layer=normalized_layer,
         segment=normalized_segment,
         ingestion_status=ingestion_status,
+        funnel_tier=funnel_tier,
         sort_by=sort_by,
         order=order,
         limit=limit,

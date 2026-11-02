@@ -86,6 +86,15 @@
             </select>
           </label>
           <label>
+            Funnel tier
+            <select id="tier-filter">
+              <option value="">All tiers</option>
+              <option value="1">T1 Core</option>
+              <option value="2">T2 Major</option>
+              <option value="3">T3 Watch</option>
+            </select>
+          </label>
+          <label>
             Ingestion status
             <select id="status-filter">
               <option value="">All statuses</option>
@@ -114,6 +123,7 @@
             <tr>
               <th scope="col">Company</th>
               <th scope="col">AI layer</th>
+              <th scope="col">Tier</th>
               <th scope="col">Latest filing</th>
               <th scope="col" class="number-column"
                   data-sort-column="change_pct" aria-sort="none">
