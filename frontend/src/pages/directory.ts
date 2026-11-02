@@ -220,7 +220,8 @@ export function renderCompanies(
         company.funnel_tier_note ? company.funnel_tier_note : "",
       ].filter(Boolean).join("\n");
       badge.title = title;
-      badge.textContent = `T${company.funnel_tier}`;
+      badge.textContent =
+        company.funnel_tier_name ? `T${company.funnel_tier} ${company.funnel_tier_name}` : `T${company.funnel_tier}`;
       tierCell.append(badge);
     } else {
       const na = document.createElement("span");
