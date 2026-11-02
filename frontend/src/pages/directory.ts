@@ -5,7 +5,9 @@ import type {
   CompanyDirectoryView,
   FunnelTierInfo,
   IngestionStatus,
+  PriceRange,
   QuotesPayload,
+  WatchItem,
 } from "../api/types";
 import { renderDataState } from "../components/data-state";
 import { renderPagination } from "../components/pagination";
@@ -277,6 +279,8 @@ export function renderCompanies(
       ratioCell("Fwd P/E", company.forward_pe),
       ratioCell("Fwd EPS", company.forward_eps),
       capCell,
+      observationBandCell(company),
+      watchItemsCell(company),
       actionCell,
     );
     target.append(row);
@@ -314,6 +318,209 @@ function ratioCell(label: string, value: number | null | undefined): HTMLTableCe
   const span = document.createElement("span");
   span.textContent = formatRatio(value);
   element.append(span);
+  return element;
+}
+
+function formatUsd(value: number): string {
+  return new Intl.NumberFormat("en-US", {style: "currency", currency: "USD"}).format(value);
+}
+
+/** Four user-entered price intervals. No price is inferred from tier triggers. */
+const rangeFields = [
+  ["observation_range", "观察"],
+  ["entry_range", "建仓"],
+  ["add_range", "补仓"],
+  ["reduce_range", "减仓"],
+] as const;
+
+type RangeField = typeof rangeFields[number][0];
+
+async function saveAnnotation(company: CompanyDirectoryItem, changes: Record<string, unknown>): Promise<void> {
+  await apiPost(
+    `/api/v1/research/annotations/${encodeURIComponent(company.ticker)}`,
+    {body: changes},
+  );
+  company.annotation_saved = true;
+}
+
+export function observationBandCell(company: CompanyDirectoryItem): HTMLTableCellElement {
+  const element = cell("Price ranges", "obs-cell");
+  const render = (): void => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "annotation-edit";
+    button.textContent = "编辑区间";
+    button.setAttribute("aria-label", `${company.ticker} 编辑价格区间`);
+    button.addEventListener("click", edit);
+    const ranges = document.createElement("div");
+    ranges.className = "range-list";
+    for (const [field, label] of rangeFields) {
+      const band = company[field];
+      const line = document.createElement("div");
+      line.textContent = `${label}：${band?.low != null && band?.high != null ? `${formatUsd(band.low)}–${formatUsd(band.high)}` : "—"}`;
+      ranges.append(line);
+    }
+    element.replaceChildren(ranges, button);
+  };
+  const edit = (): void => {
+    const form = document.createElement("form");
+    form.className = "annotation-editor";
+    const inputs = {} as Record<RangeField, [HTMLInputElement, HTMLInputElement]>;
+    for (const [field, label] of rangeFields) {
+      const line = document.createElement("div");
+      line.className = "range-edit-row";
+      const title = document.createElement("span");
+      title.textContent = label;
+      const band = company[field];
+      const pair = (["low", "high"] as const).map((end) => {
+        const input = document.createElement("input");
+        input.type = "number";
+        input.min = "0.01";
+        input.step = "0.01";
+        input.placeholder = end === "low" ? "低" : "高";
+        input.setAttribute("aria-label", `${company.ticker} ${label}${end === "low" ? "低" : "高"}价`);
+        input.value = band?.[end] == null ? "" : String(band[end]);
+        return input;
+      }) as [HTMLInputElement, HTMLInputElement];
+      inputs[field] = pair;
+      line.append(title, pair[0], pair[1]);
+      form.append(line);
+    }
+    const save = document.createElement("button");
+    save.type = "submit";
+    save.textContent = "保存";
+    const cancel = document.createElement("button");
+    cancel.type = "button";
+    cancel.textContent = "取消";
+    cancel.addEventListener("click", render);
+    const error = document.createElement("span");
+    error.className = "annotation-error";
+    error.setAttribute("role", "alert");
+    form.append(save, cancel, error);
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const ranges = {} as Record<RangeField, PriceRange>;
+      for (const [field] of rangeFields) {
+        const [low, high] = inputs[field];
+        if (Boolean(low.value) !== Boolean(high.value) || (low.value && (+low.value > +high.value || +low.value <= 0))) {
+          error.textContent = "请填写完整且有效的区间（低价 ≤ 高价）";
+          return;
+        }
+        ranges[field] = {low: low.value ? +low.value : null, high: high.value ? +high.value : null};
+      }
+      const controls = form.querySelectorAll<HTMLInputElement | HTMLButtonElement>("input, button");
+      controls.forEach((control) => { control.disabled = true; });
+      try {
+        await saveAnnotation(company, ranges);
+        Object.assign(company, ranges);
+        render();
+      } catch (cause) {
+        console.error(cause);
+        error.textContent = "保存失败，请重试";
+        controls.forEach((control) => { control.disabled = false; });
+      }
+    });
+    element.replaceChildren(form);
+    inputs.observation_range[0].focus();
+  };
+  render();
+  return element;
+}
+
+/** Editable company watch items, P1 high → P3 low; labels supplement color. */
+export function watchItemsCell(company: CompanyDirectoryItem): HTMLTableCellElement {
+  const element = cell("Watch items", "watch-cell");
+  const render = (): void => {
+    const list = document.createElement("ul");
+    list.className = "watch-list";
+    for (const item of [...(company.watch_items ?? [])].sort((a, b) => a.priority - b.priority)) {
+      const row = document.createElement("li");
+      row.className = `watch-item p${item.priority}`;
+      row.title = item.text;
+      const priority = document.createElement("span");
+      priority.className = "watch-priority";
+      priority.textContent = `P${item.priority}`;
+      const text = document.createElement("span");
+      text.className = "watch-text";
+      text.textContent = item.text;
+      row.append(priority, text);
+      list.append(row);
+    }
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "annotation-edit";
+    button.textContent = "编辑事项";
+    button.setAttribute("aria-label", `${company.ticker} 编辑观察事项`);
+    button.addEventListener("click", edit);
+    element.replaceChildren(list, button);
+  };
+  const edit = (): void => {
+    const form = document.createElement("form");
+    form.className = "annotation-editor watch-editor";
+    const rows = document.createElement("div");
+    const appendRow = (item: WatchItem = {priority: 2, text: ""}): void => {
+      if (rows.children.length >= 50) return;
+      const line = document.createElement("div");
+      line.className = "watch-edit-row";
+      const select = document.createElement("select");
+      select.setAttribute("aria-label", `${company.ticker} 事项优先级`);
+      ([1, 2, 3] as const).forEach((priority) => select.append(option(String(priority), `P${priority}`)));
+      select.value = String(item.priority);
+      const input = document.createElement("input");
+      input.type = "text";
+      input.maxLength = 500;
+      input.value = item.text;
+      input.placeholder = "观察事项";
+      input.setAttribute("aria-label", `${company.ticker} 观察事项`);
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.textContent = "删除";
+      remove.setAttribute("aria-label", `${company.ticker} 删除观察事项`);
+      remove.addEventListener("click", () => line.remove());
+      line.append(select, input, remove);
+      rows.append(line);
+    };
+    (company.watch_items ?? []).forEach(appendRow);
+    const add = document.createElement("button");
+    add.type = "button";
+    add.textContent = "+ 添加事项";
+    add.addEventListener("click", () => appendRow());
+    const save = document.createElement("button");
+    save.type = "submit";
+    save.textContent = "保存";
+    const cancel = document.createElement("button");
+    cancel.type = "button";
+    cancel.textContent = "取消";
+    cancel.addEventListener("click", render);
+    const error = document.createElement("span");
+    error.className = "annotation-error";
+    error.setAttribute("role", "alert");
+    form.append(rows, add, save, cancel, error);
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const items = [...rows.querySelectorAll<HTMLElement>(".watch-edit-row")].map((row) => ({
+        priority: Number(row.querySelector("select")!.value) as WatchItem["priority"],
+        text: row.querySelector("input")!.value.trim(),
+      }));
+      if (items.some((item) => !item.text)) {
+        error.textContent = "观察事项不能为空";
+        return;
+      }
+      const controls = form.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLButtonElement>("input, select, button");
+      controls.forEach((control) => { control.disabled = true; });
+      try {
+        await saveAnnotation(company, {watch_items: items});
+        company.watch_items = items;
+        render();
+      } catch (cause) {
+        console.error(cause);
+        error.textContent = "保存失败，请重试";
+        controls.forEach((control) => { control.disabled = false; });
+      }
+    });
+    element.replaceChildren(form);
+  };
+  render();
   return element;
 }
 

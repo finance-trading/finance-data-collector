@@ -1,9 +1,9 @@
 """Versioned SQLAlchemy models for the SEC filing parsing platform.
 
-Only the CLI/worker write path produces these rows; readers resolve the
-``current`` parse result per filing.  Every extracted value keeps its filing,
-parse run, parser version and evidence locator, so no derived number is ever
-detached from the artifact it came from.
+Parser rows are written by the CLI/worker; research annotations are written by
+the local API. Readers resolve the ``current`` parse result per filing. Every
+extracted value keeps its filing, parse run, parser version and evidence locator,
+so no derived number is ever detached from its source artifact.
 """
 
 from __future__ import annotations
@@ -548,3 +548,29 @@ def create_all_for_tests(engine) -> None:
     """
 
     Base.metadata.create_all(engine)
+
+
+class ResearchAnnotation(TimestampMixin, Base):
+    """One company's editable research annotations, written only by the local
+    read/write API — never by the parser.
+
+    Holds the per-company price-action bands (observe / entry / add / reduce,
+    each a low–high range) and the ongoing watch items the reader wants to keep
+    in front of them.  A row is created on first edit; until then the directory
+    falls back to tier-derived default watch items and blank bands, so missing
+    data stays explicit rather than invented.
+    """
+
+    __tablename__ = "research_annotation"
+
+    ticker: Mapped[str] = mapped_column(String(8), primary_key=True)
+    observe_low: Mapped[float | None] = mapped_column(Float)
+    observe_high: Mapped[float | None] = mapped_column(Float)
+    entry_low: Mapped[float | None] = mapped_column(Float)
+    entry_high: Mapped[float | None] = mapped_column(Float)
+    add_low: Mapped[float | None] = mapped_column(Float)
+    add_high: Mapped[float | None] = mapped_column(Float)
+    reduce_low: Mapped[float | None] = mapped_column(Float)
+    reduce_high: Mapped[float | None] = mapped_column(Float)
+    #: ``[{"text": ..., "priority": 1..3}, ...]``; color is derived from priority.
+    watch_items: Mapped[list] = mapped_column(JSON, default=list, nullable=False)

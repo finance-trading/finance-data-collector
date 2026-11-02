@@ -16,6 +16,16 @@ export type DirectorySortKey =
 
 export type DirectoryOrder = "desc" | "asc";
 
+export interface PriceRange {
+  low: number | null;
+  high: number | null;
+}
+
+export interface WatchItem {
+  priority: 1 | 2 | 3;
+  text: string;
+}
+
 export interface CompanyDirectoryItem {
   ticker: string;
   name: string;
@@ -48,6 +58,12 @@ export interface CompanyDirectoryItem {
   funnel_tier_name?: string | null;
   funnel_tier_source?: string | null;
   funnel_tier_note?: string | null;
+  observation_range?: PriceRange;
+  entry_range?: PriceRange;
+  add_range?: PriceRange;
+  reduce_range?: PriceRange;
+  watch_items?: WatchItem[];
+  annotation_saved?: boolean;
 }
 
 export interface CompanyDirectoryView {

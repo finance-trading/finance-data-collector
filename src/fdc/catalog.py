@@ -17,8 +17,8 @@ from fdc.ai_layers import validate_universe
 from fdc.config import get_settings
 from fdc.data_files import CATALOG_PATH, GRAPH_PATH, LAYERS_PATH, QUOTES_PATH
 from fdc.db import SessionLocal
-from fdc.funnel import load_overrides, tier_index
-from fdc.models import Filing, FilingParse, Issuer
+from fdc.funnel import load_overrides, tier_index, tier_watch_items
+from fdc.models import Filing, FilingParse, Issuer, ResearchAnnotation
 from fdc.read_service import ReadServiceError
 
 IngestionStatus = Literal["parsed", "failed", "unavailable", "not_ingested"]
@@ -72,6 +72,18 @@ class CatalogLayerListView(BaseModel):
     layers: list[CatalogLayerView]
 
 
+class WatchItem(BaseModel):
+    """One editable company-specific observation."""
+
+    priority: Literal[1, 2, 3]
+    text: str
+
+
+class PriceRange(BaseModel):
+    low: float | None = None
+    high: float | None = None
+
+
 class CompanyDirectoryItem(CatalogCompany):
     layer_name: str
     cik: str | None = None
@@ -96,6 +108,12 @@ class CompanyDirectoryItem(CatalogCompany):
     funnel_tier_name: str | None = None
     funnel_tier_source: str | None = None
     funnel_tier_note: str | None = None
+    observation_range: PriceRange = Field(default_factory=PriceRange)
+    entry_range: PriceRange = Field(default_factory=PriceRange)
+    add_range: PriceRange = Field(default_factory=PriceRange)
+    reduce_range: PriceRange = Field(default_factory=PriceRange)
+    watch_items: list[WatchItem] = Field(default_factory=list)
+    annotation_saved: bool = False
 
 
 class CompanyDirectoryView(BaseModel):
@@ -326,6 +344,9 @@ def list_companies(
     quotes, quote_as_of, _ = _load_quotes()
     with session_factory() as session:
         summaries = _database_summaries(session)
+        annotations = {
+            row.ticker: row for row in session.scalars(select(ResearchAnnotation)).all()
+        }
 
     tier_map = _resolve_tiers(catalog, quotes)
 
@@ -339,6 +360,9 @@ def list_companies(
         status = _status(summary)
         quote = quotes.get(ticker)
         tier = tier_map.get(ticker)
+        tier_num = tier["tier"] if tier else None
+        annotation = annotations.get(ticker)
+        watch = annotation.watch_items if annotation else tier_watch_items(tier_num)
         if (
             needle
             and needle not in company.ticker.casefold()
@@ -379,6 +403,23 @@ def list_companies(
                 funnel_tier_name=tier["tier_name"] if tier else None,
                 funnel_tier_source=tier["source"] if tier else None,
                 funnel_tier_note=(tier["note"] or None) if tier else None,
+                observation_range=PriceRange(
+                    low=annotation.observe_low, high=annotation.observe_high
+                ) if annotation else PriceRange(),
+                entry_range=PriceRange(
+                    low=annotation.entry_low, high=annotation.entry_high
+                ) if annotation else PriceRange(),
+                add_range=PriceRange(
+                    low=annotation.add_low, high=annotation.add_high
+                ) if annotation else PriceRange(),
+                reduce_range=PriceRange(
+                    low=annotation.reduce_low, high=annotation.reduce_high
+                ) if annotation else PriceRange(),
+                watch_items=[
+                    WatchItem(**item)
+                    for item in sorted(watch, key=lambda item: item["priority"])
+                ],
+                annotation_saved=annotation is not None,
             )
         )
 

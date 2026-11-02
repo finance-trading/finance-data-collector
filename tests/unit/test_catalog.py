@@ -243,6 +243,44 @@ def test_funnel_tier_index_resolves_tiers(tmp_path, monkeypatch):
     assert tiers["AMD"]["source"] == "自动"
 
 
+def test_directory_exposes_saved_ranges_and_editable_watch_items(
+    tmp_path, engine, session_factory, monkeypatch
+):
+    from fdc.models import ResearchAnnotation
+
+    monkeypatch.setattr(fdc.catalog, "load_overrides", lambda: {})
+    with session_factory() as session:
+        session.add(ResearchAnnotation(
+            ticker="NVDA", observe_low=180, observe_high=200,
+            entry_low=150, entry_high=160,
+            watch_items=[
+                {"text": "Track revenue", "priority": 2},
+                {"text": "Review margins", "priority": 1},
+            ],
+        ))
+        session.commit()
+
+    result = list_companies(
+        None, None, None, None, 25, 0,
+        catalog_path=_catalog_path(tmp_path), session_factory=session_factory,
+    )
+    by_ticker = {company.ticker: company for company in result.companies}
+    nvda = by_ticker["NVDA"]
+    assert nvda.observation_range.low == 180
+    assert nvda.observation_range.high == 200
+    assert nvda.entry_range.low == 150
+    assert nvda.add_range.low is None
+    assert nvda.annotation_saved is True
+    assert [item.priority for item in nvda.watch_items] == [1, 2]
+    assert [item.text for item in nvda.watch_items] == ["Review margins", "Track revenue"]
+
+    amd = by_ticker["AMD"]
+    assert amd.observation_range.low is None
+    assert amd.entry_range.high is None
+    assert amd.annotation_saved is False
+    assert [item.priority for item in amd.watch_items] == [1, 2, 3]
+
+
 def test_directory_sorts_globally_not_per_page(
     tmp_path, engine, session_factory, monkeypatch
 ):
@@ -509,6 +547,87 @@ def test_read_quotes_degrades_when_file_is_missing(tmp_path, monkeypatch):
 
     assert view.generated_at is None
     assert view.quotes == {}
+
+
+def test_research_annotation_api_persists_and_validates(
+    tmp_path, engine, session_factory, monkeypatch
+):
+    from fastapi.testclient import TestClient
+
+    from fdc.api import app
+    from fdc.models import ResearchAnnotation
+
+    monkeypatch.setattr(fdc.catalog, "CATALOG_PATH", _catalog_path(tmp_path))
+    monkeypatch.setattr("fdc.api.SessionLocal", session_factory)
+    endpoint = "/api/v1/research/annotations/NVDA"
+    client = TestClient(app, base_url="http://127.0.0.1:8000", client=("127.0.0.1", 51515))
+    payload = {
+        "observation_range": {"low": 180, "high": 200},
+        "entry_range": {"low": None, "high": None},
+        "add_range": {"low": 130, "high": 150},
+        "reduce_range": {"low": 250, "high": 270},
+        "watch_items": [{"priority": 2, "text": "  Track revenue  "}],
+    }
+    assert TestClient(app).post(endpoint, json=payload).status_code == 403
+    assert client.post(
+        endpoint, headers={"Origin": "http://evil.test"}, json=payload
+    ).status_code == 403
+    assert client.post(endpoint.replace("NVDA", "BAD"), json=payload).status_code == 404
+    assert client.post(
+        endpoint, json={**payload, "entry_range": {"low": 100, "high": None}}
+    ).status_code == 422
+    assert client.post(
+        endpoint, json={**payload, "add_range": {"low": 160, "high": 150}}
+    ).status_code == 422
+    assert client.post(
+        endpoint, json={**payload, "watch_items": [{"priority": 1, "text": " "}]}
+    ).status_code == 422
+    assert client.post(
+        endpoint, json={**payload, "observation_range": {"low": -1, "high": 200}}
+    ).status_code == 422
+    assert client.post(endpoint, json={}).status_code == 422
+    assert client.post(endpoint, json={"watch_items": None}).status_code == 422
+
+    first = client.post(
+        endpoint.replace("NVDA", "AMD"),
+        json={"observation_range": {"low": 90, "high": 95}},
+    )
+    assert first.status_code == 200
+    with session_factory() as session:
+        seeded = session.get(ResearchAnnotation, "AMD")
+        assert seeded.observe_low == 90
+        assert [item["priority"] for item in seeded.watch_items] == [1, 2, 3]
+
+    saved = client.post(endpoint, json=payload)
+    assert saved.status_code == 200
+    assert saved.json()["watch_items"] == [{"priority": 2, "text": "Track revenue"}]
+    with session_factory() as session:
+        row = session.get(ResearchAnnotation, "NVDA")
+        assert row.observe_low == 180
+        assert row.add_high == 150
+        assert row.watch_items == [{"priority": 2, "text": "Track revenue"}]
+
+    partial = client.post(endpoint, json={"entry_range": {"low": 100, "high": 110}})
+    assert partial.status_code == 200
+    with session_factory() as session:
+        row = session.get(ResearchAnnotation, "NVDA")
+        assert row.observe_low == 180
+        assert row.entry_low == 100
+        assert row.watch_items == [{"priority": 2, "text": "Track revenue"}]
+
+    cleared = client.post(
+        endpoint,
+        json={
+            **payload,
+            "watch_items": [],
+            "observation_range": {"low": None, "high": None},
+        },
+    )
+    assert cleared.status_code == 200
+    with session_factory() as session:
+        row = session.get(ResearchAnnotation, "NVDA")
+        assert row.observe_low is None
+        assert row.watch_items == []
 
 
 def test_funnel_override_api_persists_and_resets(tmp_path, monkeypatch):

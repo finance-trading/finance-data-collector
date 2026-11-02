@@ -3,10 +3,12 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   formatRefreshTime,
   nextSort,
+  observationBandCell,
   readDirectoryState,
   renderCompanies,
   sortKeyOf,
   syncSortHeaders,
+  watchItemsCell,
   writeDirectoryState,
 } from "../src/pages/directory";
 import { renderPagination } from "../src/components/pagination";
@@ -298,6 +300,62 @@ describe("directory rendering", () => {
     // A stale cache without the new keys degrades to the muted placeholder.
     const missing = document.querySelectorAll('tr td[data-label="1W DD"]')[1];
     expect(missing.textContent).toBe("—");
+  });
+
+  it("edits and saves the four price intervals", async () => {
+    const company = {...catalogOnlyCompany, watch_items: [], annotation_saved: false};
+    const saved = vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(JSON.stringify({annotation_saved: true}), {status: 200}),
+    );
+    const band = observationBandCell(company);
+    band.querySelector<HTMLButtonElement>(".annotation-edit")!.click();
+    const inputs = band.querySelectorAll<HTMLInputElement>(".range-edit-row input");
+    inputs[0].value = "180";
+    inputs[1].value = "200";
+    const form = band.querySelector<HTMLFormElement>("form")!;
+    form.dispatchEvent(new Event("submit", {bubbles: true, cancelable: true}));
+    await vi.waitFor(() => expect(band.textContent).toContain("$180.00–$200.00"));
+    expect(JSON.parse(String(saved.mock.calls[0][1]?.body)).observation_range).toEqual({
+      low: 180, high: 200,
+    });
+    expect(company.annotation_saved).toBe(true);
+  });
+
+  it("keeps price editor open and data unchanged on save failure", async () => {
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response("error", {status: 500}));
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const company = {...catalogOnlyCompany, observation_range: {low: null, high: null}};
+    const band = observationBandCell(company);
+    band.querySelector<HTMLButtonElement>(".annotation-edit")!.click();
+    const inputs = band.querySelectorAll<HTMLInputElement>(".range-edit-row input");
+    inputs[0].value = "180";
+    inputs[1].value = "200";
+    band.querySelector("form")!.dispatchEvent(new Event("submit", {bubbles: true, cancelable: true}));
+    await vi.waitFor(() => expect(band.querySelector(".annotation-error")?.textContent).toContain("保存失败"));
+    expect(company.observation_range).toEqual({low: null, high: null});
+    expect(band.querySelector("form")).not.toBeNull();
+  });
+
+  it("edits watch items, orders by priority, and persists deletions", async () => {
+    const company = {
+      ...catalogOnlyCompany,
+      watch_items: [
+        { priority: 2 as const, text: "Track revenue" },
+        { priority: 1 as const, text: "Review margins" },
+      ],
+    };
+    const saved = vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(JSON.stringify({annotation_saved: true}), {status: 200}),
+    );
+    const watch = watchItemsCell(company);
+    expect([...watch.querySelectorAll(".watch-priority")].map((node) => node.textContent)).toEqual(["P1", "P2"]);
+    watch.querySelector<HTMLButtonElement>(".annotation-edit")!.click();
+    watch.querySelector<HTMLButtonElement>(".watch-edit-row button")!.click();
+    watch.querySelector("form")!.dispatchEvent(new Event("submit", {bubbles: true, cancelable: true}));
+    await vi.waitFor(() => expect(watch.querySelectorAll(".watch-item").length).toBe(1));
+    expect(JSON.parse(String(saved.mock.calls[0][1]?.body)).watch_items).toEqual([
+      {priority: 1, text: "Review margins"},
+    ]);
   });
 });
 

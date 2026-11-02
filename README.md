@@ -144,6 +144,13 @@ bash scripts/update_funnel.sh           # 一键：刷新报价 -> 重算 -> 检
 列表和 layers 页面下次请求即生效；每日 Excel/JSON 快照仍需运行 `fdc.funnel` 更新。
 `config/` 目录随 Git 走，改动须自行提交才能版本化；`data/` 被 ignore。
 
+**公司研究批注**：列表的 Price ranges 列可逐家公司编辑观察 / 建仓 / 补仓 / 减仓各自的
+低–高价区间；Watch items 列可增删事项、编辑文字和 P1/P2/P3 优先级（颜色随优先级）。
+首次打开观察事项预填该档位的研究深度 / 更新频率 / 触发研究要求，保存后使用公司专属内容；
+价格区间没有默认值，不从漏斗触发带推算买价。两列分别保存到数据库 `research_annotation`，
+不会覆盖另一列未编辑的内容；需先运行 `uv run alembic upgrade head`。写入同样仅允许本机同源，
+数据不随 Git 版本化。价格区间是人工研究记录，不构成买入授权。
+
 ## Local SEC Data
 
 SEC filing packages are centralized under `sec/<company>/`. The directory is

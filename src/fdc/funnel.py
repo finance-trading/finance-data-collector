@@ -302,6 +302,25 @@ def tier_index(
     }
 
 
+def tier_watch_items(tier: int | None) -> list[dict[str, Any]]:
+    """Default ongoing-coverage matters for a tier, most-important first.
+
+    These are the watch items seeded into a company the first time its research
+    card is edited, when it has none of its own yet: research depth, update
+    cadence, and the drawdown that starts event research.  All three come from
+    the versioned funnel rules (RESEARCH_DEPTH / UPDATE_CADENCE / TRIGGER_ACTION).
+    ``priority`` drives the P1/P2/P3 color; empty when the tier is unknown.
+    """
+
+    if tier is None or tier not in TIER_NAMES:
+        return []
+    return [
+        {"text": RESEARCH_DEPTH[tier], "priority": 1},
+        {"text": UPDATE_CADENCE[tier], "priority": 2},
+        {"text": TRIGGER_ACTION[tier], "priority": 3},
+    ]
+
+
 def summarize(rows: list[dict[str, Any]], layers: list[dict]) -> list[dict[str, Any]]:
     """Per-layer counts, price ranges and the largest names in each tier."""
 

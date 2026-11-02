@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Annotated, Any, Callable, Literal, TypeVar
 
 from fastapi import FastAPI, HTTPException, Query, Request
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator, model_validator
 from starlette.staticfiles import StaticFiles
 
 from fdc import catalog, funnel, read_service
@@ -19,6 +19,8 @@ from fdc.catalog import (
     QuotesView,
     SortKey,
 )
+from fdc.db import SessionLocal
+from fdc.models import ResearchAnnotation
 from fdc.quotes import write_quotes
 from fdc.read_service import (
     CompanyView,
@@ -108,23 +110,27 @@ class FunnelOverrideIn(BaseModel):
     note: str | None = None
 
 
-@app.post("/api/v1/funnel/overrides")
-def set_funnel_override(payload: FunnelOverrideIn, request: Request) -> dict[str, Any]:
-    """Persist a manual funnel tier to ``config/funnel_overrides.json``.
-
-    The single config write on the app: it edits the same file the funnel CLI and
-    the tier badge read from, so the change is live everywhere on the next tier
-    resolution. Returns the company's resulting (auto-or-manual) tier.
-    """
+def _require_local_write(request: Request) -> None:
     if (
         request.client is None
         or request.client.host not in {"127.0.0.1", "::1"}
         or request.url.hostname not in {"127.0.0.1", "localhost", "::1"}
     ):
-        raise HTTPException(status_code=403, detail="Tier edits require a local connection")
+        raise HTTPException(status_code=403, detail="Edits require a local connection")
     origin = request.headers.get("origin")
     if origin is not None and origin != str(request.base_url).rstrip("/"):
-        raise HTTPException(status_code=403, detail="Tier edits require the same origin")
+        raise HTTPException(status_code=403, detail="Edits require the same origin")
+
+
+@app.post("/api/v1/funnel/overrides")
+def set_funnel_override(payload: FunnelOverrideIn, request: Request) -> dict[str, Any]:
+    """Persist a manual funnel tier to ``config/funnel_overrides.json``.
+
+    The tier config write edits the same file the funnel CLI and tier badge
+    read from, so the change is live everywhere on the next tier
+    resolution. Returns the company's resulting (auto-or-manual) tier.
+    """
+    _require_local_write(request)
 
     ticker = payload.ticker.upper()
     known = {company.ticker.upper() for company in catalog.load_catalog().companies}
@@ -146,6 +152,81 @@ def set_funnel_override(payload: FunnelOverrideIn, request: Request) -> dict[str
 
     resolved = catalog.funnel_tier_index().get(ticker, {})
     return {"ticker": ticker, **resolved}
+
+
+class AnnotationRange(BaseModel):
+    low: float | None = Field(default=None, gt=0, allow_inf_nan=False)
+    high: float | None = Field(default=None, gt=0, allow_inf_nan=False)
+
+    @model_validator(mode="after")
+    def valid_range(self) -> "AnnotationRange":
+        if (self.low is None) != (self.high is None):
+            raise ValueError("Both range endpoints are required")
+        if self.low is not None and self.low > self.high:
+            raise ValueError("Range low must not exceed high")
+        return self
+
+
+class AnnotationWatchItem(BaseModel):
+    priority: Literal[1, 2, 3]
+    text: str = Field(min_length=1, max_length=500)
+
+    @field_validator("text")
+    @classmethod
+    def nonblank(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("Watch item must not be blank")
+        return value.strip()
+
+
+class ResearchAnnotationIn(BaseModel):
+    observation_range: AnnotationRange | None = None
+    entry_range: AnnotationRange | None = None
+    add_range: AnnotationRange | None = None
+    reduce_range: AnnotationRange | None = None
+    watch_items: list[AnnotationWatchItem] | None = Field(default=None, max_length=50)
+
+    @model_validator(mode="after")
+    def has_changes(self) -> "ResearchAnnotationIn":
+        fields = {"observation_range", "entry_range", "add_range", "reduce_range", "watch_items"}
+        if not self.model_fields_set or any(
+            field not in fields or getattr(self, field) is None
+            for field in self.model_fields_set
+        ):
+            raise ValueError("Provide one or more non-null annotation fields")
+        return self
+
+
+@app.post("/api/v1/research/annotations/{ticker}")
+def save_research_annotation(
+    ticker: str, payload: ResearchAnnotationIn, request: Request
+) -> dict[str, Any]:
+    _require_local_write(request)
+    key = ticker.upper()
+    if key not in {company.ticker.upper() for company in catalog.load_catalog().companies}:
+        raise HTTPException(status_code=404, detail=f"{key} is not in the AI universe")
+    with SessionLocal() as session:
+        with session.begin():
+            row = session.get(ResearchAnnotation, key)
+            if row is None:
+                defaults = funnel.tier_watch_items(
+                    catalog.funnel_tier_index().get(key, {}).get("tier")
+                )
+                row = ResearchAnnotation(ticker=key, watch_items=defaults)
+                session.add(row)
+            for field, prefix in (
+                ("observation_range", "observe"),
+                ("entry_range", "entry"),
+                ("add_range", "add"),
+                ("reduce_range", "reduce"),
+            ):
+                band = getattr(payload, field)
+                if band is not None:
+                    setattr(row, f"{prefix}_low", band.low)
+                    setattr(row, f"{prefix}_high", band.high)
+            if payload.watch_items is not None:
+                row.watch_items = [item.model_dump() for item in payload.watch_items]
+    return {"ticker": key, **payload.model_dump(exclude_none=True), "annotation_saved": True}
 
 
 @app.post("/api/v1/quotes/refresh", response_model=QuotesView)
