@@ -73,12 +73,13 @@
       <form id="directory-filters" class="directory-filters" aria-label="Directory filters"
             onsubmit="return false">
         <div class="filter-group">
-          <label>
-            AI layer
-            <select id="layer-filter">
-              <option value="">All layers</option>
-            </select>
-          </label>
+          <div class="layer-filter-group">
+            <span id="layer-filter-label">AI layer</span>
+            <details class="layer-filter" id="layer-filter">
+              <summary aria-labelledby="layer-filter-label layer-filter-summary"><span id="layer-filter-summary">All layers</span></summary>
+              <div class="layer-filter-options" role="group" aria-labelledby="layer-filter-label"></div>
+            </details>
+          </div>
           <label>
             Segment
             <select id="segment-filter">

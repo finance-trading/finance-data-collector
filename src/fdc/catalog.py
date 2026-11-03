@@ -118,7 +118,7 @@ class CompanyDirectoryItem(CatalogCompany):
 
 class CompanyDirectoryView(BaseModel):
     query: str | None
-    layer: str | None
+    layer: str | list[str] | None
     segment: str | None
     ingestion_status: IngestionStatus | None
     funnel_tier: int | None = None
@@ -325,7 +325,7 @@ def _quote_sort_key(
 
 def list_companies(
     query: str | None,
-    layer: str | None,
+    layer: str | list[str] | None,
     segment: str | None,
     ingestion_status: IngestionStatus | None,
     limit: int,
@@ -351,7 +351,8 @@ def list_companies(
     tier_map = _resolve_tiers(catalog, quotes)
 
     needle = query.strip().casefold() if query and query.strip() else None
-    normalized_layer = layer.strip() if layer and layer.strip() else None
+    layer_values = [layer] if isinstance(layer, str) else layer or []
+    normalized_layers = {value.strip() for value in layer_values if value.strip()}
     normalized_segment = segment.strip() if segment and segment.strip() else None
     companies: list[CompanyDirectoryItem] = []
     for company in catalog.companies:
@@ -369,7 +370,7 @@ def list_companies(
             and needle not in company.name.casefold()
         ):
             continue
-        if normalized_layer and company.layer != normalized_layer:
+        if normalized_layers and company.layer not in normalized_layers:
             continue
         if normalized_segment and company.segment != normalized_segment:
             continue
@@ -434,7 +435,7 @@ def list_companies(
 
     return CompanyDirectoryView(
         query=query.strip() if query and query.strip() else None,
-        layer=normalized_layer,
+        layer=(next(iter(normalized_layers)) if len(normalized_layers) == 1 else sorted(normalized_layers) or None),
         segment=normalized_segment,
         ingestion_status=ingestion_status,
         funnel_tier=funnel_tier,

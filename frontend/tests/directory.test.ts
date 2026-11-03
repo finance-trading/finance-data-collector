@@ -54,7 +54,7 @@ describe("directory URL state", () => {
 
     expect(state).toEqual({
       query: "nvda",
-      layer: "silicon",
+      layers: ["silicon"],
       segment: "Compute",
       tier: "",
       status: "parsed",
@@ -65,6 +65,12 @@ describe("directory URL state", () => {
     expect(writeDirectoryState(state).toString()).toBe(
       "query=nvda&layer=silicon&segment=Compute&status=parsed&sort=market_cap_desc&page=2&pageSize=50",
     );
+  });
+
+  it("round-trips multiple layers and removes duplicates", () => {
+    const state = readDirectoryState(new URLSearchParams("layer=silicon&layer=power&layer=silicon"));
+    expect(state.layers).toEqual(["silicon", "power"]);
+    expect(writeDirectoryState(state).getAll("layer")).toEqual(["silicon", "power"]);
   });
 
   it("normalizes invalid sort values to catalog order", () => {

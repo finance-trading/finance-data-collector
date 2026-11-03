@@ -52,7 +52,7 @@ def _read(operation: Callable[[], ViewT]) -> ViewT:
 @app.get("/api/v1/companies", response_model=CompanyDirectoryView)
 def companies(
     query: str | None = None,
-    layer: str | None = None,
+    layer: Annotated[list[str] | None, Query()] = None,
     segment: str | None = None,
     ingestion_status: Annotated[IngestionStatus | None, Query()] = None,
     sort_by: Annotated[SortKey | None, Query()] = None,

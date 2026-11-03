@@ -118,6 +118,22 @@ def test_directory_filters_before_paginating(tmp_path, engine, session_factory):
     assert [company.ticker for company in result.companies] == ["AMD"]
 
 
+def test_directory_filters_multiple_layers_before_paginating(tmp_path, engine, session_factory):
+    result = list_companies(
+        query=None,
+        layer=["power", "silicon"],
+        segment=None,
+        ingestion_status=None,
+        limit=2,
+        offset=1,
+        catalog_path=_catalog_path(tmp_path),
+        session_factory=session_factory,
+    )
+
+    assert result.total == 3
+    assert [company.ticker for company in result.companies] == ["NVDA", "AMD"]
+
+
 def test_directory_merges_cached_quotes(tmp_path, engine, session_factory, monkeypatch):
     quotes = tmp_path / "quotes.json"
     quotes.write_text(

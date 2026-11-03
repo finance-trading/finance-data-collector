@@ -402,6 +402,15 @@ def test_company_directory_combines_layer_and_status_filters(client):
     )
 
 
+def test_company_directory_filters_multiple_layers(client):
+    response = client.get("/api/v1/companies?layer=silicon&layer=power&limit=100")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["total"] > 0
+    assert {item["layer"] for item in payload["companies"]} == {"silicon", "power"}
+
+
 def test_catalog_layers_expose_the_complete_ai_universe(client):
     response = client.get("/api/v1/catalog/layers")
 

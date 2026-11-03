@@ -268,7 +268,7 @@ h1 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.directory-filters label {
+.directory-filters .filter-group > label, .layer-filter-group {
   display: grid;
   gap: 6px;
   padding: 11px 14px;
@@ -279,7 +279,45 @@ h1 {
   font-weight: 750;
 }
 
-.directory-filters label:first-child { border-left: 0; }
+.layer-filter-group { position: relative; border-left: 0; }
+
+.layer-filter summary {
+  padding: 7px 26px 7px 0;
+  border-bottom: 1px solid var(--rule-strong);
+  color: var(--ink);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.layer-filter summary:focus-visible { outline: 2px solid currentColor; }
+
+.layer-filter-options {
+  position: absolute;
+  z-index: 5;
+  top: 100%;
+  left: 0;
+  min-width: max(100%, 220px);
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 6px;
+  border: 1px solid var(--rule-strong);
+  background: var(--paper);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+}
+
+.layer-filter-options label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px;
+  color: var(--ink);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.layer-filter-options label:hover { background: var(--rule); }
+.layer-filter-options input { accent-color: var(--ink); }
 
 .directory-filters select {
   width: 100%;
@@ -712,7 +750,9 @@ footer p { margin: 0; }
   .directory-summary { width: 100%; gap: 20px; }
   .directory-summary div { flex: 1; }
   .filter-group { grid-template-columns: 1fr; }
-  .filter-group label + label { border-top: 1px solid var(--rule); border-left: 0; }
+  .filter-group > label, .filter-group > .layer-filter-group { border-top: 1px solid var(--rule); border-left: 0; }
+  .filter-group > :first-child { border-top: 0; }
+  .layer-filter-options { min-width: 100%; right: 0; }
   tbody tr { gap: 12px 14px; padding: 16px; }
   .action-cell { text-align: right; }
   .directory-pagination { gap: 8px; }
