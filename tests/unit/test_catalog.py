@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+from datetime import datetime
+from types import SimpleNamespace
 
 import fdc.catalog
 from fdc.catalog import list_companies, list_layers, load_catalog, read_quotes
@@ -575,6 +577,8 @@ def test_research_annotation_api_persists_and_validates(
 
     monkeypatch.setattr(fdc.catalog, "CATALOG_PATH", _catalog_path(tmp_path))
     monkeypatch.setattr("fdc.api.SessionLocal", session_factory)
+    # Deterministic local-only mode regardless of the developer's .env key.
+    monkeypatch.setattr("fdc.api.get_settings", lambda: SimpleNamespace(api_key=None))
     endpoint = "/api/v1/research/annotations/NVDA"
     client = TestClient(app, base_url="http://127.0.0.1:8000", client=("127.0.0.1", 51515))
     payload = {
@@ -582,7 +586,14 @@ def test_research_annotation_api_persists_and_validates(
         "entry_range": {"low": None, "high": None},
         "add_range": {"low": 130, "high": 150},
         "reduce_range": {"low": 250, "high": 270},
-        "watch_items": [{"priority": 2, "text": "  Track revenue  "}],
+        "watch_items": [
+            {
+                "priority": 2,
+                "text": "  Track revenue  ",
+                "code": "FIN",
+                "next_check_at": "2026-12-01",
+            }
+        ],
     }
     assert TestClient(app).post(endpoint, json=payload).status_code == 403
     assert client.post(
@@ -596,7 +607,11 @@ def test_research_annotation_api_persists_and_validates(
         endpoint, json={**payload, "add_range": {"low": 160, "high": 150}}
     ).status_code == 422
     assert client.post(
-        endpoint, json={**payload, "watch_items": [{"priority": 1, "text": " "}]}
+        endpoint, json={**payload, "watch_items": [{"priority": 1, "text": " "}]
+    }).status_code == 422
+    assert client.post(
+        endpoint,
+        json={**payload, "watch_items": [{"priority": 1, "text": "x", "code": "c" * 33}]},
     ).status_code == 422
     assert client.post(
         endpoint, json={**payload, "observation_range": {"low": -1, "high": 200}}
@@ -613,15 +628,32 @@ def test_research_annotation_api_persists_and_validates(
         seeded = session.get(ResearchAnnotation, "AMD")
         assert seeded.observe_low == 90
         assert [item["priority"] for item in seeded.watch_items] == [1, 2, 3]
+        assert all(item["created_at"] for item in seeded.watch_items)
 
     saved = client.post(endpoint, json=payload)
     assert saved.status_code == 200
-    assert saved.json()["watch_items"] == [{"priority": 2, "text": "Track revenue"}]
+    assert len(saved.json()["watch_items"]) == 1
+    assert saved.json()["watch_items"][0]["priority"] == 2
+    assert saved.json()["watch_items"][0]["text"] == "Track revenue"
+    assert saved.json()["watch_items"][0]["code"] == "FIN"
+    assert saved.json()["watch_items"][0]["next_check_at"].startswith("2026-12-01")
+    assert saved.json()["watch_items"][0]["created_at"] is not None
+    assert saved.json()["annotation_saved"] is True
     with session_factory() as session:
         row = session.get(ResearchAnnotation, "NVDA")
         assert row.observe_low == 180
         assert row.add_high == 150
-        assert row.watch_items == [{"priority": 2, "text": "Track revenue"}]
+        assert row.watch_items == [
+            {
+                "priority": 2,
+                "text": "Track revenue",
+                "code": "FIN",
+                "created_at": row.watch_items[0]["created_at"],
+                "next_check_at": "2026-12-01T00:00:00",
+            }
+        ]
+        assert row.watch_items[0]["created_at"] is not None
+        row_watch_created_at = row.watch_items[0]["created_at"]
 
     partial = client.post(endpoint, json={"entry_range": {"low": 100, "high": 110}})
     assert partial.status_code == 200
@@ -629,7 +661,20 @@ def test_research_annotation_api_persists_and_validates(
         row = session.get(ResearchAnnotation, "NVDA")
         assert row.observe_low == 180
         assert row.entry_low == 100
-        assert row.watch_items == [{"priority": 2, "text": "Track revenue"}]
+        assert row.watch_items[0]["text"] == "Track revenue"
+        assert row.watch_items[0]["created_at"] == row_watch_created_at
+
+    edited = client.post(
+        endpoint,
+        json={"watch_items": [
+            {"priority": 2, "text": "Track revenue again", "created_at": row_watch_created_at},
+        ]},
+    )
+    assert edited.status_code == 200
+    assert datetime.fromisoformat(edited.json()["watch_items"][0]["created_at"].replace("Z", "+00:00")) == datetime.fromisoformat(row_watch_created_at)
+    with session_factory() as session:
+        row = session.get(ResearchAnnotation, "NVDA")
+        assert row.watch_items[0]["created_at"] == row_watch_created_at
 
     cleared = client.post(
         endpoint,
@@ -644,6 +689,61 @@ def test_research_annotation_api_persists_and_validates(
         row = session.get(ResearchAnnotation, "NVDA")
         assert row.observe_low is None
         assert row.watch_items == []
+
+
+def test_research_annotation_read_and_api_key_auth(
+    tmp_path, engine, session_factory, monkeypatch
+):
+    from fastapi.testclient import TestClient
+
+    from fdc.api import app
+    from fdc.config import Settings
+
+    monkeypatch.setattr(fdc.catalog, "CATALOG_PATH", _catalog_path(tmp_path))
+    monkeypatch.setattr("fdc.api.SessionLocal", session_factory)
+    monkeypatch.setattr("fdc.api.get_settings", lambda: Settings(api_key="secret-key"))
+    get_endpoint = "/api/v1/research/annotations/NVDA"
+    remote = TestClient(app, base_url="http://127.0.0.1:8000", client=("203.0.113.7", 51515))
+    local = TestClient(app, base_url="http://127.0.0.1:8000", client=("127.0.0.1", 51515))
+
+    # Reads are open; the unsaved company reports its tier defaults.
+    unsaved = TestClient(app).get(get_endpoint)
+    assert unsaved.status_code == 200
+    assert unsaved.json()["annotation_saved"] is False
+    assert [item["priority"] for item in unsaved.json()["watch_items"]] == [1, 2, 3]
+    assert all(item["created_at"] for item in unsaved.json()["watch_items"])
+    assert unsaved.json()["entry_range"] == {"low": None, "high": None}
+
+    # Writes need the key from outside...
+    assert remote.post(get_endpoint, json={"add_range": {"low": 1, "high": 2}}).status_code == 401
+    assert remote.post(
+        get_endpoint,
+        json={"add_range": {"low": 1, "high": 2}},
+        headers={"Authorization": "Bearer wrong"},
+    ).status_code == 401
+    assert remote.post(
+        get_endpoint.replace("NVDA", "BAD"),
+        json={"add_range": {"low": 1, "high": 2}},
+        headers={"Authorization": "Bearer secret-key"},
+    ).status_code == 404
+
+    saved = remote.post(
+        get_endpoint,
+        json={"entry_range": {"low": 90, "high": 95}},
+        headers={"Authorization": "Bearer secret-key"},
+    )
+    assert saved.status_code == 200
+    assert saved.json()["entry_range"] == {"low": 90, "high": 95}
+
+    # ...while the local UI still writes without credentials.
+    assert local.post(
+        get_endpoint, json={"add_range": {"low": 50, "high": 60}}
+    ).status_code == 200
+    with session_factory() as session:
+        from fdc.models import ResearchAnnotation
+
+        row = session.get(ResearchAnnotation, "NVDA")
+        assert row.entry_low == 90 and row.add_high == 60
 
 
 def test_funnel_override_api_persists_and_resets(tmp_path, monkeypatch):

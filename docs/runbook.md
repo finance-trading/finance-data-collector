@@ -134,6 +134,15 @@ FDC_PARSER_VERSION='filing-parser-v1' \
   uv run uvicorn fdc.api:app --host 127.0.0.1 --port 8000
 ```
 
+Exposing the service beyond localhost: research annotations accept external
+writes with `Authorization: Bearer $FDC_API_KEY` when `FDC_API_KEY` is set —
+put it in the repo-root `.env` (loaded by the settings layer; real
+environment variables win over the file) or export it for the uvicorn
+process. Reads need no credential. Without it, external writes get 401/403
+and only same-origin local edits work. Funnel tier overrides stay local-only
+in both modes. See the README "开放研究批注 API" section for the endpoint
+examples.
+
 Open:
 
 ```text

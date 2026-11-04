@@ -569,6 +569,19 @@ a.company-identity:hover span { color: var(--filing-blue); }
 .watch-item.p2 .watch-priority { background: rgb(251 192 130 / 18%); color: var(--amber); }
 .watch-item.p3 .watch-priority { background: rgb(120 130 160 / 16%); color: var(--muted); }
 .watch-item .watch-text { min-width: 0; white-space: normal; overflow-wrap: anywhere; }
+.watch-item .watch-code {
+  flex: none;
+  min-width: 24px;
+  padding: 0 3px;
+  border-radius: 3px;
+  background: rgb(120 130 160 / 16%);
+  color: var(--muted);
+  font-size: 0.62rem;
+  font-weight: 650;
+  text-align: center;
+}
+.watch-edit-row .watch-code-input { flex: none; width: 64px; }
+.watch-edit-row .watch-next-check-input { flex: none; width: 128px; }
 
 .number-column { text-align: right; font-variant-numeric: tabular-nums; }
 td.number-column { min-width: 74px; }

@@ -145,11 +145,45 @@ bash scripts/update_funnel.sh           # 一键：刷新报价 -> 重算 -> 检
 `config/` 目录随 Git 走，改动须自行提交才能版本化；`data/` 被 ignore。
 
 **公司研究批注**：列表的 Price ranges 列可逐家公司编辑观察 / 建仓 / 补仓 / 减仓各自的
-低–高价区间；Watch items 列可增删事项、编辑文字和 P1/P2/P3 优先级（颜色随优先级）。
-首次打开观察事项预填该档位的研究深度 / 更新频率 / 触发研究要求，保存后使用公司专属内容；
+低–高价区间；Watch items 列可增删事项、编辑文字和 P1/P2/P3 优先级（颜色随优先级），
+并标注分类 code（自由短标签，如 FIN / 财报）与下次关注时间 `next_check_at`；每项自带
+服务端盖的创建时间 `created_at`。首次打开观察事项预填该档位的研究深度 / 更新频率 / 触发研究要求，
+保存后使用公司专属内容；
 价格区间没有默认值，不从漏斗触发带推算买价。两列分别保存到数据库 `research_annotation`，
-不会覆盖另一列未编辑的内容；需先运行 `uv run alembic upgrade head`。写入同样仅允许本机同源，
+不会覆盖另一列未编辑的内容；需先运行 `uv run alembic upgrade head`。写入默认仅允许本机同源，
 数据不随 Git 版本化。价格区间是人工研究记录，不构成买入授权。
+
+**开放研究批注 API（外部读 / 写）**：建仓（观察 / 建仓 / 补仓 / 减仓区间）与观察事项
+开放给外部调用。读无需凭证：
+
+```bash
+curl http://HOST:8000/api/v1/research/annotations/NVDA
+```
+
+返回四个区间、`watch_items`（每项带 `created_at` 创建时间、可选 `code` 分类短标签
+与 `next_check_at` 下次关注时间；未保存过的公司回落到档位默认事项）与 `annotation_saved`。外部写入需配置 `FDC_API_KEY`（放到仓库根目录的 `.env` 即可，真实环境变量优先于
+`.env`；不设时外部写入一律 401/403，本机 UI 不受影响）：
+
+```bash
+# .env 里加一行，key 随便生成一条强随机串：openssl rand -hex 32
+FDC_API_KEY=<64位hex>
+```
+
+```bash
+curl -X POST http://HOST:8000/api/v1/research/annotations/NVDA \
+  -H "Authorization: Bearer $FDC_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"entry_range": {"low": 120, "high": 140},
+      "watch_items": [{"priority": 1, "text": "Track datacenter capex",
+                       "code": "FIN", "next_check_at": "2026-11-20"}]}'
+```
+
+新建事项由服务端盖 `created_at`；回写已有事项时带上原 `created_at` 可保留创建时间
+（页内编辑会这样做）；`code` / `next_check_at` 可选，缺省为 null。
+
+配套的 Claude Code skill 在 [`skills/fdc-research-annotations/`](skills/fdc-research-annotations/)：
+外部使用者把该目录拷进自己的 `.claude/skills/`（或装成 plugin），配置 `FDC_API_BASE`
+与 `FDC_API_KEY` 后，直接用自然语言读写建仓区间与观察事项，无需自己拼 curl。
 
 ## Local SEC Data
 

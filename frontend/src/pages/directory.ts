@@ -436,14 +436,23 @@ export function watchItemsCell(company: CompanyDirectoryItem): HTMLTableCellElem
     for (const item of [...(company.watch_items ?? [])].sort((a, b) => a.priority - b.priority)) {
       const row = document.createElement("li");
       row.className = `watch-item p${item.priority}`;
-      row.title = item.text;
+      row.title = [item.text, item.next_check_at ? `下次关注 ${item.next_check_at.slice(0, 10)}` : ""]
+        .filter(Boolean)
+        .join(" · ");
       const priority = document.createElement("span");
       priority.className = "watch-priority";
       priority.textContent = `P${item.priority}`;
+      row.append(priority);
+      if (item.code) {
+        const code = document.createElement("span");
+        code.className = "watch-code";
+        code.textContent = item.code;
+        row.append(code);
+      }
       const text = document.createElement("span");
       text.className = "watch-text";
       text.textContent = item.text;
-      row.append(priority, text);
+      row.append(text);
       list.append(row);
     }
     const button = document.createElement("button");
@@ -466,18 +475,32 @@ export function watchItemsCell(company: CompanyDirectoryItem): HTMLTableCellElem
       select.setAttribute("aria-label", `${company.ticker} 事项优先级`);
       ([1, 2, 3] as const).forEach((priority) => select.append(option(String(priority), `P${priority}`)));
       select.value = String(item.priority);
+      const codeInput = document.createElement("input");
+      codeInput.type = "text";
+      codeInput.maxLength = 32;
+      codeInput.value = item.code ?? "";
+      codeInput.placeholder = "code";
+      codeInput.className = "watch-code-input";
+      codeInput.setAttribute("aria-label", `${company.ticker} 事项分类 code`);
       const input = document.createElement("input");
       input.type = "text";
       input.maxLength = 500;
       input.value = item.text;
       input.placeholder = "观察事项";
+      input.className = "watch-text-input";
       input.setAttribute("aria-label", `${company.ticker} 观察事项`);
+      const nextCheck = document.createElement("input");
+      nextCheck.type = "date";
+      nextCheck.value = item.next_check_at?.slice(0, 10) ?? "";
+      nextCheck.className = "watch-next-check-input";
+      nextCheck.setAttribute("aria-label", `${company.ticker} 下次关注时间`);
       const remove = document.createElement("button");
       remove.type = "button";
       remove.textContent = "删除";
       remove.setAttribute("aria-label", `${company.ticker} 删除观察事项`);
       remove.addEventListener("click", () => line.remove());
-      line.append(select, input, remove);
+      if (item.created_at) line.dataset.createdAt = item.created_at;
+      line.append(select, codeInput, input, nextCheck, remove);
       rows.append(line);
     };
     (company.watch_items ?? []).forEach(appendRow);
@@ -498,10 +521,19 @@ export function watchItemsCell(company: CompanyDirectoryItem): HTMLTableCellElem
     form.append(rows, add, save, cancel, error);
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
-      const items = [...rows.querySelectorAll<HTMLElement>(".watch-edit-row")].map((row) => ({
-        priority: Number(row.querySelector("select")!.value) as WatchItem["priority"],
-        text: row.querySelector("input")!.value.trim(),
-      }));
+      const items = [...rows.querySelectorAll<HTMLElement>(".watch-edit-row")].map((row): WatchItem => {
+        const item: WatchItem = {
+          priority: Number(row.querySelector<HTMLSelectElement>("select")!.value) as WatchItem["priority"],
+          text: row.querySelector<HTMLInputElement>(".watch-text-input")!.value.trim(),
+        };
+        const code = row.querySelector<HTMLInputElement>(".watch-code-input")!.value.trim();
+        if (code) item.code = code;
+        const nextCheck = row.querySelector<HTMLInputElement>(".watch-next-check-input")!.value;
+        if (nextCheck) item.next_check_at = nextCheck;
+        // Keep the server-stamped creation time when the row was an existing item.
+        if (row.dataset.createdAt) item.created_at = row.dataset.createdAt;
+        return item;
+      });
       if (items.some((item) => !item.text)) {
         error.textContent = "观察事项不能为空";
         return;

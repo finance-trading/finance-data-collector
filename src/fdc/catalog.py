@@ -77,6 +77,12 @@ class WatchItem(BaseModel):
 
     priority: Literal[1, 2, 3]
     text: str
+    #: Free-form classification tag (<=32 chars), e.g. FIN / COMP / 财报.
+    code: str | None = None
+    #: When this item was added; stamped server-side, absent on legacy rows.
+    created_at: datetime | None = None
+    #: When the item next deserves attention; client-chosen, optional.
+    next_check_at: datetime | None = None
 
 
 class PriceRange(BaseModel):

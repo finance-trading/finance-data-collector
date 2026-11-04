@@ -15,7 +15,13 @@ class Settings(BaseSettings):
     because Yahoo's edge answers datacenter egress with HTTP 429.
     """
 
-    model_config = SettingsConfigDict(env_prefix="FDC_", case_sensitive=False)
+    # Real environment variables always win over .env; the file is resolved
+    # against the working directory, so start uvicorn from the repo root.
+    # extra=ignore: .env may hold unrelated vars (HTTP_PROXY, ...) that the
+    # dotenv source reads through without the FDC_ prefix.
+    model_config = SettingsConfigDict(
+        env_prefix="FDC_", case_sensitive=False, env_file=".env", extra="ignore"
+    )
 
     database_url: str = "postgresql+psycopg://fdc:fdc@localhost:5432/fdc"
     raw_root: str = "./data/raw"
@@ -29,6 +35,10 @@ class Settings(BaseSettings):
     retry_base_delay_seconds: float = 1.0
     retry_max_delay_seconds: float = 30.0
     quotes_proxy: str | None = None
+    #: Shared bearer key for the open write API (research annotations) when the
+    #: service is reachable from outside localhost. ``None`` keeps writes
+    #: local-only. ``FDC_API_KEY``.
+    api_key: str | None = None
 
     def require_sec_user_agent(self) -> str:
         """Return the attributed identity required by a live SEC request."""

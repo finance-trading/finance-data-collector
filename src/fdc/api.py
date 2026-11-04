@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import logging
+import secrets
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Annotated, Any, Callable, Literal, TypeVar
 
@@ -11,6 +13,7 @@ from pydantic import BaseModel, Field, field_validator, model_validator
 from starlette.staticfiles import StaticFiles
 
 from fdc import catalog, funnel, read_service
+from fdc.config import get_settings
 from fdc.catalog import (
     CatalogLayerListView,
     CompanyDirectoryView,
@@ -122,6 +125,20 @@ def _require_local_write(request: Request) -> None:
         raise HTTPException(status_code=403, detail="Edits require the same origin")
 
 
+def _authorize_write(request: Request) -> None:
+    """Writes pass from a local same-origin connection, or from any caller
+    holding the shared ``FDC_API_KEY`` — the open path for external tools."""
+
+    key = get_settings().api_key
+    if key:
+        scheme, _, token = request.headers.get("authorization", "").partition(" ")
+        if scheme.lower() == "bearer" and secrets.compare_digest(token, key):
+            return
+        if request.client is not None and request.client.host not in {"127.0.0.1", "::1"}:
+            raise HTTPException(status_code=401, detail="Edits require a valid API key")
+    _require_local_write(request)
+
+
 @app.post("/api/v1/funnel/overrides")
 def set_funnel_override(payload: FunnelOverrideIn, request: Request) -> dict[str, Any]:
     """Persist a manual funnel tier to ``config/funnel_overrides.json``.
@@ -170,6 +187,13 @@ class AnnotationRange(BaseModel):
 class AnnotationWatchItem(BaseModel):
     priority: Literal[1, 2, 3]
     text: str = Field(min_length=1, max_length=500)
+    #: Free-form classification tag; blank is stored as None.
+    code: str | None = Field(default=None, max_length=32)
+    #: Creation stamp, kept when the client round-trips an existing item;
+    #: the server stamps it for items created without one.
+    created_at: datetime | None = None
+    #: When this item next deserves attention (next review point).
+    next_check_at: datetime | None = None
 
     @field_validator("text")
     @classmethod
@@ -177,6 +201,15 @@ class AnnotationWatchItem(BaseModel):
         if not value.strip():
             raise ValueError("Watch item must not be blank")
         return value.strip()
+
+    @field_validator("code")
+    @classmethod
+    def code_optional(cls, value: str | None) -> str | None:
+        if value is not None:
+            value = value.strip()
+            if not value:
+                return None
+        return value
 
 
 class ResearchAnnotationIn(BaseModel):
@@ -197,13 +230,80 @@ class ResearchAnnotationIn(BaseModel):
         return self
 
 
-@app.post("/api/v1/research/annotations/{ticker}")
+class ResearchAnnotationOut(BaseModel):
+    """One company's saved position bands and watch items, read or written
+    through the open annotation endpoints."""
+
+    ticker: str
+    observation_range: AnnotationRange
+    entry_range: AnnotationRange
+    add_range: AnnotationRange
+    reduce_range: AnnotationRange
+    watch_items: list[AnnotationWatchItem]
+    annotation_saved: bool
+
+
+def _known_universe() -> set[str]:
+    return {company.ticker.upper() for company in catalog.load_catalog().companies}
+
+
+def _annotation_view(ticker: str) -> ResearchAnnotationOut:
+    key = ticker.upper()
+    if key not in _known_universe():
+        raise HTTPException(status_code=404, detail=f"{key} is not in the AI universe")
+    row: ResearchAnnotation | None
+    with SessionLocal() as session:
+        row = session.get(ResearchAnnotation, key)
+    if row is None:
+        defaults = funnel.tier_watch_items(catalog.funnel_tier_index().get(key, {}).get("tier"))
+        return ResearchAnnotationOut(
+            ticker=key,
+            observation_range=AnnotationRange(),
+            entry_range=AnnotationRange(),
+            add_range=AnnotationRange(),
+            reduce_range=AnnotationRange(),
+            watch_items=[AnnotationWatchItem(**item) for item in defaults],
+            annotation_saved=False,
+        )
+
+    def band(prefix: str) -> AnnotationRange:
+        return AnnotationRange(low=getattr(row, f"{prefix}_low"), high=getattr(row, f"{prefix}_high"))
+
+    return ResearchAnnotationOut(
+        ticker=key,
+        observation_range=band("observe"),
+        entry_range=band("entry"),
+        add_range=band("add"),
+        reduce_range=band("reduce"),
+        watch_items=[AnnotationWatchItem(**item) for item in row.watch_items],
+        annotation_saved=True,
+    )
+
+
+@app.get("/api/v1/research/annotations/{ticker}", response_model=ResearchAnnotationOut)
+def research_annotation(ticker: str) -> ResearchAnnotationOut:
+    """Position bands and watch items for one company, open for external reads.
+
+    ``watch_items`` fall back to the tier defaults until the company's first
+    saved annotation; ``created_at`` marks when each item was added.
+    """
+    return _annotation_view(ticker)
+
+
+@app.post("/api/v1/research/annotations/{ticker}", response_model=ResearchAnnotationOut)
 def save_research_annotation(
     ticker: str, payload: ResearchAnnotationIn, request: Request
-) -> dict[str, Any]:
-    _require_local_write(request)
+) -> ResearchAnnotationOut:
+    """Update the position bands and/or watch items for one company.
+
+    Local same-origin callers write without a credential; external callers
+    present ``Authorization: Bearer $FDC_API_KEY``.  Watch items missing a
+    ``created_at`` are stamped with the server time; items sent back with one
+    keep it, so editing text or priority never re-dates an existing item.
+    """
+    _authorize_write(request)
     key = ticker.upper()
-    if key not in {company.ticker.upper() for company in catalog.load_catalog().companies}:
+    if key not in _known_universe():
         raise HTTPException(status_code=404, detail=f"{key} is not in the AI universe")
     with SessionLocal() as session:
         with session.begin():
@@ -225,8 +325,20 @@ def save_research_annotation(
                     setattr(row, f"{prefix}_low", band.low)
                     setattr(row, f"{prefix}_high", band.high)
             if payload.watch_items is not None:
-                row.watch_items = [item.model_dump() for item in payload.watch_items]
-    return {"ticker": key, **payload.model_dump(exclude_none=True), "annotation_saved": True}
+                now = datetime.now(timezone.utc).isoformat()
+                row.watch_items = [
+                    {
+                        "priority": item.priority,
+                        "text": item.text,
+                        "code": item.code,
+                        "created_at": item.created_at.isoformat() if item.created_at else now,
+                        "next_check_at": (
+                            item.next_check_at.isoformat() if item.next_check_at else None
+                        ),
+                    }
+                    for item in payload.watch_items
+                ]
+    return _annotation_view(key)
 
 
 @app.post("/api/v1/quotes/refresh", response_model=QuotesView)

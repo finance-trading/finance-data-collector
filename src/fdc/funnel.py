@@ -314,10 +314,11 @@ def tier_watch_items(tier: int | None) -> list[dict[str, Any]]:
 
     if tier is None or tier not in TIER_NAMES:
         return []
+    seeded_at = datetime.now(timezone.utc).isoformat()
     return [
-        {"text": RESEARCH_DEPTH[tier], "priority": 1},
-        {"text": UPDATE_CADENCE[tier], "priority": 2},
-        {"text": TRIGGER_ACTION[tier], "priority": 3},
+        {"text": RESEARCH_DEPTH[tier], "priority": 1, "created_at": seeded_at},
+        {"text": UPDATE_CADENCE[tier], "priority": 2, "created_at": seeded_at},
+        {"text": TRIGGER_ACTION[tier], "priority": 3, "created_at": seeded_at},
     ]
 
 

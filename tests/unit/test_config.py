@@ -10,8 +10,9 @@ def clear_settings_cache():
     get_settings.cache_clear()
 
 
-def test_offline_settings_do_not_require_sec_user_agent(monkeypatch):
+def test_offline_settings_do_not_require_sec_user_agent(monkeypatch, tmp_path):
     monkeypatch.delenv("FDC_SEC_USER_AGENT", raising=False)
+    monkeypatch.chdir(tmp_path)  # keep a developer .env out of the settings load
 
     settings = get_settings()
 

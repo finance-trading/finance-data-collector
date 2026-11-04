@@ -346,8 +346,8 @@ describe("directory rendering", () => {
     const company = {
       ...catalogOnlyCompany,
       watch_items: [
-        { priority: 2 as const, text: "Track revenue" },
-        { priority: 1 as const, text: "Review margins" },
+        {priority: 2 as const, text: "Track revenue", code: "FIN", next_check_at: "2026-12-01"},
+        {priority: 1 as const, text: "Review margins"},
       ],
     };
     const saved = vi.spyOn(globalThis, "fetch").mockResolvedValue(
@@ -355,12 +355,14 @@ describe("directory rendering", () => {
     );
     const watch = watchItemsCell(company);
     expect([...watch.querySelectorAll(".watch-priority")].map((node) => node.textContent)).toEqual(["P1", "P2"]);
+    expect(watch.querySelector(".watch-code")!.textContent).toBe("FIN");
     watch.querySelector<HTMLButtonElement>(".annotation-edit")!.click();
-    watch.querySelector<HTMLButtonElement>(".watch-edit-row button")!.click();
+    const removeButtons = watch.querySelectorAll<HTMLButtonElement>(".watch-edit-row button");
+    removeButtons[1].click();
     watch.querySelector("form")!.dispatchEvent(new Event("submit", {bubbles: true, cancelable: true}));
     await vi.waitFor(() => expect(watch.querySelectorAll(".watch-item").length).toBe(1));
     expect(JSON.parse(String(saved.mock.calls[0][1]?.body)).watch_items).toEqual([
-      {priority: 1, text: "Review margins"},
+      {priority: 2, text: "Track revenue", code: "FIN", next_check_at: "2026-12-01"},
     ]);
   });
 });

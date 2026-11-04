@@ -24,6 +24,12 @@ export interface PriceRange {
 export interface WatchItem {
   priority: 1 | 2 | 3;
   text: string;
+  /** Free-form classification tag (e.g. FIN / 财报), max 32 chars. */
+  code?: string | null;
+  /** Server-stamped creation time; absent on legacy items. */
+  created_at?: string | null;
+  /** When this item next deserves attention. */
+  next_check_at?: string | null;
 }
 
 export interface CompanyDirectoryItem {
