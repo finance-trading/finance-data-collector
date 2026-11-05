@@ -7,7 +7,9 @@ description: >
   this skill whenever the user asks to look up or change entry/position
   prices, add-on or trim ranges, watch items, or research notes for a ticker
   on their FDC service — even when they say it casually ("把 NVDA 建仓区间改成
-  120-140", "给 TSM 加个观察事项"), without naming the API.
+  120-140", "给 TSM 加个观察事项"), without naming the API. Can also filter
+  the AI company directory (list companies by layer, segment, ingestion
+  status, funnel tier, keyword; sorted by price/market-cap metrics).
 ---
 
 # FDC research annotations
@@ -26,6 +28,12 @@ Collector service:
   - `created_at` — server-stamped the moment the item was added; editing keeps it.
   - `next_check_at` — the next point at which the item deserves attention
     (a date or ISO datetime, chosen by the user).
+
+- **Company directory filtering** — read-only `list` over the 211-company AI
+  universe: filter by keyword, AI layer (repeatable), segment, ingestion
+  status, funnel tier (1 core / 2 major / 3 watch); sort by `market_cap`,
+  `change_pct`, `week_change_pct`, `week_rise_pct`, `change_52w_pct`,
+  `rise_52w_pct`. No key needed; `--json` gives the full API view.
 
 ## Configuration
 
@@ -58,6 +66,7 @@ python3 <skill-base-dir>/scripts/fdc_annotations.py [--base URL] [--key KEY] <co
 | Intent | Command |
 | --- | --- |
 | See bands + watch items | `get NVDA` |
+| Filter companies | `list --funnel-tier 1 --layer compute --limit 25` (`--query`, repeatable `--layer`, `--segment`, `--ingestion-status`, `--sort`, `--order`, `--offset`, `--json` also supported) |
 | Set / change / clear bands | `set NVDA --entry 120 140 --add 100 110 --reduce null null` |
 | List watch items | `watch NVDA list` |
 | Add a watch item | `watch NVDA add "Track datacenter capex" --priority 1 --code FIN --next-check 2026-02-05` |

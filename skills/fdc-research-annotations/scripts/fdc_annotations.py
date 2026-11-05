@@ -2,8 +2,9 @@
 """Client CLI for the Finance Data Collector research-annotation API.
 
 Read position bands (observe / entry / add / reduce) and watch items for one
-ticker, and update them.  Reads need no credential; writes need the shared
-API key the service operator configured (FDC_API_KEY server-side).
+ticker, filter the company directory, and update annotations.  Reads need no
+credential; writes need the shared API key the service operator configured
+(FDC_API_KEY server-side).
 
 Configuration, in priority order:
   --base <origin>  / FDC_API_BASE   service origin; falls back to DEFAULT_API_BASE
@@ -20,6 +21,7 @@ import json
 import os
 import sys
 import urllib.error
+import urllib.parse
 import urllib.request
 from datetime import datetime
 from typing import Any
@@ -117,7 +119,8 @@ def cmd_set(args: argparse.Namespace) -> None:
         value = getattr(args, band)
         parsed = parse_band(value)
         if parsed is not None:
-            payload[band + "_range"] = parsed
+            field = "observation_range" if band == "observe" else band + "_range"
+            payload[field] = parsed
     if not payload:
         fail("nothing to update: pass at least one band flag", 2)
     result = save_annotation(base, key, args.ticker, payload)
@@ -128,6 +131,58 @@ def cmd_get(args: argparse.Namespace) -> None:
     base, key = config(args)
     result = get_annotation(base, key, args.ticker)
     print(json.dumps(result, ensure_ascii=False, indent=2))
+
+
+SORT_KEYS = (
+    "market_cap", "change_pct", "week_change_pct",
+    "week_rise_pct", "change_52w_pct", "rise_52w_pct",
+)
+
+
+def _fmt_range(band: dict[str, Any] | None) -> str:
+    if not band:
+        return "-"
+    low, high = band.get("low"), band.get("high")
+    if low is None and high is None:
+        return "-"
+    lo = f"{low:g}" if low is not None else "?"
+    hi = f"{high:g}" if high is not None else "?"
+    return f"{lo}-{hi}"
+
+
+def cmd_list(args: argparse.Namespace) -> None:
+    base, key = config(args)
+    params: list[tuple[str, Any]] = [
+        ("limit", args.limit), ("offset", args.offset), ("order", args.order),
+    ]
+    if args.query:
+        params.append(("query", args.query))
+    for layer in args.layer or []:
+        params.append(("layer", layer))
+    if args.segment:
+        params.append(("segment", args.segment))
+    if args.ingestion_status:
+        params.append(("ingestion_status", args.ingestion_status))
+    if args.funnel_tier:
+        params.append(("funnel_tier", args.funnel_tier))
+    if args.sort:
+        params.append(("sort_by", args.sort))
+    view = request("GET", base, "/api/v1/companies?" + urllib.parse.urlencode(params), key, None)
+    if args.json:
+        print(json.dumps(view, ensure_ascii=False, indent=2))
+        return
+    print(f"{view['total']} companies match; showing {len(view['companies'])} from offset {args.offset}")
+    for c in view["companies"]:
+        name = c["name"]
+        name = name[:28] + "…" if len(name) > 28 else name
+        price = f"${c['price']:.2f}" if c.get("price") is not None else "  n/a"
+        tier = f"T{c['funnel_tier']}" if c.get("funnel_tier") else "-"
+        print(
+            f"{c['ticker']:<7} {name:<30} {price:>9}  "
+            f"{tier}  layer {c['layer']:<14} "
+            f"entry {_fmt_range(c.get('entry_range'))}  "
+            f"reduce {_fmt_range(c.get('reduce_range'))}"
+        )
 
 
 def _watch_items(view: dict[str, Any]) -> list[dict[str, Any]]:
@@ -242,6 +297,27 @@ def main() -> None:
     pos = sub.add_parser("get", help="show bands and watch items for a ticker")
     pos.add_argument("ticker")
     pos.set_defaults(func=cmd_get)
+
+    lst = sub.add_parser(
+        "list", help="filter the company directory (read-only; no key needed)"
+    )
+    lst.add_argument("--query", help="keyword over name/sector/industry/description")
+    lst.add_argument("--layer", action="append", metavar="LAYER",
+                     help="AI layer id; repeat for several layers")
+    lst.add_argument("--segment", help="segment within a layer")
+    lst.add_argument("--ingestion-status",
+                     choices=("parsed", "failed", "unavailable", "not_ingested"))
+    lst.add_argument("--funnel-tier", type=int, choices=(1, 2, 3),
+                     help="1 core, 2 major, 3 watch")
+    lst.add_argument("--sort", choices=SORT_KEYS,
+                     help="default: directory order (no explicit sort)")
+    lst.add_argument("--order", choices=("desc", "asc"), default="desc")
+    lst.add_argument("--limit", type=int, default=25,
+                     help="page size 1-100, default 25")
+    lst.add_argument("--offset", type=int, default=0, help="page start, default 0")
+    lst.add_argument("--json", action="store_true",
+                     help="print the full API view instead of compact lines")
+    lst.set_defaults(func=cmd_list)
 
     setp = sub.add_parser("set", help="update one or more price bands")
     setp.add_argument("ticker")
