@@ -231,9 +231,10 @@ def cmd_watch_list(args: argparse.Namespace) -> None:
     view = get_annotation(base, key, args.ticker)
     for item in view.get("watch_items", []):
         stamp = f" (added {item['created_at']})" if item.get("created_at") else ""
+        change = f" (updated {item['updated_at']})" if item.get("updated_at") else ""
         nxt = f" (next {item['next_check_at']})" if item.get("next_check_at") else ""
         code = f"[{item['code']}] " if item.get("code") else ""
-        print(f"[P{item['priority']}] {code}{item['text']}{stamp}{nxt}")
+        print(f"[P{item['priority']}] {code}{item['text']}{stamp}{change}{nxt}")
 
 
 def cmd_watch_add(args: argparse.Namespace) -> None:

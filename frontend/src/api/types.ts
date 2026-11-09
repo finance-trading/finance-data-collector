@@ -28,6 +28,8 @@ export interface WatchItem {
   code?: string | null;
   /** Server-stamped creation time; absent on legacy items. */
   created_at?: string | null;
+  /** Server-stamped last-change time; re-set on every save. */
+  updated_at?: string | null;
   /** When this item next deserves attention. */
   next_check_at?: string | null;
 }
@@ -307,6 +309,7 @@ export interface FunnelTierInfo {
 
 export interface QuotesPayload {
   generated_at: string | null;
+  valuation_cache_as_of?: string | null;
   quotes: Record<string, {
     price?: number | null;
     previous_close?: number | null;

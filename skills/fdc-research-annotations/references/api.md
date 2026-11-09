@@ -21,6 +21,7 @@ One company's saved position bands and watch items.
     {"priority": 1, "text": "Track datacenter capex",
      "code": "FIN",
      "created_at": "2026-11-03T08:14:02.735496+00:00",
+     "updated_at": "2026-11-06T09:30:12.100200+00:00",
      "next_check_at": "2026-11-20"}
   ],
   "annotation_saved": true
@@ -33,6 +34,8 @@ One company's saved position bands and watch items.
 - `next_check_at` is the next point the item deserves attention
   (ISO date or datetime), `null` when unset.
 - `created_at` is `null` on legacy items written before the field existed.
+- `updated_at` is the server-stamped last-change time; `null` on items whose
+  first save predates the field.
 - `404` — ticker not in the served AI universe (ticker is matched case-insensitively).
 
 ### POST /api/v1/research/annotations/{ticker} — partial update
@@ -42,7 +45,7 @@ Body: any subset of
 | field | shape | notes |
 | --- | --- | --- |
 | `observation_range`, `entry_range`, `add_range`, `reduce_range` | `{"low": float\|null, "high": float\|null}` | both null = clear the band; prices > 0, low ≤ high |
-| `watch_items` | `[{priority: 1\|2\|3, text: 1–500 chars, code?: ≤32 chars, created_at?: iso8601, next_check_at?: iso date/datetime}]`, max 50 | **replaces the full list**; items sent back with their `created_at` keep it, items without get it stamped server-side; `code`/`next_check_at` omitted = `null` |
+| `watch_items` | `[{priority: 1\|2\|3, text: 1–500 chars, code?: ≤32 chars, created_at?: iso8601, updated_at?: iso8601 (ignored), next_check_at?: iso date/datetime}]`, max 50 | **replaces the full list**; items sent back with their `created_at` keep it, items without get it stamped server-side; `updated_at` is always re-stamped server-side on save (client value ignored); `code`/`next_check_at` omitted = `null` |
 
 Unsent fields are untouched. Response is the full post-write view (same shape
 as GET). A company with no saved annotation is created on first write; its

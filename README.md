@@ -160,8 +160,9 @@ bash scripts/update_funnel.sh           # 一键：刷新报价 -> 重算 -> 检
 curl http://HOST:8000/api/v1/research/annotations/NVDA
 ```
 
-返回四个区间、`watch_items`（每项带 `created_at` 创建时间、可选 `code` 分类短标签
-与 `next_check_at` 下次关注时间；未保存过的公司回落到档位默认事项）与 `annotation_saved`。外部写入需配置 `FDC_API_KEY`（放到仓库根目录的 `.env` 即可，真实环境变量优先于
+返回四个区间、`watch_items`（每项带 `created_at` 创建时间、`updated_at` 最近更新时间、
+可选 `code` 分类短标签与 `next_check_at` 下次关注时间；未保存过的公司回落到档位默认
+事项）与 `annotation_saved`。外部写入需配置 `FDC_API_KEY`（放到仓库根目录的 `.env` 即可，真实环境变量优先于
 `.env`；不设时外部写入一律 401/403，本机 UI 不受影响）：
 
 ```bash
@@ -179,7 +180,8 @@ curl -X POST http://HOST:8000/api/v1/research/annotations/NVDA \
 ```
 
 新建事项由服务端盖 `created_at`；回写已有事项时带上原 `created_at` 可保留创建时间
-（页内编辑会这样做）；`code` / `next_check_at` 可选，缺省为 null。
+（页内编辑会这样做）；保存观察列表时服务端会重盖 `updated_at` 作为该项最近更新时间
+（客户端传的 `updated_at` 会被忽略）；`code` / `next_check_at` 可选，缺省为 null。
 
 配套的 Claude Code skill 在 [`skills/fdc-research-annotations/`](skills/fdc-research-annotations/)：
 外部使用者把该目录拷进自己的 `.claude/skills/`（或装成 plugin），配置 `FDC_API_BASE`

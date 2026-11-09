@@ -346,7 +346,7 @@ describe("directory rendering", () => {
     const company = {
       ...catalogOnlyCompany,
       watch_items: [
-        {priority: 2 as const, text: "Track revenue", code: "FIN", next_check_at: "2026-12-01"},
+        {priority: 2 as const, text: "Track revenue", code: "FIN", next_check_at: "2026-12-01", updated_at: "2026-11-01T08:00:00+00:00"},
         {priority: 1 as const, text: "Review margins"},
       ],
     };
@@ -356,6 +356,7 @@ describe("directory rendering", () => {
     const watch = watchItemsCell(company);
     expect([...watch.querySelectorAll(".watch-priority")].map((node) => node.textContent)).toEqual(["P1", "P2"]);
     expect(watch.querySelector(".watch-code")!.textContent).toBe("FIN");
+    expect([...watch.querySelectorAll(".watch-updated")].map((node) => node.textContent)).toEqual(["2026-11-01"]);
     watch.querySelector<HTMLButtonElement>(".annotation-edit")!.click();
     const removeButtons = watch.querySelectorAll<HTMLButtonElement>(".watch-edit-row button");
     removeButtons[1].click();
@@ -364,6 +365,7 @@ describe("directory rendering", () => {
     expect(JSON.parse(String(saved.mock.calls[0][1]?.body)).watch_items).toEqual([
       {priority: 2, text: "Track revenue", code: "FIN", next_check_at: "2026-12-01"},
     ]);
+    expect(JSON.stringify(JSON.parse(String(saved.mock.calls[0][1]?.body)))).not.toContain("updated_at");
   });
 });
 

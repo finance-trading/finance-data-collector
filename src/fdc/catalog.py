@@ -186,12 +186,12 @@ def _parse_key(result: FilingParse) -> tuple[int, datetime]:
 
 
 def _load_quotes() -> tuple[
-    dict[str, dict[str, float | int | None]], date | None, str | None
+    dict[str, dict[str, float | int | None]], date | None, str | None, str | None
 ]:
-    """Return cached quotes, the session quote date, and the raw refresh stamp."""
+    """Return cached quotes, the session date, and price/valuation refresh stamps."""
 
     if not QUOTES_PATH.exists():
-        return {}, None, None
+        return {}, None, None, None
     try:
         payload = json.loads(QUOTES_PATH.read_text())
         quotes = payload.get("quotes", {})
@@ -203,9 +203,9 @@ def _load_quotes() -> tuple[
             if generated_at
             else None
         )
-        return quotes, as_of, generated_at
+        return quotes, as_of, generated_at, payload.get("valuation_cache_as_of")
     except (OSError, json.JSONDecodeError, KeyError, ValueError):
-        return {}, None, None
+        return {}, None, None, None
 
 
 def _database_summaries(
@@ -347,7 +347,7 @@ def list_companies(
 
     catalog = load_catalog(catalog_path)
     layer_names = {item.id: item.name for item in catalog.layers}
-    quotes, quote_as_of, _ = _load_quotes()
+    quotes, quote_as_of, _, _ = _load_quotes()
     with session_factory() as session:
         summaries = _database_summaries(session)
         annotations = {
@@ -474,20 +474,25 @@ def funnel_tier_index() -> dict[str, dict[str, Any]]:
     """
 
     catalog = load_catalog()
-    quotes, _, _ = _load_quotes()
+    quotes, _, _, _ = _load_quotes()
     return _resolve_tiers(catalog, quotes)
 
 
 class QuotesView(BaseModel):
     generated_at: str | None
+    valuation_cache_as_of: str | None = None
     quotes: dict[str, dict[str, float | int | None]]
 
 
 def read_quotes() -> QuotesView:
     """Return the cached quotes as a standalone payload; empty when absent."""
 
-    quotes, _, generated_at = _load_quotes()
-    return QuotesView(generated_at=generated_at, quotes=quotes)
+    quotes, _, generated_at, valuation_cache_as_of = _load_quotes()
+    return QuotesView(
+        generated_at=generated_at,
+        valuation_cache_as_of=valuation_cache_as_of,
+        quotes=quotes,
+    )
 
 
 def read_visualization(name: Literal["graph", "layers"]) -> dict[str, Any]:

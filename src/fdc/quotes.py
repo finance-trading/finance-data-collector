@@ -428,6 +428,23 @@ def write_quotes(force: bool = False) -> str | None:
         )
 
     path = QUOTES_PATH
+    if path.exists() and _has_quotes(payload):
+        try:
+            previous = json.loads(path.read_text())
+        except (OSError, json.JSONDecodeError):
+            previous = {}
+        old_quotes = previous.get("quotes", {})
+        carried = False
+        for ticker, quote in payload["quotes"].items():
+            old = old_quotes.get(ticker, {})
+            for key in ("pe", "eps_ttm", "forward_pe", "forward_eps"):
+                if quote.get(key) is None and old.get(key) is not None:
+                    quote[key] = old[key]
+                    carried = True
+        if carried:
+            payload["valuation_cache_as_of"] = previous.get(
+                "valuation_cache_as_of", previous.get("generated_at")
+            )
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=1) + "\n")
     logger.info("wrote %d quotes to %s", len(payload["quotes"]), path)

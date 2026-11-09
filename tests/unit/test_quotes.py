@@ -10,7 +10,7 @@ import pandas as pd
 import pytest
 from yfinance.config import YfConfig
 
-from fdc import quotes
+from fdc import catalog, quotes
 
 
 def _write_cache(path, payload: dict) -> None:
@@ -271,3 +271,51 @@ def test_write_quotes_persists_successful_fetch(monkeypatch, tmp_path):
 
     assert quotes.write_quotes(force=True) == str(cache)
     assert json.loads(cache.read_text()) == fresh
+
+
+def test_write_quotes_keeps_cached_valuations_when_finviz_is_blocked(monkeypatch, tmp_path):
+    cache = tmp_path / "quotes.json"
+    _write_cache(cache, {
+        "generated_at": "2026-10-31T16:02:44+00:00",
+        "quotes": {
+            "AAPL": {"price": 344.63, "pe": 39.51, "eps_ttm": 8.72,
+                     "forward_pe": 36.07, "forward_eps": 9.56},
+            "MSFT": {"price": 521.91, "pe": 27.26, "eps_ttm": 19.15,
+                     "forward_pe": 21.72, "forward_eps": 24.03},
+        },
+    })
+    monkeypatch.setattr(quotes, "QUOTES_PATH", cache)
+    monkeypatch.setattr(quotes, "fetch_quotes", lambda: {
+        "generated_at": "2026-11-05T23:30:08+00:00",
+        "quotes": {
+            "AAPL": {"price": 344.17, "pe": None, "eps_ttm": None,
+                     "forward_pe": None, "forward_eps": None},
+            "MSFT": {"price": 535.93, "pe": 28.0, "eps_ttm": None,
+                     "forward_pe": None, "forward_eps": None},
+        },
+    })
+
+    quotes.write_quotes(force=True)
+    result = json.loads(cache.read_text())
+
+    assert result["quotes"]["AAPL"] == {
+        "price": 344.17, "pe": 39.51, "eps_ttm": 8.72,
+        "forward_pe": 36.07, "forward_eps": 9.56,
+    }
+    assert result["quotes"]["MSFT"] == {
+        "price": 535.93, "pe": 28.0, "eps_ttm": 19.15,
+        "forward_pe": 21.72, "forward_eps": 24.03,
+    }
+    assert result["valuation_cache_as_of"] == "2026-10-31T16:02:44+00:00"
+
+
+def test_read_quotes_exposes_cached_valuation_date(monkeypatch, tmp_path):
+    cache = tmp_path / "quotes.json"
+    _write_cache(cache, {
+        "generated_at": "2026-11-05T23:30:08+00:00",
+        "valuation_cache_as_of": "2026-10-31T16:02:44+00:00",
+        "quotes": {"AAPL": {"price": 344.17, "pe": 39.51}},
+    })
+    monkeypatch.setattr(catalog, "QUOTES_PATH", cache)
+
+    assert catalog.read_quotes().valuation_cache_as_of == "2026-10-31T16:02:44+00:00"

@@ -436,7 +436,11 @@ export function watchItemsCell(company: CompanyDirectoryItem): HTMLTableCellElem
     for (const item of [...(company.watch_items ?? [])].sort((a, b) => a.priority - b.priority)) {
       const row = document.createElement("li");
       row.className = `watch-item p${item.priority}`;
-      row.title = [item.text, item.next_check_at ? `下次关注 ${item.next_check_at.slice(0, 10)}` : ""]
+      row.title = [
+        item.text,
+        item.updated_at ? `最近更新 ${item.updated_at.slice(0, 10)}` : "",
+        item.next_check_at ? `下次关注 ${item.next_check_at.slice(0, 10)}` : "",
+      ]
         .filter(Boolean)
         .join(" · ");
       const priority = document.createElement("span");
@@ -453,6 +457,12 @@ export function watchItemsCell(company: CompanyDirectoryItem): HTMLTableCellElem
       text.className = "watch-text";
       text.textContent = item.text;
       row.append(text);
+      if (item.updated_at) {
+        const updated = document.createElement("span");
+        updated.className = "watch-updated";
+        updated.textContent = item.updated_at.slice(0, 10);
+        row.append(updated);
+      }
       list.append(row);
     }
     const button = document.createElement("button");
@@ -501,6 +511,12 @@ export function watchItemsCell(company: CompanyDirectoryItem): HTMLTableCellElem
       remove.addEventListener("click", () => line.remove());
       if (item.created_at) line.dataset.createdAt = item.created_at;
       line.append(select, codeInput, input, nextCheck, remove);
+      if (item.updated_at) {
+        const updated = document.createElement("span");
+        updated.className = "watch-updated-stamp";
+        updated.textContent = `更新 ${item.updated_at.slice(0, 10)}`;
+        line.append(updated);
+      }
       rows.append(line);
     };
     (company.watch_items ?? []).forEach(appendRow);
@@ -705,6 +721,7 @@ export async function mountDirectory(): Promise<void> {
   let layers: CatalogLayerListView | null = null;
   let quoteAsOfDate: string | null | undefined;
   let refreshedAt: string | null = null;
+  let valuationCacheAsOf: string | null = null;
 
   const renderQuoteNote = (): void => {
     const parts: string[] = [];
@@ -715,6 +732,9 @@ export async function mountDirectory(): Promise<void> {
     }
     if (refreshedAt) {
       parts.push(`Last refreshed ${formatRefreshTime(refreshedAt)}.`);
+    }
+    if (valuationCacheAsOf) {
+      parts.push(`Some P/E and EPS values use cached Finviz data from ${formatRefreshTime(valuationCacheAsOf)}.`);
     }
     quoteAsOf.hidden = parts.length === 0;
     quoteAsOf.textContent = parts.join(" ");
@@ -833,6 +853,7 @@ export async function mountDirectory(): Promise<void> {
   apiGet<QuotesPayload>("/api/v1/quotes")
     .then((payload) => {
       refreshedAt = payload.generated_at;
+      valuationCacheAsOf = payload.valuation_cache_as_of ?? null;
       renderQuoteNote();
     })
     .catch((error) => console.error(error));
@@ -842,6 +863,7 @@ export async function mountDirectory(): Promise<void> {
     apiPost<QuotesPayload>("/api/v1/quotes/refresh")
       .then((payload) => {
         refreshedAt = payload.generated_at;
+        valuationCacheAsOf = payload.valuation_cache_as_of ?? null;
         renderQuoteNote();
         return load();
       })

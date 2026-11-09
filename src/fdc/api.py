@@ -192,6 +192,9 @@ class AnnotationWatchItem(BaseModel):
     #: Creation stamp, kept when the client round-trips an existing item;
     #: the server stamps it for items created without one.
     created_at: datetime | None = None
+    #: Last-change stamp, re-set by the server every time the watch list is
+    #: saved; client-sent values are ignored.
+    updated_at: datetime | None = None
     #: When this item next deserves attention (next review point).
     next_check_at: datetime | None = None
 
@@ -300,6 +303,8 @@ def save_research_annotation(
     present ``Authorization: Bearer $FDC_API_KEY``.  Watch items missing a
     ``created_at`` are stamped with the server time; items sent back with one
     keep it, so editing text or priority never re-dates an existing item.
+    ``updated_at`` is always re-stamped server-side: it marks the last save
+    that touched the watch list.
     """
     _authorize_write(request)
     key = ticker.upper()
@@ -332,6 +337,9 @@ def save_research_annotation(
                         "text": item.text,
                         "code": item.code,
                         "created_at": item.created_at.isoformat() if item.created_at else now,
+                        # Server re-stamps the last-change time on every save;
+                        # anything the client sent is ignored.
+                        "updated_at": now,
                         "next_check_at": (
                             item.next_check_at.isoformat() if item.next_check_at else None
                         ),

@@ -1,0 +1,11 @@
+# AI 候选公司经营事实更新（2026-11-01 PDT）
+
+范围：延续 [10 月 18 日非云候选初筛](ai-other-candidates-primary-screen-2026-10-18.md) 与 [NVDA / TSM / ASML 原始估值输入](ai-noncloud-valuation-raw-inputs-2026-10-18.md)。本页只记录本轮能直接核对的一手经营事实，不用股价跌幅代替估值，也不生成买价或买入授权。SEC 的 `www.sec.gov/Archives` 文档访问本轮返回 403 / SSL EOF，因此新申报以 SEC `data.sec.gov` 的 [submissions](https://data.sec.gov/submissions/CIK0001674101.json) 和 [Company Facts](https://data.sec.gov/api/xbrl/companyfacts/CIK0001674101.json) 核对；未读到的 8-K 展品、订单和指引保留未核状态。
+
+| 公司 | 10 月 18 日之后的一手资料状态 | 可用经营结论及边界 |
+|---|---|---|
+| **VRT** | [SEC submissions](https://data.sec.gov/submissions/CIK0001674101.json) 显示 2026-10-28 提交截至 2026-09-30 的 10-Q（accession `0001628280-26-067893`）。[SEC Company Facts](https://data.sec.gov/api/xbrl/companyfacts/CIK0001674101.json) 中只选该 accession 的 `us-gaap` 标签。 | 2026 Q3 收入 **$4.3128bn**，上年同期 **$2.6758bn**，计算同比 **+61.2%**；GAAP 营业利润 **$0.9838bn**，上年同期 **$0.5167bn**，计算同比 **+90.4%**。2026 前九个月 CFO **$2.6606bn**、现金 PP&E 购置 **$0.4250bn**，差额 **$2.2356bn**；2025 同期相应为 **$1.1089bn / $0.1267bn / $0.9822bn**。差额是本页 `CFO − PP&E 购置` 的历史计算，未扣融资租赁本金，不能与公司“调整后 FCF”或其他公司 FCF 无条件横比。Q3 订单、积压、AI 专属收入、更新指引及现金流季节性 **[UNAVAILABLE：本轮未核 8-K/10-Q 正文]**。 |
+| **TSM** | [SEC submissions](https://data.sec.gov/submissions/CIK0001046179.json) 显示 2026-10-22 的 6-K 主文档名 `tsm-monthend6kx20261022.htm`；正文未取得，内容 **[UNAVAILABLE]**。 | 仍以此前已核的 [2026 Q3 发布](https://www.sec.gov/Archives/edgar/data/1046179/000104617926000726/a3q26e_withguidancexfinal.htm)为最新已核季度业绩；其收入/FCF 及 TWD、ADS 口径见前述原始输入。不能把 10 月 22 日这条申报当作新的业绩、订单或上修指引。 |
+| **NVDA、ASML、ANET、PLTR、AMD** | 本轮查询各发行人 [NVDA](https://data.sec.gov/submissions/CIK0001045810.json)、[ASML](https://data.sec.gov/submissions/CIK0000937966.json)、[ANET](https://data.sec.gov/submissions/CIK0001596532.json)、[PLTR](https://data.sec.gov/submissions/CIK0001321655.json)、[AMD](https://data.sec.gov/submissions/CIK0000002488.json) 的 SEC submissions，筛选 2026-10-18 至本页时点的 `10-Q/10-K/8-K/6-K/20-F`，未见符合条件的新申报。 | 延用 [10 月 18 日一手初筛](ai-other-candidates-primary-screen-2026-10-18.md)中各发行人已核经营期间；这不证明没有非 SEC 渠道的新公告。未来业绩日或尚未申报季度数据均不得提前写作已实现。 |
+
+比较边界：VRT 的新增数据使其经营增速和现金回收需要重估，但收入包含非 AI 业务，且 Q3 订单/指引与调整后 FCF 桥接未核；NVDA、TSM、ASML 的不同业务和证券/币种口径仍不能用单一 PE 或历史 FCF 直接排序。投资排序还需要同日可交易价格、统一的企业价值与稀释股数、合理的周期现金流和风险压力测试；本页没有完成这些步骤。

@@ -638,6 +638,7 @@ def test_research_annotation_api_persists_and_validates(
     assert saved.json()["watch_items"][0]["code"] == "FIN"
     assert saved.json()["watch_items"][0]["next_check_at"].startswith("2026-12-01")
     assert saved.json()["watch_items"][0]["created_at"] is not None
+    assert saved.json()["watch_items"][0]["updated_at"] is not None
     assert saved.json()["annotation_saved"] is True
     with session_factory() as session:
         row = session.get(ResearchAnnotation, "NVDA")
@@ -649,11 +650,14 @@ def test_research_annotation_api_persists_and_validates(
                 "text": "Track revenue",
                 "code": "FIN",
                 "created_at": row.watch_items[0]["created_at"],
+                "updated_at": row.watch_items[0]["updated_at"],
                 "next_check_at": "2026-12-01T00:00:00",
             }
         ]
         assert row.watch_items[0]["created_at"] is not None
+        assert row.watch_items[0]["updated_at"] is not None
         row_watch_created_at = row.watch_items[0]["created_at"]
+        row_watch_updated_at = row.watch_items[0]["updated_at"]
 
     partial = client.post(endpoint, json={"entry_range": {"low": 100, "high": 110}})
     assert partial.status_code == 200
@@ -663,6 +667,8 @@ def test_research_annotation_api_persists_and_validates(
         assert row.entry_low == 100
         assert row.watch_items[0]["text"] == "Track revenue"
         assert row.watch_items[0]["created_at"] == row_watch_created_at
+        # A ranges-only save leaves the untouched watch list (and its stamps) alone.
+        assert row.watch_items[0]["updated_at"] == row_watch_updated_at
 
     edited = client.post(
         endpoint,
@@ -672,9 +678,26 @@ def test_research_annotation_api_persists_and_validates(
     )
     assert edited.status_code == 200
     assert datetime.fromisoformat(edited.json()["watch_items"][0]["created_at"].replace("Z", "+00:00")) == datetime.fromisoformat(row_watch_created_at)
+    assert datetime.fromisoformat(edited.json()["watch_items"][0]["updated_at"].replace("Z", "+00:00")) >= datetime.fromisoformat(row_watch_updated_at)
     with session_factory() as session:
         row = session.get(ResearchAnnotation, "NVDA")
         assert row.watch_items[0]["created_at"] == row_watch_created_at
+        # Saving the watch list re-stamps updated_at, ignoring the client value.
+        assert row.watch_items[0]["updated_at"] >= row_watch_updated_at
+
+    ignored_stamp = client.post(
+        endpoint,
+        json={"watch_items": [
+            {
+                "priority": 2,
+                "text": "Track revenue again",
+                "created_at": row_watch_created_at,
+                "updated_at": "2020-01-01T00:00:00+00:00",
+            }
+        ]},
+    )
+    assert ignored_stamp.status_code == 200
+    assert ignored_stamp.json()["watch_items"][0]["updated_at"].startswith("2026-")
 
     cleared = client.post(
         endpoint,
