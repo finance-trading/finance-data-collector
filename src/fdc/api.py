@@ -6,6 +6,7 @@ import logging
 import secrets
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import urlparse
 from typing import Annotated, Any, Callable, Literal, TypeVar
 
 from fastapi import FastAPI, HTTPException, Query, Request
@@ -121,7 +122,14 @@ def _require_local_write(request: Request) -> None:
     ):
         raise HTTPException(status_code=403, detail="Edits require a local connection")
     origin = request.headers.get("origin")
-    if origin is not None and origin != str(request.base_url).rstrip("/"):
+    if origin is not None and urlparse(origin).hostname not in {
+        "127.0.0.1",
+        "localhost",
+        "::1",
+    }:
+        # The origin may differ from the request URL behind the frontend dev
+        # proxy (Vite rewrites Host to the backend's), so accept any local
+        # origin; remote origins are still rejected as CSRF defence.
         raise HTTPException(status_code=403, detail="Edits require the same origin")
 
 

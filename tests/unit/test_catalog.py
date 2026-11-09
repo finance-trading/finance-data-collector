@@ -809,7 +809,13 @@ def test_funnel_override_api_persists_and_resets(tmp_path, monkeypatch):
     ).status_code == 403
     assert json.loads(path.read_text()) == {"_说明": "keep"}
 
-    saved = client.post(endpoint, json={"ticker": "vrt", "tier": 2, "note": "priority"})
+    # A browser on the Vite dev port passes a local origin that differs from
+    # the backend Host the proxy rewrites — still a trusted local write.
+    saved = client.post(
+        endpoint,
+        headers={"Origin": "http://localhost:5173"},
+        json={"ticker": "vrt", "tier": 2, "note": "priority"},
+    )
     assert saved.status_code == 200
     assert saved.json()["tier"] == 2
     assert saved.json()["source"] == "人工"
