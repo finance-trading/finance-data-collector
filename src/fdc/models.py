@@ -115,6 +115,20 @@ class Base(DeclarativeBase):
     metadata = MetaData(naming_convention=NAMING_CONVENTION)
 
 
+class LatestQuote(Base):
+    __tablename__ = "latest_quote"
+
+    ticker: Mapped[str] = mapped_column(String(32), primary_key=True)
+    metrics: Mapped[dict] = mapped_column(JSON, nullable=False)
+
+
+class QuoteMetadata(Base):
+    __tablename__ = "quote_metadata"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    payload: Mapped[dict] = mapped_column(JSON, nullable=False)
+
+
 class TimestampMixin:
     """Creation/update timestamps shared by every parser row."""
 

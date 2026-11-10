@@ -29,6 +29,7 @@ from bs4 import BeautifulSoup
 from requests import Session
 from yfinance.config import YfConfig
 
+from fdc import quote_store
 from fdc.config import get_settings
 from fdc.data_files import CATALOG_PATH, QUOTES_PATH
 
@@ -68,10 +69,10 @@ def _load_tickers() -> list[str]:
 
 def already_refreshed_today(force: bool = False) -> bool:
     """Return True when quotes.json is from today and `force` is False."""
-    if force or not QUOTES_PATH.exists():
+    if force:
         return False
     try:
-        payload = json.loads(QUOTES_PATH.read_text())
+        payload = quote_store.load_payload()
         gen = payload.get("generated_at")
         return (
             isinstance(gen, str)
@@ -395,29 +396,27 @@ def refresh_valuation_metrics() -> str:
     only the four valuation fields. Returns the cache path.
     """
 
-    if not QUOTES_PATH.exists():
-        raise RuntimeError("quotes.json does not exist yet — run a full refresh first")
-    payload = json.loads(QUOTES_PATH.read_text())
-    quotes: dict[str, dict[str, Any]] = payload.get("quotes", {})
+    payload = quote_store.load_payload()
+    if not payload.get("quotes"):
+        raise RuntimeError("database has no quotes yet — run a full refresh first")
+    quotes: dict[str, dict[str, Any]] = payload["quotes"]
     valuation = _finviz_metrics(sorted(quotes))
     merged = 0
     for tk, values in valuation.items():
         quotes[tk].update(values)
         merged += 1
     payload["valuation_refreshed_at"] = datetime.now(timezone.utc).isoformat()
-    QUOTES_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=1) + "\n")
-    logger.info("merged valuation metrics for %d tickers into %s", merged, QUOTES_PATH)
+    quote_store.save_payload(payload)
+    logger.info("merged valuation metrics for %d tickers into database", merged)
     return str(QUOTES_PATH)
 
 
 def _cached_quotes_exist() -> bool:
-    """Return True when the on-disk cache already holds usable quotes."""
-
+    """Return True when the database already holds usable quotes."""
     try:
-        payload = json.loads(QUOTES_PATH.read_text())
+        return _has_quotes(quote_store.load_payload())
     except (OSError, json.JSONDecodeError):
         return False
-    return _has_quotes(payload)
 
 
 def check_connection(ticker: str = "AAPL") -> bool:
@@ -478,12 +477,8 @@ def write_quotes(force: bool = False) -> str | None:
             "Yahoo Finance fetch returned no quotes; existing quotes.json kept"
         )
 
-    path = QUOTES_PATH
-    if path.exists() and _has_quotes(payload):
-        try:
-            previous = json.loads(path.read_text())
-        except (OSError, json.JSONDecodeError):
-            previous = {}
+    previous = quote_store.load_payload()
+    if previous and _has_quotes(payload):
         old_quotes = previous.get("quotes", {})
         carried = False
         for ticker, quote in payload["quotes"].items():
@@ -492,14 +487,19 @@ def write_quotes(force: bool = False) -> str | None:
                 if quote.get(key) is None and old.get(key) is not None:
                     quote[key] = old[key]
                     carried = True
+        for ticker, quote in old_quotes.items():
+            if ticker not in payload["quotes"]:
+                payload["quotes"][ticker] = quote
+                carried = True
+        if previous.get("valuation_refreshed_at") and not payload.get("valuation_refreshed_at"):
+            payload["valuation_refreshed_at"] = previous["valuation_refreshed_at"]
         if carried:
             payload["valuation_cache_as_of"] = previous.get(
                 "valuation_cache_as_of", previous.get("generated_at")
             )
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, ensure_ascii=False, indent=1) + "\n")
-    logger.info("wrote %d quotes to %s", len(payload["quotes"]), path)
-    return str(path)
+    quote_store.save_payload(payload)
+    logger.info("wrote %d quotes to database", len(payload["quotes"]))
+    return str(QUOTES_PATH)
 
 
 def main() -> None:

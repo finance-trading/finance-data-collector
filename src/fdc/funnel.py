@@ -44,7 +44,7 @@ from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.worksheet import Worksheet
 
 from fdc.ai_layers import load_universe
-from fdc.data_files import GENERATED_DATA_DIR, PROJECT_ROOT, QUOTES_PATH, write_json_artifact
+from fdc.data_files import GENERATED_DATA_DIR, PROJECT_ROOT, write_json_artifact
 
 FUNNEL_PATH = GENERATED_DATA_DIR / "funnel.json"
 OVERRIDES_PATH = PROJECT_ROOT / "config" / "funnel_overrides.json"
@@ -723,7 +723,9 @@ def main(argv: list[str] | None = None) -> None:
 
     companies, layers = load_universe()
     overrides = load_overrides(args.overrides)
-    quotes_payload = json.loads(QUOTES_PATH.read_text()) if QUOTES_PATH.exists() else {}
+    from fdc.quote_store import load_payload
+
+    quotes_payload = load_payload()
     quotes = quotes_payload.get("quotes", {})
     quotes_generated_at = quotes_payload.get("generated_at")
 

@@ -13,8 +13,45 @@ from yfinance.config import YfConfig
 from fdc import catalog, quotes
 
 
+def test_partial_refresh_preserves_missing_tickers_and_valuation_stamp(engine, monkeypatch):
+    from fdc.quote_store import load_payload, save_payload
+
+    save_payload({"generated_at": "old", "valuation_refreshed_at": "valuation", "quotes": {
+        "AAPL": {"price": 1, "pe": 10}, "MSFT": {"price": 2, "pe": 20},
+    }})
+    monkeypatch.setattr(quotes, "fetch_quotes", lambda: {
+        "generated_at": "new", "quotes": {"AAPL": {"price": 3, "pe": None}},
+    })
+
+    quotes.write_quotes(force=True)
+
+    result = load_payload()
+    assert result["quotes"] == {"AAPL": {"price": 3, "pe": 10}, "MSFT": {"price": 2, "pe": 20}}
+    assert result["valuation_refreshed_at"] == "valuation"
+
+
+def test_database_quote_storage_import_and_replace(engine, tmp_path):
+    from fdc.quote_store import import_json, load_payload, save_payload
+
+    path = tmp_path / "quotes.json"
+    path.write_text(json.dumps({
+        "generated_at": "2026-01-01T00:00:00+00:00",
+        "source": "yfinance",
+        "quotes": {"abc": {"price": 12, "pe": 5}},
+    }))
+    import_json(path)
+    assert load_payload()["quotes"] == {"ABC": {"price": 12, "pe": 5}}
+    save_payload({"generated_at": "new", "quotes": {"ABC": {"price": 13}}})
+    assert load_payload()["quotes"] == {"ABC": {"price": 13}}
+
+
+@pytest.fixture(autouse=True)
+def quote_database(engine):
+    return engine
+
+
 def _write_cache(path, payload: dict) -> None:
-    path.write_text(json.dumps(payload))
+    quotes.quote_store.save_payload(payload)
 
 
 class _FakeFastInfo(dict):
@@ -94,7 +131,7 @@ def test_write_quotes_keeps_existing_cache_when_fetch_is_empty(monkeypatch, tmp_
     with pytest.raises(RuntimeError):
         quotes.write_quotes(force=True)
 
-    assert json.loads(cache.read_text()) == cached
+    assert quotes.quote_store.load_payload() == cached
 
 
 def test_write_quotes_writes_empty_file_when_no_cache_exists(monkeypatch, tmp_path):
@@ -106,7 +143,7 @@ def test_write_quotes_writes_empty_file_when_no_cache_exists(monkeypatch, tmp_pa
     result = quotes.write_quotes(force=True)
 
     assert result == str(cache)
-    assert json.loads(cache.read_text()) == empty
+    assert quotes.quote_store.load_payload() == empty
 
 
 def _daily_frame(index, closes_by_ticker: dict[str, list[float]]):
@@ -270,7 +307,7 @@ def test_write_quotes_persists_successful_fetch(monkeypatch, tmp_path):
     monkeypatch.setattr(quotes, "fetch_quotes", lambda: fresh)
 
     assert quotes.write_quotes(force=True) == str(cache)
-    assert json.loads(cache.read_text()) == fresh
+    assert quotes.quote_store.load_payload() == fresh
 
 
 def test_write_quotes_keeps_cached_valuations_when_finviz_is_blocked(monkeypatch, tmp_path):
@@ -296,7 +333,7 @@ def test_write_quotes_keeps_cached_valuations_when_finviz_is_blocked(monkeypatch
     })
 
     quotes.write_quotes(force=True)
-    result = json.loads(cache.read_text())
+    result = quotes.quote_store.load_payload()
 
     assert result["quotes"]["AAPL"] == {
         "price": 344.17, "pe": 39.51, "eps_ttm": 8.72,
@@ -444,6 +481,5 @@ def test_read_quotes_exposes_cached_valuation_date(monkeypatch, tmp_path):
         "valuation_cache_as_of": "2026-10-31T16:02:44+00:00",
         "quotes": {"AAPL": {"price": 344.17, "pe": 39.51}},
     })
-    monkeypatch.setattr(catalog, "QUOTES_PATH", cache)
 
     assert catalog.read_quotes().valuation_cache_as_of == "2026-10-31T16:02:44+00:00"

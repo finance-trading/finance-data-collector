@@ -13,9 +13,10 @@ from pydantic import BaseModel, Field
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from fdc import quote_store
 from fdc.ai_layers import validate_universe
 from fdc.config import get_settings
-from fdc.data_files import CATALOG_PATH, GRAPH_PATH, LAYERS_PATH, QUOTES_PATH
+from fdc.data_files import CATALOG_PATH, GRAPH_PATH, LAYERS_PATH
 from fdc.db import SessionLocal
 from fdc.funnel import load_overrides, tier_index, tier_watch_items
 from fdc.models import Filing, FilingParse, Issuer, ResearchAnnotation
@@ -196,10 +197,8 @@ def _load_quotes() -> tuple[
 ]:
     """Return cached quotes, the session date, and price/valuation refresh stamps."""
 
-    if not QUOTES_PATH.exists():
-        return {}, None, None, None
     try:
-        payload = json.loads(QUOTES_PATH.read_text())
+        payload = quote_store.load_payload()
         quotes = payload.get("quotes", {})
         generated_at = payload.get("generated_at")
         # The daily job runs after the US close, so the UTC stamp lands on the

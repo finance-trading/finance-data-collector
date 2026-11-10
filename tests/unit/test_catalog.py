@@ -6,8 +6,15 @@ import json
 from datetime import datetime
 from types import SimpleNamespace
 
+import pytest
+
 import fdc.catalog
 from fdc.catalog import list_companies, list_layers, load_catalog, read_quotes
+
+
+@pytest.fixture(autouse=True)
+def quote_database(engine):
+    return engine
 
 
 def _catalog_path(tmp_path):
@@ -137,33 +144,27 @@ def test_directory_filters_multiple_layers_before_paginating(tmp_path, engine, s
 
 
 def test_directory_merges_cached_quotes(tmp_path, engine, session_factory, monkeypatch):
-    quotes = tmp_path / "quotes.json"
-    quotes.write_text(
-        json.dumps(
-            {
-                "generated_at": "2026-10-04T15:00:00+00:00",
-                "quotes": {
-                    "VRT": {
-                        "price": 252.18,
-                        "previous_close": 246.12,
-                        "change_pct": 2.46,
-                        "week_change_pct": -1.87,
-                        "change_52w_pct": 34.5,
-                        "market_cap": 97086314647,
-                    },
-                    "NVDA": {
-                        "price": 233.95,
-                        "previous_close": 230.86,
-                        "change_pct": 1.34,
-                        "week_change_pct": 5.61,
-                        "change_52w_pct": -18.07,
-                        "market_cap": 5649190576309,
-                    },
-                },
-            }
-        )
-    )
-    monkeypatch.setattr(fdc.catalog, "QUOTES_PATH", quotes)
+    fdc.quote_store.save_payload({
+        "generated_at": "2026-10-04T15:00:00+00:00",
+        "quotes": {
+            "VRT": {
+                "price": 252.18,
+                "previous_close": 246.12,
+                "change_pct": 2.46,
+                "week_change_pct": -1.87,
+                "change_52w_pct": 34.5,
+                "market_cap": 97086314647,
+            },
+            "NVDA": {
+                "price": 233.95,
+                "previous_close": 230.86,
+                "change_pct": 1.34,
+                "week_change_pct": 5.61,
+                "change_52w_pct": -18.07,
+                "market_cap": 5649190576309,
+            },
+        },
+    })
 
     result = list_companies(
         query=None,
@@ -199,9 +200,7 @@ def test_directory_exposes_intrinsic_value_and_scenarios(
 ):
     from fdc.models import ResearchAnnotation
 
-    quotes = tmp_path / "quotes.json"
-    quotes.write_text(json.dumps({"generated_at": "2026-10-04T15:00:00+00:00", "quotes": {}}))
-    monkeypatch.setattr(fdc.catalog, "QUOTES_PATH", quotes)
+    fdc.quote_store.save_payload({"generated_at": "2026-10-04T15:00:00+00:00", "quotes": {}})
 
     with session_factory() as session:
         session.add(
@@ -255,7 +254,7 @@ def test_directory_joins_funnel_tier_and_filters(
             }
         )
     )
-    monkeypatch.setattr(fdc.catalog, "QUOTES_PATH", quotes)
+    fdc.quote_store.save_payload(json.loads(quotes.read_text()))
     # Deterministic: ignore whatever is in the tracked overrides file.
     monkeypatch.setattr(fdc.catalog, "load_overrides", lambda: {})
 
@@ -295,7 +294,7 @@ def test_funnel_tier_index_resolves_tiers(tmp_path, monkeypatch):
             }
         )
     )
-    monkeypatch.setattr(fdc.catalog, "QUOTES_PATH", quotes)
+    fdc.quote_store.save_payload(json.loads(quotes.read_text()))
     monkeypatch.setattr(fdc.catalog, "load_overrides", lambda: {})
 
     tiers = fdc.catalog.funnel_tier_index()
@@ -369,7 +368,7 @@ def test_directory_sorts_globally_not_per_page(
             }
         )
     )
-    monkeypatch.setattr(fdc.catalog, "QUOTES_PATH", quotes)
+    fdc.quote_store.save_payload(json.loads(quotes.read_text()))
 
     descending = list_companies(
         query=None,
@@ -436,7 +435,7 @@ def test_directory_sorts_by_daily_change_and_keeps_missing_last(
             }
         )
     )
-    monkeypatch.setattr(fdc.catalog, "QUOTES_PATH", quotes)
+    fdc.quote_store.save_payload(json.loads(quotes.read_text()))
 
     def tickers(order):
         return [
@@ -490,7 +489,7 @@ def test_directory_sorts_by_trailing_returns_and_keeps_missing_last(
             }
         )
     )
-    monkeypatch.setattr(fdc.catalog, "QUOTES_PATH", quotes)
+    fdc.quote_store.save_payload(json.loads(quotes.read_text()))
 
     def tickers(sort_by, order):
         return [
@@ -533,7 +532,7 @@ def test_directory_tolerates_quotes_without_market_cap(
             }
         )
     )
-    monkeypatch.setattr(fdc.catalog, "QUOTES_PATH", quotes)
+    fdc.quote_store.save_payload(json.loads(quotes.read_text()))
 
     result = list_companies(
         query=None,
@@ -559,7 +558,7 @@ def test_directory_tolerates_quotes_without_market_cap(
 def test_directory_degrades_when_quotes_file_is_missing(
     tmp_path, engine, session_factory, monkeypatch
 ):
-    monkeypatch.setattr(fdc.catalog, "QUOTES_PATH", tmp_path / "does_not_exist.json")
+    fdc.quote_store.save_payload({"quotes": {}})
 
     result = list_companies(
         query=None,
@@ -595,7 +594,7 @@ def test_read_quotes_returns_cached_quotes_with_date(tmp_path, monkeypatch):
             }
         )
     )
-    monkeypatch.setattr(fdc.catalog, "QUOTES_PATH", quotes)
+    fdc.quote_store.save_payload(json.loads(quotes.read_text()))
 
     view = read_quotes()
 
@@ -604,7 +603,7 @@ def test_read_quotes_returns_cached_quotes_with_date(tmp_path, monkeypatch):
 
 
 def test_read_quotes_degrades_when_file_is_missing(tmp_path, monkeypatch):
-    monkeypatch.setattr(fdc.catalog, "QUOTES_PATH", tmp_path / "does_not_exist.json")
+    fdc.quote_store.save_payload({"quotes": {}})
 
     view = read_quotes()
 
@@ -854,7 +853,7 @@ def test_funnel_override_api_persists_and_resets(tmp_path, monkeypatch):
     path = tmp_path / "overrides.json"
     path.write_text(json.dumps({"_说明": "keep"}))
     monkeypatch.setattr(fdc.catalog, "CATALOG_PATH", _catalog_path(tmp_path))
-    monkeypatch.setattr(fdc.catalog, "QUOTES_PATH", tmp_path / "missing-quotes.json")
+    fdc.quote_store.save_payload({"quotes": {}})
     monkeypatch.setattr(
         funnel, "upsert_override",
         lambda ticker, tier, note: original_upsert(ticker, tier, note, path),

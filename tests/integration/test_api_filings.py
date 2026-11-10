@@ -278,7 +278,6 @@ def test_quote_refresh_rewrites_the_cache(client, tmp_path, monkeypatch):
 
     quotes_file = tmp_path / "quotes.json"
     monkeypatch.setattr("fdc.quotes.QUOTES_PATH", quotes_file)
-    monkeypatch.setattr("fdc.catalog.QUOTES_PATH", quotes_file)
     monkeypatch.setattr(
         "fdc.quotes.fetch_quotes",
         lambda: {
@@ -303,11 +302,13 @@ def test_quote_refresh_rewrites_the_cache(client, tmp_path, monkeypatch):
     body = response.json()
     assert body["generated_at"] == "2026-10-08T13:00:00+00:00"
     assert body["quotes"]["TEST"]["price"] == 10.0
-    assert quotes_file.exists()
+    from fdc.quote_store import load_payload
+
+    assert load_payload()["quotes"]["TEST"]["price"] == 10.0
     # Refreshing prices also rolls forward the trailing returns.
     assert body["quotes"]["TEST"]["week_change_pct"] == 2.5
     assert body["quotes"]["TEST"]["change_52w_pct"] == -11.25
-    assert json.loads(quotes_file.read_text())["quotes"]["TEST"]["change_52w_pct"] == -11.25
+    assert load_payload()["quotes"]["TEST"]["change_52w_pct"] == -11.25
 
 
 def test_quote_refresh_reports_502_and_keeps_cache_when_fetch_fails(
@@ -325,8 +326,10 @@ def test_quote_refresh_reports_502_and_keeps_cache_when_fetch_fails(
             }
         )
     )
+    from fdc.quote_store import load_payload, save_payload
+
+    save_payload(json.loads(quotes_file.read_text()))
     monkeypatch.setattr("fdc.quotes.QUOTES_PATH", quotes_file)
-    monkeypatch.setattr("fdc.catalog.QUOTES_PATH", quotes_file)
     monkeypatch.setattr(
         "fdc.quotes.fetch_quotes",
         lambda: {"generated_at": "x", "source": "test", "quotes": {}},
@@ -335,7 +338,7 @@ def test_quote_refresh_reports_502_and_keeps_cache_when_fetch_fails(
     response = client.post("/api/v1/quotes/refresh")
 
     assert response.status_code == 502
-    assert json.loads(quotes_file.read_text())["quotes"]["TEST"]["price"] == 9.0
+    assert load_payload()["quotes"]["TEST"]["price"] == 9.0
 
 
 def test_company_and_filtered_filing_list_expose_parse_state(client):

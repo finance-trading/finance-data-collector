@@ -31,6 +31,13 @@ app.add_typer(parse_runs_app, name="parse-runs")
 _DEFAULT_DATABASE_URL = "postgresql+psycopg://fdc:fdc@localhost:5432/fdc"
 
 
+@app.command("import-quotes")
+def import_quotes(path: Path = typer.Argument(..., exists=True, dir_okay=False)) -> None:
+    from fdc.quote_store import import_json
+
+    import_json(path)
+
+
 def parse_ticker(**kwargs) -> ParseRun:
     """CLI seam over the ticker sync service, kept patchable for operations tests."""
 
