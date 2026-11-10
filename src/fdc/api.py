@@ -228,11 +228,21 @@ class ResearchAnnotationIn(BaseModel):
     entry_range: AnnotationRange | None = None
     add_range: AnnotationRange | None = None
     reduce_range: AnnotationRange | None = None
+    #: Model-derived forward value per share (USD); research cross-check, not a price.
+    intrinsic_value: float | None = Field(default=None, gt=0, allow_inf_nan=False)
+    #: Three-scenario forward prices per share (USD); research cross-check.
+    scen_bear: float | None = Field(default=None, gt=0, allow_inf_nan=False)
+    scen_base: float | None = Field(default=None, gt=0, allow_inf_nan=False)
+    scen_bull: float | None = Field(default=None, gt=0, allow_inf_nan=False)
     watch_items: list[AnnotationWatchItem] | None = Field(default=None, max_length=50)
 
     @model_validator(mode="after")
     def has_changes(self) -> "ResearchAnnotationIn":
-        fields = {"observation_range", "entry_range", "add_range", "reduce_range", "watch_items"}
+        fields = {
+            "observation_range", "entry_range", "add_range", "reduce_range",
+            "intrinsic_value", "scen_bear", "scen_base", "scen_bull",
+            "watch_items",
+        }
         if not self.model_fields_set or any(
             field not in fields or getattr(self, field) is None
             for field in self.model_fields_set
@@ -242,14 +252,18 @@ class ResearchAnnotationIn(BaseModel):
 
 
 class ResearchAnnotationOut(BaseModel):
-    """One company's saved position bands and watch items, read or written
-    through the open annotation endpoints."""
+    """One company's saved position bands, valuation and watch items, read or
+    written through the open annotation endpoints."""
 
     ticker: str
     observation_range: AnnotationRange
     entry_range: AnnotationRange
     add_range: AnnotationRange
     reduce_range: AnnotationRange
+    intrinsic_value: float | None = None
+    scen_bear: float | None = None
+    scen_base: float | None = None
+    scen_bull: float | None = None
     watch_items: list[AnnotationWatchItem]
     annotation_saved: bool
 
@@ -286,6 +300,10 @@ def _annotation_view(ticker: str) -> ResearchAnnotationOut:
         entry_range=band("entry"),
         add_range=band("add"),
         reduce_range=band("reduce"),
+        intrinsic_value=row.intrinsic_value,
+        scen_bear=row.scen_bear,
+        scen_base=row.scen_base,
+        scen_bull=row.scen_bull,
         watch_items=[AnnotationWatchItem(**item) for item in row.watch_items],
         annotation_saved=True,
     )
@@ -337,6 +355,10 @@ def save_research_annotation(
                 if band is not None:
                     setattr(row, f"{prefix}_low", band.low)
                     setattr(row, f"{prefix}_high", band.high)
+            for field in ("intrinsic_value", "scen_bear", "scen_base", "scen_bull"):
+                value = getattr(payload, field)
+                if value is not None:
+                    setattr(row, field, value)
             if payload.watch_items is not None:
                 now = datetime.now(timezone.utc).isoformat()
                 row.watch_items = [

@@ -61,6 +61,12 @@ export interface CompanyDirectoryItem {
   eps_ttm?: number | null;
   forward_pe?: number | null;
   forward_eps?: number | null;
+  /** Model-derived forward value per share; research cross-check, not a price. */
+  intrinsic_value?: number | null;
+  /** Three-scenario forward prices per share (Bear/Base/Bull, USD). */
+  scen_bear?: number | null;
+  scen_base?: number | null;
+  scen_bull?: number | null;
   quote_as_of?: string | null;
   funnel_tier?: number | null;
   funnel_tier_name?: string | null;

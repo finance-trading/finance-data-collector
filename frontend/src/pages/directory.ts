@@ -278,6 +278,10 @@ export function renderCompanies(
       ratioCell("EPS", company.eps_ttm),
       ratioCell("Fwd P/E", company.forward_pe),
       ratioCell("Fwd EPS", company.forward_eps),
+      intrinsicCell("Intrinsic", company.intrinsic_value),
+      intrinsicCell("Bear", company.scen_bear),
+      intrinsicCell("Base", company.scen_base),
+      intrinsicCell("Bull", company.scen_bull),
       capCell,
       observationBandCell(company),
       watchItemsCell(company),
@@ -318,6 +322,22 @@ function ratioCell(label: string, value: number | null | undefined): HTMLTableCe
   const span = document.createElement("span");
   span.textContent = formatRatio(value);
   element.append(span);
+  return element;
+}
+
+/** Model-derived forward value / scenario price, two-decimal USD (no $ sign: dense column). */
+function intrinsicCell(label: string, value: number | null | undefined): HTMLTableCellElement {
+  const element = cell(label, "number-column intrinsic-cell");
+  if (value !== null && value !== undefined) {
+    const span = document.createElement("span");
+    span.textContent = value.toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    element.append(span);
+  } else {
+    const na = document.createElement("span");
+    na.className = "price-na";
+    na.textContent = "—";
+    element.append(na);
+  }
   return element;
 }
 

@@ -86,15 +86,23 @@
               <option value="">All segments</option>
             </select>
           </label>
-          <label>
-            Funnel tier
+          <div class="tier-filter-group">
+            <label for="tier-filter">Funnel tier</label>
+            <details class="tier-help">
+              <summary aria-label="About funnel tiers"><span aria-hidden="true">?</span></summary>
+              <div class="tier-help-note">
+                <strong>Research coverage, not a buy signal.</strong>
+                <p>Within each AI layer, market cap sets the automatic tier: T1 top 20% (weekly deep research), T2 next 30% (monthly review), T3 remaining 50% (quarterly watch).</p>
+                <p>Manual tiers need a reason. Price drawdowns trigger research, not an automatic tier upgrade.</p>
+              </div>
+            </details>
             <select id="tier-filter">
               <option value="">All tiers</option>
               <option value="1">T1 Core</option>
               <option value="2">T2 Major</option>
               <option value="3">T3 Watch</option>
             </select>
-          </label>
+          </div>
           <label>
             Ingestion status
             <select id="status-filter">
@@ -170,6 +178,10 @@
               <th scope="col" class="number-column">EPS</th>
               <th scope="col" class="number-column">Fwd P/E</th>
               <th scope="col" class="number-column">Fwd EPS</th>
+              <th scope="col" class="number-column intrinsic-col" title="Model-derived forward value per share (3-scenario weighted); a research cross-check, not a confirmed price">Intrinsic</th>
+              <th scope="col" class="number-column intrinsic-col" title="Bear-case forward price per share">Bear</th>
+              <th scope="col" class="number-column intrinsic-col" title="Base-case forward price per share">Base</th>
+              <th scope="col" class="number-column intrinsic-col" title="Bull-case forward price per share">Bull</th>
               <th scope="col" class="number-column"
                   data-sort-column="market_cap" aria-sort="none">
                 <button type="button" class="sort-button" data-sort="market_cap"
@@ -178,14 +190,23 @@
                   <span class="sort-indicator" aria-hidden="true"></span>
                 </button>
               </th>
-              <th scope="col">Price ranges</th>
+              <th scope="col" class="price-range-col">
+                Price ranges
+                <button type="button" class="price-range-help" popovertarget="price-range-note"
+                        aria-label="About price ranges"><span aria-hidden="true">?</span></button>
+                <div id="price-range-note" popover>
+                  <strong>Manual price ranges (USD per share)</strong>
+                  <p>观察: price to start or continue watching. 建仓: initial position. 补仓: add to an existing position. 减仓: reduce an existing position.</p>
+                  <p>Each range has a low and high price. A blank range means no validated price band has been recorded. These are research notes, not trade authorization.</p>
+                </div>
+              </th>
               <th scope="col">Watch items</th>
               <th scope="col"><span class="visually-hidden">Open filing workspace</span></th>
             </tr>
           </thead>
           <tbody id="company-directory-body">
             <tr class="loading-row">
-              <td colspan="17">Loading companies…</td>
+              <td colspan="21">Loading companies…</td>
             </tr>
           </tbody>
         </table>

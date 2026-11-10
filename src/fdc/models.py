@@ -572,5 +572,13 @@ class ResearchAnnotation(TimestampMixin, Base):
     add_high: Mapped[float | None] = mapped_column(Float)
     reduce_low: Mapped[float | None] = mapped_column(Float)
     reduce_high: Mapped[float | None] = mapped_column(Float)
+    #: Model-derived forward value per share (USD); a research cross-check, not a
+    #: confirmed price.  Null when the company has no valuation batch yet.
+    intrinsic_value: Mapped[float | None] = mapped_column(Float)
+    #: Three-scenario forward prices per share (Bear/Base/Bull, USD); null when
+    #: no valuation batch has been saved for the company.
+    scen_bear: Mapped[float | None] = mapped_column(Float)
+    scen_base: Mapped[float | None] = mapped_column(Float)
+    scen_bull: Mapped[float | None] = mapped_column(Float)
     #: ``[{"text": ..., "priority": 1..3}, ...]``; color is derived from priority.
     watch_items: Mapped[list] = mapped_column(JSON, default=list, nullable=False)

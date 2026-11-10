@@ -112,6 +112,19 @@ def parse_band(value: str | list[str] | None) -> dict[str, float | None] | None:
     return {"low": low, "high": high}
 
 
+def parse_price(value: str | None) -> float | None:
+    """One positive forward price (intrinsic value or scenario price); None = untouched."""
+    if value is None:
+        return None
+    try:
+        price = float(value)
+    except ValueError:
+        fail(f"price {value!r} is not a number", 2)
+    if price <= 0:
+        fail("prices must be positive", 2)
+    return price
+
+
 def cmd_set(args: argparse.Namespace) -> None:
     base, key = config(args)
     payload: dict[str, Any] = {}
@@ -121,6 +134,15 @@ def cmd_set(args: argparse.Namespace) -> None:
         if parsed is not None:
             field = "observation_range" if band == "observe" else band + "_range"
             payload[field] = parsed
+    for flag, field in (
+        (args.intrinsic, "intrinsic_value"),
+        (args.scen_bear, "scen_bear"),
+        (args.scen_base, "scen_base"),
+        (args.scen_bull, "scen_bull"),
+    ):
+        value = parse_price(flag)
+        if value is not None:
+            payload[field] = value
     if not payload:
         fail("nothing to update: pass at least one band flag", 2)
     result = save_annotation(base, key, args.ticker, payload)
@@ -177,9 +199,14 @@ def cmd_list(args: argparse.Namespace) -> None:
         name = name[:28] + "…" if len(name) > 28 else name
         price = f"${c['price']:.2f}" if c.get("price") is not None else "  n/a"
         tier = f"T{c['funnel_tier']}" if c.get("funnel_tier") else "-"
+        intrinsic = f"${c['intrinsic_value']:.2f}" if c.get("intrinsic_value") is not None else "   n/a"
+        scen = " ".join(
+            f"{k}:{c[f'scen_{k}']:.0f}" for k in ("bear", "base", "bull") if c.get(f"scen_{k}") is not None
+        ) or "n/a"
         print(
             f"{c['ticker']:<7} {name:<30} {price:>9}  "
             f"{tier}  layer {c['layer']:<14} "
+            f"V {intrinsic}  scen[{scen}]  "
             f"entry {_fmt_range(c.get('entry_range'))}  "
             f"reduce {_fmt_range(c.get('reduce_range'))}"
         )
@@ -320,7 +347,7 @@ def main() -> None:
                      help="print the full API view instead of compact lines")
     lst.set_defaults(func=cmd_list)
 
-    setp = sub.add_parser("set", help="update one or more price bands")
+    setp = sub.add_parser("set", help="update one or more price bands (and optionally the model value / scenario prices)")
     setp.add_argument("ticker")
     for band in BANDS:
         setp.add_argument(
@@ -329,6 +356,10 @@ def main() -> None:
             metavar=("LOW", "HIGH"),
             help=f"{band} band, two prices (or 'null null' to clear it)",
         )
+    setp.add_argument("--intrinsic", help="model-derived forward value per share (USD); a research cross-check")
+    setp.add_argument("--scen-bear", dest="scen_bear", help="bear-case forward price per share (USD)")
+    setp.add_argument("--scen-base", dest="scen_base", help="base-case forward price per share (USD)")
+    setp.add_argument("--scen-bull", dest="scen_bull", help="bull-case forward price per share (USD)")
     setp.set_defaults(func=cmd_set)
 
     watch = sub.add_parser("watch", help="manage the watch-item list")

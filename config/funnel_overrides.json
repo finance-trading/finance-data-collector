@@ -13,11 +13,35 @@
     "note": "2026-11-06 升级审视：52w -50% 入 T3 P3 触发区；reports/MNDY/MNDY-research-20260915.md（09-15 口径）：5 年悲观目标 $101.5 > 现价 $93.84、Forward PE 15.4x / EV-FCF ~9.8x / PEG 0.83、现金占市值 27%；材料齐，下一核点 11 月中 FQ3 财报（席位增速筑底 + NDR）"
   },
   "COHR": {
-    "tier": 2,
+    "tier": 1,
     "note": "2026-11-06 升级审视：52w -60% 入 T3 P3 触发区；reports/AI基建-光通信与存储-20260512/Coherent-COHR-投资研究报告-20260512.md（05-12 口径）理想买入区 $180-220，现价 $169.76 已在区下沿之下；下一核点 FQ3 财报（11月初）datacom 收入 + NVDA 相关订单"
   },
   "FORM": {
     "tier": 2,
     "note": "2026-11-06 升级审视：52w -55% 入 T3 P3 触发区；reports/bottleneck-map/2026-06-20/18-05-FORM.md（06-20 口径）目标买入区 $110-120（PS 9.1x 绿灯 / PEG 0.34 黄灯可接受），6/16 低 $119.02 曾入区、现价 $71.76 已破区；下一核点 FQ4 FY26 财报（10月低）EPOS 增速 + 探针卡收入"
+  },
+  "PDD": {
+    "tier": 3,
+    "note": "nothing"
+  },
+  "BKNG": {
+    "tier": 2,
+    "note": "first"
+  },
+  "BABA": {
+    "tier": 2,
+    "note": "first"
+  },
+  "ISRG": {
+    "tier": 2,
+    "note": "first"
+  },
+  "ACN": {
+    "tier": 2,
+    "note": "fst"
+  },
+  "VRTX": {
+    "tier": 2,
+    "note": "fst"
   }
 }

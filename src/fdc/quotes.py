@@ -16,16 +16,18 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import random
 import re
+import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date, datetime, timedelta, timezone
-from typing import Any
+from typing import Any, Callable
 
 import yfinance as yf
-from yfinance.config import YfConfig
-from requests import Session
 from bs4 import BeautifulSoup
+from requests import Session
+from yfinance.config import YfConfig
 
 from fdc.config import get_settings
 from fdc.data_files import CATALOG_PATH, QUOTES_PATH
@@ -130,6 +132,43 @@ def _rise_from_low(price: float, low: float | None) -> float | None:
 
 
 FINVIZ_QUOTE_URL = "https://finviz.com/quote.ashx?t={ticker}"
+
+
+class _Throttle:
+    """Serialize request starts with a minimum spacing; safe across threads.
+
+    Finviz rate limits aggressive scraping, so every request start hands out
+    a timestamp at least ``interval`` (plus jitter) after the previous one.
+    Spacing is assigned before sleeping so concurrent callers queue up behind
+    a single schedule instead of firing after a shared wake-up.
+    """
+
+    def __init__(
+        self,
+        interval: float,
+        jitter: float = 0.0,
+        clock: Callable[[], float] = time.monotonic,
+        sleeper: Callable[[float], None] = time.sleep,
+    ) -> None:
+        self._interval = interval
+        self._jitter = jitter
+        self._clock = clock
+        self._sleeper = sleeper
+        self._last = float("-inf")
+        self._lock = threading.Lock()
+
+    def wait(self) -> None:
+        with self._lock:
+            spacing = self._interval + (
+                random.uniform(0, self._jitter) if self._jitter > 0 else 0.0
+            )
+            start = max(self._clock(), self._last + spacing)
+            self._last = start
+            delay = start - self._clock()
+        if delay > 0:
+            self._sleeper(delay)
+
+
 # Valuation metrics live in Finviz's "snapshot" table as label/value cell pairs.
 FINVIZ_LABEL_TO_KEY = {
     "P/E": "pe",
@@ -170,15 +209,26 @@ def _parse_finviz_metrics(html: str) -> dict[str, float]:
 
 
 def _finviz_metrics(
-    tickers: list[str], workers: int = 8, retries: int = 2
+    tickers: list[str],
+    *,
+    workers: int = 3,
+    retries: int = 2,
+    min_interval: float = 1.1,
+    jitter: float = 0.5,
+    clock: Callable[[], float] | None = None,
+    sleeper: Callable[[float], None] | None = None,
 ) -> dict[str, dict[str, float]]:
     """Return Finviz valuation metrics per ticker; absent keys are unavailable.
 
-    Finviz serves a static snapshot page per quote; 227 pages through a small
-    thread pool with browser-style headers stay well inside polite request
-    volume for a once-daily job. A failed page drops only that ticker's
-    metrics, never the whole refresh.
+    Finviz serves a static snapshot page per quote, but rate limits aggressive
+    scraping: every request start is spaced at least ``min_interval`` seconds
+    apart (plus ``jitter``) through a shared throttle, and a failed page drops
+    only that ticker's metrics, never the whole refresh.
     """
+
+    clock = clock or time.monotonic
+    sleeper = sleeper or time.sleep
+    throttle = _Throttle(min_interval, jitter, clock, sleeper)
 
     headers = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"}
 
@@ -187,6 +237,7 @@ def _finviz_metrics(
         try:
             for attempt in range(retries + 1):
                 try:
+                    throttle.wait()
                     response = session.get(
                         FINVIZ_QUOTE_URL.format(ticker=ticker), headers=headers, timeout=15
                     )
@@ -197,7 +248,7 @@ def _finviz_metrics(
                 except Exception:
                     pass
                 if attempt < retries:
-                    time.sleep(1.5 * (attempt + 1))
+                    sleeper(1.5 * (attempt + 1))
             return ticker, {}
         except Exception:
             return ticker, {}

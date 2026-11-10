@@ -268,7 +268,7 @@ h1 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.directory-filters .filter-group > label, .layer-filter-group {
+.directory-filters .filter-group > label, .layer-filter-group, .tier-filter-group {
   display: grid;
   gap: 6px;
   padding: 11px 14px;
@@ -280,6 +280,87 @@ h1 {
 }
 
 .layer-filter-group { position: relative; border-left: 0; }
+.tier-filter-group { position: relative; }
+
+.tier-help { position: absolute; top: 0; right: 0; height: 100%; pointer-events: none; }
+.tier-help summary {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 38px;
+  list-style: none;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.tier-help summary::-webkit-details-marker { display: none; }
+.tier-help summary span {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 50%;
+  color: var(--ink);
+  font-size: 0.8rem;
+}
+.tier-help summary:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
+.tier-help-note {
+  position: absolute;
+  z-index: 6;
+  top: 100%;
+  right: 0;
+  width: min(320px, calc(100vw - 40px));
+  padding: 14px;
+  border: 1px solid var(--rule-strong);
+  background: var(--paper);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+  color: var(--ink);
+  font-size: 0.85rem;
+  font-weight: 400;
+  line-height: 1.5;
+  pointer-events: auto;
+}
+.tier-help-note p { margin: 8px 0 0; }
+
+.price-range-help {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin: -12px -12px -12px 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+  vertical-align: middle;
+}
+.price-range-help span {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 50%;
+  color: var(--ink);
+  font-size: 0.8rem;
+}
+.price-range-help:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
+#price-range-note[popover] {
+  width: min(380px, calc(100vw - 32px));
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+  padding: 16px;
+  border: 1px solid var(--rule-strong);
+  background: var(--paper);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 400;
+  line-height: 1.5;
+  white-space: normal;
+}
+#price-range-note p { margin: 8px 0 0; }
 
 .layer-filter summary {
   padding: 7px 26px 7px 0;
@@ -613,6 +694,10 @@ td.change-cell { min-width: 56px; padding: 11px 12px; }
 .price-change.down { color: var(--error); }
 .price-change.flat { color: var(--muted); }
 .price-na, .cap-na { color: var(--muted); }
+/* Model-derived forward value + three scenario prices: compact, muted, no $ sign. */
+.intrinsic-cell { color: var(--ink); font-weight: 600; }
+.intrinsic-cell .price-na { color: var(--muted); font-weight: 400; }
+th.intrinsic-col { font-size: 0.7rem; color: var(--muted); }
 
 .parse-status {
   display: inline-flex;
@@ -729,6 +814,7 @@ footer p { margin: 0; }
   /* The card layout has no header row, so the sort buttons must leave the tab
      order with it — otherwise they stay focusable but invisible. */
   .sort-button { display: none; }
+  .price-range-help { display: none; }
 
   table, tbody, tr, td { display: block; width: 100%; }
 
@@ -776,7 +862,7 @@ footer p { margin: 0; }
   .directory-summary { width: 100%; gap: 20px; }
   .directory-summary div { flex: 1; }
   .filter-group { grid-template-columns: 1fr; }
-  .filter-group > label, .filter-group > .layer-filter-group { border-top: 1px solid var(--rule); border-left: 0; }
+  .filter-group > label, .filter-group > .layer-filter-group, .filter-group > .tier-filter-group { border-top: 1px solid var(--rule); border-left: 0; }
   .filter-group > :first-child { border-top: 0; }
   .layer-filter-options { min-width: 100%; right: 0; }
   tbody tr { gap: 12px 14px; padding: 16px; }

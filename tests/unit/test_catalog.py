@@ -194,6 +194,51 @@ def test_directory_merges_cached_quotes(tmp_path, engine, session_factory, monke
     assert by_ticker["AMD"].week_change_pct is None
 
 
+def test_directory_exposes_intrinsic_value_and_scenarios(
+    tmp_path, engine, session_factory, monkeypatch
+):
+    from fdc.models import ResearchAnnotation
+
+    quotes = tmp_path / "quotes.json"
+    quotes.write_text(json.dumps({"generated_at": "2026-10-04T15:00:00+00:00", "quotes": {}}))
+    monkeypatch.setattr(fdc.catalog, "QUOTES_PATH", quotes)
+
+    with session_factory() as session:
+        session.add(
+            ResearchAnnotation(
+                ticker="VRT",
+                intrinsic_value=262.0,
+                scen_bear=225.24,
+                scen_base=304.84,
+                scen_bull=396.46,
+            )
+        )
+        session.commit()
+
+    result = list_companies(
+        query=None,
+        layer=None,
+        segment=None,
+        ingestion_status=None,
+        limit=25,
+        offset=0,
+        catalog_path=_catalog_path(tmp_path),
+        session_factory=session_factory,
+    )
+    by_ticker = {company.ticker: company for company in result.companies}
+    vrt = by_ticker["VRT"]
+    assert vrt.intrinsic_value == 262.0
+    assert vrt.scen_bear == 225.24
+    assert vrt.scen_base == 304.84
+    assert vrt.scen_bull == 396.46
+    # A company with no saved annotation reports nulls, not missing keys.
+    nvda = by_ticker["NVDA"]
+    assert nvda.intrinsic_value is None
+    assert nvda.scen_bear is None
+    assert nvda.scen_base is None
+    assert nvda.scen_bull is None
+
+
 def test_directory_joins_funnel_tier_and_filters(
     tmp_path, engine, session_factory, monkeypatch
 ):
@@ -669,6 +714,34 @@ def test_research_annotation_api_persists_and_validates(
         assert row.watch_items[0]["created_at"] == row_watch_created_at
         # A ranges-only save leaves the untouched watch list (and its stamps) alone.
         assert row.watch_items[0]["updated_at"] == row_watch_updated_at
+
+    valued = client.post(
+        endpoint,
+        json={
+            "intrinsic_value": 307.84,
+            "scen_bear": 225.24,
+            "scen_base": 304.84,
+            "scen_bull": 396.46,
+        },
+    )
+    assert valued.status_code == 200
+    assert valued.json()["intrinsic_value"] == 307.84
+    assert valued.json()["scen_bear"] == 225.24
+    assert valued.json()["scen_base"] == 304.84
+    assert valued.json()["scen_bull"] == 396.46
+    with session_factory() as session:
+        row = session.get(ResearchAnnotation, "NVDA")
+        assert row.intrinsic_value == 307.84
+        assert row.scen_bear == 225.24
+        assert row.scen_base == 304.84
+        assert row.scen_bull == 396.46
+
+    assert client.post(
+        endpoint, json={"intrinsic_value": -1}
+    ).status_code == 422
+    assert client.post(
+        endpoint, json={"scen_bear": 0}
+    ).status_code == 422
 
     edited = client.post(
         endpoint,

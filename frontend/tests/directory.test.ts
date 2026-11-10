@@ -267,8 +267,8 @@ describe("directory rendering", () => {
 
     // Column order follows the header: Company, layer, tier, date, price,
     // 1W DD, 1W Rise, 52W DD, 52W Rise, P/E, EPS, Fwd P/E, Fwd EPS,
-    // market cap, action.
-    expect(cells[0].cellIndex).toBe(13);
+    // Intrinsic, Bear, Base, Bull, market cap, action.
+    expect(cells[0].cellIndex).toBe(17);
 
     const missing = document.querySelector(".cap-na") as HTMLElement;
     expect(missing.textContent).toBe("—");
@@ -306,6 +306,40 @@ describe("directory rendering", () => {
     // A stale cache without the new keys degrades to the muted placeholder.
     const missing = document.querySelectorAll('tr td[data-label="1W DD"]')[1];
     expect(missing.textContent).toBe("—");
+  });
+
+  it("renders intrinsic value and the three scenario prices", () => {
+    renderCompanies([
+      {
+        ...catalogOnlyCompany,
+        ticker: "NVDA",
+        intrinsic_value: 307.84,
+        scen_bear: 225.24,
+        scen_base: 304.84,
+        scen_bull: 396.46,
+      },
+      catalogOnlyCompany,
+    ]);
+
+    const text = (label: string, index = 0): string | null =>
+      document.querySelectorAll(`tr td[data-label="${label}"]`)[index]?.textContent ?? null;
+
+    expect(text("Intrinsic", 0)).toBe("307.84");
+    expect(text("Bear", 0)).toBe("225.24");
+    expect(text("Base", 0)).toBe("304.84");
+    expect(text("Bull", 0)).toBe("396.46");
+
+    // A company with no saved valuation degrades to the muted placeholder.
+    expect(text("Intrinsic", 1)).toBe("—");
+    expect(text("Bull", 1)).toBe("—");
+
+    // The four columns sit after Fwd EPS and before market cap.
+    expect(
+      (document.querySelector('td[data-label="Intrinsic"]') as HTMLTableCellElement).cellIndex,
+    ).toBe(13);
+    expect(
+      (document.querySelector('td[data-label="Bull"]') as HTMLTableCellElement).cellIndex,
+    ).toBe(16);
   });
 
   it("edits and saves the four price intervals", async () => {

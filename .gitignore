@@ -234,3 +234,7 @@ data/
 outputs/
 .superpowers/
 sec_archive/
+docs/research/
+tmp/
+tests/
+output/

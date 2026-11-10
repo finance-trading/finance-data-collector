@@ -309,6 +309,134 @@ def test_write_quotes_keeps_cached_valuations_when_finviz_is_blocked(monkeypatch
     assert result["valuation_cache_as_of"] == "2026-10-31T16:02:44+00:00"
 
 
+def test_throttle_spaces_request_starts_by_interval():
+    """Every request start except the first waits at least `interval`."""
+
+    now = {"t": 100.0}
+    sleeps: list[float] = []
+
+    def clock():
+        return now["t"]
+
+    def sleeper(delay):
+        sleeps.append(now["t"])
+        now["t"] += delay
+
+    throttle = quotes._Throttle(interval=1.0, clock=clock, sleeper=sleeper)
+    for _ in range(5):
+        throttle.wait()
+
+    # First start is immediate; the rest are spaced at exactly the interval.
+    assert sleeps == [100.0, 101.0, 102.0, 103.0]
+    gaps = [later - earlier for earlier, later in zip(sleeps, sleeps[1:])]
+    assert all(gap >= 1.0 for gap in gaps)
+
+
+def test_throttle_skips_the_sleep_when_interval_already_elapsed():
+    now = {"t": 100.0}
+    sleeps: list[float] = []
+
+    def clock():
+        return now["t"]
+
+    def sleeper(delay):
+        sleeps.append(now["t"])
+        now["t"] += delay
+
+    throttle = quotes._Throttle(interval=1.0, clock=clock, sleeper=sleeper)
+    throttle.wait()
+    now["t"] += 10.0  # plenty of time passed between requests
+    throttle.wait()
+
+    assert sleeps == []
+
+
+def test_throttle_jitter_keeps_delays_within_the_interval_window():
+    now = {"t": 0.0}
+    sleeps: list[float] = []
+
+    def clock():
+        return now["t"]
+
+    def sleeper(delay):
+        sleeps.append(now["t"])
+        now["t"] += delay
+
+    throttle = quotes._Throttle(
+        interval=1.0, jitter=0.5, clock=clock, sleeper=sleeper
+    )
+    for _ in range(30):
+        throttle.wait()
+
+    gaps = [later - earlier for earlier, later in zip(sleeps, sleeps[1:])]
+    assert all(1.0 <= gap <= 1.5 for gap in gaps)
+    # Jitter must vary; a fixed delay means the randomization is inert.
+    assert len(set(round(gap, 4) for gap in gaps)) > 1
+
+
+class _FakeFinvizResponse:
+    def __init__(self, text: str) -> None:
+        self.text = text
+
+    def raise_for_status(self) -> None:
+        pass
+
+
+class _FakeFinvizSession:
+    requests: list[float] = []
+
+    def get(self, url, headers=None, timeout=None):
+        _FakeFinvizSession.requests.append(finviz_clock["t"])
+        return _FakeFinvizResponse(FINVIZ_SNIPPET)
+
+    def close(self) -> None:
+        pass
+
+
+FINVIZ_SNIPPET = (
+    '<table class="snapshot-table2">'
+    "<tr><td>P/E</td><td>27.26</td></tr>"
+    "<tr><td>EPS (ttm)</td><td>19.15</td></tr>"
+    "</table>"
+)
+
+finviz_clock = {"t": 0.0}
+
+
+def test_finviz_metrics_paces_request_starts(monkeypatch):
+    """Rate limiter holds out a full interval between every request start."""
+
+    finviz_clock["t"] = 0.0
+
+    def clock():
+        return finviz_clock["t"]
+
+    def sleeper(delay):
+        finviz_clock["t"] += delay
+
+    monkeypatch.setattr(quotes, "Session", _FakeFinvizSession)
+    _FakeFinvizSession.requests.clear()
+
+    metrics = quotes._finviz_metrics(
+        ["AAPL", "MSFT", "NVDA"],
+        workers=1,
+        retries=0,
+        min_interval=5.0,
+        jitter=0.0,
+        clock=clock,
+        sleeper=sleeper,
+    )
+
+    assert metrics == {
+        "AAPL": {"pe": 27.26, "eps_ttm": 19.15},
+        "MSFT": {"pe": 27.26, "eps_ttm": 19.15},
+        "NVDA": {"pe": 27.26, "eps_ttm": 19.15},
+    }
+    starts = list(_FakeFinvizSession.requests)
+    assert len(starts) == 3
+    assert all(later - earlier >= 5.0 for earlier, later in zip(starts, starts[1:]))
+
+
 def test_read_quotes_exposes_cached_valuation_date(monkeypatch, tmp_path):
     cache = tmp_path / "quotes.json"
     _write_cache(cache, {

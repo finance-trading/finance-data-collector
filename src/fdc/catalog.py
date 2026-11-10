@@ -109,6 +109,12 @@ class CompanyDirectoryItem(CatalogCompany):
     eps_ttm: float | None = None
     forward_pe: float | None = None
     forward_eps: float | None = None
+    #: Model-derived forward value per share; a research cross-check, not a price.
+    intrinsic_value: float | None = None
+    #: Three-scenario forward prices per share (USD).
+    scen_bear: float | None = None
+    scen_base: float | None = None
+    scen_bull: float | None = None
     quote_as_of: date | None = None
     funnel_tier: int | None = None
     funnel_tier_name: str | None = None
@@ -405,6 +411,10 @@ def list_companies(
                 eps_ttm=quote.get("eps_ttm") if quote else None,
                 forward_pe=quote.get("forward_pe") if quote else None,
                 forward_eps=quote.get("forward_eps") if quote else None,
+                intrinsic_value=annotation.intrinsic_value if annotation else None,
+                scen_bear=annotation.scen_bear if annotation else None,
+                scen_base=annotation.scen_base if annotation else None,
+                scen_bull=annotation.scen_bull if annotation else None,
                 quote_as_of=quote_as_of,
                 funnel_tier=tier["tier"] if tier else None,
                 funnel_tier_name=tier["tier_name"] if tier else None,

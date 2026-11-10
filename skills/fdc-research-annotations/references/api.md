@@ -17,6 +17,10 @@ One company's saved position bands and watch items.
   "entry_range": {"low": 120.0, "high": 140.0},
   "add_range": {"low": null, "high": null},
   "reduce_range": {"low": 250.0, "high": 270.0},
+  "intrinsic_value": 307.84,
+  "scen_bear": 225.24,
+  "scen_base": 304.84,
+  "scen_bull": 396.46,
   "watch_items": [
     {"priority": 1, "text": "Track datacenter capex",
      "code": "FIN",
@@ -27,6 +31,11 @@ One company's saved position bands and watch items.
   "annotation_saved": true
 }
 ```
+
+- `intrinsic_value` and `scen_bear`/`scen_base`/`scen_bull` are model-derived
+  forward values per share (USD) — a research cross-check, **not** a confirmed
+  price. All four are `null` when no valuation batch has been saved for the
+  company.
 
 - `watch_items` fall back to the tier defaults for companies that have never
   been saved (`annotation_saved: false`); defaults carry `created_at` too.
@@ -45,6 +54,7 @@ Body: any subset of
 | field | shape | notes |
 | --- | --- | --- |
 | `observation_range`, `entry_range`, `add_range`, `reduce_range` | `{"low": float\|null, "high": float\|null}` | both null = clear the band; prices > 0, low ≤ high |
+| `intrinsic_value`, `scen_bear`, `scen_base`, `scen_bull` | `float` (> 0) | model-derived forward value / three scenario prices per share (USD); research cross-check, not a confirmed price |
 | `watch_items` | `[{priority: 1\|2\|3, text: 1–500 chars, code?: ≤32 chars, created_at?: iso8601, updated_at?: iso8601 (ignored), next_check_at?: iso date/datetime}]`, max 50 | **replaces the full list**; items sent back with their `created_at` keep it, items without get it stamped server-side; `updated_at` is always re-stamped server-side on save (client value ignored); `code`/`next_check_at` omitted = `null` |
 
 Unsent fields are untouched. Response is the full post-write view (same shape
