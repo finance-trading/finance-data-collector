@@ -12,7 +12,7 @@
       "src": "api/main.py",
       "use": "@vercel/python",
       "config": {
-        "includeFiles": "src/**/*.py|data/generated/*.json|alembic/**/*.py|requirements.txt"
+        "includeFiles": "src/**/*.py|data/generated/*.json|alembic/**/*.py|requirements.txt|config/*.json"
       }
     }
   ],
