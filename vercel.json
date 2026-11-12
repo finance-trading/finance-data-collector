@@ -1,10 +1,11 @@
 {
   "builds": [
     {
-      "src": "frontend/package.json",
+      "src": "vercel-static-build.cjs",
       "use": "@vercel/static-build",
       "config": {
-        "dist": "frontend/static-dist"
+        "buildCommand": "node vercel-static-build.cjs",
+        "outputDirectory": "frontend/static-dist"
       }
     },
     {
