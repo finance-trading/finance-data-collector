@@ -6,6 +6,7 @@ const root = fileURLToPath(new URL(".", import.meta.url));
 
 export default defineConfig({
   build: {
+    outDir: "static-dist",
     rollupOptions: {
       input: {
         index: resolve(root, "index.html"),
