@@ -4,20 +4,17 @@
       "src": "frontend/package.json",
       "use": "@vercel/static-build",
       "config": {
-        "dist": "dist"
+        "dist": "frontend/dist"
       }
     },
     {
-      "src": "requirements.txt",
-      "use": "@vercel/python"
+      "src": "api/main.py",
+      "use": "@vercel/python",
+      "config": {
+        "includeFiles": "src/**/*.py|data/generated/*.json|alembic/**/*.py|requirements.txt"
+      }
     }
   ],
-  "functions": {
-    "api/main.py": {
-      "maxDuration": 30,
-      "includeFiles": "src/**/*.py|data/generated/*.json|alembic/**/*.py|requirements.txt"
-    }
-  },
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/main.py" }
   ]
