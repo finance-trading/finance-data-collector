@@ -8,8 +8,17 @@ map ASGI events/results onto Vercel's ``{statusCode, headers, body}`` shape.
 from __future__ import annotations
 
 import asyncio
+import os
+import sys
 
 from urllib.parse import quote
+
+_REPO_ROOT = os.environ.get("FDC_REPO_ROOT", os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if _REPO_ROOT not in sys.path:
+    sys.path.insert(0, _REPO_ROOT)
+SRC_ROOT = os.path.join(_REPO_ROOT, "src")
+if SRC_ROOT not in sys.path:
+    sys.path.insert(0, SRC_ROOT)
 
 from fdc.api import app
 
