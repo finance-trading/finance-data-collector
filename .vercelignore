@@ -1,0 +1,16 @@
+# Vercel deploy: ship only what the build needs; exclude bulky data and caches
+**/node_modules
+**/.venv
+**/.git
+frontend/node_modules
+data/raw
+data/uploads
+sec
+sec_archive
+outputs
+output
+.playwright-mcp
+.pytest_cache
+.ruff_cache
+__pycache__
+.DS_Store

@@ -238,3 +238,5 @@ docs/research/
 tmp/
 tests/
 output/
+.vercel
+frontend/static-dist/
