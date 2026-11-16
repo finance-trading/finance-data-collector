@@ -1,7 +1,10 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
   formatRefreshTime,
+  mountDirectory,
   nextSort,
   observationBandCell,
   readDirectoryState,
@@ -144,6 +147,32 @@ describe("directory rendering", () => {
     vi.restoreAllMocks();
   });
 
+  it("shows a compact filter control with an active-filter count", async () => {
+    const html = readFileSync(resolve(process.cwd(), "index.html"), "utf8");
+    document.body.innerHTML = new DOMParser().parseFromString(html, "text/html").body.innerHTML;
+    vi.spyOn(globalThis, "fetch").mockImplementation(async (input) => {
+      const path = String(input);
+      const data = path.includes("/catalog/layers")
+        ? {layers: []}
+        : path.includes("/quotes")
+          ? {generated_at: null, valuation_cache_as_of: null}
+          : {companies: [], total: 0};
+      return new Response(JSON.stringify(data), {status: 200});
+    });
+
+    await mountDirectory();
+    const form = document.querySelector<HTMLFormElement>("#directory-filters")!;
+    const toggle = form.querySelector<HTMLButtonElement>("#filter-toggle")!;
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
+    expect(toggle.textContent).toContain("Filters");
+    toggle.click();
+    expect(toggle.getAttribute("aria-expanded")).toBe("true");
+    const tier = form.querySelector<HTMLSelectElement>("#tier-filter")!;
+    tier.value = "2";
+    tier.dispatchEvent(new Event("change"));
+    expect(toggle.textContent).toContain("1 active");
+  });
+
   it("saves a manual tier with a reason, then resets to auto", async () => {
     const company = {
       ...catalogOnlyCompany, funnel_tier: 2, funnel_tier_name: "重要", funnel_tier_source: "自动",
@@ -198,13 +227,13 @@ describe("directory rendering", () => {
     expect(form.querySelector<HTMLButtonElement>('button[type="submit"]')?.disabled).toBe(false);
   });
 
-  it("links every company to its stockanalysis quote page", () => {
-    renderCompanies([catalogOnlyCompany, { ...catalogOnlyCompany, ticker: "ASML" }]);
+  it("links every company to its Yahoo Finance quote page", () => {
+    renderCompanies([catalogOnlyCompany, { ...catalogOnlyCompany, ticker: "BRK.B" }]);
 
     const links = [...document.querySelectorAll<HTMLAnchorElement>(".company-identity")];
     expect(links.map((link) => link.getAttribute("href"))).toEqual([
-      "https://stockanalysis.com/stocks/vrt/",
-      "https://stockanalysis.com/stocks/asml/",
+      "https://finance.yahoo.com/quote/VRT/",
+      "https://finance.yahoo.com/quote/BRK-B/",
     ]);
     expect(links[0].getAttribute("target")).toBe("_blank");
     expect(links[0].getAttribute("rel")).toBe("noopener noreferrer");
@@ -224,6 +253,21 @@ describe("directory rendering", () => {
     expect(document.querySelector(".action-cell a")?.getAttribute("href")).toBe(
       "company.html?ticker=NVDA",
     );
+  });
+
+  it("expands a company card to reveal its secondary data", () => {
+    renderCompanies([catalogOnlyCompany]);
+    const row = document.querySelector<HTMLTableRowElement>("#company-directory-body tr")!;
+    const toggle = row.querySelector<HTMLButtonElement>(".mobile-row-toggle")!;
+
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
+    expect(row.classList.contains("expanded")).toBe(false);
+    toggle.click();
+    expect(toggle.getAttribute("aria-expanded")).toBe("true");
+    expect(row.classList.contains("expanded")).toBe(true);
+    toggle.click();
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
+    expect(row.classList.contains("expanded")).toBe(false);
   });
 
   it("renders the latest price and signed daily change in the price cell", () => {
@@ -340,6 +384,20 @@ describe("directory rendering", () => {
     expect(
       (document.querySelector('td[data-label="Bull"]') as HTMLTableCellElement).cellIndex,
     ).toBe(16);
+  });
+
+  it("starts price ranges collapsed with the recorded range count", () => {
+    const band = observationBandCell({
+      ...catalogOnlyCompany,
+      observation_range: {low: 100, high: 120},
+      entry_range: {low: null, high: null},
+      add_range: {low: 80, high: 90},
+    });
+    const disclosure = band.querySelector<HTMLDetailsElement>("details")!;
+    expect(disclosure.open).toBe(false);
+    expect(disclosure.querySelector("summary")?.textContent).toContain("2/4");
+    disclosure.open = true;
+    expect(disclosure.querySelectorAll(".range-list > div")).toHaveLength(4);
   });
 
   it("edits and saves the four price intervals", async () => {

@@ -128,18 +128,26 @@ function formatRatio(value: number | null | undefined): string {
   return value.toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
 }
 
-/** Public quote page for a ticker, e.g. `ASML` -> https://stockanalysis.com/stocks/asml/ */
-export function stockAnalysisUrl(ticker: string): string {
-  const slug = ticker.trim().toLowerCase().replace(/[.\s]+/g, "-");
-  return `https://stockanalysis.com/stocks/${encodeURIComponent(slug)}/`;
+/** Yahoo Finance quote page; dotted share classes use a hyphen in Yahoo tickers. */
+export function yahooFinanceUrl(ticker: string): string {
+  const symbol = ticker.trim().toUpperCase().replace(/[.\s]+/g, "-");
+  return `https://finance.yahoo.com/quote/${encodeURIComponent(symbol)}/`;
 }
 
 function cell(label: string, className = ""): HTMLTableCellElement {
   const element = document.createElement("td");
   element.dataset.label = label;
   element.className = className;
+  if (mobileDetailLabels.has(label)) {
+    element.classList.add("mobile-detail");
+  }
   return element;
 }
+
+const mobileDetailLabels = new Set([
+  "Latest filing", "1W Rise", "52W Rise", "P/E", "EPS", "Fwd P/E", "Fwd EPS",
+  "Intrinsic", "Bear", "Base", "Bull", "Price ranges",
+]);
 
 /** The sort key a `*_asc`/`*_desc` state value refers to, or null for catalog order. */
 export function sortKeyOf(sort: DirectoryState["sort"]): DirectorySortKey | null {
@@ -192,10 +200,11 @@ export function renderCompanies(
 
   companies.forEach((company) => {
     const row = document.createElement("tr");
+    row.className = "company-row";
     const companyCell = cell("Company", "company-cell");
     const identity = document.createElement("a");
     identity.className = "company-identity";
-    identity.href = stockAnalysisUrl(company.ticker);
+    identity.href = yahooFinanceUrl(company.ticker);
     identity.target = "_blank";
     identity.rel = "noopener noreferrer";
     const ticker = document.createElement("strong");
@@ -204,7 +213,19 @@ export function renderCompanies(
     name.textContent = company.name;
     name.title = company.name;
     identity.append(ticker, name);
-    companyCell.append(identity);
+    const expand = document.createElement("button");
+    expand.type = "button";
+    expand.className = "mobile-row-toggle";
+    expand.textContent = "更多数据";
+    expand.setAttribute("aria-label", `${company.ticker} 显示更多数据`);
+    expand.setAttribute("aria-expanded", "false");
+    expand.addEventListener("click", () => {
+      const expanded = row.classList.toggle("expanded");
+      expand.textContent = expanded ? "收起" : "更多数据";
+      expand.setAttribute("aria-label", `${company.ticker} ${expanded ? "收起详细数据" : "显示更多数据"}`);
+      expand.setAttribute("aria-expanded", String(expanded));
+    });
+    companyCell.append(identity, expand);
 
     const categoryCell = cell("AI layer", "category-cell");
     const layer = document.createElement("strong");
@@ -366,6 +387,10 @@ async function saveAnnotation(company: CompanyDirectoryItem, changes: Record<str
 export function observationBandCell(company: CompanyDirectoryItem): HTMLTableCellElement {
   const element = cell("Price ranges", "obs-cell");
   const render = (): void => {
+    const details = document.createElement("details");
+    const summary = document.createElement("summary");
+    const recorded = rangeFields.filter(([field]) => company[field]?.low != null && company[field]?.high != null).length;
+    summary.textContent = `价格区间 (${recorded}/4)`;
     const button = document.createElement("button");
     button.type = "button";
     button.className = "annotation-edit";
@@ -380,7 +405,8 @@ export function observationBandCell(company: CompanyDirectoryItem): HTMLTableCel
       line.textContent = `${label}：${band?.low != null && band?.high != null ? `${formatUsd(band.low)}–${formatUsd(band.high)}` : "—"}`;
       ranges.append(line);
     }
-    element.replaceChildren(ranges, button);
+    details.append(summary, ranges, button);
+    element.replaceChildren(details);
   };
   const edit = (): void => {
     const form = document.createElement("form");
@@ -724,11 +750,13 @@ export async function mountDirectory(): Promise<void> {
   const app = document.querySelector<HTMLElement>("[data-directory-app]");
   if (!app) return;
 
-  const form = document.querySelector<HTMLFormElement>("#company-search-form")!;
-  const query = document.querySelector<HTMLInputElement>("#company-search")!;
   const layer = document.querySelector<HTMLDetailsElement>("#layer-filter")!;
   const layerOptions = layer.querySelector<HTMLElement>(".layer-filter-options")!;
   const layerSummary = document.querySelector<HTMLElement>("#layer-filter-summary")!;
+  const filterForm = document.querySelector<HTMLFormElement>("#directory-filters")!;
+  const query = document.querySelector<HTMLInputElement>("#directory-search")!;
+  const filterToggle = document.querySelector<HTMLButtonElement>("#filter-toggle")!;
+  const filterCount = document.querySelector<HTMLElement>("#filter-count")!;
   const segment = document.querySelector<HTMLSelectElement>("#segment-filter")!;
   const tier = document.querySelector<HTMLSelectElement>("#tier-filter")!;
   const status = document.querySelector<HTMLSelectElement>("#status-filter")!;
@@ -737,7 +765,6 @@ export async function mountDirectory(): Promise<void> {
   const directoryState = document.querySelector<HTMLElement>("#directory-state")!;
   const pagination = document.querySelector<HTMLElement>("#directory-pagination")!;
   const companyTotal = document.querySelector<HTMLElement>("#company-total")!;
-  const filingTotal = document.querySelector<HTMLElement>("#filing-total")!;
   const quoteAsOf = document.querySelector<HTMLElement>("#quote-as-of")!;
   const quoteRefresh = document.querySelector<HTMLButtonElement>("#quote-refresh")!;
   let state = readDirectoryState(new URL(window.location.href).searchParams);
@@ -787,6 +814,9 @@ export async function mountDirectory(): Promise<void> {
     tier.value = state.tier;
     status.value = state.status;
     pageSize.value = String(state.pageSize);
+    const activeFilters = state.layers.length + Number(Boolean(state.segment))
+      + Number(Boolean(state.tier)) + Number(Boolean(state.status));
+    filterCount.textContent = activeFilters ? `${activeFilters} active` : "All";
     updateSegments();
     syncSortHeaders(state.sort);
   };
@@ -824,9 +854,6 @@ export async function mountDirectory(): Promise<void> {
       }
       renderCompanies(payload.companies, undefined, () => void load());
       companyTotal.textContent = new Intl.NumberFormat("en").format(payload.total);
-      filingTotal.textContent = new Intl.NumberFormat("en").format(
-        payload.companies.reduce((total, company) => total + company.filing_count, 0),
-      );
       quoteAsOfDate = payload.companies.find((company) => company.quote_as_of)
         ?.quote_as_of;
       renderQuoteNote();
@@ -901,6 +928,10 @@ export async function mountDirectory(): Promise<void> {
         quoteRefresh.textContent = "Refresh prices";
       });
   });
+  filterToggle.addEventListener("click", () => {
+    const expanded = filterForm.classList.toggle("is-open");
+    filterToggle.setAttribute("aria-expanded", String(expanded));
+  });
   syncControls();
 
   const applyFilters = (): void => {
@@ -920,7 +951,7 @@ export async function mountDirectory(): Promise<void> {
     void load();
   };
 
-  form.addEventListener("submit", (event) => {
+  filterForm.addEventListener("submit", (event) => {
     event.preventDefault();
     applyFilters();
   });
