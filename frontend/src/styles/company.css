@@ -12,10 +12,12 @@ html {
 body {
   margin: 0;
   min-width: 320px;
-  background: var(--ledger);
+  background: var(--atmosphere) fixed;
   font-size: 15px;
   line-height: 1.5;
 }
+
+::selection { background: rgb(110 147 255 / 35%); }
 
 button,
 select {
@@ -72,9 +74,11 @@ select:focus-visible {
   justify-content: space-between;
   gap: 24px;
   padding: 0 28px;
-  border-top: 5px solid var(--pine);
+  border-top: 3px solid var(--pine);
   border-bottom: 1px solid var(--rule);
-  background: var(--paper);
+  background: rgb(13 19 38 / 82%);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 .research-nav > div {
@@ -88,6 +92,7 @@ select:focus-visible {
   font-size: 0.86rem;
   font-weight: 650;
   text-decoration: none;
+  transition: color var(--fast) var(--ease);
 }
 
 .research-nav a[aria-current="page"],
@@ -108,6 +113,8 @@ select:focus-visible {
   place-items: center;
   border: 1px solid var(--pine);
   border-left-width: 4px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(160deg, rgb(94 234 212 / 12%), transparent 70%);
   color: var(--pine);
   font-family: var(--serif);
   font-size: 1.05rem;
@@ -121,7 +128,9 @@ select:focus-visible {
   gap: 32px;
   padding: 22px 28px 20px;
   border-bottom: 1px solid var(--rule-strong);
-  background: var(--paper);
+  background:
+    radial-gradient(40rem 16rem at 12% 0%, rgb(110 147 255 / 10%), transparent 65%),
+    var(--paper);
 }
 
 .product-name,
@@ -166,7 +175,8 @@ select:focus-visible {
   display: inline-flex;
   align-items: center;
   min-height: 28px;
-  padding: 3px 9px;
+  padding: 3px 10px;
+  border-radius: var(--radius-sm);
   border-left: 3px solid currentColor;
   background: var(--pine-wash);
   color: var(--pine);
@@ -236,7 +246,7 @@ select {
   max-width: 110px;
   padding: 5px 23px 5px 7px;
   border: 1px solid var(--rule-strong);
-  border-radius: 2px;
+  border-radius: var(--radius-sm);
   background: var(--paper);
   font-size: 0.8rem;
 }
@@ -268,6 +278,7 @@ select {
   background: transparent;
   text-align: left;
   cursor: pointer;
+  transition: background var(--fast) var(--ease);
 }
 
 .filing-choice::before {
@@ -506,7 +517,10 @@ select {
   color: var(--muted);
   cursor: pointer;
   font-weight: 650;
+  transition: color var(--fast) var(--ease), border-color var(--fast) var(--ease);
 }
+
+.statement-tabs button:hover { color: var(--ink); }
 
 .statement-tabs button[aria-selected="true"] {
   border-bottom-color: var(--pine);
@@ -615,6 +629,7 @@ td:nth-child(3) {
   color: var(--filing-blue);
   font-size: 0.76rem;
   cursor: pointer;
+  transition: border-color var(--fast) var(--ease), background var(--fast) var(--ease);
 }
 
 .expand-text:hover {
@@ -633,7 +648,7 @@ td:nth-child(3) {
   border-radius: 10px;
   background: var(--paper);
   color: var(--ink);
-  box-shadow: 0 24px 80px rgb(0 0 0 / 70%);
+  box-shadow: var(--shadow-pop);
   display: none;
 }
 

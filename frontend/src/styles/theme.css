@@ -2,21 +2,51 @@
    Page stylesheets link this first and must not re-declare these tokens. */
 :root {
   color-scheme: dark;
-  --ledger: #0a0e1a;
-  --paper: #151c32;
-  --ink: #dfe6ff;
-  --muted: #8b96c2;
-  --rule: rgb(90 120 255 / 20%);
-  --rule-strong: rgb(90 120 255 / 35%);
-  --pine: #68d391;
-  --pine-dark: #4fae7b;
-  --pine-wash: rgb(104 211 145 / 15%);
-  --filing-blue: #7fa2ff;
-  --blue-wash: rgb(90 120 255 / 14%);
-  --amber: #f6ad55;
-  --amber-wash: rgb(246 173 85 / 15%);
-  --error: #fc8181;
-  --error-wash: rgb(252 129 129 / 15%);
+
+  /* Surfaces — deep ledger navy, lifted one step for cards and panels. */
+  --ledger: #070b16;
+  --paper: #10182e;
+  --paper-raised: #16203c;
+
+  /* Text. */
+  --ink: #e7edff;
+  --muted: #8f9ccb;
+
+  /* Lines. */
+  --rule: rgb(102 132 255 / 16%);
+  --rule-strong: rgb(102 132 255 / 32%);
+
+  /* Accents — signal green for positive, electric blue for links/focus. */
+  --pine: #5eead4;
+  --pine-dark: #34c9ae;
+  --pine-wash: rgb(94 234 212 / 12%);
+  --filing-blue: #93b0ff;
+  --filing-blue-strong: #6e93ff;
+  --blue-wash: rgb(102 132 255 / 13%);
+  --amber: #f5b268;
+  --amber-wash: rgb(245 178 104 / 14%);
+  --error: #fb8a8a;
+  --error-wash: rgb(251 138 138 / 14%);
+
+  /* Type. */
   --sans: "Avenir Next", Avenir, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --serif: Charter, "Iowan Old Style", Georgia, serif;
+  --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+
+  /* Shape and elevation. */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --shadow-panel: 0 12px 40px rgb(2 4 12 / 55%), 0 2px 8px rgb(2 4 12 / 40%);
+  --shadow-pop: 0 24px 80px rgb(2 4 12 / 72%);
+  --glow-blue: 0 0 0 1px rgb(110 147 255 / 35%), 0 0 24px rgb(110 147 255 / 18%);
+  --ease: cubic-bezier(0.3, 0.7, 0.3, 1);
+  --fast: 140ms;
+  --slow: 240ms;
+
+  /* Atmospheric wash painted behind page content. */
+  --atmosphere:
+    radial-gradient(52rem 30rem at 8% -6%, rgb(76 110 245 / 14%), transparent 60%),
+    radial-gradient(44rem 28rem at 96% 4%, rgb(94 234 212 / 7%), transparent 55%),
+    radial-gradient(60rem 40rem at 50% 118%, rgb(110 147 255 / 8%), transparent 60%);
 }
