@@ -177,7 +177,7 @@ def test_fetch_quotes_derives_week_and_52_week_changes(monkeypatch, tmp_path):
     monkeypatch.setattr(quotes, "_load_tickers", lambda: ["NVDA"])
     monkeypatch.setattr(quotes, "_market_caps", lambda tickers, **kw: {"NVDA": 1})
     monkeypatch.setattr(
-        quotes, "_finviz_metrics", lambda tickers, **kw: {"NVDA": {"pe": 27.6}}
+        quotes, "_valuation", lambda tickers: {"NVDA": {"pe": 27.6}}
     )
     monkeypatch.setattr(quotes.yf, "download", fake_download)
 
@@ -206,6 +206,7 @@ def test_fetch_quotes_omits_trailing_changes_without_enough_history(monkeypatch)
 
     monkeypatch.setattr(quotes, "_load_tickers", lambda: ["VRT"])
     monkeypatch.setattr(quotes, "_market_caps", lambda tickers, **kw: {})
+    monkeypatch.setattr(quotes, "_valuation", lambda tickers: {})
     monkeypatch.setattr(quotes.yf, "download", lambda tickers, **kw: frame)
 
     quote = quotes.fetch_quotes()["quotes"]["VRT"]

@@ -16,6 +16,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import math
 import random
 import re
 import threading
@@ -106,6 +107,63 @@ def _market_caps(tickers: list[str], workers: int = 16) -> dict[str, int]:
             if value is not None:
                 caps[ticker] = value
     return caps
+
+
+YAHOO_VALUATION_FIELD = {
+    "trailingPE": "pe",
+    "epsTrailingTwelveMonths": "eps_ttm",
+    "forwardPE": "forward_pe",
+    "epsForward": "forward_eps",
+}
+
+
+def _yahoo_valuation(
+    tickers: list[str], *, workers: int = 16, retries: int = 2
+) -> dict[str, dict[str, float]]:
+    """Return Yahoo valuation metrics per ticker; empty dict means unavailable.
+
+    ``yf.download`` does not expose P/E or EPS, so each ticker is probed
+    through ``Ticker.info`` in a thread pool (same shape as ``_market_caps``).
+    A failed page drops only that ticker's metrics, never the whole refresh.
+    """
+
+    def fetch(ticker: str) -> tuple[str, dict[str, float]]:
+        for attempt in range(retries + 1):
+            try:
+                info = yf.Ticker(ticker).info
+                values = {
+                    key: round(float(info[name]), 2)
+                    for name, key in YAHOO_VALUATION_FIELD.items()
+                    if info.get(name) is not None
+                    and math.isfinite(float(info[name]))
+                }
+                if values:
+                    return ticker, values
+            except Exception:
+                pass
+            if attempt < retries:
+                time.sleep(1.0 * (attempt + 1))
+        return ticker, {}
+
+    results: dict[str, dict[str, float]] = {}
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        for ticker, values in pool.map(fetch, tickers):
+            if values:
+                results[ticker] = values
+    return results
+
+
+def _valuation(
+    tickers: list[str],
+) -> dict[str, dict[str, float]]:
+    """Yahoo valuation first, Finviz scraping as fallback for whatever misses."""
+
+    valuation = _yahoo_valuation(tickers)
+    missing = sorted(tk for tk in tickers if not valuation.get(tk))
+    if missing:
+        logger.info("yahoo valuation missing for %d tickers — finviz fallback", len(missing))
+        valuation.update(_finviz_metrics(missing))
+    return valuation
 
 
 def _pct_change(price: float, base: float | None) -> float | None:
@@ -335,8 +393,8 @@ def fetch_quotes() -> dict[str, Any]:
     caps = _market_caps(tickers)
     logger.info("%d tickers have market cap data", len(caps))
 
-    valuation = _finviz_metrics(tickers)
-    logger.info("%d tickers have Finviz valuation data", len(valuation))
+    valuation = _valuation(tickers)
+    logger.info("%d tickers have valuation data", len(valuation))
 
     quotes: dict[str, dict[str, float | int | None]] = {}
     for tk in tickers:
@@ -388,19 +446,19 @@ def _has_quotes(payload: dict[str, Any]) -> bool:
 
 
 def refresh_valuation_metrics() -> str:
-    """Fetch Finviz valuation metrics and merge into the existing cache.
+    """Fetch valuation metrics (Yahoo, Finviz fallback) and merge into cache.
 
     Yahoo rate limits make a full quote refresh unreliable during market
-    hours, while Finviz metrics are the piece users usually need sooner.
-    This keeps prices and trailing returns exactly as cached and rewrites
-    only the four valuation fields. Returns the cache path.
+    hours, while the four valuation fields are the piece users usually need
+    sooner. This keeps prices and trailing returns exactly as cached and
+    rewrites only the four valuation fields. Returns the cache path.
     """
 
     payload = quote_store.load_payload()
     if not payload.get("quotes"):
         raise RuntimeError("database has no quotes yet — run a full refresh first")
     quotes: dict[str, dict[str, Any]] = payload["quotes"]
-    valuation = _finviz_metrics(sorted(quotes))
+    valuation = _valuation(sorted(quotes))
     merged = 0
     for tk, values in valuation.items():
         quotes[tk].update(values)
@@ -522,7 +580,8 @@ def main() -> None:
     parser.add_argument(
         "--metrics-only",
         action="store_true",
-        help="refresh Finviz valuation metrics only, keeping cached prices intact",
+        help="refresh valuation metrics (Yahoo, Finviz fallback) only, "
+        "keeping cached prices intact",
     )
     args = parser.parse_args()
     if args.check:

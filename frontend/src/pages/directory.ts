@@ -785,7 +785,7 @@ export async function mountDirectory(): Promise<void> {
       parts.push(`Last refreshed ${formatRefreshTime(refreshedAt)}.`);
     }
     if (valuationCacheAsOf) {
-      parts.push(`Some P/E and EPS values use cached Finviz data from ${formatRefreshTime(valuationCacheAsOf)}.`);
+      parts.push(`Some P/E and EPS values use cached data from ${formatRefreshTime(valuationCacheAsOf)}.`);
     }
     quoteAsOf.hidden = parts.length === 0;
     quoteAsOf.textContent = parts.join(" ");
