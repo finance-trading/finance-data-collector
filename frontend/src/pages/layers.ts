@@ -1,6 +1,7 @@
 import * as d3 from "d3";
 
 import { apiGet } from "../api/client";
+import { yahooFinanceUrl } from "./directory";
 import type {
   FunnelTierInfo,
   LayerCompanyNode,
@@ -265,6 +266,13 @@ export function mountLayers(
     link.rel = "noopener noreferrer";
     link.textContent = "EDGAR filing";
     meta.append(link);
+    appendText(meta, "", " · ");
+    const yahooLink = document.createElement("a");
+    yahooLink.href = yahooFinanceUrl(company.ticker);
+    yahooLink.target = "_blank";
+    yahooLink.rel = "noopener noreferrer";
+    yahooLink.textContent = "Yahoo Finance";
+    meta.append(yahooLink);
     element("card").hidden = false;
   };
 
