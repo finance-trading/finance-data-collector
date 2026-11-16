@@ -451,6 +451,9 @@ export function observationBandCell(company: CompanyDirectoryItem): HTMLTableCel
 export function watchItemsCell(company: CompanyDirectoryItem): HTMLTableCellElement {
   const element = cell("Watch items", "watch-cell");
   const render = (): void => {
+    const details = document.createElement("details");
+    const summary = document.createElement("summary");
+    summary.textContent = `观察事项 (${company.watch_items?.length ?? 0})`;
     const list = document.createElement("ul");
     list.className = "watch-list";
     for (const item of [...(company.watch_items ?? [])].sort((a, b) => a.priority - b.priority)) {
@@ -491,7 +494,8 @@ export function watchItemsCell(company: CompanyDirectoryItem): HTMLTableCellElem
     button.textContent = "编辑事项";
     button.setAttribute("aria-label", `${company.ticker} 编辑观察事项`);
     button.addEventListener("click", edit);
-    element.replaceChildren(list, button);
+    details.append(summary, list, button);
+    element.replaceChildren(details);
   };
   const edit = (): void => {
     const form = document.createElement("form");

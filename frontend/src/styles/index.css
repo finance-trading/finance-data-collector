@@ -621,6 +621,8 @@ a.company-identity:hover span { color: var(--filing-blue); }
 
 /* Priority labels supplement color (P1 high → P3 low). */
 .watch-cell { white-space: normal; }
+.watch-cell summary { cursor: pointer; color: var(--filing-blue); font-size: 0.78rem; }
+.watch-cell summary:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
 .watch-list {
   list-style: none;
   margin: 0;

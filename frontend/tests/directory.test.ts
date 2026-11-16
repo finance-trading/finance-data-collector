@@ -401,6 +401,23 @@ describe("directory rendering", () => {
     ]);
     expect(JSON.stringify(JSON.parse(String(saved.mock.calls[0][1]?.body)))).not.toContain("updated_at");
   });
+
+  it("keeps populated watch items collapsed until the user opens that row", () => {
+    const watch = watchItemsCell({
+      ...catalogOnlyCompany,
+      watch_items: [
+        {priority: 1, text: "Review margins"},
+        {priority: 2, text: "Track revenue"},
+      ],
+    });
+    const disclosure = watch.querySelector<HTMLDetailsElement>("details")!;
+    expect(disclosure.open).toBe(false);
+    expect(disclosure.querySelector("summary")?.textContent).toContain("2");
+    expect(disclosure.querySelectorAll(".watch-item")).toHaveLength(2);
+    disclosure.open = true;
+    expect(disclosure.open).toBe(true);
+    expect(disclosure.querySelector(".annotation-edit")).not.toBeNull();
+  });
 });
 
 describe("pagination", () => {
