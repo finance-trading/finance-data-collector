@@ -1,9 +1,9 @@
-"""Fetch latest close prices for the AI company universe and cache them locally.
+"""Fetch latest close prices for the AI company universe and cache them in the database.
 
 Reads ``data/ai_companies.json`` for tickers, downloads two years of daily
-history from Yahoo Finance via yfinance, and writes
-``data/generated/quotes.json`` for the read API.  Skips when the file is
-already from today — pass ``--force`` to override.
+history from Yahoo Finance via yfinance, and writes the quotes into the
+SQLite ``latest_quote`` table via ``fdc.quote_store``.  Skips when the
+database is already from today — pass ``--force`` to override.
 
 Usage:
     uv run python -m fdc.quotes           # daily refresh (idempotent)
@@ -34,7 +34,7 @@ from yfinance.config import YfConfig
 
 from fdc import quote_store
 from fdc.config import get_settings
-from fdc.data_files import CATALOG_PATH, QUOTES_PATH
+from fdc.data_files import CATALOG_PATH
 
 logger = logging.getLogger(__name__)
 
@@ -71,7 +71,7 @@ def _load_tickers() -> list[str]:
 
 
 def already_refreshed_today(force: bool = False) -> bool:
-    """Return True when quotes.json is from today and `force` is False."""
+    """Return True when the database quotes are from today and `force` is False."""
     if force:
         return False
     try:
@@ -484,8 +484,8 @@ def fetch_quotes() -> dict[str, Any]:
     """Fetch last close and trailing returns for every ticker in the catalog.
 
     Uses a single batched yfinance download (threaded); missing and delisted
-    tickers are silently dropped.  Returns a payload suitable for
-    ``quotes.json``.
+    tickers are silently dropped.  Returns a payload suitable for the
+    quote store.
     """
     tickers = _load_tickers()
     apply_proxy()
@@ -570,7 +570,7 @@ def refresh_valuation_metrics() -> str:
     Yahoo rate limits make a full quote refresh unreliable during market
     hours, while the four valuation fields are the piece users usually need
     sooner. This keeps prices and trailing returns exactly as cached and
-    rewrites only the four valuation fields. Returns the cache path.
+    rewrites only the four valuation fields. Returns a summary string.
     """
 
     payload = quote_store.load_payload()
@@ -585,7 +585,7 @@ def refresh_valuation_metrics() -> str:
     payload["valuation_refreshed_at"] = datetime.now(timezone.utc).isoformat()
     quote_store.save_payload(payload)
     logger.info("merged valuation metrics for %d tickers into database", merged)
-    return str(QUOTES_PATH)
+    return f"{merged} valuation rows (database)"
 
 
 def _cached_quotes_exist() -> bool:
@@ -637,10 +637,10 @@ def check_connection(ticker: str = "AAPL") -> bool:
 
 
 def write_quotes(force: bool = False) -> str | None:
-    """Generate quotes.json.  Returns the JSON path on write, None when skipped.
+    """Refresh quotes into the database.  Returns a summary string, None when skipped.
 
-    Raises ``RuntimeError`` when the fetch comes back empty and a previous cache
-    exists: a blocked or unroutable network must not destroy good data.
+    Raises ``RuntimeError`` when the fetch comes back empty and previous quotes
+    exist: a blocked or unroutable network must not destroy good data.
     """
 
     if already_refreshed_today(force):
@@ -649,9 +649,9 @@ def write_quotes(force: bool = False) -> str | None:
 
     payload = fetch_quotes()
     if not _has_quotes(payload) and _cached_quotes_exist():
-        logger.error("fetch returned no quotes — keeping the existing cache")
+        logger.error("fetch returned no quotes — keeping the existing database rows")
         raise RuntimeError(
-            "Yahoo Finance fetch returned no quotes; existing quotes.json kept"
+            "Yahoo Finance fetch returned no quotes; existing database quotes kept"
         )
 
     previous = quote_store.load_payload()
@@ -667,7 +667,7 @@ def write_quotes(force: bool = False) -> str | None:
                 payload["quotes"][ticker] = quote
     quote_store.save_payload(payload)
     logger.info("wrote %d quotes to database", len(payload["quotes"]))
-    return str(QUOTES_PATH)
+    return f"{len(payload['quotes'])} quotes (database)"
 
 
 def main() -> None:

@@ -502,7 +502,7 @@ def _definition_sheet(wb: Workbook, layers: list[dict]) -> None:
         ("人工覆盖", "config/funnel_overrides.json 中的 tier 优先于自动档位；note 记录原因。"),
         ("股价区间", "展示当前价、52 周高/低（由回撤与低点涨幅反推）、回撤%、52 周分位%。"),
         ("边界", "档位只决定覆盖深度，不构成买入授权；买入仍须过四层筛选 Layer 2–4。"),
-        ("数据来源", "ai_companies.json（universe）+ generated/quotes.json（价格/市值）。"),
+        ("数据来源", "ai_companies.json（universe）+ 数据库 latest_quote 表（价格/市值）。"),
     ]
     for label, text in notes:
         ws.append([label, text])
@@ -684,7 +684,7 @@ def build_payload(
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "quotes_generated_at": quotes_generated_at,
-        "source": "data/ai_companies.json + data/generated/quotes.json",
+        "source": "data/ai_companies.json + database latest_quote table",
         "rules": {
             "tier_cutoffs": ["top 20% by market cap", "next 30%", "bottom 50%"],
             "trigger_drawdown_pct": TRIGGER_DRAWDOWN,

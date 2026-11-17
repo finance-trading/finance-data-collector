@@ -274,10 +274,8 @@ def test_api_registers_only_get_read_routes():
 
 
 def test_quote_refresh_rewrites_the_cache(client, tmp_path, monkeypatch):
-    """POST /api/v1/quotes/refresh rewrites quotes.json and serves the fresh view."""
+    """POST /api/v1/quotes/refresh rewrites the database quotes and serves the fresh view."""
 
-    quotes_file = tmp_path / "quotes.json"
-    monkeypatch.setattr("fdc.quotes.QUOTES_PATH", quotes_file)
     monkeypatch.setattr(
         "fdc.quotes.fetch_quotes",
         lambda: {
@@ -316,20 +314,15 @@ def test_quote_refresh_reports_502_and_keeps_cache_when_fetch_fails(
 ):
     """A blocked Yahoo fetch must not silently blank the directory prices."""
 
-    quotes_file = tmp_path / "quotes.json"
-    quotes_file.write_text(
-        json.dumps(
-            {
-                "generated_at": "2026-10-07T13:00:00+00:00",
-                "source": "test",
-                "quotes": {"TEST": {"price": 9.0, "market_cap": 900_000}},
-            }
-        )
-    )
     from fdc.quote_store import load_payload, save_payload
 
-    save_payload(json.loads(quotes_file.read_text()))
-    monkeypatch.setattr("fdc.quotes.QUOTES_PATH", quotes_file)
+    save_payload(
+        {
+            "generated_at": "2026-10-07T13:00:00+00:00",
+            "source": "test",
+            "quotes": {"TEST": {"price": 9.0, "market_cap": 900_000}},
+        }
+    )
     monkeypatch.setattr(
         "fdc.quotes.fetch_quotes",
         lambda: {"generated_at": "x", "source": "test", "quotes": {}},

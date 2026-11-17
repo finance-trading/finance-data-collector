@@ -132,7 +132,6 @@ def test_write_quotes_keeps_existing_cache_when_fetch_is_empty(monkeypatch, tmp_
         "quotes": {"MSFT": {"price": 500.0, "market_cap": 1}},
     }
     _write_cache(cache, cached)
-    monkeypatch.setattr(quotes, "QUOTES_PATH", cache)
     monkeypatch.setattr(
         quotes, "fetch_quotes", lambda: {"generated_at": "x", "quotes": {}}
     )
@@ -144,14 +143,12 @@ def test_write_quotes_keeps_existing_cache_when_fetch_is_empty(monkeypatch, tmp_
 
 
 def test_write_quotes_writes_empty_file_when_no_cache_exists(monkeypatch, tmp_path):
-    cache = tmp_path / "quotes.json"
-    monkeypatch.setattr(quotes, "QUOTES_PATH", cache)
     empty = {"generated_at": "x", "source": "yfinance", "quotes": {}}
     monkeypatch.setattr(quotes, "fetch_quotes", lambda: empty)
 
     result = quotes.write_quotes(force=True)
 
-    assert result == str(cache)
+    assert result == "0 quotes (database)"
     assert quotes.quote_store.load_payload() == empty
 
 
@@ -314,8 +311,6 @@ def test_check_connection_accepts_a_working_route(monkeypatch, capsys):
 
 
 def test_write_quotes_persists_successful_fetch(monkeypatch, tmp_path):
-    cache = tmp_path / "quotes.json"
-    monkeypatch.setattr(quotes, "QUOTES_PATH", cache)
     fresh = {
         "generated_at": "x",
         "source": "yfinance",
@@ -323,7 +318,7 @@ def test_write_quotes_persists_successful_fetch(monkeypatch, tmp_path):
     }
     monkeypatch.setattr(quotes, "fetch_quotes", lambda: fresh)
 
-    assert quotes.write_quotes(force=True) == str(cache)
+    assert quotes.write_quotes(force=True) == "1 quotes (database)"
     assert quotes.quote_store.load_payload() == fresh
 
 
@@ -340,7 +335,6 @@ def test_write_quotes_does_not_carry_cached_valuations(monkeypatch, tmp_path):
                      "forward_pe": 50.0, "forward_eps": 5.0},
         },
     })
-    monkeypatch.setattr(quotes, "QUOTES_PATH", cache)
     monkeypatch.setattr(quotes, "fetch_quotes", lambda: {
         "generated_at": "2026-11-05T23:30:08+00:00",
         "quotes": {
