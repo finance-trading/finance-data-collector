@@ -11,7 +11,6 @@ export default defineConfig({
       input: {
         index: resolve(root, "index.html"),
         company: resolve(root, "company.html"),
-        graph: resolve(root, "graph.html"),
         layers: resolve(root, "layers.html"),
         research: resolve(root, "research.html"),
       },

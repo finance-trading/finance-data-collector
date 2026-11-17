@@ -133,13 +133,13 @@ export function compareByMarketCap(
   };
 }
 
-/** Market cap in millions, matching the directory page ("$5,570,000M", "$985.2M"). */
+/** Market cap in billions ("$5,570B", "$93.8B"); sub-billion caps use two decimals ("$0.00B"). */
 export function formatCompactUSD(value: number | null): string {
   if (value === null) return "—";
-  const millions = value / 1e6;
-  return millions >= 1000
-    ? `$${Math.round(millions).toLocaleString("en-US")}M`
-    : `$${millions.toFixed(1)}M`;
+  const billions = value / 1e9;
+  return billions >= 100
+    ? `$${Math.round(billions).toLocaleString("en-US")}B`
+    : `$${billions.toFixed(billions >= 10 ? 1 : 2)}B`;
 }
 
 /** Latest close with thousands separators, matching the directory page. */

@@ -13,21 +13,30 @@ from yfinance.config import YfConfig
 from fdc import catalog, quotes
 
 
-def test_partial_refresh_preserves_missing_tickers_and_valuation_stamp(engine, monkeypatch):
+def test_partial_refresh_preserves_dropped_ticker_prices(engine, monkeypatch):
     from fdc.quote_store import load_payload, save_payload
 
     save_payload({"generated_at": "old", "valuation_refreshed_at": "valuation", "quotes": {
         "AAPL": {"price": 1, "pe": 10}, "MSFT": {"price": 2, "pe": 20},
     }})
     monkeypatch.setattr(quotes, "fetch_quotes", lambda: {
-        "generated_at": "new", "quotes": {"AAPL": {"price": 3, "pe": None}},
+        "generated_at": "new", "quotes": {"AAPL": {"price": 3, "pe": None,
+                                                    "eps_ttm": None,
+                                                    "forward_pe": None,
+                                                    "forward_eps": None}},
     })
 
     quotes.write_quotes(force=True)
 
     result = load_payload()
-    assert result["quotes"] == {"AAPL": {"price": 3, "pe": 10}, "MSFT": {"price": 2, "pe": 20}}
-    assert result["valuation_refreshed_at"] == "valuation"
+    # Dropped tickers keep their cached price but valuation fields are live
+    # values only — a stale P/E must never resurface as current data.
+    assert result["quotes"] == {
+        "AAPL": {"price": 3, "pe": None, "eps_ttm": None,
+                 "forward_pe": None, "forward_eps": None},
+        "MSFT": {"price": 2, "pe": None, "eps_ttm": None,
+                 "forward_pe": None, "forward_eps": None},
+    }
 
 
 def test_database_quote_storage_import_and_replace(engine, tmp_path):
@@ -232,7 +241,10 @@ def test_apply_proxy_uses_configured_proxy_and_hides_credentials(
     monkeypatch.setattr(
         quotes,
         "get_settings",
-        lambda: SimpleNamespace(resolved_quotes_proxy="socks5://user:secret@proxy.example:1080"),
+        lambda: SimpleNamespace(
+            resolved_quotes_proxy="socks5://user:secret@proxy.example:1080",
+            resolved_finviz_api_key=None,
+        ),
     )
 
     with caplog.at_level(logging.INFO):
@@ -248,7 +260,7 @@ def test_apply_proxy_clears_the_proxy_when_unset(monkeypatch):
     monkeypatch.setattr(
         quotes,
         "get_settings",
-        lambda: SimpleNamespace(resolved_quotes_proxy=None),
+        lambda: SimpleNamespace(resolved_quotes_proxy=None, resolved_finviz_api_key=None),
     )
 
     assert quotes.apply_proxy() is None
@@ -259,7 +271,11 @@ def test_fetch_quotes_applies_the_proxy_before_downloading(monkeypatch):
     seen: dict[str, object] = {}
     monkeypatch.setattr(YfConfig.network, "proxy", None, raising=False)
     monkeypatch.setattr(
-        quotes, "get_settings", lambda: SimpleNamespace(resolved_quotes_proxy="http://p:1")
+        quotes,
+        "get_settings",
+        lambda: SimpleNamespace(
+            resolved_quotes_proxy="http://p:1", resolved_finviz_api_key=None
+        ),
     )
     monkeypatch.setattr(quotes, "_load_tickers", lambda: [])
 
@@ -311,7 +327,7 @@ def test_write_quotes_persists_successful_fetch(monkeypatch, tmp_path):
     assert quotes.quote_store.load_payload() == fresh
 
 
-def test_write_quotes_keeps_cached_valuations_when_finviz_is_blocked(monkeypatch, tmp_path):
+def test_write_quotes_does_not_carry_cached_valuations(monkeypatch, tmp_path):
     cache = tmp_path / "quotes.json"
     _write_cache(cache, {
         "generated_at": "2026-10-31T16:02:44+00:00",
@@ -320,6 +336,8 @@ def test_write_quotes_keeps_cached_valuations_when_finviz_is_blocked(monkeypatch
                      "forward_pe": 36.07, "forward_eps": 9.56},
             "MSFT": {"price": 521.91, "pe": 27.26, "eps_ttm": 19.15,
                      "forward_pe": 21.72, "forward_eps": 24.03},
+            "TSLA": {"price": 250.0, "pe": 55.5, "eps_ttm": 4.5,
+                     "forward_pe": 50.0, "forward_eps": 5.0},
         },
     })
     monkeypatch.setattr(quotes, "QUOTES_PATH", cache)
@@ -336,15 +354,22 @@ def test_write_quotes_keeps_cached_valuations_when_finviz_is_blocked(monkeypatch
     quotes.write_quotes(force=True)
     result = quotes.quote_store.load_payload()
 
+    # P/E and EPS are live-only: a fresh fetch with no value stays None.
     assert result["quotes"]["AAPL"] == {
-        "price": 344.17, "pe": 39.51, "eps_ttm": 8.72,
-        "forward_pe": 36.07, "forward_eps": 9.56,
+        "price": 344.17, "pe": None, "eps_ttm": None,
+        "forward_pe": None, "forward_eps": None,
     }
     assert result["quotes"]["MSFT"] == {
-        "price": 535.93, "pe": 28.0, "eps_ttm": 19.15,
-        "forward_pe": 21.72, "forward_eps": 24.03,
+        "price": 535.93, "pe": 28.0, "eps_ttm": None,
+        "forward_pe": None, "forward_eps": None,
     }
-    assert result["valuation_cache_as_of"] == "2026-10-31T16:02:44+00:00"
+    # A ticker dropped by the fetch keeps its cached price but loses its
+    # cached valuations.
+    assert result["quotes"]["TSLA"] == {
+        "price": 250.0, "pe": None, "eps_ttm": None,
+        "forward_pe": None, "forward_eps": None,
+    }
+    assert "valuation_cache_as_of" not in result
 
 
 def test_throttle_spaces_request_starts_by_interval():
@@ -484,3 +509,76 @@ def test_read_quotes_exposes_cached_valuation_date(monkeypatch, tmp_path):
     })
 
     assert catalog.read_quotes().valuation_cache_as_of == "2026-10-31T16:02:44+00:00"
+
+
+FINVIZ_API_CSV = (
+    "No.,Ticker,Company,Market Cap,P/E,Forward P/E,EPS (ttm),EPS next Y\r\n"
+    "1,AAPL,Apple,3000B,39.51,28.10,7.46,-\r\n"
+    "2,MSFT,Microsoft,3100B,34.14,-12.5%,10.01,13.11\r\n"
+    "3,,,missing row,,,,\r\n"
+)
+
+
+def test_parse_finviz_api_metrics_maps_headers_and_drops_dashes():
+    metrics = quotes._parse_finviz_api_metrics(FINVIZ_API_CSV)
+
+    assert metrics == {
+        "AAPL": {"pe": 39.51, "forward_pe": 28.1, "eps_ttm": 7.46},
+        "MSFT": {"pe": 34.14, "forward_pe": -12.5, "eps_ttm": 10.01, "forward_eps": 13.11},
+    }
+
+
+def test_parse_finviz_api_metrics_rejects_unknown_headers():
+    assert quotes._parse_finviz_api_metrics("No.,Ticker,Company\r\n1,AAPL,Apple\r\n") == {}
+
+
+def test_valuation_chain_yahoo_then_api_then_html(monkeypatch):
+    calls: list[str] = []
+
+    monkeypatch.setattr(
+        quotes, "_yahoo_valuation", lambda tickers, **kw: {"AAPL": {"pe": 1.0}}
+    )
+    monkeypatch.setattr(
+        quotes,
+        "get_settings",
+        lambda: SimpleNamespace(resolved_finviz_api_key="token"),
+    )
+
+    def fake_api(tickers, token, **kw):
+        calls.append("api")
+        assert token == "token"
+        assert tickers == ["MSFT", "NVDA"]
+        return {"MSFT": {"pe": 2.0, "eps_ttm": 9.0}}
+
+    monkeypatch.setattr(quotes, "_finviz_api_metrics", fake_api)
+
+    def fake_html(tickers, **kw):
+        calls.append("html")
+        assert tickers == ["NVDA"]
+        return {"NVDA": {"pe": 3.0}}
+
+    monkeypatch.setattr(quotes, "_finviz_metrics", fake_html)
+
+    valuation = quotes._valuation(["AAPL", "MSFT", "NVDA"])
+
+    assert calls == ["api", "html"]
+    assert valuation == {
+        "AAPL": {"pe": 1.0},
+        "MSFT": {"pe": 2.0, "eps_ttm": 9.0},
+        "NVDA": {"pe": 3.0},
+    }
+
+
+def test_valuation_chain_skips_api_without_token(monkeypatch):
+    monkeypatch.setattr(quotes, "_yahoo_valuation", lambda tickers, **kw: {})
+    monkeypatch.setattr(
+        quotes, "get_settings", lambda: SimpleNamespace(resolved_finviz_api_key=None)
+    )
+
+    def fail_api(tickers, token, **kw):
+        raise AssertionError("api should not be called without a token")
+
+    monkeypatch.setattr(quotes, "_finviz_api_metrics", fail_api)
+    monkeypatch.setattr(quotes, "_finviz_metrics", lambda tickers, **kw: {})
+
+    assert quotes._valuation(["AAPL"]) == {}

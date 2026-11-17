@@ -14,6 +14,8 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import csv
+import io
 import json
 import logging
 import math
@@ -156,12 +158,30 @@ def _yahoo_valuation(
 def _valuation(
     tickers: list[str],
 ) -> dict[str, dict[str, float]]:
-    """Yahoo valuation first, Finviz scraping as fallback for whatever misses."""
+    """Yahoo valuation first, then the official Finviz API, HTML scraping last.
+
+    The API needs a Finviz Elite token (``FDC_FINVIZ_API_KEY``) but returns
+    every ticker in one CSV request, so it is tried before the throttled
+    per-ticker page scraping. Each stage only fills tickers (and fields) the
+    previous ones left empty.
+    """
 
     valuation = _yahoo_valuation(tickers)
     missing = sorted(tk for tk in tickers if not valuation.get(tk))
+    token = get_settings().resolved_finviz_api_key
+    if missing and token:
+        api_metrics = _finviz_api_metrics(missing, token)
+        for tk, values in api_metrics.items():
+            merged = valuation.setdefault(tk, {})
+            for key, value in values.items():
+                merged.setdefault(key, value)
+        if api_metrics:
+            logger.info("finviz api filled %d tickers", len(api_metrics))
+        missing = sorted(tk for tk in tickers if not valuation.get(tk))
     if missing:
-        logger.info("yahoo valuation missing for %d tickers — finviz fallback", len(missing))
+        logger.info(
+            "valuation sources missing %d tickers — finviz html fallback", len(missing)
+        )
         valuation.update(_finviz_metrics(missing))
     return valuation
 
@@ -191,6 +211,105 @@ def _rise_from_low(price: float, low: float | None) -> float | None:
 
 
 FINVIZ_QUOTE_URL = "https://finviz.com/quote.ashx?t={ticker}"
+
+# Official Elite export endpoint; the valuation view (v=121) already carries
+# exactly the four columns this collector needs, keyed by header text.
+FINVIZ_EXPORT_URL = "https://elite.finviz.com/export.ashx"
+FINVIZ_VALUATION_VIEW = "121"
+FINVIZ_API_CHUNK_SIZE = 50
+
+FINVIZ_API_HEADER_TO_KEY = {
+    "p/e": "pe",
+    "fwd p/e": "forward_pe",
+    "forward p/e": "forward_pe",
+    "eps (ttm)": "eps_ttm",
+    "eps ttm": "eps_ttm",
+    "eps": "eps_ttm",
+    "eps next y": "forward_eps",
+    "eps est. next y": "forward_eps",
+    "eps estimate next year": "forward_eps",
+    "eps next year": "forward_eps",
+}
+
+
+def _parse_finviz_api_metrics(csv_text: str) -> dict[str, dict[str, float]]:
+    """Return valuation metrics per ticker from one Elite export CSV.
+
+    Headers drift between Finviz views and plans, so matching is by normalized
+    header text with several known spellings per metric. Missing cells and
+    dash placeholders stay absent — callers treat absent keys as unavailable.
+    """
+
+    reader = csv.DictReader(io.StringIO(csv_text))
+    if not reader.fieldnames:
+        return {}
+    columns = {}
+    for header in reader.fieldnames:
+        key = FINVIZ_API_HEADER_TO_KEY.get(header.strip().lower())
+        if key and key not in columns.values():
+            columns[header] = key
+    if "Ticker" not in reader.fieldnames or not columns:
+        return {}
+    metrics: dict[str, dict[str, float]] = {}
+    for row in reader:
+        ticker = (row.get("Ticker") or "").strip().upper()
+        if not ticker:
+            continue
+        values: dict[str, float] = {}
+        for header, key in columns.items():
+            raw = (row.get(header) or "").strip()
+            try:
+                number = float(raw.replace(",", "").replace("%", ""))
+            except ValueError:
+                continue
+            if math.isfinite(number):
+                values[key] = round(number, 2)
+        if values:
+            metrics[ticker] = values
+    return metrics
+
+
+def _finviz_api_metrics(
+    tickers: list[str],
+    token: str,
+    *,
+    chunk_size: int = FINVIZ_API_CHUNK_SIZE,
+) -> dict[str, dict[str, float]]:
+    """Return valuation metrics via the official Finviz Elite export API.
+
+    One CSV request per ``chunk_size`` tickers — the export endpoint accepts a
+    ``t=`` ticker list, so the whole universe fits in a handful of requests
+    instead of one throttled scrape per ticker. A failed chunk drops only its
+    own tickers, never the whole refresh.
+    """
+
+    session = Session()
+    try:
+        metrics: dict[str, dict[str, float]] = {}
+        for start in range(0, len(tickers), chunk_size):
+            chunk = tickers[start : start + chunk_size]
+            try:
+                response = session.get(
+                    FINVIZ_EXPORT_URL,
+                    params={
+                        "v": FINVIZ_VALUATION_VIEW,
+                        "ft": "4",
+                        "t": ",".join(chunk),
+                        "auth": token,
+                    },
+                    timeout=30,
+                )
+                response.raise_for_status()
+                metrics.update(_parse_finviz_api_metrics(response.text))
+            except Exception:
+                logger.warning(
+                    "finviz api export failed for tickers %d-%d",
+                    start,
+                    start + len(chunk),
+                )
+        return metrics
+    finally:
+        session.close()
 
 
 class _Throttle:
@@ -537,24 +656,15 @@ def write_quotes(force: bool = False) -> str | None:
 
     previous = quote_store.load_payload()
     if previous and _has_quotes(payload):
-        old_quotes = previous.get("quotes", {})
-        carried = False
-        for ticker, quote in payload["quotes"].items():
-            old = old_quotes.get(ticker, {})
-            for key in ("pe", "eps_ttm", "forward_pe", "forward_eps"):
-                if quote.get(key) is None and old.get(key) is not None:
-                    quote[key] = old[key]
-                    carried = True
-        for ticker, quote in old_quotes.items():
+        # Tickers transiently dropped by the fetch (rate-limit, glitch) keep
+        # their cached prices, but P/E and EPS are only ever live values, so
+        # reset them to None — the UI shows "—".
+        for ticker, old in previous.get("quotes", {}).items():
             if ticker not in payload["quotes"]:
+                quote = dict(old)
+                for key in ("pe", "eps_ttm", "forward_pe", "forward_eps"):
+                    quote[key] = None
                 payload["quotes"][ticker] = quote
-                carried = True
-        if previous.get("valuation_refreshed_at") and not payload.get("valuation_refreshed_at"):
-            payload["valuation_refreshed_at"] = previous["valuation_refreshed_at"]
-        if carried:
-            payload["valuation_cache_as_of"] = previous.get(
-                "valuation_cache_as_of", previous.get("generated_at")
-            )
     quote_store.save_payload(payload)
     logger.info("wrote %d quotes to database", len(payload["quotes"]))
     return str(QUOTES_PATH)

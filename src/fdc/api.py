@@ -399,7 +399,7 @@ def refresh_quotes() -> QuotesView:
 
 
 @app.get("/api/v1/visualizations/{name}")
-def visualization(name: Literal["graph", "layers"]) -> dict[str, Any]:
+def visualization(name: Literal["layers"]) -> dict[str, Any]:
     return _read(lambda: catalog.read_visualization(name))
 
 

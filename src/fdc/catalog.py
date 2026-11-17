@@ -16,7 +16,7 @@ from sqlalchemy.orm import Session
 from fdc import quote_store
 from fdc.ai_layers import validate_universe
 from fdc.config import get_settings
-from fdc.data_files import CATALOG_PATH, GRAPH_PATH, LAYERS_PATH
+from fdc.data_files import CATALOG_PATH, LAYERS_PATH
 from fdc.db import SessionLocal
 from fdc.funnel import load_overrides, tier_index, tier_watch_items
 from fdc.models import Filing, FilingParse, Issuer, ResearchAnnotation
@@ -504,10 +504,10 @@ def read_quotes() -> QuotesView:
     )
 
 
-def read_visualization(name: Literal["graph", "layers"]) -> dict[str, Any]:
+def read_visualization(name: Literal["layers"]) -> dict[str, Any]:
     """Load one generated visualization or return an explicit unavailable state."""
 
-    path = GRAPH_PATH if name == "graph" else LAYERS_PATH
+    path = LAYERS_PATH
     if not path.exists():
         raise ReadServiceError(
             409,

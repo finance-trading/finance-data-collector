@@ -772,7 +772,6 @@ export async function mountDirectory(): Promise<void> {
   let layers: CatalogLayerListView | null = null;
   let quoteAsOfDate: string | null | undefined;
   let refreshedAt: string | null = null;
-  let valuationCacheAsOf: string | null = null;
 
   const renderQuoteNote = (): void => {
     const parts: string[] = [];
@@ -783,9 +782,6 @@ export async function mountDirectory(): Promise<void> {
     }
     if (refreshedAt) {
       parts.push(`Last refreshed ${formatRefreshTime(refreshedAt)}.`);
-    }
-    if (valuationCacheAsOf) {
-      parts.push(`Some P/E and EPS values use cached data from ${formatRefreshTime(valuationCacheAsOf)}.`);
     }
     quoteAsOf.hidden = parts.length === 0;
     quoteAsOf.textContent = parts.join(" ");
@@ -904,7 +900,6 @@ export async function mountDirectory(): Promise<void> {
   apiGet<QuotesPayload>("/api/v1/quotes")
     .then((payload) => {
       refreshedAt = payload.generated_at;
-      valuationCacheAsOf = payload.valuation_cache_as_of ?? null;
       renderQuoteNote();
     })
     .catch((error) => console.error(error));
@@ -914,7 +909,6 @@ export async function mountDirectory(): Promise<void> {
     apiPost<QuotesPayload>("/api/v1/quotes/refresh")
       .then((payload) => {
         refreshedAt = payload.generated_at;
-        valuationCacheAsOf = payload.valuation_cache_as_of ?? null;
         renderQuoteNote();
         return load();
       })

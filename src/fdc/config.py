@@ -35,6 +35,9 @@ class Settings(BaseSettings):
     retry_base_delay_seconds: float = 1.0
     retry_max_delay_seconds: float = 30.0
     quotes_proxy: str | None = None
+    #: Finviz Elite API token for the official quote-export endpoint. ``None``
+    #: falls back to scraping the public quote pages. ``FDC_FINVIZ_API_KEY``.
+    finviz_api_key: str | None = None
     #: Shared bearer key for the open write API (research annotations) when the
     #: service is reachable from outside localhost. ``None`` keeps writes
     #: local-only. ``FDC_API_KEY``.
@@ -46,6 +49,23 @@ class Settings(BaseSettings):
         if self.sec_user_agent is None or not self.sec_user_agent.strip():
             raise ValueError("FDC_SEC_USER_AGENT must be explicitly configured")
         return self.sec_user_agent.strip()
+
+    @property
+    def resolved_finviz_api_key(self) -> str | None:
+        """Finviz Elite token, defaulting to the standard ``FINVIZ_API_KEY``.
+
+        ``FDC_FINVIZ_API_KEY`` wins when set, so the collector can use a token
+        different from other tools sharing the environment.
+        """
+
+        candidates = (
+            self.finviz_api_key,
+            os.environ.get("FINVIZ_API_KEY"),
+        )
+        for candidate in candidates:
+            if candidate and candidate.strip():
+                return candidate.strip()
+        return None
 
     @property
     def resolved_quotes_proxy(self) -> str | None:

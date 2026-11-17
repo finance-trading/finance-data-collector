@@ -422,19 +422,18 @@ def test_catalog_layers_expose_the_complete_ai_universe(client):
     assert response.json()["layers"][0]["id"] == "power"
 
 
-def test_graph_visualization_is_served_by_the_read_api(client):
+def test_graph_visualization_is_no_longer_served(client):
     response = client.get("/api/v1/visualizations/graph")
 
-    assert response.status_code == 200
-    assert len(response.json()["nodes"]) == len(catalog.load_catalog().companies)
+    assert response.status_code == 422
 
 
 def test_missing_visualization_has_an_explicit_unavailable_state(
     client, monkeypatch, tmp_path
 ):
-    monkeypatch.setattr(catalog, "GRAPH_PATH", tmp_path / "missing.json")
+    monkeypatch.setattr(catalog, "LAYERS_PATH", tmp_path / "missing.json")
 
-    response = client.get("/api/v1/visualizations/graph")
+    response = client.get("/api/v1/visualizations/layers")
 
     assert response.status_code == 409
     assert response.json()["detail"]["status"] == "unavailable"
