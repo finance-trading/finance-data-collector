@@ -1,0 +1,15 @@
+{
+  "facts_path": "data/company_quality/edgartools_annual_facts_2026-10-05.csv.gz",
+  "facts_source": "finance-stastic/data/company_quality/cq-edgartools-annual-facts-2026-10-05-v2/edgartools_annual_facts.csv.gz",
+  "facts_sha256": "2de3104fac1d53c6d64354ed3c110254eaa90998fb1dedabc74cd0e069cecb02",
+  "peer_universe_source": "finance-stastic/data/raw/constituents/wikipedia.csv.gz",
+  "peer_universe_sha256": "ac827cd41022b6d92b9a43c18ae59c7dcb529e3caf9c0469c13de40b758aec63",
+  "source_rating_snapshot": "finance-stastic/data/company_quality/cq-edgartools-rating-snapshot-2026-10-05-cqv2-v4/rating_snapshots.csv.gz",
+  "source_rating_snapshot_sha256": "2d488db42d5d11358a29f566d9220b87a91187595aea63bf6f45d77909e28b17",
+  "source_run_id": "cq-edgartools-rating-snapshot-2026-10-05-cqv2-v4",
+  "rating_cutoff": "2026-09-30",
+  "rule_version": "CQ_V2",
+  "semantic_policy": "CQ_EDGARTOOLS_SEMANTIC_POLICY_V2",
+  "peer_key": "gics_sector",
+  "peer_minimum": 10
+}
