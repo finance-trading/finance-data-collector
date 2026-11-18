@@ -36,6 +36,23 @@ def test_source_fixture_covers_all_quality_statuses_and_metadata():
     }
 
 
+def test_source_fixture_preserves_company_identity_and_row_metadata():
+    rows = load_fixture()["samples"]
+    for row in rows:
+        assert isinstance(row["cik"], str)
+        assert len(row["cik"]) == 10 and row["cik"].isascii() and row["cik"].isdigit()
+        assert row["ticker"] == row["canonical_symbol"]
+        assert row["rating_cutoff"] == "2026-09-30"
+        assert row["rule_version"] == "CQ_V2"
+        assert row["semantic_policy"] == "CQ_EDGARTOOLS_SEMANTIC_POLICY_V2"
+    by_ticker = {row["ticker"]: row for row in rows}
+    assert by_ticker["CL"]["cik"] == "0000021665"
+    assert by_ticker["CL"]["quality_score"] == 70.66666666666666
+    assert by_ticker["APD"]["cik"] == "0000002969"
+    assert by_ticker["APD"]["score_available"] == "False"
+    assert by_ticker["APD"]["quality_score"] == 53.977272727272734
+
+
 def test_source_fixture_has_dimensions_and_preserves_unavailable_scores():
     for row in load_fixture()["samples"]:
         assert all(field in row for field in DIMENSIONS)

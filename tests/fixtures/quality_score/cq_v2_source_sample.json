@@ -11,7 +11,7 @@
   "samples": [
     {
       "snapshot_id": "0000021665|2026-09-30|CQ_V2|cq-edgartools-rating-snapshot-2026-10-05-cqv2-v4",
-      "cik": 21665,
+      "cik": "0000021665",
       "company_name": "Colgate-Palmolive",
       "canonical_symbol": "CL",
       "gics_sector": "Consumer Staples",
@@ -45,11 +45,12 @@
       "operating_margin_peer_count": 28,
       "cash_conversion_peer_count": 31,
       "capital_efficiency_peer_count": 31,
-      "financial_strength_peer_count": 31
+      "financial_strength_peer_count": 31,
+      "ticker": "CL"
     },
     {
       "snapshot_id": "0000002488|2026-09-30|CQ_V2|cq-edgartools-rating-snapshot-2026-10-05-cqv2-v4",
-      "cik": 2488,
+      "cik": "0000002488",
       "company_name": "Advanced Micro Devices",
       "canonical_symbol": "AMD",
       "gics_sector": "Information Technology",
@@ -83,11 +84,12 @@
       "operating_margin_peer_count": 70,
       "cash_conversion_peer_count": 72,
       "capital_efficiency_peer_count": 72,
-      "financial_strength_peer_count": 69
+      "financial_strength_peer_count": 69,
+      "ticker": "AMD"
     },
     {
       "snapshot_id": "0000002969|2026-09-30|CQ_V2|cq-edgartools-rating-snapshot-2026-10-05-cqv2-v4",
-      "cik": 2969,
+      "cik": "0000002969",
       "company_name": "Air Products",
       "canonical_symbol": "APD",
       "gics_sector": "Materials",
@@ -121,11 +123,12 @@
       "operating_margin_peer_count": 17,
       "cash_conversion_peer_count": 23,
       "capital_efficiency_peer_count": 23,
-      "financial_strength_peer_count": 18
+      "financial_strength_peer_count": 18,
+      "ticker": "APD"
     },
     {
       "snapshot_id": "0000001800|2026-09-30|CQ_V2|cq-edgartools-rating-snapshot-2026-10-05-cqv2-v4",
-      "cik": 1800,
+      "cik": "0000001800",
       "company_name": "Abbott Laboratories",
       "canonical_symbol": "ABT",
       "gics_sector": "Health Care",
@@ -159,11 +162,12 @@
       "operating_margin_peer_count": 50,
       "cash_conversion_peer_count": 58,
       "capital_efficiency_peer_count": 58,
-      "financial_strength_peer_count": 58
+      "financial_strength_peer_count": 58,
+      "ticker": "ABT"
     },
     {
       "snapshot_id": "0000007084|2026-09-30|CQ_V2|cq-edgartools-rating-snapshot-2026-10-05-cqv2-v4",
-      "cik": 7084,
+      "cik": "0000007084",
       "company_name": "Archer Daniels Midland",
       "canonical_symbol": "ADM",
       "gics_sector": "Consumer Staples",
@@ -197,11 +201,12 @@
       "operating_margin_peer_count": 28,
       "cash_conversion_peer_count": 31,
       "capital_efficiency_peer_count": 31,
-      "financial_strength_peer_count": 31
+      "financial_strength_peer_count": 31,
+      "ticker": "ADM"
     },
     {
       "snapshot_id": "0000004962|2026-09-30|CQ_V2|cq-edgartools-rating-snapshot-2026-10-05-cqv2-v4",
-      "cik": 4962,
+      "cik": "0000004962",
       "company_name": "American Express",
       "canonical_symbol": "AXP",
       "gics_sector": "Financials",
@@ -235,11 +240,12 @@
       "operating_margin_peer_count": 29,
       "cash_conversion_peer_count": 73,
       "capital_efficiency_peer_count": 73,
-      "financial_strength_peer_count": 69
+      "financial_strength_peer_count": 69,
+      "ticker": "AXP"
     },
     {
       "snapshot_id": "0000004977|2026-09-30|CQ_V2|cq-edgartools-rating-snapshot-2026-10-05-cqv2-v4",
-      "cik": 4977,
+      "cik": "0000004977",
       "company_name": "Aflac",
       "canonical_symbol": "AFL",
       "gics_sector": "Financials",
@@ -273,11 +279,12 @@
       "operating_margin_peer_count": 29,
       "cash_conversion_peer_count": 73,
       "capital_efficiency_peer_count": 73,
-      "financial_strength_peer_count": 69
+      "financial_strength_peer_count": 69,
+      "ticker": "AFL"
     },
     {
       "snapshot_id": "0001510295|2026-09-30|CQ_V2|cq-edgartools-rating-snapshot-2026-10-05-cqv2-v4",
-      "cik": 1510295,
+      "cik": "0001510295",
       "company_name": "Marathon Petroleum",
       "canonical_symbol": "MPC",
       "gics_sector": "Energy",
@@ -311,7 +318,8 @@
       "operating_margin_peer_count": 14,
       "cash_conversion_peer_count": 19,
       "capital_efficiency_peer_count": 19,
-      "financial_strength_peer_count": 18
+      "financial_strength_peer_count": 18,
+      "ticker": "MPC"
     }
   ]
 }
