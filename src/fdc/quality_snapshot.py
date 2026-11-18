@@ -38,15 +38,38 @@ REQUIRED_FIELDS = {
 
 
 def _decimal(value: str) -> Decimal | None:
-    if not value.strip():
+    text = value.strip()
+    if not text:
         return None
     try:
-        number = Decimal(value)
+        number = Decimal(text)
     except InvalidOperation as error:
         raise ValueError(f"invalid numeric score value: {value!r}") from error
+    # A non-finite value (inf / -inf / nan) is not a usable number; the source
+    # snapshot emits these for, e.g., interest coverage with near-zero
+    # interest expense. Treat as unavailable rather than certifying it.
     if not number.is_finite():
-        raise ValueError(f"non-finite numeric score value: {value!r}")
+        return None
     return number
+
+
+def _int(value: str) -> int | None:
+    """Parse an integer field that may carry a trailing ``.0`` from CSV export."""
+    if not value.strip():
+        return None
+    text = value.strip()
+    if text.endswith(".0"):
+        text = text[:-2]
+    try:
+        return int(text)
+    except ValueError:
+        try:
+            number = float(text)
+        except ValueError as error:
+            raise ValueError(f"invalid integer score value: {value!r}") from error
+        if not number.is_integer():
+            raise ValueError(f"non-integer score value: {value!r}")
+        return int(number)
 
 
 def seed_from_source_snapshot(
@@ -111,7 +134,7 @@ def seed_from_source_snapshot(
         if available not in {"true", "false"}:
             raise ValueError(f"invalid score availability for {ticker}")
         fields = {key: _decimal(row[key]) for key in DECIMAL_FIELDS}
-        fields.update({key: int(row[key]) if row[key].strip() else None for key in INT_FIELDS})
+        fields.update({key: _int(row[key]) for key in INT_FIELDS})
         fields.update({key: [part for part in row[key].split("|") if part] for key in LIST_FIELDS})
         pending.append(CompanyQualityScore(
             snapshot_id=snapshot_id, ticker=ticker, cik=source_cik or None,

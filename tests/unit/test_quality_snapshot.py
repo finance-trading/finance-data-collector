@@ -139,3 +139,99 @@ def test_real_snapshot_checksum_matches_manifest():
     root = Path(__file__).resolve().parents[2] / "data" / "company_quality"
     manifest = json.loads((root / "source_manifest.json").read_text())
     assert hashlib.sha256((root / "source_rating_snapshot.csv.gz").read_bytes()).hexdigest() == manifest["source_rating_snapshot_sha256"]
+
+
+def test_source_style_float_int_fields_and_blank_counts(tmp_path, monkeypatch):
+    import fdc.quality_snapshot as module
+
+    row = {
+        "canonical_symbol": "ABC", "cik": "123", "company_name": "ABC Corp",
+        "gics_sector": "Technology", "rating_cutoff": "2026-09-30",
+        "rule_version": "CQ_V2", "semantic_policy": "policy", "quality_score": "72.123456",
+        "score_available": "True", "status": "QUALIFIED", "dimension_count": "",
+        "peer_count": "", "period_ends": "2024-12-31|2025-12-31",
+        "unknown_reasons": "missing_a", "v2_hard_status": "QUALIFIED",
+        "v2_unknown_reasons": "", "v2_hard_gate_count": "5.0", "v2_hard_gate_total": "5.0",
+        "v2_net_debt_ebitda": "1.25", "v2_interest_coverage": "8",
+        "v2_cumulative_net_income": "120", "v2_cumulative_cfo": "130",
+        "v2_positive_operating_income_years": "5.0", "v2_positive_cfo_years": "4.0",
+        **{f"{name}_dimension": "70" for name in (
+            "revenue_growth", "operating_margin", "cash_conversion", "capital_efficiency", "financial_strength")},
+    }
+    path = tmp_path / "scores.csv.gz"
+    with gzip.open(path, "wt", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=row.keys())
+        writer.writeheader()
+        writer.writerows([row])
+    catalog = tmp_path / "catalog.json"
+    catalog.write_text(json.dumps({"companies": [{"ticker": "ABC", "cik": "0000000123"}]}))
+    manifest = tmp_path / "manifest.json"
+    checksum = hashlib.sha256(path.read_bytes()).hexdigest()
+    manifest.write_text(json.dumps({
+        "seed_snapshot_path": str(path), "source_rating_snapshot_sha256": checksum,
+        "facts_sha256": "b" * 64, "rating_cutoff": "2026-09-30",
+        "rule_version": "CQ_V2", "semantic_policy": "policy",
+    }))
+    monkeypatch.setattr(module, "SNAPSHOT_PATH", path)
+    monkeypatch.setattr(module, "MANIFEST_PATH", manifest)
+    monkeypatch.setattr(module, "CATALOG_PATH", catalog)
+
+    engine = create_engine("sqlite://")
+    Base.metadata.create_all(engine)
+    with Session(engine) as session:
+        seed_from_source_snapshot(session, "run-float", date(2026, 9, 30), datetime.now(UTC))
+        session.commit()
+        row = session.scalars(select(CompanyQualityScore)).one()
+        assert row.v2_hard_gate_count == 5
+        assert row.v2_positive_operating_income_years == 5
+        assert row.v2_positive_cfo_years == 4
+        assert row.dimension_count is None
+        assert row.peer_count is None
+
+
+def test_non_finite_decimal_fields_become_unavailable(tmp_path, monkeypatch):
+    import fdc.quality_snapshot as module
+
+    row = {
+        "canonical_symbol": "ABC", "cik": "123", "company_name": "ABC Corp",
+        "gics_sector": "Financials", "rating_cutoff": "2026-09-30",
+        "rule_version": "CQ_V2", "semantic_policy": "policy", "quality_score": "",
+        "score_available": "False", "status": "UNKNOWN", "dimension_count": "",
+        "peer_count": "", "period_ends": "2024-12-31", "unknown_reasons": "",
+        "v2_hard_status": "UNKNOWN", "v2_unknown_reasons": "missing",
+        "v2_hard_gate_count": "", "v2_hard_gate_total": "",
+        "v2_net_debt_ebitda": "inf", "v2_interest_coverage": "-inf",
+        "v2_cumulative_net_income": "nan", "v2_cumulative_cfo": "",
+        "v2_positive_operating_income_years": "", "v2_positive_cfo_years": "",
+        **{f"{name}_dimension": "" for name in (
+            "revenue_growth", "operating_margin", "cash_conversion", "capital_efficiency", "financial_strength")},
+    }
+    path = tmp_path / "scores.csv.gz"
+    with gzip.open(path, "wt", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=row.keys())
+        writer.writeheader()
+        writer.writerows([row])
+    catalog = tmp_path / "catalog.json"
+    catalog.write_text(json.dumps({"companies": [{"ticker": "ABC", "cik": "0000000123"}]}))
+    manifest = tmp_path / "manifest.json"
+    manifest.write_text(json.dumps({
+        "seed_snapshot_path": str(path),
+        "source_rating_snapshot_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+        "facts_sha256": "b" * 64, "rating_cutoff": "2026-09-30",
+        "rule_version": "CQ_V2", "semantic_policy": "policy",
+    }))
+    monkeypatch.setattr(module, "SNAPSHOT_PATH", path)
+    monkeypatch.setattr(module, "MANIFEST_PATH", manifest)
+    monkeypatch.setattr(module, "CATALOG_PATH", catalog)
+
+    engine = create_engine("sqlite://")
+    Base.metadata.create_all(engine)
+    with Session(engine) as session:
+        seed_from_source_snapshot(session, "run-nonfinite", date(2026, 9, 30), datetime.now(UTC))
+        session.commit()
+        row = session.scalars(select(CompanyQualityScore)).one()
+        assert row.v2_net_debt_ebitda is None
+        assert row.v2_interest_coverage is None
+        assert row.v2_cumulative_net_income is None
+        assert row.quality_score is None
+
