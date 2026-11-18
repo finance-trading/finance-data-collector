@@ -129,6 +129,15 @@ class QuoteMetadata(Base):
     payload: Mapped[dict] = mapped_column(JSON, nullable=False)
 
 
+class CompanyQualitySnapshot(Base):
+    """Unique reservation for one atomic scoring run."""
+
+    __tablename__ = "company_quality_snapshot"
+
+    snapshot_id: Mapped[str] = mapped_column(String(255), primary_key=True)
+    calculated_at: Mapped[datetime] = mapped_column(UtcDateTime, nullable=False)
+
+
 class CompanyQualityScore(Base):
     """One immutable result for a company in a quality scoring run."""
 
