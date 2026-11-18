@@ -121,6 +121,41 @@ export interface CompanyView {
   filing_count: number;
 }
 
+export interface QualityScoreView {
+  ticker: string;
+  cik: string | null;
+  company_name: string;
+  sector: string | null;
+  rating_cutoff: string;
+  calculated_at: string;
+  snapshot_id: string;
+  rule_version: string;
+  semantic_policy: string;
+  source_facts_sha256: string | null;
+  quality_score: string | null;
+  score_available: boolean;
+  status: string;
+  dimension_count: number | null;
+  peer_count: number | null;
+  period_ends: string[] | null;
+  revenue_growth_dimension: string | null;
+  operating_margin_dimension: string | null;
+  cash_conversion_dimension: string | null;
+  capital_efficiency_dimension: string | null;
+  financial_strength_dimension: string | null;
+  unknown_reasons: string[];
+  v2_hard_status: string | null;
+  v2_unknown_reasons: string[];
+  v2_hard_gate_count: number | null;
+  v2_hard_gate_total: number | null;
+  v2_net_debt_ebitda: string | null;
+  v2_interest_coverage: string | null;
+  v2_cumulative_net_income: string | null;
+  v2_cumulative_cfo: string | null;
+  v2_positive_operating_income_years: number | null;
+  v2_positive_cfo_years: number | null;
+}
+
 export interface FilingSummary {
   accession: string;
   form: string;
