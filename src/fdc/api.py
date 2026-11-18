@@ -4,13 +4,15 @@ from __future__ import annotations
 
 import logging
 import secrets
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
+from decimal import Decimal
 from pathlib import Path
 from urllib.parse import urlparse
 from typing import Annotated, Any, Callable, Literal, TypeVar
 
 from fastapi import FastAPI, HTTPException, Query, Request
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from sqlalchemy import select
 from starlette.staticfiles import StaticFiles
 
 from fdc import catalog, funnel, read_service
@@ -24,7 +26,7 @@ from fdc.catalog import (
     SortKey,
 )
 from fdc.db import SessionLocal
-from fdc.models import ResearchAnnotation
+from fdc.models import CompanyQualityScore, ResearchAnnotation
 from fdc.quotes import write_quotes
 from fdc.read_service import (
     CompanyView,
@@ -401,6 +403,64 @@ def refresh_quotes() -> QuotesView:
 @app.get("/api/v1/visualizations/{name}")
 def visualization(name: Literal["layers"]) -> dict[str, Any]:
     return _read(lambda: catalog.read_visualization(name))
+
+
+class QualityScoreView(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    ticker: str
+    cik: str | None
+    company_name: str
+    sector: str | None
+    rating_cutoff: date
+    calculated_at: datetime
+    snapshot_id: str
+    rule_version: str
+    semantic_policy: str
+    source_facts_sha256: str | None
+    quality_score: Decimal | None
+    score_available: bool
+    status: str
+    dimension_count: int | None
+    peer_count: int | None
+    period_ends: list | None
+    revenue_growth_dimension: Decimal | None
+    operating_margin_dimension: Decimal | None
+    cash_conversion_dimension: Decimal | None
+    capital_efficiency_dimension: Decimal | None
+    financial_strength_dimension: Decimal | None
+    unknown_reasons: list
+    v2_hard_status: str | None
+    v2_unknown_reasons: list
+    v2_hard_gate_count: int | None
+    v2_hard_gate_total: int | None
+    v2_net_debt_ebitda: Decimal | None
+    v2_interest_coverage: Decimal | None
+    v2_cumulative_net_income: Decimal | None
+    v2_cumulative_cfo: Decimal | None
+    v2_positive_operating_income_years: int | None
+    v2_positive_cfo_years: int | None
+
+
+@app.get("/api/v1/companies/{ticker}/quality-score", response_model=QualityScoreView)
+def company_quality_score(ticker: str) -> QualityScoreView:
+    ticker = ticker.strip().upper()
+    if ticker not in {company.ticker.upper() for company in catalog.load_catalog().companies}:
+        raise HTTPException(status_code=404, detail="Company not found in catalog")
+    with SessionLocal() as session:
+        score = session.scalars(
+            select(CompanyQualityScore)
+            .where(CompanyQualityScore.ticker == ticker)
+            .order_by(
+                CompanyQualityScore.calculated_at.desc(),
+                CompanyQualityScore.rating_cutoff.desc(),
+                CompanyQualityScore.snapshot_id.desc(),
+            )
+            .limit(1)
+        ).first()
+        if score is None:
+            raise HTTPException(status_code=404, detail="Quality score not available")
+        return QualityScoreView.model_validate(score)
 
 
 @app.get("/api/v1/companies/{ticker}", response_model=CompanyView)
