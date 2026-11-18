@@ -22,6 +22,8 @@ from fdc.models import Base, Filing, FilingParse, Issuer, ParseRun
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 EXPECTED_INDEXES = {
+    "ix_company_quality_score_ticker_calculated_at",
+    "ix_company_quality_score_snapshot_id",
     "ix_artifact_sha256",
     "ix_evidence_locator_filing_id_locator_type",
     "ix_filing_accession_number",
@@ -36,6 +38,17 @@ EXPECTED_INDEXES = {
     "ix_extracted_table_filing_id_table_type",
     "ix_filing_section_filing_id_section_type",
 }
+
+
+def test_quality_score_migration_constraints(migrated_url: str) -> None:
+    engine = create_engine(migrated_url)
+    inspector = inspect(engine)
+    assert "company_quality_score" in inspector.get_table_names()
+    unique = inspector.get_unique_constraints("company_quality_score")
+    assert any(item["column_names"] == ["snapshot_id", "ticker"] for item in unique)
+    columns = {item["name"] for item in inspector.get_columns("company_quality_score")}
+    assert {"quality_score", "unknown_reasons", "v2_hard_status", "source_facts_sha256"} <= columns
+    engine.dispose()
 
 
 def alembic_config(database_url: str) -> Config:

@@ -129,6 +129,52 @@ class QuoteMetadata(Base):
     payload: Mapped[dict] = mapped_column(JSON, nullable=False)
 
 
+class CompanyQualityScore(Base):
+    """One immutable result for a company in a quality scoring run."""
+
+    __tablename__ = "company_quality_score"
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    snapshot_id: Mapped[str] = mapped_column(String(255), nullable=False)
+    ticker: Mapped[str] = mapped_column(String(32), nullable=False)
+    cik: Mapped[str | None] = mapped_column(String(10))
+    company_name: Mapped[str] = mapped_column(String(255), nullable=False)
+    sector: Mapped[str | None] = mapped_column(String(128))
+    rating_cutoff: Mapped[date] = mapped_column(Date, nullable=False)
+    calculated_at: Mapped[datetime] = mapped_column(UtcDateTime, nullable=False)
+    rule_version: Mapped[str] = mapped_column(String(64), nullable=False)
+    semantic_policy: Mapped[str] = mapped_column(String(128), nullable=False)
+    source_facts_sha256: Mapped[str | None] = mapped_column(String(64))
+    quality_score: Mapped[Decimal | None] = mapped_column(Numeric(24, 6))
+    score_available: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    status: Mapped[str] = mapped_column(String(32), nullable=False)
+    dimension_count: Mapped[int | None] = mapped_column(Integer)
+    peer_count: Mapped[int | None] = mapped_column(Integer)
+    period_ends: Mapped[list | None] = mapped_column(JSON)
+    revenue_growth_dimension: Mapped[Decimal | None] = mapped_column(Numeric(24, 6))
+    operating_margin_dimension: Mapped[Decimal | None] = mapped_column(Numeric(24, 6))
+    cash_conversion_dimension: Mapped[Decimal | None] = mapped_column(Numeric(24, 6))
+    capital_efficiency_dimension: Mapped[Decimal | None] = mapped_column(Numeric(24, 6))
+    financial_strength_dimension: Mapped[Decimal | None] = mapped_column(Numeric(24, 6))
+    unknown_reasons: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    v2_hard_status: Mapped[str | None] = mapped_column(String(32))
+    v2_unknown_reasons: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    v2_hard_gate_count: Mapped[int | None] = mapped_column(Integer)
+    v2_hard_gate_total: Mapped[int | None] = mapped_column(Integer)
+    v2_net_debt_ebitda: Mapped[Decimal | None] = mapped_column(Numeric(30, 6))
+    v2_interest_coverage: Mapped[Decimal | None] = mapped_column(Numeric(30, 6))
+    v2_cumulative_net_income: Mapped[Decimal | None] = mapped_column(Numeric(30, 6))
+    v2_cumulative_cfo: Mapped[Decimal | None] = mapped_column(Numeric(30, 6))
+    v2_positive_operating_income_years: Mapped[int | None] = mapped_column(Integer)
+    v2_positive_cfo_years: Mapped[int | None] = mapped_column(Integer)
+
+    __table_args__ = (
+        UniqueConstraint("snapshot_id", "ticker", name="uq_company_quality_score_snapshot_id_ticker"),
+        Index("ix_company_quality_score_ticker_calculated_at", "ticker", "calculated_at"),
+        Index("ix_company_quality_score_snapshot_id", "snapshot_id"),
+    )
+
+
 class TimestampMixin:
     """Creation/update timestamps shared by every parser row."""
 
