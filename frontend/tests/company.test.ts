@@ -8,7 +8,6 @@ import {
   readTicker,
 } from "../src/pages/company";
 import { markCurrentNav } from "../src/components/site-shell";
-
 describe("company research state", () => {
   it("normalizes the ticker from the query string", () => {
     expect(readTicker(new URL("http://test/company.html?ticker=nvda"))).toBe("NVDA");
@@ -131,5 +130,65 @@ describe("site shell", () => {
       .toBe("page");
     expect(document.querySelector("[href='http://test/index.html']")?.hasAttribute("aria-current"))
       .toBe(false);
+  });
+});
+
+describe("quality score page state", () => {
+  beforeEach(() => {
+    document.body.innerHTML = `
+      <article id="quality-score" aria-labelledby="quality-score-title">
+        <div class="quality-header">
+          <h2 id="quality-score-title">Quality score</h2>
+          <p class="state-message" role="status">Loading quality score…</p>
+        </div>
+      </article>
+    `;
+  });
+
+  const score = {
+    ticker: "AAPL", cik: "0000320193", company_name: "Apple Inc.", sector: "Technology",
+    rating_cutoff: "2026-09-30", calculated_at: "2026-10-05T00:00:00Z",
+    snapshot_id: "seed", rule_version: "CQ_V2", semantic_policy: "CQ_EDGARTOOLS_SEMANTIC_POLICY_V2",
+    source_facts_sha256: "a".repeat(64), quality_score: "70.666667", score_available: true,
+    status: "QUALIFIED", dimension_count: 5, peer_count: 12, period_ends: ["2021-09-25", "2026-09-30"],
+    revenue_growth_dimension: "83.1", operating_margin_dimension: "23.2", cash_conversion_dimension: "22.5",
+    capital_efficiency_dimension: "18.3", financial_strength_dimension: "76.4", unknown_reasons: [],
+    v2_hard_status: "QUALIFIED", v2_unknown_reasons: [], v2_hard_gate_count: 5, v2_hard_gate_total: 5,
+    v2_net_debt_ebitda: "0.1", v2_interest_coverage: "12.4", v2_cumulative_net_income: "300000000000",
+    v2_cumulative_cfo: "400000000000", v2_positive_operating_income_years: 5, v2_positive_cfo_years: 5,
+  };
+
+  it("shows the score, dimensions, gates, and cutoff", async () => {
+    const {renderQualityScore} = await import("../src/pages/company");
+    renderQualityScore(score);
+    const panel = document.querySelector<HTMLElement>("#quality-score")!;
+    expect(panel.querySelector(".quality-score-value")?.textContent).toBe("70.67");
+    expect(panel.textContent).toContain("Revenue growth");
+    expect(panel.textContent).toContain("Financial strength");
+    expect(panel.textContent).toContain("HARD_GATES_PASS");
+    expect(panel.textContent).toContain("Cutoff 2026-09-30");
+  });
+
+  it("keeps diagnostic scores visibly non-certified", async () => {
+    const {renderQualityScore} = await import("../src/pages/company");
+    renderQualityScore({...score, score_available: false, quality_score: "53.977273", status: "NOT_QUALIFIED"});
+    const panel = document.querySelector<HTMLElement>("#quality-score")!;
+    expect(panel.querySelector(".quality-score-value")?.textContent).toBe("53.98");
+    expect(panel.textContent).toContain("Diagnostic score only");
+  });
+
+  it("renders no-record and request-failure states", async () => {
+    const {renderQualityScore} = await import("../src/pages/company");
+    renderQualityScore(null);
+    expect(document.querySelector("#quality-score")?.textContent).toContain("No score record");
+    renderQualityScore(null, "Quality score request failed");
+    expect(document.querySelector("#quality-score [role=alert]")?.textContent).toContain("request failed");
+  });
+
+  it("labels model statuses without treating them as zero", async () => {
+    const {qualityScoreStateLabel} = await import("../src/pages/company");
+    expect(qualityScoreStateLabel("QUALIFIED")).toBe("Qualified");
+    expect(qualityScoreStateLabel("SEPARATE_MODEL")).toBe("Separate model");
+    expect(qualityScoreStateLabel("UNKNOWN")).toBe("Unknown");
   });
 });

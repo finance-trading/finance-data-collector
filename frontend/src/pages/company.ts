@@ -7,6 +7,7 @@ import type {
   FilingListView,
   FilingSummary,
   FilingView,
+  QualityScoreView,
   SectionView,
   StatementLine,
   StatementView,
@@ -17,6 +18,7 @@ import { markCurrentNav } from "../components/site-shell";
 
 const API_COMPANIES = "/api/v1/companies/";
 const API_FILINGS = "/api/v1/filings/";
+const API_QUALITY = "/api/v1/companies/";
 
 interface RequestToken {
   accession: string;
@@ -59,6 +61,92 @@ export function companyStatusLabel(status: number | string | null): string {
   if (status === "unsupported") return "Unsupported";
   if (status === "success" || status === "parsed") return "Parsed";
   return "Unavailable";
+}
+
+export function qualityScoreStateLabel(status: string): string {
+  switch (status) {
+    case "QUALIFIED": return "Qualified";
+    case "NOT_QUALIFIED": return "Not qualified";
+    case "SEPARATE_MODEL": return "Separate model";
+    default: return "Unknown";
+  }
+}
+
+export async function loadQualityScore(ticker: string): Promise<QualityScoreView | null> {
+  try {
+    return await apiGet<QualityScoreView>(`${API_QUALITY}${encodeURIComponent(ticker.trim().toUpperCase())}/quality-score`);
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) return null;
+    throw error;
+  }
+}
+
+function qualityNumber(value: string | null): string {
+  if (value == null || !Number.isFinite(Number(value))) return "—";
+  return Number(value).toFixed(2);
+}
+
+export function renderQualityScore(score: QualityScoreView | null, error?: string): void {
+  const panel = document.getElementById("quality-score");
+  if (!panel) return;
+  const heading = textElement("h2", "", "Quality score");
+  heading.id = "quality-score-title";
+  if (error) {
+    const alert = textElement("p", "state-message unavailable", error);
+    alert.setAttribute("role", "alert");
+    panel.replaceChildren(heading, alert);
+    return;
+  }
+  if (!score) {
+    const message = textElement("p", "state-message", "No score record is available for this company.");
+    message.setAttribute("role", "status");
+    panel.replaceChildren(heading, message);
+    return;
+  }
+
+  const status = textElement("p", "quality-score-status", qualityScoreStateLabel(score.status));
+  const scoreValue = score.score_available && score.quality_score != null
+    ? qualityNumber(score.quality_score)
+    : (score.status === "SEPARATE_MODEL" ? "—" : qualityNumber(score.quality_score));
+  const scoreNode = textElement("strong", "quality-score-value", scoreValue);
+  const scoreHeader = document.createElement("div");
+  scoreHeader.className = "quality-score-summary";
+  scoreHeader.append(scoreNode, status);
+
+  const details = document.createElement("dl");
+  details.className = "quality-score-dimensions";
+  const dimensions: Array<[string, string | null]> = [
+    ["Revenue growth", score.revenue_growth_dimension],
+    ["Operating margin", score.operating_margin_dimension],
+    ["Cash conversion", score.cash_conversion_dimension],
+    ["Capital efficiency", score.capital_efficiency_dimension],
+    ["Financial strength", score.financial_strength_dimension],
+  ];
+  for (const [label, value] of dimensions) {
+    details.append(textElement("dt", "", label), textElement("dd", "", qualityNumber(value)));
+  }
+
+  const explanation = document.createElement("div");
+  explanation.className = "quality-score-explanation";
+  const gateStatus = score.v2_hard_status === "QUALIFIED" ? "HARD_GATES_PASS"
+    : score.v2_hard_status === "NOT_QUALIFIED" ? "HARD_GATES_FAIL"
+      : score.v2_hard_status === "SEPARATE_MODEL" ? "SEPARATE_MODEL"
+        : "HARD_GATES_UNKNOWN";
+  const gate = textElement("p", "", `${gateStatus} (${score.v2_hard_gate_count ?? 0}/${score.v2_hard_gate_total ?? 0})`);
+  gate.setAttribute("role", "status");
+  explanation.append(gate);
+  const reasons = [...score.unknown_reasons, ...score.v2_unknown_reasons];
+  if (reasons.length) {
+    const list = document.createElement("ul");
+    for (const reason of reasons) list.append(textElement("li", "", reason));
+    explanation.append(list);
+  }
+  if (!score.score_available && score.quality_score != null) {
+    explanation.append(textElement("p", "quality-score-note", "Diagnostic score only — not certified as available."));
+  }
+  const provenance = textElement("p", "quality-score-provenance",
+    `Cutoff ${score.rating_cutoff} · ${score.rule_version} · ${score.snapshot_id}`);
+  panel.replaceChildren(heading, scoreHeader, details, explanation, provenance);
 }
 
 export function createCompanyState() {
@@ -723,11 +811,22 @@ export async function mountCompanyPage(): Promise<void> {
   byId<HTMLSelectElement>("form-filter").addEventListener("change", (event) => {
     void loadFilings((event.currentTarget as HTMLSelectElement).value);
   });
+  // Quality score loads independently so a missing or failed score never
+  // blocks the company record or filing workspace.
+  void loadQuality(ticker);
   try {
     renderCompany(await loadCompany(ticker));
     await loadFilings();
   } catch (error) {
     setCompanyFailure(error);
+  }
+}
+
+async function loadQuality(ticker: string): Promise<void> {
+  try {
+    renderQualityScore(await loadQualityScore(ticker));
+  } catch {
+    renderQualityScore(null, "Quality score request failed");
   }
 }
 

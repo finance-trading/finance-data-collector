@@ -31,6 +31,38 @@ app.add_typer(parse_runs_app, name="parse-runs")
 _DEFAULT_DATABASE_URL = "postgresql+psycopg://fdc:fdc@localhost:5432/fdc"
 
 
+@app.command("quality-seed")
+def quality_seed(
+    snapshot_id: str = typer.Option(..., "--snapshot-id"),
+    cutoff: str = typer.Option(..., "--cutoff", help="Source rating cutoff (YYYY-MM-DD)."),
+) -> None:
+    """Import the precomputed source quality snapshot for catalog companies."""
+    from datetime import UTC, date, datetime
+
+    from alembic.config import Config
+    from alembic.migration import MigrationContext
+    from alembic.script import ScriptDirectory
+
+    from fdc.db import get_engine, session_scope
+    from fdc.sec_storage import PROJECT_ROOT
+    from fdc.quality_snapshot import seed_from_source_snapshot
+
+    try:
+        cutoff_date = date.fromisoformat(cutoff)
+    except ValueError as error:
+        raise typer.BadParameter("cutoff must be YYYY-MM-DD", param_hint="--cutoff") from error
+    config = Config(str(PROJECT_ROOT / "alembic.ini"))
+    config.set_main_option("script_location", str(PROJECT_ROOT / "alembic"))
+    heads = set(ScriptDirectory.from_config(config).get_heads())
+    with get_engine().connect() as connection:
+        current = set(MigrationContext.configure(connection).get_current_heads())
+    if current != heads:
+        raise typer.BadParameter("database schema not migrated; run alembic upgrade head")
+    with session_scope() as session:
+        count = seed_from_source_snapshot(session, snapshot_id, cutoff_date, datetime.now(UTC))
+    typer.echo(f"Imported {count} quality score rows")
+
+
 @app.command("import-quotes")
 def import_quotes(path: Path = typer.Argument(..., exists=True, dir_okay=False)) -> None:
     from fdc.quote_store import import_json
