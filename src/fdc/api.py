@@ -57,13 +57,13 @@ def _read(operation: Callable[[], ViewT]) -> ViewT:
 def companies(
     query: str | None = None,
     layer: Annotated[list[str] | None, Query()] = None,
-    segment: str | None = None,
-    ingestion_status: Annotated[IngestionStatus | None, Query()] = None,
+    segment: Annotated[list[str] | None, Query()] = None,
+    ingestion_status: Annotated[list[IngestionStatus] | None, Query()] = None,
     sort_by: Annotated[SortKey | None, Query()] = None,
     order: Order = "desc",
     funnel_tier: Annotated[
-        int | None,
-        Query(ge=1, le=3, description="Funnel tier: 1 core, 2 major, 3 watch"),
+        list[Annotated[int, Query(ge=1, le=3)]] | None,
+        Query(description="Funnel tier: 1 core, 2 major, 3 watch"),
     ] = None,
     limit: Annotated[int, Query(ge=1, le=100)] = 25,
     offset: Annotated[int, Query(ge=0)] = 0,

@@ -48,21 +48,30 @@
             <input id="directory-search" name="query" type="search"
                    placeholder="Ticker or company name" autocomplete="off">
           </label>
-          <div class="layer-filter-group">
+          <div class="filter-menu-group layer-filter-group">
             <span id="layer-filter-label">AI layer</span>
-            <details class="layer-filter" id="layer-filter">
+            <details class="filter-menu" id="layer-filter">
               <summary aria-labelledby="layer-filter-label layer-filter-summary"><span id="layer-filter-summary">All layers</span></summary>
-              <div class="layer-filter-options" role="group" aria-labelledby="layer-filter-label"></div>
+              <div class="filter-menu-options" role="group" aria-labelledby="layer-filter-label"></div>
             </details>
           </div>
-          <label>
-            Segment
-            <select id="segment-filter">
-              <option value="">All segments</option>
-            </select>
-          </label>
-          <div class="tier-filter-group">
-            <label for="tier-filter">Funnel tier</label>
+          <div class="filter-menu-group segment-filter-group">
+            <span id="segment-filter-label">Segment</span>
+            <details class="filter-menu" id="segment-filter-menu">
+              <summary aria-labelledby="segment-filter-label segment-filter-summary"><span id="segment-filter-summary">All segments</span></summary>
+              <div id="segment-filter-options" class="filter-menu-options" role="group" aria-labelledby="segment-filter-label"></div>
+            </details>
+          </div>
+          <div class="filter-menu-group tier-filter-group">
+            <span id="tier-filter-label">Funnel tier</span>
+            <details class="filter-menu" id="tier-filter-menu">
+              <summary aria-labelledby="tier-filter-label tier-filter-summary"><span id="tier-filter-summary">All tiers</span></summary>
+              <div id="tier-filter-options" class="filter-menu-options" role="group" aria-labelledby="tier-filter-label">
+                <label><input type="checkbox" value="1">T1 Core</label>
+                <label><input type="checkbox" value="2">T2 Major</label>
+                <label><input type="checkbox" value="3">T3 Watch</label>
+              </div>
+            </details>
             <details class="tier-help">
               <summary aria-label="About funnel tiers"><span aria-hidden="true">?</span></summary>
               <div class="tier-help-note">
@@ -71,23 +80,19 @@
                 <p>Manual tiers need a reason. Price drawdowns trigger research, not an automatic tier upgrade.</p>
               </div>
             </details>
-            <select id="tier-filter">
-              <option value="">All tiers</option>
-              <option value="1">T1 Core</option>
-              <option value="2">T2 Major</option>
-              <option value="3">T3 Watch</option>
-            </select>
           </div>
-          <label>
-            Ingestion status
-            <select id="status-filter">
-              <option value="">All statuses</option>
-              <option value="parsed">Parsed</option>
-              <option value="failed">Parse failed</option>
-              <option value="unavailable">Unavailable</option>
-              <option value="not_ingested">Not ingested</option>
-            </select>
-          </label>
+          <div class="filter-menu-group status-filter-group">
+            <span id="status-filter-label">Ingestion status</span>
+            <details class="filter-menu" id="status-filter-menu">
+              <summary aria-labelledby="status-filter-label status-filter-summary"><span id="status-filter-summary">All statuses</span></summary>
+              <div id="status-filter-options" class="filter-menu-options" role="group" aria-labelledby="status-filter-label">
+                <label><input type="checkbox" value="parsed">Parsed</label>
+                <label><input type="checkbox" value="failed">Parse failed</label>
+                <label><input type="checkbox" value="unavailable">Unavailable</label>
+                <label><input type="checkbox" value="not_ingested">Not ingested</label>
+              </div>
+            </details>
+          </div>
         </div>
       </form>
 

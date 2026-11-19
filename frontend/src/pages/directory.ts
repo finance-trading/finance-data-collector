@@ -25,15 +25,15 @@ export type DirectorySort = `${DirectorySortKey}_${"desc" | "asc"}`;
 export interface DirectoryState {
   query: string;
   layers: string[];
-  segment: string;
-  tier: "" | "1" | "2" | "3";
-  status: "" | IngestionStatus;
+  segments: string[];
+  tiers: Array<"1" | "2" | "3">;
+  statuses: IngestionStatus[];
   sort: "" | DirectorySort;
   page: number;
   pageSize: 25 | 50 | 100;
 }
 
-const tiers = new Set<DirectoryState["tier"]>(["", "1", "2", "3"]);
+const tiers = new Set<DirectoryState["tiers"][number]>(["1", "2", "3"]);
 
 const statuses = new Set<IngestionStatus>([
   "parsed",
@@ -58,21 +58,19 @@ const sorts = new Set<DirectorySort>([
 ]);
 
 export function readDirectoryState(search: URLSearchParams): DirectoryState {
-  const rawStatus = search.get("status") ?? "";
   const rawSort = search.get("sort") ?? "";
   const rawPage = Number(search.get("page") ?? "1");
   const rawPageSize = Number(search.get("pageSize") ?? "25");
-  const rawTier = search.get("tier") ?? "";
   return {
     query: search.get("query")?.trim() ?? "",
     layers: [...new Set(search.getAll("layer").filter(Boolean))],
-    segment: search.get("segment") ?? "",
-    tier: tiers.has(rawTier as DirectoryState["tier"])
-      ? (rawTier as DirectoryState["tier"])
-      : "",
-    status: statuses.has(rawStatus as IngestionStatus)
-      ? (rawStatus as IngestionStatus)
-      : "",
+    segments: [...new Set(search.getAll("segment").filter(Boolean))],
+    tiers: [...new Set(search.getAll("tier"))].filter(
+      (value) => tiers.has(value as DirectoryState["tiers"][number]),
+    ) as DirectoryState["tiers"],
+    statuses: [...new Set(search.getAll("status"))].filter(
+      (value) => statuses.has(value as IngestionStatus),
+    ) as IngestionStatus[],
     sort: sorts.has(rawSort as DirectorySort) ? (rawSort as DirectorySort) : "",
     page: Number.isInteger(rawPage) && rawPage > 0 ? rawPage : 1,
     pageSize: pageSizes.has(rawPageSize)
@@ -85,9 +83,9 @@ export function writeDirectoryState(state: DirectoryState): URLSearchParams {
   const params = new URLSearchParams();
   if (state.query) params.set("query", state.query);
   state.layers.forEach((layer) => params.append("layer", layer));
-  if (state.segment) params.set("segment", state.segment);
-  if (state.tier) params.set("tier", state.tier);
-  if (state.status) params.set("status", state.status);
+  state.segments.forEach((value) => params.append("segment", value));
+  state.tiers.forEach((value) => params.append("tier", value));
+  state.statuses.forEach((value) => params.append("status", value));
   if (state.sort) params.set("sort", state.sort);
   params.set("page", String(state.page));
   params.set("pageSize", String(state.pageSize));
@@ -751,25 +749,56 @@ export async function mountDirectory(): Promise<void> {
   if (!app) return;
 
   const layer = document.querySelector<HTMLDetailsElement>("#layer-filter")!;
-  const layerOptions = layer.querySelector<HTMLElement>(".layer-filter-options")!;
+  const layerOptions = layer.querySelector<HTMLElement>(".filter-menu-options")!;
   const layerSummary = document.querySelector<HTMLElement>("#layer-filter-summary")!;
   const filterForm = document.querySelector<HTMLFormElement>("#directory-filters")!;
   const query = document.querySelector<HTMLInputElement>("#directory-search")!;
   const filterToggle = document.querySelector<HTMLButtonElement>("#filter-toggle")!;
   const filterCount = document.querySelector<HTMLElement>("#filter-count")!;
-  const segment = document.querySelector<HTMLSelectElement>("#segment-filter")!;
-  const tier = document.querySelector<HTMLSelectElement>("#tier-filter")!;
-  const status = document.querySelector<HTMLSelectElement>("#status-filter")!;
-  
+  const segmentMenu = document.querySelector<HTMLDetailsElement>("#segment-filter-menu")!;
+  const segmentOptions = segmentMenu.querySelector<HTMLElement>(".filter-menu-options")!;
+  const segmentSummary = document.querySelector<HTMLElement>("#segment-filter-summary")!;
+  const tierMenu = document.querySelector<HTMLDetailsElement>("#tier-filter-menu")!;
+  const tierOptions = tierMenu.querySelector<HTMLElement>(".filter-menu-options")!;
+  const tierSummary = document.querySelector<HTMLElement>("#tier-filter-summary")!;
+  const statusMenu = document.querySelector<HTMLDetailsElement>("#status-filter-menu")!;
+  const statusOptions = statusMenu.querySelector<HTMLElement>(".filter-menu-options")!;
+  const statusSummary = document.querySelector<HTMLElement>("#status-filter-summary")!;
+
   const pageSize = document.querySelector<HTMLSelectElement>("#page-size")!;
   const directoryState = document.querySelector<HTMLElement>("#directory-state")!;
   const pagination = document.querySelector<HTMLElement>("#directory-pagination")!;
   const companyTotal = document.querySelector<HTMLElement>("#company-total")!;
   const quoteAsOf = document.querySelector<HTMLElement>("#quote-as-of")!;
   const quoteRefresh = document.querySelector<HTMLButtonElement>("#quote-refresh")!;
-  let state = readDirectoryState(new URL(window.location.href).searchParams);
+  const loadLayerOptions = async (): Promise<void> => {
+    try {
+      layers = await apiGet<CatalogLayerListView>("/api/v1/catalog/layers");
+      layerOptions.replaceChildren();
+      layers.layers.forEach((item) => {
+        const label = document.createElement("label");
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.value = item.id;
+        label.append(checkbox, `${item.name} (${item.count})`);
+        layerOptions.append(label);
+      });
+    } catch (error) {
+      console.error(error);
+      layers = null;
+      layerOptions.replaceChildren();
+      const retry = document.createElement("button");
+      retry.type = "button";
+      retry.className = "layer-filter-retry";
+      retry.textContent = "Failed to load layers. Retry";
+      retry.addEventListener("click", () => void loadLayerOptions());
+      layerOptions.append(retry);
+    }
+    syncControls();
+  };
   let controller: AbortController | null = null;
   let layers: CatalogLayerListView | null = null;
+  let state = readDirectoryState(new URL(window.location.href).searchParams);
   let quoteAsOfDate: string | null | undefined;
   let refreshedAt: string | null = null;
 
@@ -788,17 +817,25 @@ export async function mountDirectory(): Promise<void> {
   };
 
   const updateSegments = (): void => {
-    const selected = state.segment;
-    const currentLayer = state.layers.length === 1
-      ? layers?.layers.find((item) => item.id === state.layers[0])
-      : null;
-    segment.replaceChildren(option("", "All segments"));
-    const names = currentLayer
-      ? currentLayer.segments.map((item) => item.name)
-      : [...new Set(layers?.layers.flatMap((item) => item.segments.map((part) => part.name)) ?? [])];
-    names.forEach((name) => segment.append(option(name, name)));
-    segment.value = names.includes(selected) ? selected : "";
-    if (!segment.value) state.segment = "";
+    const currentLayers = state.layers.length
+      ? layers?.layers.filter((item) => state.layers.includes(item.id))
+      : layers?.layers ?? [];
+    const names = [...new Set((currentLayers ?? []).flatMap((item) => item.segments.map((part) => part.name)))];
+    const selected = new Set(state.segments);
+    segmentOptions.replaceChildren();
+    names.forEach((name) => {
+      const label = document.createElement("label");
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.value = name;
+      checkbox.checked = selected.has(name);
+      label.append(checkbox, name);
+      segmentOptions.append(label);
+    });
+    state.segments = state.segments.filter((name) => names.includes(name));
+    segmentSummary.textContent = state.segments.length
+      ? `${state.segments.length} selected`
+      : "All segments";
   };
 
   const syncControls = (): void => {
@@ -806,12 +843,21 @@ export async function mountDirectory(): Promise<void> {
     layerOptions.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').forEach((checkbox) => {
       checkbox.checked = state.layers.includes(checkbox.value);
     });
-    layerSummary.textContent = state.layers.length ? `${state.layers.length} layers selected` : "All layers";
-    tier.value = state.tier;
-    status.value = state.status;
+    layerSummary.textContent = state.layers.length ? `${state.layers.length} selected` : "All layers";
+    segmentOptions.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').forEach((checkbox) => {
+      checkbox.checked = state.segments.includes(checkbox.value);
+    });
+    segmentSummary.textContent = state.segments.length ? `${state.segments.length} selected` : "All segments";
+    tierOptions.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').forEach((checkbox) => {
+      checkbox.checked = state.tiers.includes(checkbox.value as DirectoryState["tiers"][number]);
+    });
+    tierSummary.textContent = state.tiers.length ? `${state.tiers.length} selected` : "All tiers";
+    statusOptions.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').forEach((checkbox) => {
+      checkbox.checked = state.statuses.includes(checkbox.value as IngestionStatus);
+    });
+    statusSummary.textContent = state.statuses.length ? `${state.statuses.length} selected` : "All statuses";
     pageSize.value = String(state.pageSize);
-    const activeFilters = state.layers.length + Number(Boolean(state.segment))
-      + Number(Boolean(state.tier)) + Number(Boolean(state.status));
+    const activeFilters = state.layers.length + state.segments.length + state.tiers.length + state.statuses.length;
     filterCount.textContent = activeFilters ? `${activeFilters} active` : "All";
     updateSegments();
     syncSortHeaders(state.sort);
@@ -825,9 +871,9 @@ export async function mountDirectory(): Promise<void> {
     const params = new URLSearchParams();
     if (state.query) params.set("query", state.query);
     state.layers.forEach((layer) => params.append("layer", layer));
-    if (state.segment) params.set("segment", state.segment);
-    if (state.tier) params.set("funnel_tier", state.tier);
-    if (state.status) params.set("ingestion_status", state.status);
+    state.segments.forEach((value) => params.append("segment", value));
+    state.tiers.forEach((value) => params.append("funnel_tier", value));
+    state.statuses.forEach((value) => params.append("ingestion_status", value));
     if (state.sort) {
       const separator = state.sort.endsWith("_desc") ? "_desc" : "_asc";
       params.set("sort_by", state.sort.slice(0, -separator.length));
@@ -877,26 +923,15 @@ export async function mountDirectory(): Promise<void> {
         directoryState,
         "error",
         "The company directory could not be loaded. Check the service and try again.",
-        () => void load(),
+        () => {
+          void loadLayerOptions().then(load);
+        },
       );
       console.error(error);
     }
   };
 
-  try {
-    layers = await apiGet<CatalogLayerListView>("/api/v1/catalog/layers");
-    layers.layers.forEach((item) => {
-      const label = document.createElement("label");
-      const checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.value = item.id;
-      label.append(checkbox, `${item.name} (${item.count})`);
-      layerOptions.append(label);
-    });
-    syncControls();
-  } catch (error) {
-    console.error(error);
-  }
+  await loadLayerOptions();
   apiGet<QuotesPayload>("/api/v1/quotes")
     .then((payload) => {
       refreshedAt = payload.generated_at;
@@ -928,14 +963,22 @@ export async function mountDirectory(): Promise<void> {
   });
   syncControls();
 
+  const menus = [layer, segmentMenu, tierMenu, statusMenu];
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    menus.forEach((menu) => {
+      if (!(target instanceof Node) || !menu.contains(target)) menu.open = false;
+    });
+  });
+
   const applyFilters = (): void => {
     state = {
       ...state,
       query: query.value.trim(),
       layers: [...layerOptions.querySelectorAll<HTMLInputElement>('input:checked')].map((input) => input.value),
-      segment: segment.value,
-      tier: tier.value as DirectoryState["tier"],
-      status: status.value as DirectoryState["status"],
+      segments: [...segmentOptions.querySelectorAll<HTMLInputElement>('input:checked')].map((input) => input.value),
+      tiers: [...tierOptions.querySelectorAll<HTMLInputElement>('input:checked')].map((input) => input.value as DirectoryState["tiers"][number]),
+      statuses: [...statusOptions.querySelectorAll<HTMLInputElement>('input:checked')].map((input) => input.value as IngestionStatus),
       page: 1,
       pageSize: Number(pageSize.value) as DirectoryState["pageSize"],
     };
@@ -950,13 +993,10 @@ export async function mountDirectory(): Promise<void> {
     applyFilters();
   });
   query.addEventListener("search", () => applyFilters());
-  layer.addEventListener("change", () => {
-    state.segment = "";
-    applyFilters();
-  });
-  segment.addEventListener("change", () => applyFilters());
-  tier.addEventListener("change", () => applyFilters());
-  status.addEventListener("change", () => applyFilters());
+  layer.addEventListener("change", applyFilters);
+  segmentMenu.addEventListener("change", applyFilters);
+  tierMenu.addEventListener("change", applyFilters);
+  statusMenu.addEventListener("change", applyFilters);
   document.querySelectorAll<HTMLButtonElement>(".sort-button").forEach((button) => {
     button.addEventListener("click", () => {
       const key = button.dataset.sort as DirectorySortKey;

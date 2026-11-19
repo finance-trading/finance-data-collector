@@ -212,7 +212,7 @@ h1, h2 {
   border-radius: var(--radius-md);
   background: rgb(16 24 46 / 88%);
   box-shadow: var(--shadow-panel);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .filter-toggle { display: none; }
@@ -223,7 +223,7 @@ h1, h2 {
   grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
-.directory-filters .filter-group > label, .layer-filter-group, .tier-filter-group {
+.directory-filters .filter-group > label, .filter-menu-group {
   display: grid;
   gap: 6px;
   padding: 11px 14px;
@@ -236,11 +236,10 @@ h1, h2 {
 }
 
 .directory-filters .filter-group > label:focus-within,
-.layer-filter-group:focus-within,
-.tier-filter-group:focus-within { background: var(--blue-wash); }
+.filter-menu-group:focus-within { background: var(--blue-wash); }
 
-.layer-filter-group { position: relative; border-left: 0; }
-.tier-filter-group { position: relative; }
+.filter-menu-group { position: relative; }
+.layer-filter-group { border-left: 0; }
 
 .tier-help { position: absolute; top: 0; right: 0; height: 100%; pointer-events: none; }
 .tier-help summary {
@@ -322,7 +321,7 @@ h1, h2 {
 }
 #price-range-note p { margin: 8px 0 0; }
 
-.layer-filter summary {
+.filter-menu summary {
   padding: 7px 26px 7px 0;
   border-bottom: 1px solid var(--rule-strong);
   color: var(--ink);
@@ -331,11 +330,11 @@ h1, h2 {
   cursor: pointer;
 }
 
-.layer-filter summary:focus-visible { outline: 2px solid currentColor; }
+.filter-menu summary:focus-visible { outline: 2px solid currentColor; }
 
-.layer-filter-options {
+.filter-menu-options {
   position: absolute;
-  z-index: 5;
+  z-index: 4;
   top: 100%;
   left: 0;
   min-width: max(100%, 220px);
@@ -347,7 +346,7 @@ h1, h2 {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
 }
 
-.layer-filter-options label {
+.filter-menu-options label {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -357,8 +356,8 @@ h1, h2 {
   cursor: pointer;
 }
 
-.layer-filter-options label:hover { background: var(--rule); }
-.layer-filter-options input { accent-color: var(--ink); }
+.filter-menu-options label:hover { background: var(--rule); }
+.filter-menu-options input { accent-color: var(--ink); }
 
 .directory-filters select,
 .directory-filters .filter-group > label input[type="search"] {
@@ -883,9 +882,9 @@ th.intrinsic-col { font-size: 0.7rem; color: var(--muted); }
   .directory-summary { width: 100%; gap: 20px; }
   .directory-summary div { flex: 1; }
   .directory-filters .filter-group { grid-template-columns: 1fr; }
-  .filter-group > label, .filter-group > .layer-filter-group, .filter-group > .tier-filter-group { border-top: 1px solid var(--rule); border-left: 0; }
+  .filter-group > .filter-menu-group { border-top: 1px solid var(--rule); border-left: 0; }
   .filter-group > :first-child { border-top: 0; }
-  .layer-filter-options { min-width: 100%; right: 0; }
+  .filter-menu-options { min-width: 100%; right: 0; }
   tbody tr { gap: 12px 14px; padding: 16px; }
   .action-cell { text-align: right; }
   .directory-pagination { gap: 8px; }

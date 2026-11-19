@@ -81,9 +81,10 @@ export interface CompanyDirectoryItem {
 
 export interface CompanyDirectoryView {
   query: string | null;
-  layer: string | null;
-  segment: string | null;
-  ingestion_status: IngestionStatus | null;
+  layer: string | string[] | null;
+  segment: string | string[] | null;
+  ingestion_status: IngestionStatus | IngestionStatus[] | null;
+  funnel_tier?: number | number[] | null;
   sort_by: DirectorySortKey | null;
   order: DirectoryOrder;
   limit: number;
