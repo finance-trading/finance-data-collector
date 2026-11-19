@@ -4,7 +4,6 @@ import type {
   CompanyDirectoryItem,
   CompanyDirectoryView,
   FunnelTierInfo,
-  IngestionStatus,
   PriceRange,
   QuotesPayload,
   WatchItem,
@@ -27,7 +26,6 @@ export interface DirectoryState {
   layers: string[];
   segments: string[];
   tiers: Array<"1" | "2" | "3">;
-  statuses: IngestionStatus[];
   sort: "" | DirectorySort;
   page: number;
   pageSize: 25 | 50 | 100;
@@ -35,12 +33,6 @@ export interface DirectoryState {
 
 const tiers = new Set<DirectoryState["tiers"][number]>(["1", "2", "3"]);
 
-const statuses = new Set<IngestionStatus>([
-  "parsed",
-  "failed",
-  "unavailable",
-  "not_ingested",
-]);
 const pageSizes = new Set([25, 50, 100]);
 const sorts = new Set<DirectorySort>([
   "market_cap_desc",
@@ -68,9 +60,6 @@ export function readDirectoryState(search: URLSearchParams): DirectoryState {
     tiers: [...new Set(search.getAll("tier"))].filter(
       (value) => tiers.has(value as DirectoryState["tiers"][number]),
     ) as DirectoryState["tiers"],
-    statuses: [...new Set(search.getAll("status"))].filter(
-      (value) => statuses.has(value as IngestionStatus),
-    ) as IngestionStatus[],
     sort: sorts.has(rawSort as DirectorySort) ? (rawSort as DirectorySort) : "",
     page: Number.isInteger(rawPage) && rawPage > 0 ? rawPage : 1,
     pageSize: pageSizes.has(rawPageSize)
@@ -85,7 +74,6 @@ export function writeDirectoryState(state: DirectoryState): URLSearchParams {
   state.layers.forEach((layer) => params.append("layer", layer));
   state.segments.forEach((value) => params.append("segment", value));
   state.tiers.forEach((value) => params.append("tier", value));
-  state.statuses.forEach((value) => params.append("status", value));
   if (state.sort) params.set("sort", state.sort);
   params.set("page", String(state.page));
   params.set("pageSize", String(state.pageSize));
@@ -761,9 +749,6 @@ export async function mountDirectory(): Promise<void> {
   const tierMenu = document.querySelector<HTMLDetailsElement>("#tier-filter-menu")!;
   const tierOptions = tierMenu.querySelector<HTMLElement>(".filter-menu-options")!;
   const tierSummary = document.querySelector<HTMLElement>("#tier-filter-summary")!;
-  const statusMenu = document.querySelector<HTMLDetailsElement>("#status-filter-menu")!;
-  const statusOptions = statusMenu.querySelector<HTMLElement>(".filter-menu-options")!;
-  const statusSummary = document.querySelector<HTMLElement>("#status-filter-summary")!;
 
   const pageSize = document.querySelector<HTMLSelectElement>("#page-size")!;
   const directoryState = document.querySelector<HTMLElement>("#directory-state")!;
@@ -852,12 +837,8 @@ export async function mountDirectory(): Promise<void> {
       checkbox.checked = state.tiers.includes(checkbox.value as DirectoryState["tiers"][number]);
     });
     tierSummary.textContent = state.tiers.length ? `${state.tiers.length} selected` : "All tiers";
-    statusOptions.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').forEach((checkbox) => {
-      checkbox.checked = state.statuses.includes(checkbox.value as IngestionStatus);
-    });
-    statusSummary.textContent = state.statuses.length ? `${state.statuses.length} selected` : "All statuses";
     pageSize.value = String(state.pageSize);
-    const activeFilters = state.layers.length + state.segments.length + state.tiers.length + state.statuses.length;
+    const activeFilters = state.layers.length + state.segments.length + state.tiers.length;
     filterCount.textContent = activeFilters ? `${activeFilters} active` : "All";
     updateSegments();
     syncSortHeaders(state.sort);
@@ -873,7 +854,6 @@ export async function mountDirectory(): Promise<void> {
     state.layers.forEach((layer) => params.append("layer", layer));
     state.segments.forEach((value) => params.append("segment", value));
     state.tiers.forEach((value) => params.append("funnel_tier", value));
-    state.statuses.forEach((value) => params.append("ingestion_status", value));
     if (state.sort) {
       const separator = state.sort.endsWith("_desc") ? "_desc" : "_asc";
       params.set("sort_by", state.sort.slice(0, -separator.length));
@@ -963,7 +943,7 @@ export async function mountDirectory(): Promise<void> {
   });
   syncControls();
 
-  const menus = [layer, segmentMenu, tierMenu, statusMenu];
+  const menus = [layer, segmentMenu, tierMenu];
   document.addEventListener("click", (event) => {
     const target = event.target;
     menus.forEach((menu) => {
@@ -978,7 +958,6 @@ export async function mountDirectory(): Promise<void> {
       layers: [...layerOptions.querySelectorAll<HTMLInputElement>('input:checked')].map((input) => input.value),
       segments: [...segmentOptions.querySelectorAll<HTMLInputElement>('input:checked')].map((input) => input.value),
       tiers: [...tierOptions.querySelectorAll<HTMLInputElement>('input:checked')].map((input) => input.value as DirectoryState["tiers"][number]),
-      statuses: [...statusOptions.querySelectorAll<HTMLInputElement>('input:checked')].map((input) => input.value as IngestionStatus),
       page: 1,
       pageSize: Number(pageSize.value) as DirectoryState["pageSize"],
     };
@@ -996,7 +975,6 @@ export async function mountDirectory(): Promise<void> {
   layer.addEventListener("change", applyFilters);
   segmentMenu.addEventListener("change", applyFilters);
   tierMenu.addEventListener("change", applyFilters);
-  statusMenu.addEventListener("change", applyFilters);
   document.querySelectorAll<HTMLButtonElement>(".sort-button").forEach((button) => {
     button.addEventListener("click", () => {
       const key = button.dataset.sort as DirectorySortKey;

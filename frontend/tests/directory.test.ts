@@ -47,11 +47,19 @@ describe("quote refresh time", () => {
   });
 });
 
+describe("directory filters", () => {
+  it("does not render ingestion status controls", () => {
+    const html = readFileSync(resolve(process.cwd(), "index.html"), "utf8");
+    expect(html).not.toContain("Ingestion status");
+    expect(html).not.toContain("status-filter-menu");
+  });
+});
+
 describe("directory URL state", () => {
   it("round-trips filters, sort, and paging through the URL", () => {
     const state = readDirectoryState(
       new URLSearchParams(
-        "query=nvda&layer=silicon&segment=Compute&status=parsed&sort=market_cap_desc&page=2&pageSize=50",
+        "query=nvda&layer=silicon&segment=Compute&sort=market_cap_desc&page=2&pageSize=50",
       ),
     );
 
@@ -60,13 +68,12 @@ describe("directory URL state", () => {
       layers: ["silicon"],
       segments: ["Compute"],
       tiers: [],
-      statuses: ["parsed"],
       sort: "market_cap_desc",
       page: 2,
       pageSize: 50,
     });
     expect(writeDirectoryState(state).toString()).toBe(
-      "query=nvda&layer=silicon&segment=Compute&status=parsed&sort=market_cap_desc&page=2&pageSize=50",
+      "query=nvda&layer=silicon&segment=Compute&sort=market_cap_desc&page=2&pageSize=50",
     );
   });
 
@@ -89,23 +96,22 @@ describe("directory URL state", () => {
     );
   });
 
-  it("round-trips multiple segment, tier, and status selections", () => {
+  it("round-trips multiple segment and tier selections", () => {
     const state = readDirectoryState(new URLSearchParams(
-      "segment=Compute&segment=Grid&tier=1&tier=2&status=parsed&status=failed",
+      "segment=Compute&segment=Grid&tier=1&tier=2",
     ));
 
     expect(state.segments).toEqual(["Compute", "Grid"]);
     expect(state.tiers).toEqual(["1", "2"]);
-    expect(state.statuses).toEqual(["parsed", "failed"]);
     expect(writeDirectoryState(state).getAll("segment")).toEqual(["Compute", "Grid"]);
     expect(writeDirectoryState(state).getAll("tier")).toEqual(["1", "2"]);
-    expect(writeDirectoryState(state).getAll("status")).toEqual(["parsed", "failed"]);
+    expect(writeDirectoryState(state).has("status")).toBe(false);
   });
 
   it("normalizes invalid page values to supported defaults", () => {
     expect(
-      readDirectoryState(new URLSearchParams("page=0&pageSize=30&status=unknown")),
-    ).toMatchObject({page: 1, pageSize: 25, statuses: []});
+      readDirectoryState(new URLSearchParams("page=0&pageSize=30")),
+    ).toMatchObject({page: 1, pageSize: 25});
   });
 });
 
@@ -288,7 +294,7 @@ describe("directory rendering", () => {
     });
 
     await mountDirectory();
-    const menus = ["#layer-filter", "#segment-filter-menu", "#tier-filter-menu", "#status-filter-menu"]
+    const menus = ["#layer-filter", "#segment-filter-menu", "#tier-filter-menu"]
       .map((selector) => document.querySelector<HTMLDetailsElement>(selector)!);
     menus.forEach((menu) => { menu.open = true; });
 
