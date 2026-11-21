@@ -39,7 +39,7 @@ from fdc.contracts import (
 from fdc.sec_storage import SEC_ROOT
 
 #: Forms parsed by the filing parser platform.
-PARSER_FORMS: tuple[str, ...] = ("10-K", "10-Q", "10-K/A", "10-Q/A")
+PARSER_FORMS: tuple[str, ...] = ("10-K", "10-Q", "10-K/A", "10-Q/A", "20-F", "20-F/A")
 
 #: Artifacts classified as images: indexed for provenance, never parsed.
 IMAGE_EXTENSIONS: frozenset[str] = frozenset(
