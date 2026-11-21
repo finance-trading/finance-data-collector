@@ -527,13 +527,15 @@ def fetch_quotes() -> dict[str, Any]:
             prev = (
                 round(float(closes.iloc[-2]), 2) if len(closes) >= 2 else None
             )
-            # 1W and 52W are drawdowns from the highest close in each period.
+            # 1W, 1M, and 52W are drawdowns from the highest close in each period.
             week_high = (
                 round(float(closes.iloc[-5:].max()), 2) if len(closes) >= 5 else None
             )
             week_low = (
                 round(float(closes.iloc[-5:].min()), 2) if len(closes) >= 5 else None
             )
+            month_high = _period_high(closes, 4)
+            month_low = _period_low(closes, 4)
             year_high = _period_high(closes, 52)
             year_low = _period_low(closes, 52)
             quotes[tk] = {
@@ -542,6 +544,8 @@ def fetch_quotes() -> dict[str, Any]:
                 "change_pct": _pct_change(price, prev),
                 "week_change_pct": _drawdown_from_high(price, week_high),
                 "week_rise_pct": _rise_from_low(price, week_low),
+                "month_change_pct": _drawdown_from_high(price, month_high),
+                "month_rise_pct": _rise_from_low(price, month_low),
                 "change_52w_pct": _drawdown_from_high(price, year_high),
                 "rise_52w_pct": _rise_from_low(price, year_low),
                 "market_cap": caps.get(tk),
