@@ -196,6 +196,8 @@ def test_fetch_quotes_derives_week_and_52_week_changes(monkeypatch, tmp_path):
         "change_pct": -0.1,
         "week_change_pct": -13.57,
         "week_rise_pct": 0.0,
+        "month_change_pct": -13.57,
+        "month_rise_pct": 0.0,
         "change_52w_pct": -13.57,
         "rise_52w_pct": 11.11,
         "market_cap": 1,
@@ -220,6 +222,8 @@ def test_fetch_quotes_omits_trailing_changes_without_enough_history(monkeypatch)
     assert quote["change_pct"] == 9.09
     assert quote["week_change_pct"] is None
     assert quote["week_rise_pct"] is None
+    assert quote["month_change_pct"] is None
+    assert quote["month_rise_pct"] is None
     assert quote["change_52w_pct"] is None
     assert quote["rise_52w_pct"] is None
 

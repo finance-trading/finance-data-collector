@@ -17,8 +17,11 @@ export type DirectorySortKey =
   | "change_pct"
   | "week_change_pct"
   | "week_rise_pct"
+  | "month_change_pct"
+  | "month_rise_pct"
   | "change_52w_pct"
-  | "rise_52w_pct";
+  | "rise_52w_pct"
+  | "price_vs_intrinsic_pct";
 
 export type DirectorySort = `${DirectorySortKey}_${"desc" | "asc"}`;
 
@@ -51,10 +54,16 @@ const sorts = new Set<DirectorySort>([
   "week_change_pct_asc",
   "week_rise_pct_desc",
   "week_rise_pct_asc",
+  "month_change_pct_desc",
+  "month_change_pct_asc",
+  "month_rise_pct_desc",
+  "month_rise_pct_asc",
   "change_52w_pct_desc",
   "change_52w_pct_asc",
   "rise_52w_pct_desc",
   "rise_52w_pct_asc",
+  "price_vs_intrinsic_pct_desc",
+  "price_vs_intrinsic_pct_asc",
 ]);
 
 export function readDirectoryState(search: URLSearchParams): DirectoryState {
@@ -145,8 +154,8 @@ function cell(label: string, className = ""): HTMLTableCellElement {
 }
 
 const mobileDetailLabels = new Set([
-  "Latest filing", "1W Rise", "52W Rise", "P/E", "EPS", "Fwd P/E", "Fwd EPS",
-  "Intrinsic", "Bear", "Base", "Bull", "Price ranges",
+  "Latest filing", "1W Rise", "1M Rise", "52W Rise", "P/E", "EPS", "Fwd P/E",
+  "Fwd EPS", "Intrinsic", "P vs IV", "Bear", "Base", "Bull", "Price ranges",
 ]);
 
 /** The sort key a `*_asc`/`*_desc` state value refers to, or null for catalog order. */
@@ -294,6 +303,8 @@ export function renderCompanies(
       priceCell,
       changeCell("1W DD", company.week_change_pct),
       changeCell("1W Rise", company.week_rise_pct),
+      changeCell("1M DD", company.month_change_pct),
+      changeCell("1M Rise", company.month_rise_pct),
       changeCell("52W DD", company.change_52w_pct),
       changeCell("52W Rise", company.rise_52w_pct),
       ratioCell("P/E", company.pe),
@@ -301,6 +312,7 @@ export function renderCompanies(
       ratioCell("Fwd P/E", company.forward_pe),
       ratioCell("Fwd EPS", company.forward_eps),
       intrinsicCell("Intrinsic", company.intrinsic_value),
+      changeCell("P vs IV", company.price_vs_intrinsic_pct),
       intrinsicCell("Bear", company.scen_bear),
       intrinsicCell("Base", company.scen_base),
       intrinsicCell("Bull", company.scen_bull),

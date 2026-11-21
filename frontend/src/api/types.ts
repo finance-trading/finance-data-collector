@@ -10,8 +10,11 @@ export type DirectorySortKey =
   | "change_pct"
   | "week_change_pct"
   | "week_rise_pct"
+  | "month_change_pct"
+  | "month_rise_pct"
   | "change_52w_pct"
-  | "rise_52w_pct";
+  | "rise_52w_pct"
+  | "price_vs_intrinsic_pct";
 
 export type DirectoryOrder = "desc" | "asc";
 
@@ -55,6 +58,8 @@ export interface CompanyDirectoryItem {
   change_pct?: number | null;
   week_change_pct?: number | null;
   week_rise_pct?: number | null;
+  month_change_pct?: number | null;
+  month_rise_pct?: number | null;
   change_52w_pct?: number | null;
   rise_52w_pct?: number | null;
   pe?: number | null;
@@ -63,6 +68,8 @@ export interface CompanyDirectoryItem {
   forward_eps?: number | null;
   /** Model-derived forward value per share; research cross-check, not a price. */
   intrinsic_value?: number | null;
+  /** Current price relative to intrinsic value; negative below, positive above. */
+  price_vs_intrinsic_pct?: number | null;
   /** Three-scenario forward prices per share (Bear/Base/Bull, USD). */
   scen_bear?: number | null;
   scen_base?: number | null;
@@ -327,6 +334,8 @@ export interface QuotesPayload {
     change_pct?: number | null;
     week_change_pct?: number | null;
     week_rise_pct?: number | null;
+    month_change_pct?: number | null;
+    month_rise_pct?: number | null;
     change_52w_pct?: number | null;
     rise_52w_pct?: number | null;
     pe?: number | null;

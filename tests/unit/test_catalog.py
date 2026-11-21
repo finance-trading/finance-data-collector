@@ -197,6 +197,7 @@ def test_directory_merges_cached_quotes(tmp_path, engine, session_factory, monke
                 "previous_close": 246.12,
                 "change_pct": 2.46,
                 "week_change_pct": -1.87,
+                "month_change_pct": -4.21,
                 "change_52w_pct": 34.5,
                 "market_cap": 97086314647,
             },
@@ -227,6 +228,7 @@ def test_directory_merges_cached_quotes(tmp_path, engine, session_factory, monke
     assert by_ticker["VRT"].market_cap == 97086314647
     assert by_ticker["VRT"].change_pct == 2.46
     assert by_ticker["VRT"].week_change_pct == -1.87
+    assert by_ticker["VRT"].month_change_pct == -4.21
     assert by_ticker["VRT"].change_52w_pct == 34.5
     assert by_ticker["VRT"].quote_as_of.isoformat() == "2026-10-04"
     # AMD is in the fixture catalog but has no entry in quotes.json — nulls
@@ -281,6 +283,48 @@ def test_directory_exposes_intrinsic_value_and_scenarios(
     assert nvda.scen_bear is None
     assert nvda.scen_base is None
     assert nvda.scen_bull is None
+
+
+def test_directory_computes_and_sorts_price_vs_intrinsic(
+    tmp_path, engine, session_factory
+):
+    from fdc.models import ResearchAnnotation
+
+    fdc.quote_store.save_payload({
+        "generated_at": "2026-10-04T15:00:00+00:00",
+        "quotes": {"VRT": {"price": 210.0}, "NVDA": {"price": 300.0}},
+    })
+    with session_factory() as session:
+        session.add(ResearchAnnotation(ticker="VRT", intrinsic_value=262.0))
+        session.add(ResearchAnnotation(ticker="NVDA", intrinsic_value=200.0))
+        session.commit()
+
+    def companies(sort_by=None, order="desc"):
+        return list_companies(
+            query=None,
+            layer=None,
+            segment=None,
+            ingestion_status=None,
+            limit=25,
+            offset=0,
+            sort_by=sort_by,
+            order=order,
+            catalog_path=_catalog_path(tmp_path),
+            session_factory=session_factory,
+        ).companies
+
+    by_ticker = {company.ticker: company for company in companies()}
+    assert by_ticker["VRT"].price_vs_intrinsic_pct == -19.85
+    assert by_ticker["NVDA"].price_vs_intrinsic_pct == 50.0
+    # No intrinsic value means no percentage, and it stays last when sorting.
+    assert by_ticker["AMD"].price_vs_intrinsic_pct is None
+
+    assert [c.ticker for c in companies("price_vs_intrinsic_pct", "desc")] == [
+        "NVDA", "VRT", "AMD"
+    ]
+    assert [c.ticker for c in companies("price_vs_intrinsic_pct", "asc")] == [
+        "VRT", "NVDA", "AMD"
+    ]
 
 
 def test_directory_joins_funnel_tier_and_filters(
@@ -520,6 +564,8 @@ def test_directory_sorts_by_trailing_returns_and_keeps_missing_last(
                         "change_pct": 2.46,
                         "week_change_pct": -1.87,
                         "week_rise_pct": 1.2,
+                        "month_change_pct": -3.1,
+                        "month_rise_pct": 2.2,
                         "change_52w_pct": 34.5,
                         "rise_52w_pct": 41.0,
                     },
@@ -527,6 +573,8 @@ def test_directory_sorts_by_trailing_returns_and_keeps_missing_last(
                         "change_pct": -1.34,
                         "week_change_pct": 5.61,
                         "week_rise_pct": 8.9,
+                        "month_change_pct": 6.4,
+                        "month_rise_pct": 10.1,
                         "change_52w_pct": -18.07,
                         "rise_52w_pct": -12.0,
                     },
@@ -557,6 +605,10 @@ def test_directory_sorts_by_trailing_returns_and_keeps_missing_last(
     assert tickers("week_change_pct", "asc") == ["VRT", "NVDA", "AMD"]
     assert tickers("week_rise_pct", "desc") == ["NVDA", "VRT", "AMD"]
     assert tickers("week_rise_pct", "asc") == ["VRT", "NVDA", "AMD"]
+    assert tickers("month_change_pct", "desc") == ["NVDA", "VRT", "AMD"]
+    assert tickers("month_change_pct", "asc") == ["VRT", "NVDA", "AMD"]
+    assert tickers("month_rise_pct", "desc") == ["NVDA", "VRT", "AMD"]
+    assert tickers("month_rise_pct", "asc") == ["VRT", "NVDA", "AMD"]
     assert tickers("change_52w_pct", "desc") == ["VRT", "NVDA", "AMD"]
     assert tickers("change_52w_pct", "asc") == ["NVDA", "VRT", "AMD"]
     assert tickers("rise_52w_pct", "desc") == ["VRT", "NVDA", "AMD"]

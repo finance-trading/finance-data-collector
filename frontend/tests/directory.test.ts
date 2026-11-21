@@ -84,9 +84,18 @@ describe("directory URL state", () => {
     expect(readDirectoryState(new URLSearchParams("sort=week_rise_pct_asc")).sort).toBe(
       "week_rise_pct_asc",
     );
+    expect(readDirectoryState(new URLSearchParams("sort=month_change_pct_desc")).sort).toBe(
+      "month_change_pct_desc",
+    );
+    expect(readDirectoryState(new URLSearchParams("sort=month_rise_pct_asc")).sort).toBe(
+      "month_rise_pct_asc",
+    );
     expect(readDirectoryState(new URLSearchParams("sort=rise_52w_pct_desc")).sort).toBe(
       "rise_52w_pct_desc",
     );
+    expect(
+      readDirectoryState(new URLSearchParams("sort=price_vs_intrinsic_pct_desc")).sort,
+    ).toBe("price_vs_intrinsic_pct_desc");
   });
 
   it("normalizes invalid page values to supported defaults", () => {
@@ -318,21 +327,21 @@ describe("directory rendering", () => {
     );
     expect(values).toEqual(["$5,649,191M", "$97,086M", "$985.2M"]);
 
-    // Quality score follows tier; valuation columns and market cap shift one place.
-    expect(cells[0].cellIndex).toBe(18);
+    expect(cells[0].cellIndex).toBe(21);
 
     const missing = document.querySelector(".cap-na") as HTMLElement;
     expect(missing.textContent).toBe("—");
   });
 
-
-  it("renders one-week and 52-week drawdown and rise as separate columns", () => {
+  it("renders one-week, one-month, and 52-week drawdown and rise as separate columns", () => {
     renderCompanies([
       {
         ...catalogOnlyCompany,
         ticker: "NVDA",
         week_change_pct: 3.42,
         week_rise_pct: 9.8,
+        month_change_pct: -4.56,
+        month_rise_pct: 12.3,
         change_52w_pct: -18.07,
         rise_52w_pct: 41.0,
       },
@@ -344,16 +353,18 @@ describe("directory rendering", () => {
 
     expect(text("1W DD")).toBe("▲ 3.42%");
     expect(text("1W Rise")).toBe("▲ 9.80%");
+    expect(text("1M DD")).toBe("▼ 4.56%");
+    expect(text("1M Rise")).toBe("▲ 12.30%");
     expect(text("52W DD")).toBe("▼ 18.07%");
     expect(text("52W Rise")).toBe("▲ 41.00%");
 
-    // The four columns sit between price and P/E.
+    // The six columns sit between price and P/E.
     expect(
       (document.querySelector('td[data-label="1W DD"]') as HTMLTableCellElement).cellIndex,
     ).toBe(6);
     expect(
       (document.querySelector('td[data-label="52W Rise"]') as HTMLTableCellElement).cellIndex,
-    ).toBe(9);
+    ).toBe(11);
 
     // A stale cache without the new keys degrades to the muted placeholder.
     const missing = document.querySelectorAll('tr td[data-label="1W DD"]')[1];
@@ -366,6 +377,7 @@ describe("directory rendering", () => {
         ...catalogOnlyCompany,
         ticker: "NVDA",
         intrinsic_value: 307.84,
+        price_vs_intrinsic_pct: -12.5,
         scen_bear: 225.24,
         scen_base: 304.84,
         scen_bull: 396.46,
@@ -377,21 +389,26 @@ describe("directory rendering", () => {
       document.querySelectorAll(`tr td[data-label="${label}"]`)[index]?.textContent ?? null;
 
     expect(text("Intrinsic", 0)).toBe("307.84");
+    expect(text("P vs IV", 0)).toBe("▼ 12.50%");
     expect(text("Bear", 0)).toBe("225.24");
     expect(text("Base", 0)).toBe("304.84");
     expect(text("Bull", 0)).toBe("396.46");
 
     // A company with no saved valuation degrades to the muted placeholder.
     expect(text("Intrinsic", 1)).toBe("—");
+    expect(text("P vs IV", 1)).toBe("—");
     expect(text("Bull", 1)).toBe("—");
 
-    // The four columns sit after Fwd EPS and before market cap.
+    // The columns sit after Fwd EPS and before market cap.
     expect(
       (document.querySelector('td[data-label="Intrinsic"]') as HTMLTableCellElement).cellIndex,
-    ).toBe(14);
+    ).toBe(16);
+    expect(
+      (document.querySelector('td[data-label="P vs IV"]') as HTMLTableCellElement).cellIndex,
+    ).toBe(17);
     expect(
       (document.querySelector('td[data-label="Bull"]') as HTMLTableCellElement).cellIndex,
-    ).toBe(17);
+    ).toBe(20);
   });
 
   it("starts price ranges collapsed with the recorded range count", () => {

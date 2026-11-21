@@ -25,7 +25,8 @@ from fdc.read_service import ReadServiceError
 IngestionStatus = Literal["parsed", "failed", "unavailable", "not_ingested"]
 SortKey = Literal[
     "market_cap", "change_pct", "week_change_pct", "week_rise_pct",
-    "change_52w_pct", "rise_52w_pct",
+    "month_change_pct", "month_rise_pct", "change_52w_pct", "rise_52w_pct",
+    "price_vs_intrinsic_pct",
 ]
 Order = Literal["desc", "asc"]
 
@@ -105,6 +106,8 @@ class CompanyDirectoryItem(CatalogCompany):
     change_pct: float | None = None
     week_change_pct: float | None = None
     week_rise_pct: float | None = None
+    month_change_pct: float | None = None
+    month_rise_pct: float | None = None
     change_52w_pct: float | None = None
     rise_52w_pct: float | None = None
     pe: float | None = None
@@ -113,6 +116,8 @@ class CompanyDirectoryItem(CatalogCompany):
     forward_eps: float | None = None
     #: Model-derived forward value per share; a research cross-check, not a price.
     intrinsic_value: float | None = None
+    #: Current price relative to intrinsic value; negative below, positive above.
+    price_vs_intrinsic_pct: float | None = None
     #: Three-scenario forward prices per share (USD).
     scen_bear: float | None = None
     scen_base: float | None = None
@@ -324,10 +329,20 @@ def _status(summary: _IssuerSummary | None) -> IngestionStatus:
     return "unavailable"
 
 
+def _price_vs_intrinsic_pct(
+    price: float | None, intrinsic_value: float | None
+) -> float | None:
+    """Return price as a percentage of intrinsic value, negative below it."""
+
+    if price is None or intrinsic_value is None or intrinsic_value <= 0:
+        return None
+    return round((price / intrinsic_value - 1) * 100, 2)
+
+
 def _quote_sort_key(
     item: CompanyDirectoryItem, sort_by: SortKey, descending: bool
 ) -> tuple[bool, float]:
-    """Sort by a quote field, keeping companies with no quote last."""
+    """Sort by a numeric directory field, keeping companies with no value last."""
 
     value: float | int | None = getattr(item, sort_by)
     if value is None:
@@ -405,6 +420,8 @@ def list_companies(
                 change_pct=quote.get("change_pct") if quote else None,
                 week_change_pct=quote.get("week_change_pct") if quote else None,
                 week_rise_pct=quote.get("week_rise_pct") if quote else None,
+                month_change_pct=quote.get("month_change_pct") if quote else None,
+                month_rise_pct=quote.get("month_rise_pct") if quote else None,
                 change_52w_pct=quote.get("change_52w_pct") if quote else None,
                 rise_52w_pct=quote.get("rise_52w_pct") if quote else None,
                 pe=quote.get("pe") if quote else None,
@@ -412,6 +429,10 @@ def list_companies(
                 forward_pe=quote.get("forward_pe") if quote else None,
                 forward_eps=quote.get("forward_eps") if quote else None,
                 intrinsic_value=annotation.intrinsic_value if annotation else None,
+                price_vs_intrinsic_pct=_price_vs_intrinsic_pct(
+                    quote.get("price") if quote else None,
+                    annotation.intrinsic_value if annotation else None,
+                ),
                 scen_bear=annotation.scen_bear if annotation else None,
                 scen_base=annotation.scen_base if annotation else None,
                 scen_bull=annotation.scen_bull if annotation else None,

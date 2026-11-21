@@ -157,7 +157,8 @@ def cmd_get(args: argparse.Namespace) -> None:
 
 SORT_KEYS = (
     "market_cap", "change_pct", "week_change_pct",
-    "week_rise_pct", "change_52w_pct", "rise_52w_pct",
+    "week_rise_pct", "month_change_pct", "month_rise_pct",
+    "change_52w_pct", "rise_52w_pct", "price_vs_intrinsic_pct",
 )
 
 
