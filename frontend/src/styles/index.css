@@ -456,7 +456,7 @@ caption {
 }
 
 th, td {
-  padding: 11px 16px;
+  padding: 10px 12px;
   border-bottom: 1px solid var(--rule);
   text-align: left;
   vertical-align: middle;
@@ -465,7 +465,7 @@ th, td {
 tbody td { transition: background var(--fast) var(--ease); }
 
 th {
-  padding: 11px 16px;
+  padding: 10px 12px;
   border-bottom-color: var(--rule-strong);
   color: var(--muted);
   font-size: 0.73rem;
@@ -486,7 +486,7 @@ th[data-sort-column] { padding: 0; }
   align-items: center;
   justify-content: flex-end;
   gap: 5px;
-  padding: 11px 16px;
+  padding: 10px 12px;
   border: 0;
   background: transparent;
   color: inherit;
@@ -698,8 +698,8 @@ td.number-column { min-width: 74px; }
 .change-cell .price-change { margin-left: 0; }
 /* The 1W/52W dd and rise columns hold a single compact badge, so keep their
    header buttons and cells tighter than the other numeric columns. */
-th.change-col .sort-button { padding: 11px 8px; gap: 4px; }
-td.change-cell { min-width: 56px; padding: 11px 12px; }
+th.change-col .sort-button { padding: 10px 8px; gap: 4px; }
+td.change-cell { min-width: 56px; padding: 10px 12px; }
 .price-change.up { color: var(--pine); }
 .price-change.down { color: var(--error); }
 .price-change.flat { color: var(--muted); }

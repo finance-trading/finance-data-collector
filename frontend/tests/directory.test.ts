@@ -147,6 +147,15 @@ describe("directory rendering", () => {
     vi.restoreAllMocks();
   });
 
+  it("renders the latest quality score and a dash when unavailable", () => {
+    renderCompanies([
+      { ...catalogOnlyCompany, quality_score: 83.456 },
+      { ...catalogOnlyCompany, ticker: "NONE", quality_score: null },
+    ]);
+    const scores = [...document.querySelectorAll('[data-label="Quality Score"]')];
+    expect(scores.map((score) => score.textContent)).toEqual(["83.46", "—"]);
+  });
+
   it("shows a compact filter control with an active-filter count", async () => {
     const html = readFileSync(resolve(process.cwd(), "index.html"), "utf8");
     document.body.innerHTML = new DOMParser().parseFromString(html, "text/html").body.innerHTML;
@@ -309,14 +318,13 @@ describe("directory rendering", () => {
     );
     expect(values).toEqual(["$5,649,191M", "$97,086M", "$985.2M"]);
 
-    // Column order follows the header: Company, layer, tier, date, price,
-    // 1W DD, 1W Rise, 52W DD, 52W Rise, P/E, EPS, Fwd P/E, Fwd EPS,
-    // Intrinsic, Bear, Base, Bull, market cap, action.
-    expect(cells[0].cellIndex).toBe(17);
+    // Quality score follows tier; valuation columns and market cap shift one place.
+    expect(cells[0].cellIndex).toBe(18);
 
     const missing = document.querySelector(".cap-na") as HTMLElement;
     expect(missing.textContent).toBe("—");
   });
+
 
   it("renders one-week and 52-week drawdown and rise as separate columns", () => {
     renderCompanies([
@@ -342,10 +350,10 @@ describe("directory rendering", () => {
     // The four columns sit between price and P/E.
     expect(
       (document.querySelector('td[data-label="1W DD"]') as HTMLTableCellElement).cellIndex,
-    ).toBe(5);
+    ).toBe(6);
     expect(
       (document.querySelector('td[data-label="52W Rise"]') as HTMLTableCellElement).cellIndex,
-    ).toBe(8);
+    ).toBe(9);
 
     // A stale cache without the new keys degrades to the muted placeholder.
     const missing = document.querySelectorAll('tr td[data-label="1W DD"]')[1];
@@ -380,10 +388,10 @@ describe("directory rendering", () => {
     // The four columns sit after Fwd EPS and before market cap.
     expect(
       (document.querySelector('td[data-label="Intrinsic"]') as HTMLTableCellElement).cellIndex,
-    ).toBe(13);
+    ).toBe(14);
     expect(
       (document.querySelector('td[data-label="Bull"]') as HTMLTableCellElement).cellIndex,
-    ).toBe(16);
+    ).toBe(17);
   });
 
   it("starts price ranges collapsed with the recorded range count", () => {

@@ -3,7 +3,12 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime
+from datetime import date, datetime
+from decimal import Decimal
+
+from sqlalchemy import event
+
+from fdc.models import CompanyQualityScore
 from types import SimpleNamespace
 
 import pytest
@@ -109,6 +114,46 @@ def test_directory_includes_catalog_only_company(
     assert result.companies[0].ingestion_status == "not_ingested"
     assert result.companies[0].filing_count == 0
     assert result.companies[0].research_available is False
+
+
+def test_directory_latest_available_scores_are_batched(tmp_path, engine, session_factory):
+    def score(ticker, snapshot, cutoff, timestamp, value, available=True):
+        return CompanyQualityScore(
+            ticker=ticker, snapshot_id=snapshot, cik="0000000001", company_name=ticker,
+            sector="Technology", rating_cutoff=cutoff, calculated_at=timestamp,
+            rule_version="CQ_V2", semantic_policy="policy", source_facts_sha256="a" * 64,
+            quality_score=Decimal(value), score_available=available, status="UNKNOWN",
+        )
+
+    from datetime import UTC
+    now = datetime(2026, 1, 2, tzinfo=UTC)
+    with session_factory() as session:
+        session.add_all([
+            score("VRT", "z", date(2025, 1, 1), datetime(2026, 1, 1, tzinfo=UTC), "99"),
+            score("VRT", "a", date(2024, 1, 1), now, "10"),
+            score("VRT", "b", date(2025, 1, 1), now, "20"),
+            score("VRT", "c", date(2025, 1, 1), now, "42.5"),
+            score("NVDA", "a", date(2024, 1, 1), now, "30"),
+            score("NVDA", "b", date(2025, 1, 1), now, "50", False),
+        ])
+        session.commit()
+
+    statements = []
+    def capture(conn, cursor, statement, parameters, context, executemany):
+        if "company_quality_score" in statement.lower():
+            statements.append(statement)
+
+    event.listen(engine, "before_cursor_execute", capture)
+    try:
+        result = list_companies(None, None, None, None, 25, 0,
+                                catalog_path=_catalog_path(tmp_path), session_factory=session_factory)
+    finally:
+        event.remove(engine, "before_cursor_execute", capture)
+    assert {c.ticker: c.quality_score for c in result.companies} == {
+        "VRT": 42.5, "NVDA": None, "AMD": None,
+    }
+    assert len(statements) == 1
+    assert isinstance(result.model_dump(mode="json")["companies"][0]["quality_score"], float)
 
 
 def test_directory_filters_before_paginating(tmp_path, engine, session_factory):

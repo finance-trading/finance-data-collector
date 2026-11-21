@@ -289,6 +289,7 @@ export function renderCompanies(
       companyCell,
       categoryCell,
       tierCell,
+      ratioCell("Quality Score", company.quality_score),
       dateCell,
       priceCell,
       changeCell("1W DD", company.week_change_pct),

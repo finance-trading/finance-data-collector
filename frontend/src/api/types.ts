@@ -49,6 +49,7 @@ export interface CompanyDirectoryItem {
   ingestion_status: IngestionStatus;
   filing_count: number;
   research_available: boolean;
+  quality_score?: number | null;
   price?: number | null;
   market_cap?: number | null;
   change_pct?: number | null;

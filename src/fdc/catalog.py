@@ -19,7 +19,7 @@ from fdc.config import get_settings
 from fdc.data_files import CATALOG_PATH, LAYERS_PATH
 from fdc.db import SessionLocal
 from fdc.funnel import load_overrides, tier_index, tier_watch_items
-from fdc.models import Filing, FilingParse, Issuer, ResearchAnnotation
+from fdc.models import CompanyQualityScore, Filing, FilingParse, Issuer, ResearchAnnotation
 from fdc.read_service import ReadServiceError
 
 IngestionStatus = Literal["parsed", "failed", "unavailable", "not_ingested"]
@@ -100,6 +100,7 @@ class CompanyDirectoryItem(CatalogCompany):
     filing_count: int
     research_available: bool
     price: float | None = None
+    quality_score: float | None = None
     market_cap: int | None = None
     change_pct: float | None = None
     week_change_pct: float | None = None
@@ -447,6 +448,32 @@ def list_companies(
                 item, sort_by, descending=(order == "desc")
             )
         )
+
+    page = companies[offset : offset + limit]
+    if page:
+        ranked_scores = (
+            select(
+                CompanyQualityScore.ticker,
+                CompanyQualityScore.quality_score,
+                CompanyQualityScore.score_available,
+                func.row_number().over(
+                    partition_by=CompanyQualityScore.ticker,
+                    order_by=(
+                        CompanyQualityScore.calculated_at.desc(),
+                        CompanyQualityScore.rating_cutoff.desc(),
+                        CompanyQualityScore.snapshot_id.desc(),
+                    ),
+                ).label("rank"),
+            )
+            .where(CompanyQualityScore.ticker.in_([item.ticker.upper() for item in page]))
+            .subquery()
+        )
+        with session_factory() as session:
+            scores = session.execute(select(ranked_scores).where(ranked_scores.c.rank == 1)).all()
+        latest_scores = {row.ticker: row.quality_score if row.score_available else None for row in scores}
+        for item in page:
+            value = latest_scores.get(item.ticker.upper())
+            item.quality_score = float(value) if value is not None else None
 
     return CompanyDirectoryView(
         query=query.strip() if query and query.strip() else None,
