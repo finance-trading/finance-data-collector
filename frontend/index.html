@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="Browse every public company across the AI stack with price, market cap, and local SEC filing ingestion coverage.">
+  <meta name="description" content="Browse every public company across the AI stack with price and market cap.">
   <title>AI companies | Finance Data Collector</title>
   <link rel="stylesheet" href="/src/styles/theme.css">
   <link rel="stylesheet" href="/src/styles/index.css">
@@ -48,21 +48,30 @@
             <input id="directory-search" name="query" type="search"
                    placeholder="Ticker or company name" autocomplete="off">
           </label>
-          <div class="layer-filter-group">
+          <div class="filter-menu-group layer-filter-group">
             <span id="layer-filter-label">AI layer</span>
-            <details class="layer-filter" id="layer-filter">
+            <details class="filter-menu" id="layer-filter">
               <summary aria-labelledby="layer-filter-label layer-filter-summary"><span id="layer-filter-summary">All layers</span></summary>
-              <div class="layer-filter-options" role="group" aria-labelledby="layer-filter-label"></div>
+              <div class="filter-menu-options" role="group" aria-labelledby="layer-filter-label"></div>
             </details>
           </div>
-          <label>
-            Segment
-            <select id="segment-filter">
-              <option value="">All segments</option>
-            </select>
-          </label>
-          <div class="tier-filter-group">
-            <label for="tier-filter">Funnel tier</label>
+          <div class="filter-menu-group segment-filter-group">
+            <span id="segment-filter-label">Segment</span>
+            <details class="filter-menu" id="segment-filter-menu">
+              <summary aria-labelledby="segment-filter-label segment-filter-summary"><span id="segment-filter-summary">All segments</span></summary>
+              <div id="segment-filter-options" class="filter-menu-options" role="group" aria-labelledby="segment-filter-label"></div>
+            </details>
+          </div>
+          <div class="filter-menu-group tier-filter-group">
+            <span id="tier-filter-label">Funnel tier</span>
+            <details class="filter-menu" id="tier-filter-menu">
+              <summary aria-labelledby="tier-filter-label tier-filter-summary"><span id="tier-filter-summary">All tiers</span></summary>
+              <div id="tier-filter-options" class="filter-menu-options" role="group" aria-labelledby="tier-filter-label">
+                <label><input type="checkbox" value="1">T1 Core</label>
+                <label><input type="checkbox" value="2">T2 Major</label>
+                <label><input type="checkbox" value="3">T3 Watch</label>
+              </div>
+            </details>
             <details class="tier-help">
               <summary aria-label="About funnel tiers"><span aria-hidden="true">?</span></summary>
               <div class="tier-help-note">
@@ -71,23 +80,7 @@
                 <p>Manual tiers need a reason. Price drawdowns trigger research, not an automatic tier upgrade.</p>
               </div>
             </details>
-            <select id="tier-filter">
-              <option value="">All tiers</option>
-              <option value="1">T1 Core</option>
-              <option value="2">T2 Major</option>
-              <option value="3">T3 Watch</option>
-            </select>
           </div>
-          <label>
-            Ingestion status
-            <select id="status-filter">
-              <option value="">All statuses</option>
-              <option value="parsed">Parsed</option>
-              <option value="failed">Parse failed</option>
-              <option value="unavailable">Unavailable</option>
-              <option value="not_ingested">Not ingested</option>
-            </select>
-          </label>
         </div>
       </form>
 
@@ -107,11 +100,7 @@
           <thead>
             <tr>
               <th scope="col">Company</th>
-              <th scope="col">AI layer</th>
-              <th scope="col">Tier</th>
-              <th scope="col" class="number-column">Quality Score</th>
-              <th scope="col">Latest filing</th>
-              <th scope="col" class="number-column"
+              <th scope="col" class="number-column price-col"
                   data-sort-column="change_pct" aria-sort="none">
                 <button type="button" class="sort-button" data-sort="change_pct"
                         aria-label="Sort by daily change">
@@ -119,6 +108,10 @@
                   <span class="sort-indicator" aria-hidden="true"></span>
                 </button>
               </th>
+              <th scope="col">AI layer</th>
+              <th scope="col">Tier</th>
+              <th scope="col" class="number-column">Quality Score</th>
+              <th scope="col">Latest filing</th>
               <th scope="col" class="number-column change-col"
                   data-sort-column="week_change_pct" aria-sort="none">
                 <button type="button" class="sort-button" data-sort="week_change_pct"

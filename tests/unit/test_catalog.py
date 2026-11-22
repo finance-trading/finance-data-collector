@@ -188,6 +188,56 @@ def test_directory_filters_multiple_layers_before_paginating(tmp_path, engine, s
     assert [company.ticker for company in result.companies] == ["NVDA", "AMD"]
 
 
+def test_directory_filters_multiple_segments_before_paginating(tmp_path, engine, session_factory):
+    result = list_companies(
+        None,
+        None,
+        ["Compute", "Grid"],
+        None,
+        25,
+        0,
+        catalog_path=_catalog_path(tmp_path),
+        session_factory=session_factory,
+    )
+
+    assert result.total == 3
+    assert [company.ticker for company in result.companies] == ["VRT", "NVDA", "AMD"]
+
+
+def test_directory_filters_multiple_statuses_and_tiers(tmp_path, engine, session_factory, monkeypatch):
+    quotes = tmp_path / "quotes.json"
+    quotes.write_text(
+        json.dumps(
+            {
+                "generated_at": "2026-10-04T15:00:00+00:00",
+                "quotes": {
+                    "VRT": {"market_cap": 100},
+                    "NVDA": {"market_cap": 300},
+                    "AMD": {"market_cap": 200},
+                },
+            }
+        )
+    )
+    fdc.quote_store.save_payload(json.loads(quotes.read_text()))
+    monkeypatch.setattr(fdc.catalog, "load_overrides", lambda: {})
+
+    result = list_companies(
+        None,
+        None,
+        None,
+        ["not_ingested", "parsed"],
+        25,
+        0,
+        funnel_tier=[1, 2],
+        catalog_path=_catalog_path(tmp_path),
+        session_factory=session_factory,
+    )
+
+    # All three match status not_ingested, and tiers are {T1, T1, T2} -> all in [1, 2].
+    assert result.total == 3
+    assert [company.ticker for company in result.companies] == ["VRT", "NVDA", "AMD"]
+
+
 def test_directory_merges_cached_quotes(tmp_path, engine, session_factory, monkeypatch):
     fdc.quote_store.save_payload({
         "generated_at": "2026-10-04T15:00:00+00:00",

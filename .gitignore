@@ -240,3 +240,4 @@ tests/
 output/
 .vercel
 frontend/static-dist/
+reports/

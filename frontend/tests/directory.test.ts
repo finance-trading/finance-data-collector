@@ -47,26 +47,33 @@ describe("quote refresh time", () => {
   });
 });
 
+describe("directory filters", () => {
+  it("does not render ingestion status controls", () => {
+    const html = readFileSync(resolve(process.cwd(), "index.html"), "utf8");
+    expect(html).not.toContain("Ingestion status");
+    expect(html).not.toContain("status-filter-menu");
+  });
+});
+
 describe("directory URL state", () => {
   it("round-trips filters, sort, and paging through the URL", () => {
     const state = readDirectoryState(
       new URLSearchParams(
-        "query=nvda&layer=silicon&segment=Compute&status=parsed&sort=market_cap_desc&page=2&pageSize=50",
+        "query=nvda&layer=silicon&segment=Compute&sort=market_cap_desc&page=2&pageSize=50",
       ),
     );
 
     expect(state).toEqual({
       query: "nvda",
       layers: ["silicon"],
-      segment: "Compute",
-      tier: "",
-      status: "parsed",
+      segments: ["Compute"],
+      tiers: [],
       sort: "market_cap_desc",
       page: 2,
       pageSize: 50,
     });
     expect(writeDirectoryState(state).toString()).toBe(
-      "query=nvda&layer=silicon&segment=Compute&status=parsed&sort=market_cap_desc&page=2&pageSize=50",
+      "query=nvda&layer=silicon&segment=Compute&sort=market_cap_desc&page=2&pageSize=50",
     );
   });
 
@@ -98,10 +105,22 @@ describe("directory URL state", () => {
     ).toBe("price_vs_intrinsic_pct_desc");
   });
 
+  it("round-trips multiple segment and tier selections", () => {
+    const state = readDirectoryState(new URLSearchParams(
+      "segment=Compute&segment=Grid&tier=1&tier=2",
+    ));
+
+    expect(state.segments).toEqual(["Compute", "Grid"]);
+    expect(state.tiers).toEqual(["1", "2"]);
+    expect(writeDirectoryState(state).getAll("segment")).toEqual(["Compute", "Grid"]);
+    expect(writeDirectoryState(state).getAll("tier")).toEqual(["1", "2"]);
+    expect(writeDirectoryState(state).has("status")).toBe(false);
+  });
+
   it("normalizes invalid page values to supported defaults", () => {
     expect(
-      readDirectoryState(new URLSearchParams("page=0&pageSize=30&status=unknown")),
-    ).toMatchObject({page: 1, pageSize: 25, status: ""});
+      readDirectoryState(new URLSearchParams("page=0&pageSize=30")),
+    ).toMatchObject({page: 1, pageSize: 25});
   });
 });
 
@@ -165,6 +184,12 @@ describe("directory rendering", () => {
     expect(scores.map((score) => score.textContent)).toEqual(["83.46", "—"]);
   });
 
+  it("keeps the layer dropdown outside the filter panel clipping boundary", () => {
+    const css = readFileSync(resolve(process.cwd(), "src/styles/index.css"), "utf8");
+    const filterRule = css.match(/\.directory-filters\s*\{([^}]*)\}/)?.[1] ?? "";
+    expect(filterRule).toContain("overflow: visible;");
+  });
+
   it("shows a compact filter control with an active-filter count", async () => {
     const html = readFileSync(resolve(process.cwd(), "index.html"), "utf8");
     document.body.innerHTML = new DOMParser().parseFromString(html, "text/html").body.innerHTML;
@@ -185,10 +210,115 @@ describe("directory rendering", () => {
     expect(toggle.textContent).toContain("Filters");
     toggle.click();
     expect(toggle.getAttribute("aria-expanded")).toBe("true");
-    const tier = form.querySelector<HTMLSelectElement>("#tier-filter")!;
-    tier.value = "2";
-    tier.dispatchEvent(new Event("change"));
+    const tier = document.querySelector<HTMLInputElement>('#tier-filter-options input[value="2"]')!;
+    tier.checked = true;
+    tier.dispatchEvent(new Event("change", {bubbles: true}));
     expect(toggle.textContent).toContain("1 active");
+  });
+
+  it("reloads layer options when retrying after the catalog request failed", async () => {
+    const html = readFileSync(resolve(process.cwd(), "index.html"), "utf8");
+    document.body.innerHTML = new DOMParser().parseFromString(html, "text/html").body.innerHTML;
+    let layersCalls = 0;
+    let companiesCalls = 0;
+    vi.spyOn(globalThis, "fetch").mockImplementation(async (input) => {
+      const path = String(input);
+      if (path.includes("/catalog/layers")) {
+        layersCalls += 1;
+        return layersCalls === 1
+          ? new Response(JSON.stringify({ detail: "unavailable" }), { status: 500 })
+          : new Response(JSON.stringify({
+              total_companies: 1,
+              layers: [{ id: "power", name: "能源与电力", name_en: "Energy & Power", summary: "", count: 1, segments: [] }],
+            }), { status: 200 });
+      }
+      if (path.includes("/quotes")) {
+        return new Response(JSON.stringify({ generated_at: null, valuation_cache_as_of: null }), { status: 200 });
+      }
+      companiesCalls += 1;
+      return companiesCalls === 1
+        ? new Response(JSON.stringify({ detail: "unavailable" }), { status: 500 })
+        : new Response(JSON.stringify({ companies: [catalogOnlyCompany], total: 1 }), { status: 200 });
+    });
+
+    await mountDirectory();
+    expect(document.querySelectorAll("#layer-filter .filter-menu-options label")).toHaveLength(0);
+    const retry = document.querySelector<HTMLButtonElement>("#directory-state button")!;
+    expect(retry.textContent).toBe("Retry");
+
+    retry.click();
+
+    await vi.waitFor(() => {
+      expect(document.querySelectorAll("#layer-filter .filter-menu-options label")).toHaveLength(1);
+    });
+    expect(document.querySelector(".filter-menu-options label")?.textContent).toContain("能源与电力");
+    expect(layersCalls).toBe(2);
+    expect(companiesCalls).toBe(2);
+  });
+
+  it("recovers layer options with the filter's own retry when only the catalog request failed", async () => {
+    const html = readFileSync(resolve(process.cwd(), "index.html"), "utf8");
+    document.body.innerHTML = new DOMParser().parseFromString(html, "text/html").body.innerHTML;
+    let layersCalls = 0;
+    let companiesCalls = 0;
+    vi.spyOn(globalThis, "fetch").mockImplementation(async (input) => {
+      const path = String(input);
+      if (path.includes("/catalog/layers")) {
+        layersCalls += 1;
+        return layersCalls === 1
+          ? new Response(JSON.stringify({ detail: "unavailable" }), { status: 500 })
+          : new Response(JSON.stringify({
+              total_companies: 1,
+              layers: [{ id: "power", name: "能源与电力", name_en: "Energy & Power", summary: "", count: 1, segments: [] }],
+            }), { status: 200 });
+      }
+      if (path.includes("/quotes")) {
+        return new Response(JSON.stringify({ generated_at: null, valuation_cache_as_of: null }), { status: 200 });
+      }
+      companiesCalls += 1;
+      return new Response(JSON.stringify({ companies: [catalogOnlyCompany], total: 1 }), { status: 200 });
+    });
+
+    await mountDirectory();
+    expect(document.querySelectorAll("#layer-filter .filter-menu-options label")).toHaveLength(0);
+    const retry = document.querySelector<HTMLButtonElement>(".filter-menu-options .layer-filter-retry")!;
+    expect(retry.textContent).toContain("Retry");
+
+    retry.click();
+
+    await vi.waitFor(() => {
+      expect(document.querySelectorAll("#layer-filter .filter-menu-options label")).toHaveLength(1);
+    });
+    expect(document.querySelector(".filter-menu-options label")?.textContent).toContain("能源与电力");
+    expect(layersCalls).toBe(2);
+    expect(companiesCalls).toBe(1);
+  });
+
+  it("closes every filter menu when clicking outside", async () => {
+    const html = readFileSync(resolve(process.cwd(), "index.html"), "utf8");
+    document.body.innerHTML = new DOMParser().parseFromString(html, "text/html").body.innerHTML;
+    vi.spyOn(globalThis, "fetch").mockImplementation(async (input) => {
+      const path = String(input);
+      if (path.includes("/catalog/layers")) {
+        return new Response(JSON.stringify({
+          total_companies: 1,
+          layers: [{ id: "power", name: "能源与电力", name_en: "Energy & Power", summary: "", count: 1, segments: [] }],
+        }), { status: 200 });
+      }
+      if (path.includes("/quotes")) {
+        return new Response(JSON.stringify({ generated_at: null, valuation_cache_as_of: null }), { status: 200 });
+      }
+      return new Response(JSON.stringify({ companies: [catalogOnlyCompany], total: 1 }), { status: 200 });
+    });
+
+    await mountDirectory();
+    const menus = ["#layer-filter", "#segment-filter-menu", "#tier-filter-menu"]
+      .map((selector) => document.querySelector<HTMLDetailsElement>(selector)!);
+    menus.forEach((menu) => { menu.open = true; });
+
+    document.body.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+
+    expect(menus.every((menu) => !menu.open)).toBe(true);
   });
 
   it("saves a manual tier with a reason, then resets to auto", async () => {

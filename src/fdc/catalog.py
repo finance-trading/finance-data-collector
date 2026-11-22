@@ -138,8 +138,8 @@ class CompanyDirectoryItem(CatalogCompany):
 class CompanyDirectoryView(BaseModel):
     query: str | None
     layer: str | list[str] | None
-    segment: str | None
-    ingestion_status: IngestionStatus | None
+    segment: str | list[str] | None
+    ingestion_status: IngestionStatus | list[IngestionStatus] | None
     funnel_tier: int | list[int] | None = None
     sort_by: SortKey | None = None
     order: Order = "desc"
@@ -353,8 +353,8 @@ def _quote_sort_key(
 def list_companies(
     query: str | None,
     layer: str | list[str] | None,
-    segment: str | None,
-    ingestion_status: IngestionStatus | None,
+    segment: str | list[str] | None,
+    ingestion_status: IngestionStatus | list[IngestionStatus] | None,
     limit: int,
     offset: int,
     *,
@@ -380,7 +380,8 @@ def list_companies(
     needle = query.strip().casefold() if query and query.strip() else None
     layer_values = [layer] if isinstance(layer, str) else layer or []
     normalized_layers = {value.strip() for value in layer_values if value.strip()}
-    normalized_segment = segment.strip() if segment and segment.strip() else None
+    normalized_segments = {value.strip() for value in ([segment] if isinstance(segment, str) else segment or []) if value.strip()}
+    normalized_statuses = {ingestion_status} if isinstance(ingestion_status, str) else set(ingestion_status or [])
     tier_values = {funnel_tier} if isinstance(funnel_tier, int) else set(funnel_tier or [])
     companies: list[CompanyDirectoryItem] = []
     for company in catalog.companies:
@@ -400,9 +401,9 @@ def list_companies(
             continue
         if normalized_layers and company.layer not in normalized_layers:
             continue
-        if normalized_segment and company.segment != normalized_segment:
+        if normalized_segments and company.segment not in normalized_segments:
             continue
-        if ingestion_status and status != ingestion_status:
+        if normalized_statuses and status not in normalized_statuses:
             continue
         if tier_values and (tier_num is None or tier_num not in tier_values):
             continue
@@ -500,9 +501,9 @@ def list_companies(
     return CompanyDirectoryView(
         query=query.strip() if query and query.strip() else None,
         layer=(next(iter(normalized_layers)) if len(normalized_layers) == 1 else sorted(normalized_layers) or None),
-        segment=normalized_segment,
-        ingestion_status=ingestion_status,
-        funnel_tier=funnel_tier,
+        segment=(next(iter(normalized_segments)) if len(normalized_segments) == 1 else sorted(normalized_segments) or None),
+        ingestion_status=(next(iter(normalized_statuses)) if len(normalized_statuses) == 1 else sorted(normalized_statuses) or None),
+        funnel_tier=(next(iter(tier_values)) if len(tier_values) == 1 else sorted(tier_values) or None),
         sort_by=sort_by,
         order=order,
         limit=limit,

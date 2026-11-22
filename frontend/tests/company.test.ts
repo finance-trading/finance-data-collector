@@ -1,194 +1,174 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
+import type { QualityScoreView } from "../src/api/types";
 import {
-  companyStatusLabel,
-  createCompanyState,
-  disclosureBody,
-  initializeFullTextModal,
+  qualityScoreStateLabel,
   readTicker,
+  renderCompanyScore,
 } from "../src/pages/company";
-import { markCurrentNav } from "../src/components/site-shell";
-describe("company research state", () => {
+
+function mountShell() {
+  document.body.innerHTML = `
+    <header class="company-header">
+      <h1 id="company-name">Loading company</h1>
+      <p id="company-identity"></p>
+      <span id="company-status" class="status status-loading">Loading</span>
+    </header>
+    <main data-company-app>
+      <section id="quality-score">
+        <h2 id="quality-score-title">Quality score</h2>
+        <div id="quality-score-body" role="status">Loading quality score…</div>
+      </section>
+      <div id="quality-dimensions"></div>
+      <div id="financial-strength"></div>
+      <div id="quality-notes"></div>
+      <p id="quality-provenance"></p>
+    </main>
+  `;
+}
+
+const SCORE: QualityScoreView = {
+  ticker: "MSFT",
+  cik: "0000000000",
+  company_name: "Microsoft Fixture Corporation",
+  sector: "Technology",
+  rating_cutoff: "2026-09-30",
+  calculated_at: "2026-10-05T00:00:00Z",
+  snapshot_id: "acceptance-cq-v2",
+  rule_version: "CQ_V2",
+  semantic_policy: "CQ_EDGARTOOLS_SEMANTIC_POLICY_V2",
+  source_facts_sha256: "a".repeat(64),
+  quality_score: "42.50",
+  score_available: true,
+  status: "QUALIFIED",
+  dimension_count: 5,
+  peer_count: 20,
+  period_ends: ["2023-06-30", "2024-06-30"],
+  revenue_growth_dimension: "10.25",
+  operating_margin_dimension: "8.10",
+  cash_conversion_dimension: "9.75",
+  capital_efficiency_dimension: "11.50",
+  financial_strength_dimension: "3.50",
+  unknown_reasons: ["missing_cash_flow"],
+  v2_hard_status: "QUALIFIED",
+  v2_unknown_reasons: [],
+  v2_hard_gate_count: 5,
+  v2_hard_gate_total: 5,
+  v2_net_debt_ebitda: "0.80",
+  v2_interest_coverage: "12.50",
+  v2_cumulative_net_income: "120.25",
+  v2_cumulative_cfo: "150.75",
+  v2_positive_operating_income_years: 4,
+  v2_positive_cfo_years: 5,
+};
+
+describe("company quality page", () => {
+  beforeEach(mountShell);
+
   it("normalizes the ticker from the query string", () => {
     expect(readTicker(new URL("http://test/company.html?ticker=nvda"))).toBe("NVDA");
     expect(readTicker(new URL("http://test/company.html?ticker=%3Cscript%3E"))).toBeNull();
   });
 
-  it("does not let stale evidence replace a newer filing", () => {
-    const state = createCompanyState();
-    state.selectFiling("old-accession");
-    const stale = state.beginEvidence("old-accession");
-    state.selectFiling("new-accession");
-
-    expect(state.acceptEvidence(stale)).toBe(false);
-    expect(state.acceptEvidence(state.beginEvidence("new-accession"))).toBe(true);
-  });
-
-  it("maps HTTP failures to explicit labels", () => {
-    expect(companyStatusLabel(404)).toBe("Not found");
-    expect(companyStatusLabel(409)).toBe("Unavailable");
-    expect(companyStatusLabel(422)).toBe("Parse failed");
-  });
-});
-
-const LONG_PROSE = "Net revenue was $30 billion for the year, an increase of $6 billion or 25 percent from the prior year.\n\n".repeat(30);
-
-describe("disclosure full text", () => {
-  beforeEach(() => {
-    document.body.innerHTML = `
-      <div id="host"></div>
-      <div id="full-text" class="full-text-modal" role="dialog" aria-hidden="true">
-        <div class="full-text-header">
-          <h3 id="full-text-title">Full text</h3>
-          <button id="full-text-close" type="button">Close</button>
-        </div>
-        <article id="full-text-body"></article>
-      </div>
-    `;
-    initializeFullTextModal();
-  });
-
-  it("keeps short prose inline without a full-text trigger", () => {
-    const host = document.querySelector<HTMLElement>("#host")!;
-    host.append(disclosureBody("Net revenue was $30 billion.", "Management discussion"));
-
-    const copy = host.querySelector<HTMLElement>(".disclosure-copy")!;
-    expect(copy.classList.contains("is-truncated")).toBe(false);
-    expect(host.querySelector(".expand-text")).toBeNull();
-    expect(copy.textContent).toBe("Net revenue was $30 billion.");
-  });
-
-  it("truncates long prose but keeps the full text reachable in the modal", () => {
-    const host = document.querySelector<HTMLElement>("#host")!;
-    host.append(disclosureBody(LONG_PROSE, "Management discussion"));
-
-    const copy = host.querySelector<HTMLElement>(".disclosure-copy")!;
-    expect(copy.classList.contains("is-truncated")).toBe(true);
-    // The display is a short word-boundary cut; the parsed text is stashed
-    // off-DOM so the trigger's own label cannot pollute it.
-    expect(copy.textContent.length).toBeLessThan(LONG_PROSE.length / 2);
-    expect(copy.getAttribute("data-full-text")).toBe(LONG_PROSE);
-
-    host.querySelector<HTMLElement>(".expand-text")!.dispatchEvent(new Event("click"));
-    const modal = document.querySelector<HTMLElement>("#full-text")!;
-    expect(modal.classList.contains("is-open")).toBe(true);
-    expect(modal.getAttribute("aria-hidden")).toBe("false");
-    expect(modal.querySelector<HTMLElement>("#full-text-body")!.textContent).toBe(LONG_PROSE);
-  });
-
-  it("cuts the excerpt at a word boundary, not mid-token", () => {
-    const host = document.querySelector<HTMLElement>("#host")!;
-    host.append(disclosureBody(`alpha ${"word ".repeat(200)}`, "Management discussion"));
-
-    // textContent = "alpha word …" + button label; the prose part ends on a
-    // space + ellipsis, so the last whole word before the cut is intact.
-    const copy = host.querySelector<HTMLElement>(".disclosure-copy")!;
-    const shown = copy.textContent.replace(copy.querySelector(".expand-text")!.textContent ?? "", "");
-    // Ends on the ellipsis; the cut sat on a word boundary, so the prose
-    // part is "alpha" plus a whole number of complete "word"s.
-    expect(shown.endsWith("…")).toBe(true);
-    expect(shown.slice(0, -1)).toMatch(/^alpha( word)*$/);
-  });
-
-  it("clears the modal on close and lets Escape and backdrop clicks close it", () => {
-    const host = document.querySelector<HTMLElement>("#host")!;
-    host.append(disclosureBody(LONG_PROSE, "Management discussion"));
-    const modal = document.querySelector<HTMLElement>("#full-text")!;
-    const trigger = () => host.querySelector<HTMLElement>(".expand-text")!;
-    const open = () => trigger().dispatchEvent(new Event("click"));
-
-    open();
-    document.querySelector<HTMLElement>("#full-text-close")!.dispatchEvent(new Event("click"));
-    expect(modal.classList.contains("is-open")).toBe(false);
-    expect(modal.getAttribute("aria-hidden")).toBe("true");
-    expect(modal.querySelector<HTMLElement>("#full-text-body")!.textContent).toBe("");
-
-    open();
-    document.dispatchEvent(new KeyboardEvent("keydown", {key: "Escape"}));
-    expect(modal.classList.contains("is-open")).toBe(false);
-
-    open();
-    modal.dispatchEvent(new Event("click"));
-    expect(modal.classList.contains("is-open")).toBe(false);
-  });
-});
-
-describe("site shell", () => {
-  beforeEach(() => {
-    document.body.innerHTML = `
-      <nav>
-        <a data-nav href="http://test/index.html">AI companies</a>
-        <a data-nav href="http://test/graph.html">Company graph</a>
-      </nav>
-    `;
-  });
-
-  it("marks only the current navigation destination", () => {
-    markCurrentNav("/graph.html");
-
-    expect(document.querySelector("[href='http://test/graph.html']")?.getAttribute("aria-current"))
-      .toBe("page");
-    expect(document.querySelector("[href='http://test/index.html']")?.hasAttribute("aria-current"))
-      .toBe(false);
-  });
-});
-
-describe("quality score page state", () => {
-  beforeEach(() => {
-    document.body.innerHTML = `
-      <article id="quality-score" aria-labelledby="quality-score-title">
-        <div class="quality-header">
-          <h2 id="quality-score-title">Quality score</h2>
-          <p class="state-message" role="status">Loading quality score…</p>
-        </div>
-      </article>
-    `;
-  });
-
-  const score = {
-    ticker: "AAPL", cik: "0000320193", company_name: "Apple Inc.", sector: "Technology",
-    rating_cutoff: "2026-09-30", calculated_at: "2026-10-05T00:00:00Z",
-    snapshot_id: "seed", rule_version: "CQ_V2", semantic_policy: "CQ_EDGARTOOLS_SEMANTIC_POLICY_V2",
-    source_facts_sha256: "a".repeat(64), quality_score: "70.666667", score_available: true,
-    status: "QUALIFIED", dimension_count: 5, peer_count: 12, period_ends: ["2021-09-25", "2026-09-30"],
-    revenue_growth_dimension: "83.1", operating_margin_dimension: "23.2", cash_conversion_dimension: "22.5",
-    capital_efficiency_dimension: "18.3", financial_strength_dimension: "76.4", unknown_reasons: [],
-    v2_hard_status: "QUALIFIED", v2_unknown_reasons: [], v2_hard_gate_count: 5, v2_hard_gate_total: 5,
-    v2_net_debt_ebitda: "0.1", v2_interest_coverage: "12.4", v2_cumulative_net_income: "300000000000",
-    v2_cumulative_cfo: "400000000000", v2_positive_operating_income_years: 5, v2_positive_cfo_years: 5,
-  };
-
-  it("shows the score, dimensions, gates, and cutoff", async () => {
-    const {renderQualityScore} = await import("../src/pages/company");
-    renderQualityScore(score);
-    const panel = document.querySelector<HTMLElement>("#quality-score")!;
-    expect(panel.querySelector(".quality-score-value")?.textContent).toBe("70.67");
-    expect(panel.textContent).toContain("Revenue growth");
-    expect(panel.textContent).toContain("Financial strength");
-    expect(panel.textContent).toContain("HARD_GATES_PASS");
-    expect(panel.textContent).toContain("Cutoff 2026-09-30");
-  });
-
-  it("keeps diagnostic scores visibly non-certified", async () => {
-    const {renderQualityScore} = await import("../src/pages/company");
-    renderQualityScore({...score, score_available: false, quality_score: "53.977273", status: "NOT_QUALIFIED"});
-    const panel = document.querySelector<HTMLElement>("#quality-score")!;
-    expect(panel.querySelector(".quality-score-value")?.textContent).toBe("53.98");
-    expect(panel.textContent).toContain("Diagnostic score only");
-  });
-
-  it("renders no-record and request-failure states", async () => {
-    const {renderQualityScore} = await import("../src/pages/company");
-    renderQualityScore(null);
-    expect(document.querySelector("#quality-score")?.textContent).toContain("No score record");
-    renderQualityScore(null, "Quality score request failed");
-    expect(document.querySelector("#quality-score [role=alert]")?.textContent).toContain("request failed");
-  });
-
-  it("labels model statuses without treating them as zero", async () => {
-    const {qualityScoreStateLabel} = await import("../src/pages/company");
+  it("maps quality statuses to readable labels", () => {
     expect(qualityScoreStateLabel("QUALIFIED")).toBe("Qualified");
+    expect(qualityScoreStateLabel("NOT_QUALIFIED")).toBe("Not qualified");
     expect(qualityScoreStateLabel("SEPARATE_MODEL")).toBe("Separate model");
     expect(qualityScoreStateLabel("UNKNOWN")).toBe("Unknown");
+  });
+
+  it("renders the company overview from the latest score", () => {
+    renderCompanyScore(SCORE);
+
+    expect(document.querySelector("#company-name")?.textContent).toBe(
+      "Microsoft Fixture Corporation",
+    );
+    expect(document.querySelector("#company-identity")?.textContent).toContain("MSFT");
+    expect(document.querySelector("#company-identity")?.textContent).toContain("Technology");
+    expect(document.querySelector("#company-status")?.textContent).toBe("Qualified");
+    expect(document.title).toBe("Microsoft Fixture Corporation quality | Finance Data Collector");
+  });
+
+  it("renders the headline score and all five dimensions", () => {
+    renderCompanyScore(SCORE);
+
+    const summary = document.querySelector("#quality-score-body")?.textContent ?? "";
+    expect(summary).toContain("42.50");
+    expect(summary).toContain("Qualified");
+    expect(summary).toContain("Calculated Oct 5, 2026");
+
+    const dimensions = document.querySelector("#quality-dimensions")?.textContent ?? "";
+    expect(dimensions).toContain("Revenue growth");
+    expect(dimensions).toContain("10.25");
+    expect(dimensions).toContain("Operating margin");
+    expect(dimensions).toContain("8.10");
+    expect(dimensions).toContain("Cash conversion");
+    expect(dimensions).toContain("9.75");
+    expect(dimensions).toContain("Capital efficiency");
+    expect(dimensions).toContain("11.50");
+    expect(dimensions).toContain("Financial strength");
+    expect(dimensions).toContain("3.50");
+  });
+
+  it("renders the financial-strength gate and diagnostic metrics", () => {
+    renderCompanyScore(SCORE);
+
+    const strength = document.querySelector("#financial-strength")?.textContent ?? "";
+    expect(strength).toContain("Hard gates");
+    expect(strength).toContain("5 / 5");
+    expect(strength).toContain("Net debt / EBITDA");
+    expect(strength).toContain("0.80");
+    expect(strength).toContain("Interest coverage");
+    expect(strength).toContain("12.50");
+    expect(strength).toContain("Cumulative net income");
+    expect(strength).toContain("120.25");
+    expect(strength).toContain("Cumulative operating cash flow");
+    expect(strength).toContain("150.75");
+    expect(strength).toContain("Positive operating income years");
+    expect(strength).toContain("4");
+    expect(strength).toContain("Positive cash flow years");
+    expect(strength).toContain("5");
+  });
+
+  it("renders score notes and provenance", () => {
+    renderCompanyScore(SCORE);
+
+    expect(document.querySelector("#quality-notes")?.textContent).toContain("Missing cash flow");
+    expect(document.querySelector("#quality-provenance")?.textContent).toContain("CQ_V2");
+    expect(document.querySelector("#quality-provenance")?.textContent).toContain(
+      "acceptance-cq-v2",
+    );
+  });
+
+  it("does not repeat the same unknown reason across both reason lists", () => {
+    renderCompanyScore({
+      ...SCORE,
+      unknown_reasons: ["missing_cash_flow"],
+      v2_unknown_reasons: ["missing_cash_flow"],
+    });
+
+    const notes = document.querySelector("#quality-notes")?.textContent ?? "";
+    expect(notes.match(/Missing cash flow/g)).toHaveLength(1);
+  });
+
+  it("shows an explicit unavailable state when no score record exists", () => {
+    renderCompanyScore(null, "MSFT");
+
+    expect(document.querySelector("#company-name")?.textContent).toBe("MSFT");
+    expect(document.querySelector("#company-status")?.textContent).toBe("Unavailable");
+    expect(document.querySelector("#quality-score-body")?.textContent).toContain(
+      "No score record is available for this company.",
+    );
+    expect(document.querySelector("#quality-score-body")?.getAttribute("role")).toBe("status");
+  });
+
+  it("shows a request failure as an alert", () => {
+    renderCompanyScore(null, "MSFT", "Quality score request failed.");
+
+    expect(document.querySelector("#company-status")?.textContent).toBe("Unavailable");
+    expect(document.querySelector("#quality-score-body")?.textContent).toContain(
+      "Quality score request failed.",
+    );
+    expect(document.querySelector("#quality-score-body")?.getAttribute("role")).toBe("alert");
   });
 });

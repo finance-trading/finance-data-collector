@@ -59,8 +59,8 @@ def _read(operation: Callable[[], ViewT]) -> ViewT:
 def companies(
     query: str | None = None,
     layer: Annotated[list[str] | None, Query()] = None,
-    segment: str | None = None,
-    ingestion_status: Annotated[IngestionStatus | None, Query()] = None,
+    segment: Annotated[list[str] | None, Query()] = None,
+    ingestion_status: Annotated[list[IngestionStatus] | None, Query()] = None,
     sort_by: Annotated[SortKey | None, Query()] = None,
     order: Order = "desc",
     funnel_tier: Annotated[
