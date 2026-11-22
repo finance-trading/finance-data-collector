@@ -365,6 +365,12 @@ def test_directory_joins_funnel_tier_and_filters(
     )
     assert [company.ticker for company in filtered.companies] == ["AMD"]
 
+    combined = list_companies(
+        None, None, None, None, 25, 0, funnel_tier=[1, 2],
+        catalog_path=_catalog_path(tmp_path), session_factory=session_factory,
+    )
+    assert {company.ticker for company in combined.companies} == {"VRT", "NVDA", "AMD"}
+
 
 def test_funnel_tier_index_resolves_tiers(tmp_path, monkeypatch):
     """The endpoint helper resolves tiers off catalog + quotes + overrides."""

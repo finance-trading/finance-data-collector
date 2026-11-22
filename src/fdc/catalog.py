@@ -140,7 +140,7 @@ class CompanyDirectoryView(BaseModel):
     layer: str | list[str] | None
     segment: str | None
     ingestion_status: IngestionStatus | None
-    funnel_tier: int | None = None
+    funnel_tier: int | list[int] | None = None
     sort_by: SortKey | None = None
     order: Order = "desc"
     limit: int
@@ -360,7 +360,7 @@ def list_companies(
     *,
     sort_by: SortKey | None = None,
     order: Order = "desc",
-    funnel_tier: int | None = None,
+    funnel_tier: int | list[int] | None = None,
     catalog_path: Path | str | None = None,
     session_factory: Callable[..., Session] = SessionLocal,
 ) -> CompanyDirectoryView:
@@ -381,6 +381,7 @@ def list_companies(
     layer_values = [layer] if isinstance(layer, str) else layer or []
     normalized_layers = {value.strip() for value in layer_values if value.strip()}
     normalized_segment = segment.strip() if segment and segment.strip() else None
+    tier_values = {funnel_tier} if isinstance(funnel_tier, int) else set(funnel_tier or [])
     companies: list[CompanyDirectoryItem] = []
     for company in catalog.companies:
         ticker = company.ticker.upper()
@@ -403,7 +404,7 @@ def list_companies(
             continue
         if ingestion_status and status != ingestion_status:
             continue
-        if funnel_tier is not None and (tier is None or tier["tier"] != funnel_tier):
+        if tier_values and (tier_num is None or tier_num not in tier_values):
             continue
         companies.append(
             CompanyDirectoryItem(

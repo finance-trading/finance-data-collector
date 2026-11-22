@@ -64,8 +64,8 @@ def companies(
     sort_by: Annotated[SortKey | None, Query()] = None,
     order: Order = "desc",
     funnel_tier: Annotated[
-        int | None,
-        Query(ge=1, le=3, description="Funnel tier: 1 core, 2 major, 3 watch"),
+        list[Annotated[int, Query(ge=1, le=3)]] | None,
+        Query(description="Funnel tier: 1 core, 2 major, 3 watch"),
     ] = None,
     limit: Annotated[int, Query(ge=1, le=100)] = 25,
     offset: Annotated[int, Query(ge=0)] = 0,
