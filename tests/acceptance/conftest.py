@@ -13,6 +13,7 @@ import threading
 import time
 from collections.abc import Iterator
 from datetime import UTC, date, datetime
+from decimal import Decimal
 from pathlib import Path
 
 import pytest
@@ -22,6 +23,7 @@ from fdc.config import get_settings
 from fdc.db import get_engine
 from fdc.models import (
     Artifact,
+    CompanyQualityScore,
     EvidenceLocator,
     ExtractedTable,
     Filing,
@@ -279,6 +281,42 @@ def seed_fixture_database(database_url: str) -> None:
                 status="failed",
                 is_current=False,
                 diagnostics={"detail": "XBRL parse failed"},
+            )
+        )
+        session.add(
+            CompanyQualityScore(
+                snapshot_id="acceptance-cq-v2",
+                ticker="MSFT",
+                cik="0000000000",
+                company_name="Microsoft Fixture Corporation",
+                sector="Technology",
+                rating_cutoff=date(2026, 9, 30),
+                calculated_at=datetime(2026, 10, 5, tzinfo=UTC),
+                rule_version="CQ_V2",
+                semantic_policy="CQ_EDGARTOOLS_SEMANTIC_POLICY_V2",
+                source_facts_sha256="a" * 64,
+                quality_score=Decimal("42.5"),
+                score_available=True,
+                status="QUALIFIED",
+                dimension_count=5,
+                peer_count=20,
+                period_ends=["2023-06-30", "2024-06-30"],
+                revenue_growth_dimension=Decimal("10.25"),
+                operating_margin_dimension=Decimal("8.10"),
+                cash_conversion_dimension=Decimal("9.75"),
+                capital_efficiency_dimension=Decimal("11.50"),
+                financial_strength_dimension=Decimal("3.50"),
+                unknown_reasons=["missing_cash_flow"],
+                v2_hard_status="QUALIFIED",
+                v2_unknown_reasons=[],
+                v2_hard_gate_count=5,
+                v2_hard_gate_total=5,
+                v2_net_debt_ebitda=Decimal("0.80"),
+                v2_interest_coverage=Decimal("12.50"),
+                v2_cumulative_net_income=Decimal("120.25"),
+                v2_cumulative_cfo=Decimal("150.75"),
+                v2_positive_operating_income_years=4,
+                v2_positive_cfo_years=5,
             )
         )
         session.commit()

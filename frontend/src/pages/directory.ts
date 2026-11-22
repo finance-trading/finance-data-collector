@@ -282,10 +282,10 @@ export function renderCompanies(
 
     row.append(
       companyCell,
+      priceCell,
       categoryCell,
       tierCell,
       dateCell,
-      priceCell,
       changeCell("1W DD", company.week_change_pct),
       changeCell("1W Rise", company.week_rise_pct),
       changeCell("1M DD", company.month_change_pct),

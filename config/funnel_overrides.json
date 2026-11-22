@@ -43,5 +43,9 @@
   "VRTX": {
     "tier": 2,
     "note": "fst"
+  },
+  "SNDK": {
+    "tier": 1,
+    "note": "upgrade"
   }
 }
