@@ -184,6 +184,30 @@ class CompanyQualityScore(Base):
     )
 
 
+class AnalystOpinion(Base):
+    """Latest per-firm sell-side analyst actions for a ticker."""
+
+    __tablename__ = "analyst_opinion"
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    ticker: Mapped[str] = mapped_column(String(32), nullable=False)
+    firm: Mapped[str] = mapped_column(String(128), nullable=False)
+    action_at: Mapped[datetime] = mapped_column(UtcDateTime, nullable=False)
+    action: Mapped[str | None] = mapped_column(String(16))
+    from_grade: Mapped[str | None] = mapped_column(String(32))
+    to_grade: Mapped[str | None] = mapped_column(String(32))
+    price_target_action: Mapped[str | None] = mapped_column(String(32))
+    price_target: Mapped[Decimal | None] = mapped_column(Numeric(18, 4))
+    prior_price_target: Mapped[Decimal | None] = mapped_column(Numeric(18, 4))
+    source: Mapped[str] = mapped_column(String(32), nullable=False, default="yahoo_upgrade_downgrade")
+    fetched_at: Mapped[datetime] = mapped_column(UtcDateTime, nullable=False)
+
+    __table_args__ = (
+        UniqueConstraint("ticker", "firm", "action_at", name="uq_analyst_opinion_ticker_firm_action_at"),
+        Index("ix_analyst_opinion_ticker_action_at", "ticker", "action_at"),
+    )
+
+
 class TimestampMixin:
     """Creation/update timestamps shared by every parser row."""
 
