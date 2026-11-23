@@ -334,7 +334,7 @@ h1, h2 {
 
 .filter-menu-options {
   position: absolute;
-  z-index: 4;
+  z-index: 30;
   top: 100%;
   left: 0;
   min-width: max(100%, 220px);

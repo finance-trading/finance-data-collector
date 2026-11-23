@@ -91,12 +91,9 @@ def parse_scenario_region(region: str) -> dict | None:
         rest2 = rest[mf.end():]
     mg = re.search(G5, rest2)
     if not mg:
-        mg2 = re.search(r"\|\s*(\d+(?:\.\d+)?)\s*%\s*\|", rest2)
-        if not mg2:
-            mg2 = re.search(r"(\d+(?:\.\d+)?)\s*%", rest2)
-            if not mg2:
-                return None
-            mg = mg2
+        mg = re.search(r"\|\s*(\d+(?:\.\d+)?)\s*%\s*\|", rest2)
+    if not mg:
+        return None
     g = float(mg.group(1))
     if len(growth) != 5 or len(margin) != 5:
         return None
@@ -202,7 +199,7 @@ def write_report(ticker: str, bear: dict, base: dict, bull: dict, pack: dict, ca
         L.append(f"| {lbl} | ${v:,.2f} | {(v/price-1)*100:+.1f}% |")
     L += ["", "### Base 情景敏感性（每股；WACC±1% × g±0.5%）"]
     grid = calc_results["base"]["sensitivity_per_share"]
-    gkeys = sorted({k for wk in grid for k in grid[wk]}, key=lambda s: float(s[3:]))
+    gkeys = sorted({k for wk in grid for k in grid[wk]}, key=lambda s: float(s.replace("g", "").replace("%", "").strip()))
     L.append("| WACC ↓ / g → | " + " | ".join(gk for gk in gkeys) + " |")
     L.append("|---|" + "---:|" * len(gkeys))
     for wk in grid:

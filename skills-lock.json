@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "skills": {
+    "dcf-valuation": {
+      "source": "claude-office-skills/skills",
+      "commit": "9c4c7d5cd2813a8936bf2c9fdb174ea883b85a11",
+      "sourceType": "github",
+      "skillPath": "dcf-valuation/SKILL.md",
+      "computedHash": "aee0e5e587c60c17188632d918b3982821b75b2ee2b0f77c1af9461e4ea7ba11"
+    }
+  }
+}
