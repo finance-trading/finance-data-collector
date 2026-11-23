@@ -1,5 +1,5 @@
 import { ApiError, apiGet } from "../api/client";
-import type { QualityScoreView } from "../api/types";
+import type { AnalystOpinionsView, AnalystFirmView, QualityScoreView } from "../api/types";
 import { markCurrentNav } from "../components/site-shell";
 
 const API_QUALITY = "/api/v1/companies/";
@@ -27,6 +27,87 @@ export async function loadQualityScore(ticker: string): Promise<QualityScoreView
   } catch (error) {
     if (error instanceof ApiError && error.status === 404) return null;
     throw error;
+  }
+}
+
+const ANALYST_PATH = "/analyst-opinions";
+const EMPTY_ANALYST = "No recent firm-level analyst opinions in the last 24 months.";
+
+export async function loadAnalystOpinions(ticker: string): Promise<AnalystOpinionsView | null> {
+  try {
+    return await apiGet<AnalystOpinionsView>(
+      `${API_QUALITY}${encodeURIComponent(ticker.trim().toUpperCase())}${ANALYST_PATH}`,
+    );
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) return null;
+    throw error;
+  }
+}
+
+function formatTarget(value: number | null | undefined): string {
+  if (value == null) return "—";
+  return value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function firmActionLabel(firm: AnalystFirmView): string {
+  const bits: string[] = [];
+  if (firm.action) bits.push(firm.action);
+  if (firm.target_action) bits.push(firm.target_action);
+  return bits.length ? bits.join(" · ") : "—";
+}
+
+function ratingCell(firm: AnalystFirmView): HTMLElement {
+  const element = document.createElement("td");
+  element.className = "analyst-rating-cell";
+  if (firm.rating) {
+    const badge = document.createElement("span");
+    badge.className = `analyst-rating analyst-rating--${firm.rating}`;
+    badge.textContent = firm.rating;
+    element.append(badge);
+    if (firm.to_grade && firm.to_grade.toLowerCase() !== firm.rating) {
+      const grade = document.createElement("span");
+      grade.className = "analyst-grade";
+      grade.textContent = ` (${firm.to_grade})`;
+      element.append(grade);
+    }
+  } else {
+    element.append(textElement("span", "", "—"));
+  }
+  return element;
+}
+
+export function renderAnalystOpinions(view: AnalystOpinionsView | null): void {
+  const summary = byId<HTMLParagraphElement>("analyst-opinions-summary");
+  const body = byId<HTMLTableSectionElement>("analyst-opinions-body");
+  body.replaceChildren();
+
+  if (!view || view.firms.length === 0) {
+    summary.textContent = EMPTY_ANALYST;
+    const emptyRow = document.createElement("tr");
+    emptyRow.append(textElement("td", "analyst-empty", EMPTY_ANALYST));
+    emptyRow.firstElementChild?.setAttribute("colspan", "6");
+    body.append(emptyRow);
+    return;
+  }
+
+  const parts: string[] = [];
+  if (view.mean_target != null) parts.push(`Mean target ${formatTarget(view.mean_target)}`);
+  parts.push(`${view.firm_count} firm${view.firm_count === 1 ? "" : "s"}`);
+  if (view.rating_skew) parts.push(`${view.rating_skew} skew`);
+  summary.textContent = parts.join(" · ");
+
+  for (const firm of view.firms) {
+    const row = document.createElement("tr");
+    if (!firm.in_window) row.className = "analyst-row is-out-of-window";
+    row.append(
+      textElement("td", "analyst-firm", firm.firm),
+      ratingCell(firm),
+      textElement("td", "analyst-target", formatTarget(firm.target)),
+      textElement("td", "analyst-target", formatTarget(firm.prior_target)),
+      textElement("td", "analyst-action", firmActionLabel(firm)),
+      textElement("td", "analyst-date", formatDate(firm.action_at)),
+    );
+    body.append(row);
   }
 }
 
@@ -263,14 +344,20 @@ export async function mountCompanyPage(): Promise<void> {
   const ticker = readTicker(new URL(window.location.href));
   if (!ticker) {
     renderCompanyScore(null, "", "Add a valid ticker query parameter.");
+    renderAnalystOpinions(null);
     return;
   }
 
-  try {
-    renderCompanyScore(await loadQualityScore(ticker), ticker);
-  } catch {
+  const [score, opinions] = await Promise.allSettled([
+    loadQualityScore(ticker),
+    loadAnalystOpinions(ticker),
+  ]);
+  if (score.status === "fulfilled") {
+    renderCompanyScore(score.value, ticker);
+  } else {
     renderCompanyScore(null, ticker, "Quality score request failed.");
   }
+  renderAnalystOpinions(opinions.status === "fulfilled" ? opinions.value : null);
 }
 
 if (document.querySelector("[data-company-app]")) {

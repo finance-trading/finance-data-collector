@@ -457,7 +457,7 @@ describe("directory rendering", () => {
     );
     expect(values).toEqual(["$5,649,191M", "$97,086M", "$985.2M"]);
 
-    expect(cells[0].cellIndex).toBe(21);
+    expect(cells[0].cellIndex).toBe(22);
 
     const missing = document.querySelector(".cap-na") as HTMLElement;
     expect(missing.textContent).toBe("—");
@@ -529,16 +529,43 @@ describe("directory rendering", () => {
     expect(text("P vs IV", 1)).toBe("—");
     expect(text("Bull", 1)).toBe("—");
 
-    // The columns sit after Fwd EPS and before market cap.
+    // The analyst target column sits after Fwd EPS; the intrinsic columns follow it.
     expect(
-      (document.querySelector('td[data-label="Intrinsic"]') as HTMLTableCellElement).cellIndex,
+      (document.querySelector('td[data-label="Analyst target"]') as HTMLTableCellElement).cellIndex,
     ).toBe(16);
     expect(
-      (document.querySelector('td[data-label="P vs IV"]') as HTMLTableCellElement).cellIndex,
+      (document.querySelector('td[data-label="Intrinsic"]') as HTMLTableCellElement).cellIndex,
     ).toBe(17);
     expect(
+      (document.querySelector('td[data-label="P vs IV"]') as HTMLTableCellElement).cellIndex,
+    ).toBe(18);
+    expect(
       (document.querySelector('td[data-label="Bull"]') as HTMLTableCellElement).cellIndex,
-    ).toBe(20);
+    ).toBe(21);
+  });
+
+  it("renders the analyst target column with coverage and links to the drill-down", () => {
+    renderCompanies([
+      {
+        ...catalogOnlyCompany,
+        ticker: "NVDA",
+        analyst_target: 250.5,
+        analyst_count: 3,
+        analyst_rating: "buy",
+      },
+      catalogOnlyCompany,
+    ]);
+
+    const cell = document.querySelector('td[data-label="Analyst target"]')!;
+    const link = cell.querySelector(".analyst-target-link")!;
+    expect(link.textContent).toBe("250.50");
+    expect(link.getAttribute("href")).toBe("company.html?ticker=NVDA#analyst-opinions");
+    expect(cell.querySelector(".analyst-target-summary")?.textContent).toBe("3 firms · buy");
+
+    // A company with no coverage degrades to the muted placeholder.
+    const missing = document.querySelectorAll('td[data-label="Analyst target"]')[1]!;
+    expect(missing.querySelector(".analyst-target-link")?.textContent).toBe("—");
+    expect(missing.querySelector(".analyst-target-summary")).toBeNull();
   });
 
   it("starts price ranges collapsed with the recorded range count", () => {

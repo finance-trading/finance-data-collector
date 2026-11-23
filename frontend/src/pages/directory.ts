@@ -141,7 +141,7 @@ function cell(label: string, className = ""): HTMLTableCellElement {
 
 const mobileDetailLabels = new Set([
   "Latest filing", "1W Rise", "1M Rise", "52W Rise", "P/E", "EPS", "Fwd P/E",
-  "Fwd EPS", "Intrinsic", "P vs IV", "Bear", "Base", "Bull", "Price ranges",
+  "Fwd EPS", "Analyst target", "Intrinsic", "P vs IV", "Bear", "Base", "Bull", "Price ranges",
 ]);
 
 /** The sort key a `*_asc`/`*_desc` state value refers to, or null for catalog order. */
@@ -297,6 +297,7 @@ export function renderCompanies(
       ratioCell("EPS", company.eps_ttm),
       ratioCell("Fwd P/E", company.forward_pe),
       ratioCell("Fwd EPS", company.forward_eps),
+      analystTargetCell(company),
       intrinsicCell("Intrinsic", company.intrinsic_value),
       changeCell("P vs IV", company.price_vs_intrinsic_pct),
       intrinsicCell("Bear", company.scen_bear),
@@ -357,6 +358,27 @@ function intrinsicCell(label: string, value: number | null | undefined): HTMLTab
     na.className = "price-na";
     na.textContent = "—";
     element.append(na);
+  }
+  return element;
+}
+
+function analystTargetCell(company: CompanyDirectoryItem): HTMLTableCellElement {
+  const element = cell("Analyst target", "number-column analyst-target-cell");
+  const link = document.createElement("a");
+  link.className = "analyst-target-link";
+  link.href = `company.html?ticker=${encodeURIComponent(company.ticker)}#analyst-opinions`;
+  link.setAttribute("aria-label", `${company.ticker} analyst target details`);
+  const target = company.analyst_target;
+  link.textContent = target == null ? "—" : target.toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+  element.append(link);
+  if (company.analyst_count) {
+    const summary = document.createElement("span");
+    summary.className = "analyst-target-summary";
+    summary.textContent = `${company.analyst_count} firms${company.analyst_rating ? ` · ${company.analyst_rating}` : ""}`;
+    element.append(summary);
   }
   return element;
 }

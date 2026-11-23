@@ -728,6 +728,10 @@ td.change-cell { min-width: 56px; padding: 10px 12px; }
 .intrinsic-cell { color: var(--ink); font-weight: 600; }
 .intrinsic-cell .price-na { color: var(--muted); font-weight: 400; }
 th.intrinsic-col { font-size: 0.7rem; color: var(--muted); }
+.analyst-target-cell { min-width: 110px; white-space: nowrap; }
+.analyst-target-link { display: block; color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; }
+.analyst-target-link:hover { color: var(--filing-blue); text-decoration: underline; }
+.analyst-target-summary { display: block; margin-top: 2px; color: var(--muted); font-size: 0.68rem; font-weight: 500; }
 
 .parse-status {
   display: inline-flex;

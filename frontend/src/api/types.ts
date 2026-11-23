@@ -66,6 +66,12 @@ export interface CompanyDirectoryItem {
   eps_ttm?: number | null;
   forward_pe?: number | null;
   forward_eps?: number | null;
+  /** Mean of each firm's latest sell-side target over the last 12 months. */
+  analyst_target?: number | null;
+  /** Number of firms with a target in the consensus window. */
+  analyst_count?: number | null;
+  /** Majority rating: buy, hold, or sell. */
+  analyst_rating?: string | null;
   /** Model-derived forward value per share; research cross-check, not a price. */
   intrinsic_value?: number | null;
   /** Current price relative to intrinsic value; negative below, positive above. */
@@ -163,6 +169,27 @@ export interface QualityScoreView {
   v2_cumulative_cfo: string | null;
   v2_positive_operating_income_years: number | null;
   v2_positive_cfo_years: number | null;
+}
+
+export interface AnalystFirmView {
+  firm: string;
+  rating: string | null;
+  to_grade: string | null;
+  target: number | null;
+  prior_target: number | null;
+  target_action: string | null;
+  action: string | null;
+  in_window: boolean;
+  action_at: string;
+}
+
+export interface AnalystOpinionsView {
+  ticker: string;
+  as_of: string;
+  mean_target: number | null;
+  firm_count: number;
+  rating_skew: string | null;
+  firms: AnalystFirmView[];
 }
 
 export interface FilingSummary {

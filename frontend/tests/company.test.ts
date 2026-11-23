@@ -1,9 +1,10 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
-import type { QualityScoreView } from "../src/api/types";
+import type { AnalystOpinionsView, QualityScoreView } from "../src/api/types";
 import {
   qualityScoreStateLabel,
   readTicker,
+  renderAnalystOpinions,
   renderCompanyScore,
 } from "../src/pages/company";
 
@@ -15,6 +16,10 @@ function mountShell() {
       <span id="company-status" class="status status-loading">Loading</span>
     </header>
     <main data-company-app>
+      <section id="analyst-opinions">
+        <p id="analyst-opinions-summary">Loading coverage…</p>
+        <table><tbody id="analyst-opinions-body"></tbody></table>
+      </section>
       <section id="quality-score">
         <h2 id="quality-score-title">Quality score</h2>
         <div id="quality-score-body" role="status">Loading quality score…</div>
@@ -64,6 +69,44 @@ const SCORE: QualityScoreView = {
 
 describe("company quality page", () => {
   beforeEach(mountShell);
+
+  it("renders firm-level analyst targets as text, not markup", () => {
+    const data: AnalystOpinionsView = {
+      ticker: "MSFT",
+      as_of: "2026-11-23",
+      mean_target: 450,
+      firm_count: 2,
+      rating_skew: "buy",
+      firms: [
+        {
+          firm: "Research <script>alert(1)</script>",
+          rating: "buy",
+          to_grade: "Buy",
+          target: 500,
+          prior_target: 470,
+          target_action: "Raises",
+          action: "up",
+          in_window: true,
+          action_at: "2026-11-01T12:00:00Z",
+        },
+      ],
+    };
+    renderAnalystOpinions(data);
+
+    expect(document.querySelector("#analyst-opinions-summary")?.textContent).toContain("450.00");
+    expect(document.querySelector("#analyst-opinions-summary")?.textContent).toContain("2 firms");
+    expect(document.querySelector("#analyst-opinions-body")?.textContent).toContain("Research <script>alert(1)</script>");
+    expect(document.querySelector("#analyst-opinions-body script")).toBeNull();
+    expect(document.querySelector("#analyst-opinions-body")?.textContent).toContain("500.00");
+  });
+
+  it("renders an explicit empty state when no firms are covered", () => {
+    renderAnalystOpinions({
+      ticker: "MSFT", as_of: "2026-11-23", mean_target: null,
+      firm_count: 0, rating_skew: null, firms: [],
+    });
+    expect(document.querySelector("#analyst-opinions-body")?.textContent).toContain("No recent firm-level analyst opinions");
+  });
 
   it("normalizes the ticker from the query string", () => {
     expect(readTicker(new URL("http://test/company.html?ticker=nvda"))).toBe("NVDA");
