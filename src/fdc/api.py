@@ -4,19 +4,18 @@ from __future__ import annotations
 
 import logging
 import secrets
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from decimal import Decimal
 from pathlib import Path
-from urllib.parse import urlparse
 from typing import Annotated, Any, Callable, Literal, TypeVar
+from urllib.parse import urlparse
 
 from fastapi import FastAPI, HTTPException, Query, Request
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 from sqlalchemy import select
 from starlette.staticfiles import StaticFiles
 
-from fdc import catalog, funnel, read_service
-from fdc.config import get_settings
+from fdc import analyst, catalog, funnel, read_service
 from fdc.catalog import (
     CatalogLayerListView,
     CompanyDirectoryView,
@@ -25,6 +24,7 @@ from fdc.catalog import (
     QuotesView,
     SortKey,
 )
+from fdc.config import get_settings
 from fdc.db import SessionLocal
 from fdc.models import CompanyQualityScore, ResearchAnnotation
 from fdc.quotes import write_quotes
@@ -461,6 +461,68 @@ def company_quality_score(ticker: str) -> QualityScoreView:
         if score is None:
             raise HTTPException(status_code=404, detail="Quality score not available")
         return QualityScoreView.model_validate(score)
+
+
+class AnalystFirmView(BaseModel):
+    """One sell-side firm's latest action on a ticker (the drill-down row)."""
+
+    firm: str
+    rating: str | None
+    to_grade: str | None
+    target: float | None
+    prior_target: float | None
+    target_action: str | None
+    action: str | None
+    in_window: bool
+    action_at: datetime
+
+
+class AnalystOpinionsView(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    ticker: str
+    as_of: date
+    mean_target: float | None
+    firm_count: int
+    rating_skew: str | None
+    firms: list[AnalystFirmView]
+
+
+@app.get("/api/v1/companies/{ticker}/analyst-opinions", response_model=AnalystOpinionsView)
+def company_analyst_opinions(ticker: str) -> AnalystOpinionsView:
+    ticker = ticker.strip().upper()
+    if ticker not in {company.ticker.upper() for company in catalog.load_catalog().companies}:
+        raise HTTPException(status_code=404, detail="Company not found in catalog")
+    now = datetime.now(timezone.utc)
+    window_start = now - timedelta(days=365)
+    rows = analyst.list_latest(ticker)
+    firms = [
+        AnalystFirmView(
+            firm=row.firm,
+            rating=analyst.classify_rating(row.to_grade),
+            to_grade=row.to_grade,
+            target=float(row.price_target) if row.price_target is not None else None,
+            prior_target=(
+                float(row.prior_price_target)
+                if row.prior_price_target is not None
+                else None
+            ),
+            target_action=row.price_target_action,
+            action=row.action,
+            in_window=row.action_at >= window_start,
+            action_at=row.action_at,
+        )
+        for row in rows
+    ]
+    consensus = analyst.summary_for_ticker(ticker, now=now)
+    return AnalystOpinionsView(
+        ticker=ticker,
+        as_of=now.date(),
+        mean_target=consensus["analyst_target"],
+        firm_count=consensus["analyst_count"],
+        rating_skew=consensus["analyst_rating"],
+        firms=firms,
+    )
 
 
 @app.get("/api/v1/companies/{ticker}", response_model=CompanyView)
