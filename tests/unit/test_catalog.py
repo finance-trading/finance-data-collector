@@ -292,6 +292,35 @@ def test_directory_merges_cached_quotes(tmp_path, engine, session_factory, monke
     assert by_ticker["AMD"].week_change_pct is None
 
 
+def test_directory_exposes_analyst_target_fields(tmp_path, engine, session_factory):
+    fdc.quote_store.save_payload({
+        "generated_at": "2026-10-04T15:00:00+00:00",
+        "quotes": {
+            "NVDA": {
+                "price": 233.95,
+                "analyst_target": 250.5,
+                "analyst_count": 3,
+                "analyst_rating": "buy",
+            },
+        },
+    })
+
+    result = list_companies(
+        query=None, layer=None, segment=None, ingestion_status=None,
+        limit=25, offset=0, catalog_path=_catalog_path(tmp_path),
+        session_factory=session_factory,
+    )
+
+    by_ticker = {company.ticker: company for company in result.companies}
+    assert by_ticker["NVDA"].analyst_target == 250.5
+    assert by_ticker["NVDA"].analyst_count == 3
+    assert by_ticker["NVDA"].analyst_rating == "buy"
+    # A ticker without analyst fields degrades to null.
+    assert by_ticker["AMD"].analyst_target is None
+    assert by_ticker["AMD"].analyst_count is None
+    assert by_ticker["AMD"].analyst_rating is None
+
+
 def test_directory_exposes_intrinsic_value_and_scenarios(
     tmp_path, engine, session_factory, monkeypatch
 ):

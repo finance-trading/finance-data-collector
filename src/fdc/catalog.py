@@ -114,6 +114,13 @@ class CompanyDirectoryItem(CatalogCompany):
     eps_ttm: float | None = None
     forward_pe: float | None = None
     forward_eps: float | None = None
+    #: Consensus sell-side target price: mean of each firm's latest target in
+    #: the last 12 months (None when no firm carries a target).
+    analyst_target: float | None = None
+    #: Number of firms with a target price in the last 12 months.
+    analyst_count: int | None = None
+    #: Majority sell-side rating (buy/hold/sell) among covered firms.
+    analyst_rating: str | None = None
     #: Model-derived forward value per share; a research cross-check, not a price.
     intrinsic_value: float | None = None
     #: Current price relative to intrinsic value; negative below, positive above.
@@ -430,6 +437,9 @@ def list_companies(
                 eps_ttm=quote.get("eps_ttm") if quote else None,
                 forward_pe=quote.get("forward_pe") if quote else None,
                 forward_eps=quote.get("forward_eps") if quote else None,
+                analyst_target=quote.get("analyst_target") if quote else None,
+                analyst_count=quote.get("analyst_count") if quote else None,
+                analyst_rating=quote.get("analyst_rating") if quote else None,
                 intrinsic_value=annotation.intrinsic_value if annotation else None,
                 price_vs_intrinsic_pct=_price_vs_intrinsic_pct(
                     quote.get("price") if quote else None,

@@ -17,7 +17,8 @@ def test_partial_refresh_preserves_dropped_ticker_prices(engine, monkeypatch):
     from fdc.quote_store import load_payload, save_payload
 
     save_payload({"generated_at": "old", "valuation_refreshed_at": "valuation", "quotes": {
-        "AAPL": {"price": 1, "pe": 10}, "MSFT": {"price": 2, "pe": 20},
+        "AAPL": {"price": 1, "pe": 10}, "MSFT": {"price": 2, "pe": 20,
+                  "analyst_target": 300, "analyst_count": 2, "analyst_rating": "buy"},
     }})
     monkeypatch.setattr(quotes, "fetch_quotes", lambda: {
         "generated_at": "new", "quotes": {"AAPL": {"price": 3, "pe": None,
@@ -35,7 +36,8 @@ def test_partial_refresh_preserves_dropped_ticker_prices(engine, monkeypatch):
         "AAPL": {"price": 3, "pe": None, "eps_ttm": None,
                  "forward_pe": None, "forward_eps": None},
         "MSFT": {"price": 2, "pe": None, "eps_ttm": None,
-                 "forward_pe": None, "forward_eps": None},
+                 "forward_pe": None, "forward_eps": None,
+                 "analyst_target": None, "analyst_count": None, "analyst_rating": None},
     }
 
 
@@ -185,6 +187,7 @@ def test_fetch_quotes_derives_week_and_52_week_changes(monkeypatch, tmp_path):
     monkeypatch.setattr(
         quotes, "_valuation", lambda tickers: {"NVDA": {"pe": 27.6}}
     )
+    monkeypatch.setattr(quotes, "_analyst_summaries", lambda tickers: {})
     monkeypatch.setattr(quotes.yf, "download", fake_download)
 
     payload = quotes.fetch_quotes()
@@ -205,6 +208,9 @@ def test_fetch_quotes_derives_week_and_52_week_changes(monkeypatch, tmp_path):
         "eps_ttm": None,
         "forward_pe": None,
         "forward_eps": None,
+        "analyst_target": None,
+        "analyst_count": None,
+        "analyst_rating": None,
     }
 
 
@@ -215,6 +221,7 @@ def test_fetch_quotes_omits_trailing_changes_without_enough_history(monkeypatch)
     monkeypatch.setattr(quotes, "_load_tickers", lambda: ["VRT"])
     monkeypatch.setattr(quotes, "_market_caps", lambda tickers, **kw: {})
     monkeypatch.setattr(quotes, "_valuation", lambda tickers: {})
+    monkeypatch.setattr(quotes, "_analyst_summaries", lambda tickers: {})
     monkeypatch.setattr(quotes.yf, "download", lambda tickers, **kw: frame)
 
     quote = quotes.fetch_quotes()["quotes"]["VRT"]
@@ -226,6 +233,25 @@ def test_fetch_quotes_omits_trailing_changes_without_enough_history(monkeypatch)
     assert quote["month_rise_pct"] is None
     assert quote["change_52w_pct"] is None
     assert quote["rise_52w_pct"] is None
+
+
+def test_fetch_quotes_carrys_populated_analyst_summaries(monkeypatch):
+    index = pd.bdate_range(end="2026-10-16", periods=3)
+    frame = _daily_frame(index, {"NVDA": [10.0, 11.0, 12.0]})
+
+    monkeypatch.setattr(quotes, "_load_tickers", lambda: ["NVDA"])
+    monkeypatch.setattr(quotes, "_market_caps", lambda tickers, **kw: {"NVDA": 5})
+    monkeypatch.setattr(quotes, "_valuation", lambda tickers: {})
+    monkeypatch.setattr(quotes, "_analyst_summaries", lambda tickers: {
+        "NVDA": {"analyst_target": 250.5, "analyst_count": 3, "analyst_rating": "buy"},
+    })
+    monkeypatch.setattr(quotes.yf, "download", lambda tickers, **kw: frame)
+
+    quote = quotes.fetch_quotes()["quotes"]["NVDA"]
+
+    assert quote["analyst_target"] == 250.5
+    assert quote["analyst_count"] == 3
+    assert quote["analyst_rating"] == "buy"
 
 
 def test_close_before_returns_none_when_history_is_shorter_than_the_window():
@@ -366,6 +392,7 @@ def test_write_quotes_does_not_carry_cached_valuations(monkeypatch, tmp_path):
     assert result["quotes"]["TSLA"] == {
         "price": 250.0, "pe": None, "eps_ttm": None,
         "forward_pe": None, "forward_eps": None,
+        "analyst_target": None, "analyst_count": None, "analyst_rating": None,
     }
     assert "valuation_cache_as_of" not in result
 

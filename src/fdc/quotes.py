@@ -32,7 +32,7 @@ from bs4 import BeautifulSoup
 from requests import Session
 from yfinance.config import YfConfig
 
-from fdc import quote_store
+from fdc import analyst, quote_store
 from fdc.config import get_settings
 from fdc.data_files import CATALOG_PATH
 
@@ -480,6 +480,24 @@ def _period_low(closes: Any, weeks: int) -> float | None:
     return round(float(window.min()), 2) if not window.empty else None
 
 
+def _analyst_summaries(tickers: list[str]) -> dict[str, dict[str, Any]]:
+    """Per-ticker analyst consensus, best-effort; an empty dict on any failure.
+
+    The directory column is a convenience read-out, so a failure here (no
+    network, DB down) must not block the quote refresh — it just leaves the
+    target fields absent and the UI renders "—".
+    """
+
+    try:
+        return analyst.refresh(sorted(tickers))
+    except Exception:
+        logger.warning(
+            "analyst opinion refresh failed; directory will show no targets",
+            exc_info=True,
+        )
+        return {}
+
+
 def fetch_quotes() -> dict[str, Any]:
     """Fetch last close and trailing returns for every ticker in the catalog.
 
@@ -514,6 +532,9 @@ def fetch_quotes() -> dict[str, Any]:
 
     valuation = _valuation(tickers)
     logger.info("%d tickers have valuation data", len(valuation))
+
+    analyst_summaries = _analyst_summaries(tickers)
+    logger.info("%d tickers have analyst targets", len(analyst_summaries))
 
     quotes: dict[str, dict[str, float | int | None]] = {}
     for tk in tickers:
@@ -553,6 +574,9 @@ def fetch_quotes() -> dict[str, Any]:
                 "eps_ttm": valuation.get(tk, {}).get("eps_ttm"),
                 "forward_pe": valuation.get(tk, {}).get("forward_pe"),
                 "forward_eps": valuation.get(tk, {}).get("forward_eps"),
+                "analyst_target": analyst_summaries.get(tk, {}).get("analyst_target"),
+                "analyst_count": analyst_summaries.get(tk, {}).get("analyst_count"),
+                "analyst_rating": analyst_summaries.get(tk, {}).get("analyst_rating"),
             }
         except Exception:
             logger.warning("skipping ticker %s (no usable close data)", tk)
@@ -666,7 +690,10 @@ def write_quotes(force: bool = False) -> str | None:
         for ticker, old in previous.get("quotes", {}).items():
             if ticker not in payload["quotes"]:
                 quote = dict(old)
-                for key in ("pe", "eps_ttm", "forward_pe", "forward_eps"):
+                for key in (
+                    "pe", "eps_ttm", "forward_pe", "forward_eps",
+                    "analyst_target", "analyst_count", "analyst_rating",
+                ):
                     quote[key] = None
                 payload["quotes"][ticker] = quote
     quote_store.save_payload(payload)
