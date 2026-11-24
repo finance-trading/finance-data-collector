@@ -550,7 +550,7 @@ def funnel_tier_index() -> dict[str, dict[str, Any]]:
 class QuotesView(BaseModel):
     generated_at: str | None
     valuation_cache_as_of: str | None = None
-    quotes: dict[str, dict[str, float | int | None]]
+    quotes: dict[str, dict[str, Any]]
 
 
 def read_quotes() -> QuotesView:
