@@ -373,3 +373,55 @@ export interface QuotesPayload {
     market_cap?: number | null;
   }>;
 }
+
+/** One top mover on the watchlist (GET /api/v1/overview). */
+export interface MoverItem {
+  ticker: string;
+  name: string;
+  price: number | null;
+  change_pct: number | null;
+}
+
+/** Aggregated watchlist + universe indicators (GET /api/v1/overview). */
+export interface OverviewView {
+  as_of: string | null;
+  total_companies: number;
+  /** Funnel tier counts, keyed "1" | "2" | "3". */
+  tiers: Record<"1" | "2" | "3", number>;
+  /** Sum of watchlist market caps in USD; null when no quotes. */
+  total_market_cap: number | null;
+  /** Mean of available quality scores; null when none computed. */
+  avg_quality_score: number | null;
+  gainers: MoverItem[];
+  losers: MoverItem[];
+}
+
+/** One tracked broad-market index (GET /api/v1/market). */
+export interface MarketIndexView {
+  symbol: string;
+  label: string;
+  close: number | null;
+  change_pct: number | null;
+  /** Recent closes for the sparkline, oldest first. */
+  spark: number[];
+}
+
+export interface MarketView {
+  as_of: string | null;
+  indices: MarketIndexView[];
+}
+
+/** One collected news item (GET /api/v1/news). */
+export interface NewsItemView {
+  id: string;
+  title: string;
+  url: string;
+  source: string;
+  published_at: string | null;
+}
+
+export interface NewsView {
+  /** Newest collected_at among returned items; null when empty. */
+  as_of: string | null;
+  items: NewsItemView[];
+}

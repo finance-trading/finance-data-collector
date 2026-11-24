@@ -32,9 +32,8 @@ from bs4 import BeautifulSoup
 from requests import Session
 from yfinance.config import YfConfig
 
-from fdc import analyst, quote_store
+from fdc import analyst, catalog_store, quote_store
 from fdc.config import get_settings
-from fdc.data_files import CATALOG_PATH
 
 logger = logging.getLogger(__name__)
 
@@ -65,8 +64,9 @@ def apply_proxy() -> str | None:
 
 
 def _load_tickers() -> list[str]:
-    """Return sorted, unique tickers from the AI company catalog."""
-    payload = json.loads(CATALOG_PATH.read_text())
+    """Return sorted, unique tickers from the AI company catalog (DB first,
+    falling back to the checked-in JSON when the store is empty)."""
+    payload = catalog_store.load_catalog_payload()
     return sorted({company["ticker"].upper() for company in payload["companies"]})
 
 
@@ -698,7 +698,20 @@ def write_quotes(force: bool = False) -> str | None:
                 payload["quotes"][ticker] = quote
     quote_store.save_payload(payload)
     logger.info("wrote %d quotes to database", len(payload["quotes"]))
+    _refresh_market()
     return f"{len(payload['quotes'])} quotes (database)"
+
+
+def _refresh_market() -> None:
+    """Also refresh broad-market indices; a network failure never blocks quotes."""
+
+    try:
+        from fdc.market import refresh
+
+        refresh()
+        logger.info("refreshed broad-market indices")
+    except Exception:
+        logger.warning("broad-market index refresh failed", exc_info=True)
 
 
 def main() -> None:

@@ -90,6 +90,34 @@ def catalog_layers() -> CatalogLayerListView:
     return _read(catalog.list_layers)
 
 
+@app.get("/api/v1/overview")
+def overview() -> dict[str, Any]:
+    return _read(catalog.read_overview)
+
+
+@app.get("/api/v1/market")
+def market() -> dict[str, Any]:
+    from fdc.market import read_market
+
+    return _read(read_market)
+
+
+@app.get("/api/v1/news")
+def news(limit: Annotated[int, Query(ge=1, le=100)] = 40) -> dict[str, Any]:
+    from fdc.news import read_news
+
+    return _read(lambda: read_news(limit))
+
+
+@app.post("/api/v1/news/refresh")
+def refresh_news(request: Request) -> dict[str, Any]:
+    from fdc.news import collect, read_news
+
+    _authorize_write(request)
+    collect()
+    return _read(lambda: read_news(40))
+
+
 @app.get("/api/v1/quotes", response_model=QuotesView)
 def quotes() -> QuotesView:
     return _read(catalog.read_quotes)

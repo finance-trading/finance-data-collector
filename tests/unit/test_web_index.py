@@ -5,7 +5,7 @@ FRONTEND_ROOT = PROJECT_ROOT / "frontend"
 
 
 def test_index_is_the_research_directory_without_graph_navigation():
-    html = (FRONTEND_ROOT / "index.html").read_text()
+    html = (FRONTEND_ROOT / "companies.html").read_text()
 
     assert 'id="directory-search"' in html
     assert 'id="company-directory"' in html

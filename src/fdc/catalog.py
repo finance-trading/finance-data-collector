@@ -14,6 +14,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from fdc import quote_store
+from fdc import catalog_store
 from fdc.ai_layers import validate_universe
 from fdc.config import get_settings
 from fdc.data_files import CATALOG_PATH, LAYERS_PATH
@@ -164,8 +165,18 @@ class _IssuerSummary(BaseModel):
 
 
 def load_catalog(path: Path | str | None = None) -> CatalogView:
-    """Load and validate the ordered curated AI company universe."""
+    """Load and validate the ordered curated AI company universe.
 
+    Without an explicit path the database is consulted first (post-migration
+    source of truth); an empty store falls back to ``CATALOG_PATH``.
+    """
+
+    if path is None:
+        dicts = catalog_store.load_catalog_dicts()
+        if dicts is not None:
+            companies, layers = dicts
+            validate_universe(companies, layers)
+            return CatalogView.model_validate({"companies": companies, "layers": layers})
     resolved = Path(path) if path is not None else CATALOG_PATH
     payload = json.loads(resolved.read_text())
     companies = payload["companies"]
@@ -521,6 +532,68 @@ def list_companies(
         total=len(companies),
         companies=companies[offset : offset + limit],
     )
+
+
+def read_overview(
+    catalog_path: Path | str | None = None,
+    session_factory: Callable[..., Session] = SessionLocal,
+) -> dict[str, Any]:
+    """Aggregate the curated company universe for the dashboard."""
+    catalog = load_catalog(catalog_path)
+    quotes, quote_as_of, _, _ = _load_quotes()
+    tiers = _resolve_tiers(catalog, quotes)
+    tier_counts = {"1": 0, "2": 0, "3": 0}
+    for item in tiers.values():
+        tier = str(item.get("tier", ""))
+        if tier in tier_counts:
+            tier_counts[tier] += 1
+    caps = [float(q["market_cap"]) for q in quotes.values() if q.get("market_cap") is not None]
+    changes = []
+    for company in catalog.companies:
+        quote = quotes.get(company.ticker.upper(), {})
+        change = quote.get("change_pct")
+        price = quote.get("price")
+        if change is not None:
+            changes.append({"ticker": company.ticker.upper(), "name": company.name,
+                            "price": price, "change_pct": float(change)})
+    changes.sort(key=lambda item: item["change_pct"], reverse=True)
+    gainers = [item for item in changes if item["change_pct"] > 0][:3]
+    losers = [item for item in changes if item["change_pct"] < 0][-3:][::-1]
+    with session_factory() as session:
+        ranked = (
+            select(
+                CompanyQualityScore.ticker,
+                CompanyQualityScore.quality_score,
+                CompanyQualityScore.score_available,
+                func.row_number().over(
+                    partition_by=CompanyQualityScore.ticker,
+                    order_by=(
+                        CompanyQualityScore.calculated_at.desc(),
+                        CompanyQualityScore.rating_cutoff.desc(),
+                        CompanyQualityScore.snapshot_id.desc(),
+                    ),
+                ).label("rank"),
+            ).subquery()
+        )
+        scores = [
+            float(row.quality_score)
+            for row in session.execute(
+                select(ranked).where(
+                    ranked.c.rank == 1,
+                    ranked.c.score_available,
+                    ranked.c.quality_score.is_not(None),
+                )
+            ).all()
+        ]
+    return {
+        "as_of": quote_as_of.isoformat() if quote_as_of else None,
+        "total_companies": len(catalog.companies),
+        "tiers": tier_counts,
+        "total_market_cap": sum(caps) if caps else None,
+        "avg_quality_score": sum(scores) / len(scores) if scores else None,
+        "gainers": gainers,
+        "losers": losers,
+    }
 
 
 def _resolve_tiers(catalog: CatalogView, quotes: dict) -> dict[str, dict[str, Any]]:

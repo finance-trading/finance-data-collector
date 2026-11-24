@@ -54,8 +54,20 @@ class UniverseError(ValueError):
     """Raised when companies.json violates the layering contract."""
 
 
-def load_universe(path: Path | str = COMPANIES_PATH) -> tuple[list[dict], list[dict]]:
-    """Read and validate companies.json; returns (companies, layers)."""
+def load_universe(path: Path | str | None = None) -> tuple[list[dict], list[dict]]:
+    """Read and validate the curated universe; returns (companies, layers).
+
+    Without an explicit path the database is consulted first (migration 0014
+    source of truth); an empty store falls back to ``COMPANIES_PATH``.
+    """
+    if path is None:
+        from fdc import catalog_store
+        dicts = catalog_store.load_catalog_dicts()
+        if dicts is not None:
+            companies, layers = dicts
+            validate_universe(companies, layers)
+            return companies, layers
+        path = COMPANIES_PATH
     payload = json.loads(Path(path).read_text())
     companies = payload["companies"]
     layers = payload["layers"]

@@ -1,0 +1,32 @@
+[
+  {
+    "label": "CNBC",
+    "kind": "rss",
+    "url": "https://www.cnbc.com/id/100003114/device/rss/rss.html",
+    "enabled": true
+  },
+  {
+    "label": "reddit/r/financialnews",
+    "kind": "reddit_json",
+    "url": "https://www.reddit.com/r/financialnews/hot.json?limit=20",
+    "enabled": true
+  },
+  {
+    "label": "reddit/r/stocks",
+    "kind": "reddit_json",
+    "url": "https://www.reddit.com/r/stocks/hot.json?limit=20",
+    "enabled": true
+  },
+  {
+    "label": "reddit/r/artificial",
+    "kind": "reddit_json",
+    "url": "https://www.reddit.com/r/artificial/hot.json?limit=20",
+    "enabled": true
+  },
+  {
+    "label": "reddit/r/wallstreetbets",
+    "kind": "reddit_json",
+    "url": "https://www.reddit.com/r/wallstreetbets/hot.json?limit=20",
+    "enabled": true
+  }
+]

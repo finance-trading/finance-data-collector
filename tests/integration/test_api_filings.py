@@ -267,6 +267,7 @@ def test_api_registers_only_get_read_routes():
         and "POST" in route.methods
     ]
     assert writes == [
+        "/api/v1/news/refresh",
         "/api/v1/funnel/overrides",
         "/api/v1/research/annotations/{ticker}",
         "/api/v1/quotes/refresh",

@@ -48,7 +48,7 @@ describe("quote refresh time", () => {
 
 describe("directory filters", () => {
   it("does not render ingestion status controls", () => {
-    const html = readFileSync(resolve(process.cwd(), "index.html"), "utf8");
+    const html = readFileSync(resolve(process.cwd(), "companies.html"), "utf8");
     expect(html).not.toContain("Ingestion status");
     expect(html).not.toContain("status-filter-menu");
   });
@@ -190,7 +190,7 @@ describe("directory rendering", () => {
   });
 
   it("shows a compact filter control with an active-filter count", async () => {
-    const html = readFileSync(resolve(process.cwd(), "index.html"), "utf8");
+    const html = readFileSync(resolve(process.cwd(), "companies.html"), "utf8");
     document.body.innerHTML = new DOMParser().parseFromString(html, "text/html").body.innerHTML;
     vi.spyOn(globalThis, "fetch").mockImplementation(async (input) => {
       const path = String(input);
@@ -216,7 +216,7 @@ describe("directory rendering", () => {
   });
 
   it("reloads layer options when retrying after the catalog request failed", async () => {
-    const html = readFileSync(resolve(process.cwd(), "index.html"), "utf8");
+    const html = readFileSync(resolve(process.cwd(), "companies.html"), "utf8");
     document.body.innerHTML = new DOMParser().parseFromString(html, "text/html").body.innerHTML;
     let layersCalls = 0;
     let companiesCalls = 0;
@@ -256,7 +256,7 @@ describe("directory rendering", () => {
   });
 
   it("recovers layer options with the filter's own retry when only the catalog request failed", async () => {
-    const html = readFileSync(resolve(process.cwd(), "index.html"), "utf8");
+    const html = readFileSync(resolve(process.cwd(), "companies.html"), "utf8");
     document.body.innerHTML = new DOMParser().parseFromString(html, "text/html").body.innerHTML;
     let layersCalls = 0;
     let companiesCalls = 0;
@@ -294,7 +294,7 @@ describe("directory rendering", () => {
   });
 
   it("closes every filter menu when clicking outside", async () => {
-    const html = readFileSync(resolve(process.cwd(), "index.html"), "utf8");
+    const html = readFileSync(resolve(process.cwd(), "companies.html"), "utf8");
     document.body.innerHTML = new DOMParser().parseFromString(html, "text/html").body.innerHTML;
     vi.spyOn(globalThis, "fetch").mockImplementation(async (input) => {
       const path = String(input);

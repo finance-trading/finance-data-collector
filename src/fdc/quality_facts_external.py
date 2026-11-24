@@ -41,6 +41,7 @@ import pandas as pd
 import yfinance as yf
 
 from fdc.catalog import load_catalog
+from fdc import catalog_store
 from fdc.data_files import DATA_ROOT
 from fdc.quotes import apply_proxy
 from fdc.quality_score import calculate_quality_scores, match_catalog_companies, norm_cik
@@ -86,10 +87,16 @@ _INSTANT = {
 _STATEMENT_TYPES = {"income_stmt": "income", "cashflow": "cashflow", "balance_sheet": "balance"}
 
 
-def load_universe(path: Path = DEFAULT_UNIVERSE_GZ) -> pd.DataFrame:
-    """The peer universe: one row per ticker with cik + canonical_symbol."""
+def load_universe(path: Path | None = None) -> pd.DataFrame:
+    """The peer universe: one row per ticker with cik + canonical_symbol.
 
-    frame = pd.read_csv(path)
+    The default reads the newest DB batch, then falls back to the checked-in
+    CSV.  Passing a path always reads that CSV.
+    """
+
+    frame = catalog_store.load_quality_universe_frame() if path is None else None
+    if frame is None:
+        frame = pd.read_csv(path if path is not None else DEFAULT_UNIVERSE_GZ)
     required = {"cik", "canonical_symbol"}
     missing = required - set(frame.columns)
     if missing:
@@ -99,10 +106,16 @@ def load_universe(path: Path = DEFAULT_UNIVERSE_GZ) -> pd.DataFrame:
     return frame
 
 
-def load_sec_facts(path: Path = DEFAULT_FACTS_GZ) -> pd.DataFrame:
-    """The checked-in SEC/edgartools annual facts used only as a gap-filler."""
+def load_sec_facts(path: Path | None = None) -> pd.DataFrame:
+    """The SEC/edgartools annual facts used as a gap-filler.
 
-    frame = pd.read_csv(path)
+    The default reads the newest DB batch, then falls back to the checked-in
+    CSV.  Passing a path always reads that CSV.
+    """
+
+    frame = catalog_store.load_quality_facts_frame() if path is None else None
+    if frame is None:
+        frame = pd.read_csv(path if path is not None else DEFAULT_FACTS_GZ)
     required = {"cik", "metric", "period_type", "period_end", "numeric_value"}
     missing = required - set(frame.columns)
     if missing:

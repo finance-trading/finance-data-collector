@@ -43,6 +43,7 @@ from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.worksheet import Worksheet
 
+from fdc import catalog_store
 from fdc.ai_layers import load_universe
 from fdc.data_files import GENERATED_DATA_DIR, PROJECT_ROOT, write_json_artifact
 
@@ -77,8 +78,12 @@ TRIGGER_ACTION = {
 TIER_ACTION = {1: "可进入 Layer 4 事件研究", 2: "研究后决定是否升级", 3: "无独立行动资格"}
 
 
-def load_overrides(path: Path | str = OVERRIDES_PATH) -> dict[str, dict[str, Any]]:
+def load_overrides(path: Path | str | None = None) -> dict[str, dict[str, Any]]:
     """Read manual tier overrides; a missing file means "auto only".
+
+    Without an explicit path the database is consulted first (migration 0014
+    store); an empty ``funnel_override`` table falls back to
+    ``OVERRIDES_PATH``.  An explicit path always reads the file.
 
     Accepted shape::
 
@@ -88,6 +93,14 @@ def load_overrides(path: Path | str = OVERRIDES_PATH) -> dict[str, dict[str, Any
     loudly so a typo cannot silently fall back to the auto tier.
     """
 
+    if path is None:
+        overrides = catalog_store.load_overrides_dicts()
+        if overrides is not None:
+            for ticker, value in overrides.items():
+                if value["tier"] not in TIER_NAMES:
+                    raise ValueError(f"{ticker}: override tier must be 1, 2 or 3, got {value['tier']!r}")
+            return overrides
+        path = OVERRIDES_PATH
     resolved = Path(path)
     if not resolved.exists():
         return {}
@@ -130,13 +143,24 @@ def _write_raw_overrides(raw: dict[str, Any], path: Path | str = OVERRIDES_PATH)
 
 
 def upsert_override(
-    ticker: str, tier: int, note: str = "", path: Path | str = OVERRIDES_PATH
+    ticker: str, tier: int, note: str = "", path: Path | str | None = None
 ) -> dict[str, Any]:
-    """Write one company's manual tier; other keys (e.g. the ``_说明`` note) are kept."""
+    """Write one company's manual tier.
+
+    Without an explicit path the write targets the database when the
+    ``funnel_override`` table is in use (migration 0014), otherwise the
+    ``OVERRIDES_PATH`` file (kept as the import source / rollback baseline).
+    An explicit path always writes the file.
+    """
 
     if type(tier) is not int or tier not in TIER_NAMES:
         raise ValueError(f"override tier must be 1, 2 or 3, got {tier!r}")
     key = ticker.upper()
+    if path is None and catalog_store.load_overrides_dicts() is not None:
+        catalog_store.upsert_override_db(key, tier, note.strip())
+        return {"tier": tier, "note": note.strip()}
+    if path is None:
+        path = OVERRIDES_PATH
     with _OVERRIDE_LOCK:
         raw = _read_raw_overrides(path)
         raw[key] = {"tier": tier, "note": note.strip()}
@@ -144,10 +168,14 @@ def upsert_override(
     return {"tier": tier, "note": note.strip()}
 
 
-def remove_override(ticker: str, path: Path | str = OVERRIDES_PATH) -> bool:
+def remove_override(ticker: str, path: Path | str | None = None) -> bool:
     """Drop a manual tier so the company falls back to its auto tier. True if removed."""
 
     key = ticker.upper()
+    if path is None and catalog_store.load_overrides_dicts() is not None:
+        return catalog_store.remove_override_db(key)
+    if path is None:
+        path = OVERRIDES_PATH
     with _OVERRIDE_LOCK:
         raw = _read_raw_overrides(path)
         if key not in raw:
@@ -684,11 +712,11 @@ def build_payload(
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "quotes_generated_at": quotes_generated_at,
-        "source": "data/ai_companies.json + database latest_quote table",
+        "source": "catalog (database ai_company, fallback data/ai_companies.json) + database latest_quote table",
         "rules": {
             "tier_cutoffs": ["top 20% by market cap", "next 30%", "bottom 50%"],
             "trigger_drawdown_pct": TRIGGER_DRAWDOWN,
-            "manual_overrides": str(OVERRIDES_PATH),
+            "manual_overrides": "database funnel_override table (fallback config/funnel_overrides.json)",
         },
         "stats": {
             "companies": len(rows),
@@ -708,7 +736,8 @@ def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(
         description="Auto-tier the AI value chain into per-layer three-tier funnels."
     )
-    parser.add_argument("--overrides", type=Path, default=OVERRIDES_PATH)
+    parser.add_argument("--overrides", type=Path, default=None,
+                       help="read overrides from a file instead of the database (default)")
     parser.add_argument("--out", type=Path, default=FUNNEL_PATH, help="output JSON snapshot")
     parser.add_argument("--xlsx", type=Path, default=XLSX_PATH, help="output workbook")
     parser.add_argument("--no-xlsx", action="store_true", help="skip the workbook")

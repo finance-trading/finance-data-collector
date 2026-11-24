@@ -115,6 +115,35 @@ class Base(DeclarativeBase):
     metadata = MetaData(naming_convention=NAMING_CONVENTION)
 
 
+class NewsItem(Base):
+    """One deduplicated item collected from a public news feed."""
+
+    __tablename__ = "news_item"
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    source: Mapped[str] = mapped_column(String(128), nullable=False)
+    external_id: Mapped[str] = mapped_column(String(512), nullable=False)
+    title: Mapped[str] = mapped_column(Text, nullable=False)
+    url: Mapped[str] = mapped_column(Text, nullable=False)
+    published_at: Mapped[datetime | None] = mapped_column(UtcDateTime)
+    collected_at: Mapped[datetime] = mapped_column(UtcDateTime, nullable=False)
+
+    __table_args__ = (
+        UniqueConstraint("source", "external_id"),
+        Index("ix_news_item_published_at", "published_at"),
+    )
+
+
+class MarketQuote(Base):
+    """Latest close and short history for one broad-market index."""
+
+    __tablename__ = "market_quote"
+
+    symbol: Mapped[str] = mapped_column(String(32), primary_key=True)
+    label: Mapped[str] = mapped_column(String(64), nullable=False)
+    metrics: Mapped[dict] = mapped_column(JSON, nullable=False)
+
+
 class LatestQuote(Base):
     __tablename__ = "latest_quote"
 
@@ -675,3 +704,164 @@ class ResearchAnnotation(TimestampMixin, Base):
     scen_bull: Mapped[float | None] = mapped_column(Float)
     #: ``[{"text": ..., "priority": 1..3}, ...]``; color is derived from priority.
     watch_items: Mapped[list] = mapped_column(JSON, default=list, nullable=False)
+
+
+class AiLayer(Base):
+    """One value-chain layer of the curated AI company catalog.
+
+    Migrated from ``data/ai_companies.json`` (``layers``); the file remains the
+    import source and rollback baseline, the table is the runtime source of
+    truth once populated.
+    """
+
+    __tablename__ = "ai_layer"
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    name: Mapped[str] = mapped_column(String(128), nullable=False)
+    name_en: Mapped[str] = mapped_column(String(128), default="", nullable=False)
+    summary: Mapped[str] = mapped_column(Text, default="", nullable=False)
+    position: Mapped[int] = mapped_column(Integer, nullable=False)
+
+
+class AiSegment(Base):
+    """One named segment declared by a layer."""
+
+    __tablename__ = "ai_segment"
+
+    layer_id: Mapped[str] = mapped_column(
+        ForeignKey("ai_layer.id", ondelete="CASCADE"), primary_key=True
+    )
+    name: Mapped[str] = mapped_column(String(128), primary_key=True)
+    position: Mapped[int] = mapped_column(Integer, nullable=False)
+
+
+class AiCompany(Base):
+    """One curated AI company; ``layer_id`` + ``segment`` must reference a
+    declared segment of that layer (composite FK to ``ai_segment``)."""
+
+    __tablename__ = "ai_company"
+
+    ticker: Mapped[str] = mapped_column(String(32), primary_key=True)
+    name: Mapped[str] = mapped_column(String(255), nullable=False)
+    sector: Mapped[str] = mapped_column(String(128), nullable=False)
+    industry: Mapped[str] = mapped_column(String(128), nullable=False)
+    layer_id: Mapped[str] = mapped_column(
+        ForeignKey("ai_layer.id", ondelete="RESTRICT"), nullable=False
+    )
+    segment: Mapped[str] = mapped_column(String(128), nullable=False)
+    also_in: Mapped[list] = mapped_column(JSON, default=list, nullable=False)
+    description: Mapped[str] = mapped_column(Text, default="", nullable=False)
+    position: Mapped[int] = mapped_column(Integer, nullable=False)
+
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["layer_id", "segment"],
+            ["ai_segment.layer_id", "ai_segment.name"],
+            name="fk_ai_company_layer_id_segment_ai_segment",
+        ),
+        Index("ix_ai_company_layer_id", "layer_id"),
+    )
+
+
+class FunnelOverride(Base):
+    """One manual funnel-tier override, migrated from
+    ``config/funnel_overrides.json``.  ``tier`` 1 = core, 2 = key, 3 = watch."""
+
+    __tablename__ = "funnel_override"
+
+    ticker: Mapped[str] = mapped_column(String(32), primary_key=True)
+    tier: Mapped[int] = mapped_column(Integer, nullable=False)
+    note: Mapped[str] = mapped_column(Text, default="", nullable=False)
+
+    __table_args__ = (
+        CheckConstraint("tier in (1, 2, 3)", name="ck_funnel_override_tier_in_1_2_3"),
+    )
+
+
+class QualityInputBatch(Base):
+    """Provenance row for one imported quality-scoring input file.
+
+    ``id`` is stable per (kind, source file) so re-imports of the same source
+    replace the batch wholesale instead of accumulating duplicates.
+    """
+
+    __tablename__ = "quality_input_batch"
+
+    id: Mapped[str] = mapped_column(String(512), primary_key=True)
+    kind: Mapped[str] = mapped_column(String(32), nullable=False)
+    source: Mapped[str] = mapped_column(String(512), nullable=False)
+    sha256: Mapped[str] = mapped_column(String(64), nullable=False)
+    row_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    rating_cutoff: Mapped[date | None] = mapped_column(Date)
+    rule_version: Mapped[str | None] = mapped_column(String(64))
+    semantic_policy: Mapped[str | None] = mapped_column(String(128))
+    created_at: Mapped[datetime] = mapped_column(UtcDateTime, nullable=False, default=_now)
+
+    __table_args__ = (
+        UniqueConstraint("kind", "source", "sha256", name="uq_quality_input_batch_kind_source_sha256"),
+    )
+
+
+class QualityAnnualFact(Base):
+    """One annual XBRL fact row (migrated from the checked-in edgartools
+    annual-facts CSV), referenced by its import batch."""
+
+    __tablename__ = "quality_annual_fact"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    batch_id: Mapped[str] = mapped_column(
+        ForeignKey("quality_input_batch.id", ondelete="CASCADE"), nullable=False
+    )
+    cik: Mapped[str] = mapped_column(String(10), nullable=False)
+    concept: Mapped[str] = mapped_column(String(255), nullable=False)
+    label: Mapped[str | None] = mapped_column(String(512))
+    value: Mapped[Decimal | None] = mapped_column(ExactNumeric())
+    numeric_value: Mapped[Decimal | None] = mapped_column(ExactNumeric())
+    unit: Mapped[str | None] = mapped_column(String(32))
+    period_type: Mapped[str | None] = mapped_column(String(16))
+    period_start: Mapped[date | None] = mapped_column(Date)
+    period_end: Mapped[date | None] = mapped_column(Date)
+    fiscal_year: Mapped[int | None] = mapped_column(Integer)
+    fiscal_period: Mapped[str | None] = mapped_column(String(16))
+    accession: Mapped[str | None] = mapped_column(String(32))
+    filing_date: Mapped[date | None] = mapped_column(Date)
+    form_type: Mapped[str | None] = mapped_column(String(16))
+    statement_type: Mapped[str | None] = mapped_column(String(32))
+    taxonomy: Mapped[str | None] = mapped_column(String(32))
+    scale: Mapped[str | None] = mapped_column(String(32))
+    data_quality: Mapped[str | None] = mapped_column(String(32))
+    is_audited: Mapped[bool | None] = mapped_column(Boolean)
+    confidence_score: Mapped[Decimal | None] = mapped_column(ExactNumeric())
+    period_days: Mapped[int | None] = mapped_column(Integer)
+    period_shape: Mapped[str | None] = mapped_column(String(16))
+    metric: Mapped[str | None] = mapped_column(String(64))
+
+    __table_args__ = (
+        Index(
+            "ix_quality_annual_fact_batch_cik_metric_end",
+            "batch_id", "cik", "metric", "period_end",
+        ),
+    )
+
+
+class QualityPeer(Base):
+    """One peer-universe row (migrated from the checked-in peer CSV),
+    referenced by its import batch."""
+
+    __tablename__ = "quality_peer"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    batch_id: Mapped[str] = mapped_column(
+        ForeignKey("quality_input_batch.id", ondelete="CASCADE"), nullable=False
+    )
+    source_symbol: Mapped[str | None] = mapped_column(String(32))
+    canonical_symbol: Mapped[str | None] = mapped_column(String(32))
+    company_name: Mapped[str | None] = mapped_column(String(255))
+    gics_sector: Mapped[str | None] = mapped_column(String(64))
+    gics_sub_industry: Mapped[str | None] = mapped_column(String(128))
+    cik: Mapped[str | None] = mapped_column(String(10))
+    date_added: Mapped[date | None] = mapped_column(Date)
+
+    __table_args__ = (
+        Index("ix_quality_peer_batch_id", "batch_id"),
+    )

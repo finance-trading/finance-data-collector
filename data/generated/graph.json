@@ -9,8 +9,7 @@
    "layer": "power",
    "segment": "数据中心电力与温控",
    "description": "数据中心配电、UPS 与液冷温控，AI 机柜功率密度提升的直接受益者。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1674101",
-   "layer_name": "能源与电力"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1674101"
   },
   {
    "id": 1551182,
@@ -21,8 +20,7 @@
    "layer": "power",
    "segment": "数据中心电力与温控",
    "description": "电气设备与数据中心配电、UPS 及微电网。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1551182",
-   "layer_name": "能源与电力"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1551182"
   },
   {
    "id": 1996810,
@@ -33,8 +31,7 @@
    "layer": "power",
    "segment": "发电与核电",
    "description": "燃气轮机、电网设备与核电技术，数据中心供电建设方。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1996810",
-   "layer_name": "能源与电力"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1996810"
   },
   {
    "id": 1868275,
@@ -45,8 +42,7 @@
    "layer": "power",
    "segment": "发电与核电",
    "description": "美国最大核电运营商，向超大规模数据中心直供电。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1868275",
-   "layer_name": "能源与电力"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1868275"
   },
   {
    "id": 1692819,
@@ -57,8 +53,7 @@
    "layer": "power",
    "segment": "发电与核电",
    "description": "独立发电商，核电、天然气与零售电力组合。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1692819",
-   "layer_name": "能源与电力"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1692819"
   },
   {
    "id": 1622536,
@@ -69,8 +64,7 @@
    "layer": "power",
    "segment": "发电与核电",
    "description": "核电资产，与 AWS 签订数据中心长期供电协议。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1622536",
-   "layer_name": "能源与电力"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1622536"
   },
   {
    "id": 1013871,
@@ -81,8 +75,7 @@
    "layer": "power",
    "segment": "发电与核电",
    "description": "发电与零售电力，布局数据中心供电交易。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1013871",
-   "layer_name": "能源与电力"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1013871"
   },
   {
    "id": 1050915,
@@ -93,8 +86,7 @@
    "layer": "power",
    "segment": "电网与工程",
    "description": "电网建设与数据中心电力接入工程。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1050915",
-   "layer_name": "能源与电力"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1050915"
   },
   {
    "id": 1326160,
@@ -105,8 +97,7 @@
    "layer": "power",
    "segment": "发电与核电",
    "description": "美国大型公用事业，核电与燃气资产为数据中心提供稳定电力。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1326160",
-   "layer_name": "能源与电力"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1326160"
   },
   {
    "id": 92122,
@@ -117,8 +108,7 @@
    "layer": "power",
    "segment": "发电与核电",
    "description": "美国电力公用事业与核电运营商，受益于 AI 数据中心负荷增长。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=92122",
-   "layer_name": "能源与电力"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=92122"
   },
   {
    "id": 4904,
@@ -129,8 +119,7 @@
    "layer": "power",
    "segment": "电网与工程",
    "description": "美国输配电网络运营商，扩建 AI 数据中心接入容量。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=4904",
-   "layer_name": "能源与电力"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=4904"
   },
   {
    "id": 72903,
@@ -141,8 +130,7 @@
    "layer": "power",
    "segment": "发电与核电",
    "description": "美国电力公用事业，向大型科技客户提供低碳电力。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=72903",
-   "layer_name": "能源与电力"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=72903"
   },
   {
    "id": 874761,
@@ -153,8 +141,7 @@
    "layer": "power",
    "segment": "发电与核电",
    "description": "发电与储能开发商，为数据中心建设可再生能源和电池容量。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=874761",
-   "layer_name": "能源与电力"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=874761"
   },
   {
    "id": 753308,
@@ -165,8 +152,7 @@
    "layer": "power",
    "segment": "发电与核电",
    "description": "可再生能源与电力公用事业龙头，承接 AI 负荷增长。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=753308",
-   "layer_name": "能源与电力"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=753308"
   },
   {
    "id": 827052,
@@ -177,8 +163,7 @@
    "layer": "power",
    "segment": "电网与工程",
    "description": "加州电网与配电运营商，服务高密度数据中心用电需求。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=827052",
-   "layer_name": "能源与电力"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=827052"
   },
   {
    "id": 1130310,
@@ -189,8 +174,7 @@
    "layer": "power",
    "segment": "电网与工程",
    "description": "电力与天然气输配网络，为数据中心扩容提供基础设施。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1130310",
-   "layer_name": "能源与电力"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1130310"
   },
   {
    "id": 1045810,
@@ -201,11 +185,7 @@
    "layer": "silicon",
    "segment": "算力芯片",
    "description": "GPU 与 AI 加速器龙头，数据中心与游戏芯片。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1045810",
-   "layer_name": "芯片与半导体",
-   "also_in": [
-    "infra"
-   ]
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1045810"
   },
   {
    "id": 2488,
@@ -216,8 +196,7 @@
    "layer": "silicon",
    "segment": "算力芯片",
    "description": "x86 CPU 与数据中心 GPU，AI 芯片竞争者。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=2488",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=2488"
   },
   {
    "id": 1730168,
@@ -228,11 +207,7 @@
    "layer": "silicon",
    "segment": "算力芯片",
    "description": "半导体与基础设施软件（VMware），AI 网络互连。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1730168",
-   "layer_name": "芯片与半导体",
-   "also_in": [
-    "infra"
-   ]
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1730168"
   },
   {
    "id": 1835632,
@@ -243,8 +218,7 @@
    "layer": "silicon",
    "segment": "算力芯片",
    "description": "定制 ASIC 与数据中心互连芯片。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1835632",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1835632"
   },
   {
    "id": 50863,
@@ -255,8 +229,7 @@
    "layer": "silicon",
    "segment": "算力芯片",
    "description": "CPU 大厂，转型 AI 与代工。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=50863",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=50863"
   },
   {
    "id": 804328,
@@ -267,11 +240,7 @@
    "layer": "silicon",
    "segment": "算力芯片",
    "description": "移动 SoC 与自研 AI 边缘芯片。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=804328",
-   "layer_name": "芯片与半导体",
-   "also_in": [
-    "edge"
-   ]
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=804328"
   },
   {
    "id": 723125,
@@ -282,8 +251,7 @@
    "layer": "silicon",
    "segment": "存储芯片",
    "description": "内存/HBM 存储芯片，AI 算力关键。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=723125",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=723125"
   },
   {
    "id": 2023554,
@@ -294,8 +262,7 @@
    "layer": "silicon",
    "segment": "存储芯片",
    "description": "闪存存储产品。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=2023554",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=2023554"
   },
   {
    "id": 106040,
@@ -306,8 +273,7 @@
    "layer": "silicon",
    "segment": "存储芯片",
    "description": "近线大容量 HDD，AI 数据存储需求受益。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=106040",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=106040"
   },
   {
    "id": 1137789,
@@ -318,8 +284,7 @@
    "layer": "silicon",
    "segment": "存储芯片",
    "description": "近线硬盘与存储系统，数据中心冷数据层。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1137789",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1137789"
   },
   {
    "id": 6281,
@@ -330,8 +295,7 @@
    "layer": "silicon",
    "segment": "模拟与电源芯片",
    "description": "模拟芯片，数据中心电源管理。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=6281",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=6281"
   },
   {
    "id": 1280452,
@@ -342,8 +306,7 @@
    "layer": "silicon",
    "segment": "模拟与电源芯片",
    "description": "电源管理芯片，AI 服务器多相供电模块。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1280452",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1280452"
   },
   {
    "id": 1097864,
@@ -354,8 +317,7 @@
    "layer": "silicon",
    "segment": "模拟与电源芯片",
    "description": "功率半导体，数据中心与汽车电源。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1097864",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1097864"
   },
   {
    "id": 97476,
@@ -366,8 +328,7 @@
    "layer": "silicon",
    "segment": "模拟与电源芯片",
    "description": "模拟与嵌入式芯片龙头，AI 电源链间接受益。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=97476",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=97476"
   },
   {
    "id": 1046179,
@@ -378,8 +339,7 @@
    "layer": "silicon",
    "segment": "晶圆代工",
    "description": "全球最大晶圆代工，先进制程领先。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1046179",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1046179"
   },
   {
    "id": 1709048,
@@ -390,8 +350,7 @@
    "layer": "silicon",
    "segment": "晶圆代工",
    "description": "成熟制程代工，汽车、工业与硅光平台。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1709048",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1709048"
   },
   {
    "id": 937966,
@@ -402,8 +361,7 @@
    "layer": "silicon",
    "segment": "半导体设备与材料",
    "description": "EUV 光刻机独家供应商。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=937966",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=937966"
   },
   {
    "id": 6951,
@@ -414,8 +372,7 @@
    "layer": "silicon",
    "segment": "半导体设备与材料",
    "description": "沉积、刻蚀与离子注入设备，先进封装受益。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=6951",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=6951"
   },
   {
    "id": 707549,
@@ -426,8 +383,7 @@
    "layer": "silicon",
    "segment": "半导体设备与材料",
    "description": "刻蚀与沉积设备，HBM 与 3D 封装关键。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=707549",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=707549"
   },
   {
    "id": 319201,
@@ -438,8 +394,7 @@
    "layer": "silicon",
    "segment": "半导体设备与材料",
    "description": "量测与检测设备，先进制程良率控制。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=319201",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=319201"
   },
   {
    "id": 97210,
@@ -450,8 +405,7 @@
    "layer": "silicon",
    "segment": "半导体设备与材料",
    "description": "半导体测试设备与协作机器人。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=97210",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=97210"
   },
   {
    "id": 704532,
@@ -462,8 +416,7 @@
    "layer": "silicon",
    "segment": "半导体设备与材料",
    "description": "先进封装量测与检测设备。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=704532",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=704532"
   },
   {
    "id": 1101302,
@@ -474,8 +427,7 @@
    "layer": "silicon",
    "segment": "半导体设备与材料",
    "description": "半导体材料、过滤与洁净方案。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1101302",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1101302"
   },
   {
    "id": 1601046,
@@ -486,8 +438,7 @@
    "layer": "silicon",
    "segment": "半导体设备与材料",
    "description": "测试测量仪器，光模块与高速接口验证。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1601046",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1601046"
   },
   {
    "id": 883241,
@@ -498,8 +449,7 @@
    "layer": "silicon",
    "segment": "EDA 与 IP",
    "description": "EDA 龙头与芯片 IP，AI 芯片设计工具链。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=883241",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=883241"
   },
   {
    "id": 813672,
@@ -510,8 +460,7 @@
    "layer": "silicon",
    "segment": "EDA 与 IP",
    "description": "EDA 与仿真验证，AI 芯片与系统设计。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=813672",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=813672"
   },
   {
    "id": 1973239,
@@ -522,11 +471,7 @@
    "layer": "silicon",
    "segment": "EDA 与 IP",
    "description": "CPU 架构授权，端侧 AI 核心。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1973239",
-   "layer_name": "芯片与半导体",
-   "also_in": [
-    "edge"
-   ]
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1973239"
   },
   {
    "id": 1807794,
@@ -537,8 +482,7 @@
    "layer": "silicon",
    "segment": "互连与光器件",
    "description": "AI 互连芯片。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1807794",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1807794"
   },
   {
    "id": 1736297,
@@ -549,8 +493,7 @@
    "layer": "silicon",
    "segment": "互连与光器件",
    "description": "AI 互连接口 IP/芯片。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1736297",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1736297"
   },
   {
    "id": 820318,
@@ -561,8 +504,7 @@
    "layer": "silicon",
    "segment": "互连与光器件",
    "description": "光模块与激光器件，数据中心光互连。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=820318",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=820318"
   },
   {
    "id": 1633978,
@@ -573,8 +515,7 @@
    "layer": "silicon",
    "segment": "互连与光器件",
    "description": "高速光模块与光器件。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1633978",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1633978"
   },
   {
    "id": 1033767,
@@ -585,8 +526,7 @@
    "layer": "silicon",
    "segment": "晶圆代工",
    "description": "成熟制程晶圆代工，支撑电源、连接与边缘 AI 芯片。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1033767",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1033767"
   },
   {
    "id": 1122411,
@@ -597,8 +537,7 @@
    "layer": "silicon",
    "segment": "半导体设备与材料",
    "description": "全球封装测试龙头，承接 AI 芯片先进封装需求。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1122411",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1122411"
   },
   {
    "id": 88941,
@@ -609,8 +548,7 @@
    "layer": "silicon",
    "segment": "互连与光器件",
    "description": "高速连接与边缘通信芯片，面向数据中心和 AI 网络。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=88941",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=88941"
   },
   {
    "id": 827054,
@@ -621,8 +559,7 @@
    "layer": "silicon",
    "segment": "模拟与电源芯片",
    "description": "微控制器与模拟芯片，服务边缘 AI、汽车和工业设备。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=827054",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=827054"
   },
   {
    "id": 1413447,
@@ -633,11 +570,7 @@
    "layer": "silicon",
    "segment": "算力芯片",
    "description": "汽车与工业边缘处理器，提供本地 AI 与感知芯片。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1413447",
-   "layer_name": "芯片与半导体",
-   "also_in": [
-    "edge"
-   ]
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1413447"
   },
   {
    "id": 932787,
@@ -648,11 +581,7 @@
    "layer": "silicon",
    "segment": "算力芯片",
    "description": "微控制器、传感器与边缘 AI 芯片供应商。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=932787",
-   "layer_name": "芯片与半导体",
-   "also_in": [
-    "edge"
-   ]
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=932787"
   },
   {
    "id": 895419,
@@ -663,8 +592,7 @@
    "layer": "silicon",
    "segment": "模拟与电源芯片",
    "description": "碳化硅功率半导体，服务 AI 数据中心电源和电动车。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=895419",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=895419"
   },
   {
    "id": 855658,
@@ -675,11 +603,7 @@
    "layer": "silicon",
    "segment": "算力芯片",
    "description": "低功耗 FPGA 与边缘 AI 加速器。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=855658",
-   "layer_name": "芯片与半导体",
-   "also_in": [
-    "edge"
-   ]
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=855658"
   },
   {
    "id": 1047127,
@@ -690,8 +614,7 @@
    "layer": "silicon",
    "segment": "半导体设备与材料",
    "description": "先进封装与测试服务，支持 AI 芯片量产。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1047127",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1047127"
   },
   {
    "id": 1113232,
@@ -702,8 +625,7 @@
    "layer": "silicon",
    "segment": "半导体设备与材料",
    "description": "离子注入设备供应商，服务功率和先进半导体制造。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1113232",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1113232"
   },
   {
    "id": 24741,
@@ -714,8 +636,7 @@
    "layer": "silicon",
    "segment": "互连与光器件",
    "description": "光纤、光连接和玻璃材料，支撑 AI 数据中心带宽升级。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=24741",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=24741"
   },
   {
    "id": 1408710,
@@ -726,8 +647,7 @@
    "layer": "silicon",
    "segment": "互连与光器件",
    "description": "光通信和精密光电产品代工，受益于 AI 光互连需求。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1408710",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1408710"
   },
   {
    "id": 820313,
@@ -738,8 +658,7 @@
    "layer": "silicon",
    "segment": "互连与光器件",
    "description": "高速连接器与线缆，连接 AI 服务器、交换机和机柜。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=820313",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=820313"
   },
   {
    "id": 1111928,
@@ -750,8 +669,7 @@
    "layer": "silicon",
    "segment": "互连与光器件",
    "description": "光纤激光器与光电器件，服务先进制造和数据中心互连。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1111928",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1111928"
   },
   {
    "id": 1275014,
@@ -762,8 +680,7 @@
    "layer": "silicon",
    "segment": "半导体设备与材料",
    "description": "半导体设备子系统供应商，受益于先进制程和 AI 芯片扩产。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1275014",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1275014"
   },
   {
    "id": 1039399,
@@ -774,8 +691,7 @@
    "layer": "silicon",
    "segment": "半导体设备与材料",
    "description": "晶圆探针与测试设备，支持高带宽存储和 AI 芯片验证。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1039399",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1039399"
   },
   {
    "id": 29002,
@@ -786,8 +702,7 @@
    "layer": "silicon",
    "segment": "模拟与电源芯片",
    "description": "分立器件和电源管理芯片，服务服务器与工业 AI 设备。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=29002",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=29002"
   },
   {
    "id": 1604778,
@@ -798,11 +713,7 @@
    "layer": "silicon",
    "segment": "算力芯片",
    "description": "射频和连接芯片，服务无线边缘设备与智能终端。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1604778",
-   "layer_name": "芯片与半导体",
-   "also_in": [
-    "edge"
-   ]
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1604778"
   },
   {
    "id": 4127,
@@ -813,11 +724,7 @@
    "layer": "silicon",
    "segment": "算力芯片",
    "description": "无线连接和射频芯片，支持端侧 AI 设备。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=4127",
-   "layer_name": "芯片与半导体",
-   "also_in": [
-    "edge"
-   ]
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=4127"
   },
   {
    "id": 1329394,
@@ -828,8 +735,7 @@
    "layer": "silicon",
    "segment": "存储芯片",
    "description": "NAND 闪存控制器，支撑 AI 数据密集型存储。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1329394",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1329394"
   },
   {
    "id": 810136,
@@ -840,8 +746,7 @@
    "layer": "silicon",
    "segment": "半导体设备与材料",
    "description": "光掩模制造商，服务先进逻辑和存储芯片。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=810136",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=810136"
   },
   {
    "id": 1652535,
@@ -852,8 +757,7 @@
    "layer": "silicon",
    "segment": "半导体设备与材料",
    "description": "半导体设备流体输送系统，受益于 AI 晶圆厂扩产。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1652535",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1652535"
   },
   {
    "id": 1109138,
@@ -864,8 +768,7 @@
    "layer": "silicon",
    "segment": "半导体设备与材料",
    "description": "先进封装和计量检测设备，服务 AI 芯片良率提升。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1109138",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1109138"
   },
   {
    "id": 1040470,
@@ -876,8 +779,7 @@
    "layer": "silicon",
    "segment": "半导体设备与材料",
    "description": "功率和半导体老化测试设备，服务 AI 电源链和汽车芯片。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1040470",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1040470"
   },
   {
    "id": 789019,
@@ -888,11 +790,7 @@
    "layer": "infra",
    "segment": "云与超大规模",
    "description": "Azure、Windows、Copilot 与 OpenAI 合资。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=789019",
-   "layer_name": "算力基础设施与云",
-   "also_in": [
-    "model"
-   ]
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=789019"
   },
   {
    "id": 1652044,
@@ -903,11 +801,7 @@
    "layer": "infra",
    "segment": "云与超大规模",
    "description": "Google 搜索、Gemini 大模型与云计算。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1652044",
-   "layer_name": "算力基础设施与云",
-   "also_in": [
-    "model"
-   ]
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1652044"
   },
   {
    "id": 1652044,
@@ -918,11 +812,7 @@
    "layer": "infra",
    "segment": "云与超大规模",
    "description": "Alphabet 的 C 类无表决权股。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1652044",
-   "layer_name": "算力基础设施与云",
-   "also_in": [
-    "model"
-   ]
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1652044"
   },
   {
    "id": 1018724,
@@ -933,11 +823,7 @@
    "layer": "infra",
    "segment": "云与超大规模",
    "description": "电商、AWS 与生成式 AI（Bedrock）。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1018724",
-   "layer_name": "算力基础设施与云",
-   "also_in": [
-    "model"
-   ]
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1018724"
   },
   {
    "id": 1341439,
@@ -948,8 +834,7 @@
    "layer": "infra",
    "segment": "云与超大规模",
    "description": "云数据库与 OCI 大算力中心。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1341439",
-   "layer_name": "算力基础设施与云"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1341439"
   },
   {
    "id": 1577552,
@@ -960,11 +845,7 @@
    "layer": "infra",
    "segment": "云与超大规模",
    "description": "通义千问与阿里云。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1577552",
-   "layer_name": "算力基础设施与云",
-   "also_in": [
-    "model"
-   ]
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1577552"
   },
   {
    "id": 1769628,
@@ -975,8 +856,7 @@
    "layer": "infra",
    "segment": "GPU 算力租赁",
    "description": "GPU 云（Neocloud）龙头，为大模型公司提供专属算力。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1769628",
-   "layer_name": "算力基础设施与云"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1769628"
   },
   {
    "id": 1513845,
@@ -987,8 +867,7 @@
    "layer": "infra",
    "segment": "GPU 算力租赁",
    "description": "欧洲 GPU 云与 AI 基础设施（原 Yandex 海外业务）。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1513845",
-   "layer_name": "算力基础设施与云"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1513845"
   },
   {
    "id": 1375365,
@@ -999,8 +878,7 @@
    "layer": "infra",
    "segment": "AI 服务器与整机",
    "description": "AI 服务器整机与液冷。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1375365",
-   "layer_name": "算力基础设施与云"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1375365"
   },
   {
    "id": 1571996,
@@ -1011,8 +889,7 @@
    "layer": "infra",
    "segment": "AI 服务器与整机",
    "description": "AI 服务器（PowerEdge）与企业硬件。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1571996",
-   "layer_name": "算力基础设施与云"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1571996"
   },
   {
    "id": 1645590,
@@ -1023,8 +900,7 @@
    "layer": "infra",
    "segment": "AI 服务器与整机",
    "description": "企业硬件与 HPC。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1645590",
-   "layer_name": "算力基础设施与云"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1645590"
   },
   {
    "id": 1596532,
@@ -1035,8 +911,7 @@
    "layer": "infra",
    "segment": "数据中心网络",
    "description": "云数据中心交换机。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1596532",
-   "layer_name": "算力基础设施与云"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1596532"
   },
   {
    "id": 858877,
@@ -1047,8 +922,7 @@
    "layer": "infra",
    "segment": "数据中心网络",
    "description": "网络设备与基础设施软件。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=858877",
-   "layer_name": "算力基础设施与云"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=858877"
   },
   {
    "id": 936395,
@@ -1059,8 +933,7 @@
    "layer": "infra",
    "segment": "数据中心网络",
    "description": "光传输与 DCI，数据中心互联。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=936395",
-   "layer_name": "算力基础设施与云"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=936395"
   },
   {
    "id": 924613,
@@ -1071,8 +944,7 @@
    "layer": "infra",
    "segment": "数据中心网络",
    "description": "网络设备，5G 与数据中心光网络。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=924613",
-   "layer_name": "算力基础设施与云"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=924613"
   },
   {
    "id": 732717,
@@ -1083,8 +955,7 @@
    "layer": "infra",
    "segment": "电信与连接",
    "description": "美国无线/宽带运营商。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=732717",
-   "layer_name": "算力基础设施与云"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=732717"
   },
   {
    "id": 732712,
@@ -1095,8 +966,7 @@
    "layer": "infra",
    "segment": "电信与连接",
    "description": "美国无线/宽带运营商。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=732712",
-   "layer_name": "算力基础设施与云"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=732712"
   },
   {
    "id": 1283699,
@@ -1107,8 +977,7 @@
    "layer": "infra",
    "segment": "电信与连接",
    "description": "美国无线运营商。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1283699",
-   "layer_name": "算力基础设施与云"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1283699"
   },
   {
    "id": 1091667,
@@ -1119,8 +988,7 @@
    "layer": "infra",
    "segment": "电信与连接",
    "description": "宽带电视运营商（Spectrum）。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1091667",
-   "layer_name": "算力基础设施与云"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1091667"
   },
   {
    "id": 1101239,
@@ -1131,11 +999,7 @@
    "layer": "infra",
    "segment": "云与超大规模",
    "description": "全球数据中心与互联平台，为 AI 云和企业算力提供机房。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1101239",
-   "layer_name": "算力基础设施与云",
-   "also_in": [
-    "power"
-   ]
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1101239"
   },
   {
    "id": 1297996,
@@ -1146,11 +1010,7 @@
    "layer": "infra",
    "segment": "云与超大规模",
    "description": "全球数据中心 REIT，承载超大规模 AI 训练和推理。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1297996",
-   "layer_name": "算力基础设施与云",
-   "also_in": [
-    "power"
-   ]
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1297996"
   },
   {
    "id": 1053507,
@@ -1161,8 +1021,7 @@
    "layer": "infra",
    "segment": "电信与连接",
    "description": "无线通信基础设施，为边缘计算和连接提供站点。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1053507",
-   "layer_name": "算力基础设施与云"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1053507"
   },
   {
    "id": 1329099,
@@ -1173,11 +1032,7 @@
    "layer": "infra",
    "segment": "云与超大规模",
    "description": "百度智能云与文心大模型，提供中国 AI 云和模型服务。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1329099",
-   "layer_name": "算力基础设施与云",
-   "also_in": [
-    "model"
-   ]
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1329099"
   },
   {
    "id": 1549802,
@@ -1188,11 +1043,7 @@
    "layer": "infra",
    "segment": "云与超大规模",
    "description": "电商与物流智能化平台，使用 AI 优化供应链和推荐。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1549802",
-   "layer_name": "算力基础设施与云",
-   "also_in": [
-    "app"
-   ]
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1549802"
   },
   {
    "id": 1878848,
@@ -1203,8 +1054,7 @@
    "layer": "infra",
    "segment": "GPU 算力租赁",
    "description": "数据中心运营商，向 AI 云和高性能计算扩展。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1878848",
-   "layer_name": "算力基础设施与云"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1878848"
   },
   {
    "id": 1144879,
@@ -1215,8 +1065,7 @@
    "layer": "infra",
    "segment": "GPU 算力租赁",
    "description": "高密度数据中心与 GPU 云基础设施开发商。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1144879",
-   "layer_name": "算力基础设施与云"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1144879"
   },
   {
    "id": 1964789,
@@ -1227,8 +1076,7 @@
    "layer": "infra",
    "segment": "GPU 算力租赁",
    "description": "能源与数据中心平台，转向 AI 算力租赁。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1964789",
-   "layer_name": "算力基础设施与云"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1964789"
   },
   {
    "id": 1839341,
@@ -1239,8 +1087,7 @@
    "layer": "infra",
    "segment": "GPU 算力租赁",
    "description": "大规模数据中心运营商，为 AI 客户部署 GPU 机群。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1839341",
-   "layer_name": "算力基础设施与云"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1839341"
   },
   {
    "id": 1083301,
@@ -1251,8 +1098,7 @@
    "layer": "infra",
    "segment": "GPU 算力租赁",
    "description": "低碳数据中心和 AI 高性能计算基础设施。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1083301",
-   "layer_name": "算力基础设施与云"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1083301"
   },
   {
    "id": 1508475,
@@ -1263,8 +1109,7 @@
    "layer": "infra",
    "segment": "GPU 算力租赁",
    "description": "中国数据中心运营商，提供云和 AI 托管算力。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1508475",
-   "layer_name": "算力基础设施与云"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1508475"
   },
   {
    "id": 1002047,
@@ -1275,11 +1120,7 @@
    "layer": "infra",
    "segment": "AI 服务器与整机",
    "description": "企业数据存储和 AI 数据管理平台。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1002047",
-   "layer_name": "算力基础设施与云",
-   "also_in": [
-    "model"
-   ]
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1002047"
   },
   {
    "id": 866374,
@@ -1290,8 +1131,7 @@
    "layer": "infra",
    "segment": "AI 服务器与整机",
    "description": "电子制造服务与数据中心硬件供应链。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=866374",
-   "layer_name": "算力基础设施与云"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=866374"
   },
   {
    "id": 1048695,
@@ -1302,8 +1142,7 @@
    "layer": "infra",
    "segment": "数据中心网络",
    "description": "应用交付与 AI 流量安全，连接企业数据中心。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1048695",
-   "layer_name": "算力基础设施与云"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1048695"
   },
   {
    "id": 1086222,
@@ -1314,11 +1153,7 @@
    "layer": "infra",
    "segment": "数据中心网络",
    "description": "边缘云、内容分发和 AI 推理网络。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1086222",
-   "layer_name": "算力基础设施与云",
-   "also_in": [
-    "edge"
-   ]
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1086222"
   },
   {
    "id": 717826,
@@ -1329,8 +1164,7 @@
    "layer": "infra",
    "segment": "电信与连接",
    "description": "5G 无线网络和边缘计算基础设施。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=717826",
-   "layer_name": "算力基础设施与云"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=717826"
   },
   {
    "id": 1708055,
@@ -1341,8 +1175,7 @@
    "layer": "infra",
    "segment": "电信与连接",
    "description": "电信软件与实时通信网络，支持边缘 AI 连接。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1708055",
-   "layer_name": "算力基础设施与云"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1708055"
   },
   {
    "id": 1867072,
@@ -1353,11 +1186,7 @@
    "layer": "infra",
    "segment": "云与超大规模",
    "description": "企业 IT 基础设施托管与云迁移，帮助客户部署 AI 工作负载。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1867072",
-   "layer_name": "算力基础设施与云",
-   "also_in": [
-    "app"
-   ]
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1867072"
   },
   {
    "id": 1810019,
@@ -1368,11 +1197,7 @@
    "layer": "infra",
    "segment": "云与超大规模",
    "description": "多云托管与生成式 AI 服务，为企业运营 AI 算力。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1810019",
-   "layer_name": "算力基础设施与云",
-   "also_in": [
-    "app"
-   ]
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1810019"
   },
   {
    "id": 1526125,
@@ -1383,11 +1208,7 @@
    "layer": "infra",
    "segment": "云与超大规模",
    "description": "中国高性能数据中心运营商，承载云和 AI 训练需求。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1526125",
-   "layer_name": "算力基础设施与云",
-   "also_in": [
-    "power"
-   ]
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1526125"
   },
   {
    "id": 18926,
@@ -1398,8 +1219,7 @@
    "layer": "infra",
    "segment": "电信与连接",
    "description": "光纤网络和边缘连接，为数据中心和 AI 推理提供带宽。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=18926",
-   "layer_name": "算力基础设施与云"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=18926"
   },
   {
    "id": 1326801,
@@ -1410,11 +1230,7 @@
    "layer": "model",
    "segment": "基础模型",
    "description": "社交与 Llama 开源大模型。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1326801",
-   "layer_name": "模型与数据平台",
-   "also_in": [
-    "infra"
-   ]
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1326801"
   },
   {
    "id": 1640147,
@@ -1425,8 +1241,7 @@
    "layer": "model",
    "segment": "数据云与 MLOps",
    "description": "云数据仓库，AI 数据平台。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1640147",
-   "layer_name": "模型与数据平台"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1640147"
   },
   {
    "id": 1441816,
@@ -1437,8 +1252,7 @@
    "layer": "model",
    "segment": "数据云与 MLOps",
    "description": "文档数据库与 Atlas Vector Search，RAG 数据层。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1441816",
-   "layer_name": "模型与数据平台"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1441816"
   },
   {
    "id": 1561550,
@@ -1449,8 +1263,7 @@
    "layer": "model",
    "segment": "数据云与 MLOps",
    "description": "可观测性与云监控。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1561550",
-   "layer_name": "模型与数据平台"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1561550"
   },
   {
    "id": 1707753,
@@ -1461,8 +1274,7 @@
    "layer": "model",
    "segment": "数据云与 MLOps",
    "description": "搜索/观测/AI 检索平台。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1707753",
-   "layer_name": "模型与数据平台"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1707753"
   },
   {
    "id": 1577526,
@@ -1473,8 +1285,7 @@
    "layer": "model",
    "segment": "AI 开发平台",
    "description": "企业 AI 应用开发平台（C3 Agentic AI）。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1577526",
-   "layer_name": "模型与数据平台"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1577526"
   },
   {
    "id": 1653482,
@@ -1485,8 +1296,7 @@
    "layer": "model",
    "segment": "AI 开发平台",
    "description": "DevSecOps 平台与 AI 编码助手（Duo）。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1653482",
-   "layer_name": "模型与数据平台"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1653482"
   },
   {
    "id": 1000184,
@@ -1497,11 +1307,7 @@
    "layer": "model",
    "segment": "数据云与 MLOps",
    "description": "企业数据平台与 Joule AI 助手，连接业务数据和模型。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1000184",
-   "layer_name": "模型与数据平台",
-   "also_in": [
-    "app"
-   ]
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1000184"
   },
   {
    "id": 1404655,
@@ -1512,8 +1318,7 @@
    "layer": "model",
    "segment": "AI 开发平台",
    "description": "CRM 与营销自动化平台，内置生成式 AI 工具。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1404655",
-   "layer_name": "模型与数据平台"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1404655"
   },
   {
    "id": 1585521,
@@ -1524,8 +1329,7 @@
    "layer": "app",
    "segment": "客服与联络中心 AI",
    "description": "协作与联络中心平台，提供 AI Companion 和企业智能。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1585521",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1585521"
   },
   {
    "id": 1108524,
@@ -1536,8 +1340,7 @@
    "layer": "app",
    "segment": "企业软件与 Agent",
    "description": "CRM SaaS 与 Agentforce AI，面向销售和客户运营。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1108524",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1108524"
   },
   {
    "id": 1373715,
@@ -1548,8 +1351,7 @@
    "layer": "app",
    "segment": "企业软件与 Agent",
    "description": "企业工作流 SaaS 与 AI 代理。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1373715",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1373715"
   },
   {
    "id": 1845338,
@@ -1560,8 +1362,7 @@
    "layer": "app",
    "segment": "垂直 SaaS AI",
    "description": "工作协作平台与 AI 自动化。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1845338",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1845338"
   },
   {
    "id": 1544522,
@@ -1572,8 +1373,7 @@
    "layer": "app",
    "segment": "客服与联络中心 AI",
    "description": "SaaS 客服、IT 服务台与 AI 自动化。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1544522",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1544522"
   },
   {
    "id": 1261333,
@@ -1584,8 +1384,7 @@
    "layer": "app",
    "segment": "法律科技 AI",
    "description": "电子签名、合同生命周期与 AI 合同分析工作流。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1261333",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1261333"
   },
   {
    "id": 1734722,
@@ -1596,8 +1395,7 @@
    "layer": "app",
    "segment": "AI 开发工具",
    "description": "RPA、工作流编排与 Agentic AI 自动化开发平台。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1734722",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1734722"
   },
   {
    "id": 1810806,
@@ -1608,8 +1406,7 @@
    "layer": "app",
    "segment": "AI 开发工具",
    "description": "游戏引擎与实时 3D，提供 Unity AI 开发工具。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1810806",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1810806"
   },
   {
    "id": 1321655,
@@ -1620,8 +1417,7 @@
    "layer": "app",
    "segment": "国防与政府 AI",
    "description": "数据平台与 AIP 商业、国防和政府 AI。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1321655",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1321655"
   },
   {
    "id": 1840856,
@@ -1632,8 +1428,7 @@
    "layer": "app",
    "segment": "客服与联络中心 AI",
    "description": "语音 AI 助手与联络中心自动化（汽车、餐饮与客服）。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1840856",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1840856"
   },
   {
    "id": 1751008,
@@ -1644,8 +1439,7 @@
    "layer": "app",
    "segment": "广告与营销 AI",
    "description": "移动广告与 AI 推荐引擎。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1751008",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1751008"
   },
   {
    "id": 1671933,
@@ -1656,8 +1450,7 @@
    "layer": "app",
    "segment": "广告与营销 AI",
    "description": "程序化广告 DSP 与 AI 编排。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1671933",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1671933"
   },
   {
    "id": 1535527,
@@ -1668,8 +1461,7 @@
    "layer": "app",
    "segment": "安全与身份",
    "description": "云安全与 Falcon 平台。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1535527",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1535527"
   },
   {
    "id": 1327567,
@@ -1680,8 +1472,7 @@
    "layer": "app",
    "segment": "安全与身份",
    "description": "网络安全平台。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1327567",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1327567"
   },
   {
    "id": 1713683,
@@ -1692,8 +1483,7 @@
    "layer": "app",
    "segment": "安全与身份",
    "description": "零信任云安全。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1713683",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1713683"
   },
   {
    "id": 1660134,
@@ -1704,8 +1494,7 @@
    "layer": "app",
    "segment": "安全与身份",
    "description": "身份管理与 SSO。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1660134",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1660134"
   },
   {
    "id": 1477333,
@@ -1716,8 +1505,7 @@
    "layer": "app",
    "segment": "安全与身份",
    "description": "边缘云、Workers 与 AI 网关。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1477333",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1477333"
   },
   {
    "id": 1562088,
@@ -1728,8 +1516,7 @@
    "layer": "app",
    "segment": "消费与内容应用",
    "description": "语言学习，AI 个性化课程。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1562088",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1562088"
   },
   {
    "id": 1594805,
@@ -1740,8 +1527,7 @@
    "layer": "app",
    "segment": "消费与内容应用",
    "description": "电商平台，Sidekick AI。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1594805",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1594805"
   },
   {
    "id": 1543151,
@@ -1752,11 +1538,7 @@
    "layer": "app",
    "segment": "消费与内容应用",
    "description": "出行与即时配送。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1543151",
-   "layer_name": "AI 软件与应用",
-   "also_in": [
-    "edge"
-   ]
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1543151"
   },
   {
    "id": 1713445,
@@ -1767,8 +1549,7 @@
    "layer": "app",
    "segment": "消费与内容应用",
    "description": "社交通讯，AI 检索变现。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1713445",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1713445"
   },
   {
    "id": 1315098,
@@ -1779,8 +1560,7 @@
    "layer": "app",
    "segment": "消费与内容应用",
    "description": "UGC 平台与生成式 AI 内容。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1315098",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1315098"
   },
   {
    "id": 946581,
@@ -1791,8 +1571,7 @@
    "layer": "app",
    "segment": "消费与内容应用",
    "description": "游戏发行，AI 辅助开发。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=946581",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=946581"
   },
   {
    "id": 1065280,
@@ -1803,8 +1582,7 @@
    "layer": "app",
    "segment": "消费与内容应用",
    "description": "流媒体与个性化推荐 AI。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1065280",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1065280"
   },
   {
    "id": 1639920,
@@ -1815,8 +1593,7 @@
    "layer": "app",
    "segment": "消费与内容应用",
    "description": "音乐流媒体与 AI 播客。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1639920",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1639920"
   },
   {
    "id": 1737806,
@@ -1827,8 +1604,7 @@
    "layer": "app",
    "segment": "消费与内容应用",
    "description": "拼多多/Temu 电商。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1737806",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1737806"
   },
   {
    "id": 1467373,
@@ -1839,8 +1615,7 @@
    "layer": "app",
    "segment": "IT 服务与集成",
    "description": "IT 咨询与实施，企业 AI 落地。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1467373",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1467373"
   },
   {
    "id": 1067491,
@@ -1851,8 +1626,7 @@
    "layer": "app",
    "segment": "IT 服务与集成",
    "description": "IT 服务外包，AI 转型交付。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1067491",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1067491"
   },
   {
    "id": 1352010,
@@ -1863,8 +1637,7 @@
    "layer": "app",
    "segment": "IT 服务与集成",
    "description": "软件工程服务，AI 工程能力。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1352010",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1352010"
   },
   {
    "id": 51143,
@@ -1875,8 +1648,7 @@
    "layer": "app",
    "segment": "IT 服务与集成",
    "description": "混合云、watsonx 与 AI 咨询。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=51143",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=51143"
   },
   {
    "id": 796343,
@@ -1887,8 +1659,7 @@
    "layer": "app",
    "segment": "垂直 SaaS AI",
    "description": "Creative Cloud、Firefly 生成式 AI 与企业内容工作流。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=796343",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=796343"
   },
   {
    "id": 896878,
@@ -1899,8 +1670,7 @@
    "layer": "app",
    "segment": "金融 AI",
    "description": "财税与小企业软件，使用生成式 AI 提供专家助手。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=896878",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=896878"
   },
   {
    "id": 1327811,
@@ -1911,8 +1681,7 @@
    "layer": "app",
    "segment": "垂直 SaaS AI",
    "description": "人力与财务 SaaS，加入 AI 代理和人才智能。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1327811",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1327811"
   },
   {
    "id": 1477720,
@@ -1923,8 +1692,7 @@
    "layer": "app",
    "segment": "垂直 SaaS AI",
    "description": "项目管理与工作流软件，提供 AI teammate。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1477720",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1477720"
   },
   {
    "id": 1447669,
@@ -1935,8 +1703,7 @@
    "layer": "app",
    "segment": "客服与联络中心 AI",
    "description": "云通信和客户数据平台，提供 AI 客服与语音能力。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1447669",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1447669"
   },
   {
    "id": 1786352,
@@ -1947,8 +1714,7 @@
    "layer": "app",
    "segment": "金融 AI",
    "description": "中小企业财务自动化平台，使用 AI 处理支付和账单。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1786352",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1786352"
   },
   {
    "id": 1717115,
@@ -1959,8 +1725,7 @@
    "layer": "app",
    "segment": "医疗 AI 与计算生物",
    "description": "临床数据与精准医疗 AI 平台。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1717115",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1717115"
   },
   {
    "id": 1601830,
@@ -1971,8 +1736,7 @@
    "layer": "app",
    "segment": "医疗 AI 与计算生物",
    "description": "用机器学习和自动化实验进行药物发现。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1601830",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1601830"
   },
   {
    "id": 1490978,
@@ -1983,8 +1747,7 @@
    "layer": "app",
    "segment": "医疗 AI 与计算生物",
    "description": "计算化学和机器学习药物研发平台。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1490978",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1490978"
   },
   {
    "id": 1836981,
@@ -1995,8 +1758,7 @@
    "layer": "app",
    "segment": "国防与政府 AI",
    "description": "国防、供应链和决策智能 AI 软件。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1836981",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1836981"
   },
   {
    "id": 1615165,
@@ -2007,8 +1769,7 @@
    "layer": "app",
    "segment": "客服与联络中心 AI",
    "description": "企业 AI 运营平台和语音、视频智能。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1615165",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1615165"
   },
   {
    "id": 1842566,
@@ -2019,8 +1780,7 @@
    "layer": "app",
    "segment": "国防与政府 AI",
    "description": "面向公共安全和国防的视频分析 AI。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1842566",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1842566"
   },
   {
    "id": 1111485,
@@ -2031,8 +1791,7 @@
    "layer": "app",
    "segment": "医疗 AI 与计算生物",
    "description": "眼科医疗设备公司，将 AI 辅助规划用于个性化治疗。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1111485",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1111485"
   },
   {
    "id": 1834489,
@@ -2043,8 +1802,7 @@
    "layer": "app",
    "segment": "广告与营销 AI",
    "description": "体育数据与媒体技术，使用 AI 做内容和广告编排。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1834489",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1834489"
   },
   {
    "id": 1820953,
@@ -2055,8 +1813,7 @@
    "layer": "app",
    "segment": "金融 AI",
    "description": "数字消费金融平台，用机器学习进行授信和风控。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1820953",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1820953"
   },
   {
    "id": 1647639,
@@ -2067,8 +1824,7 @@
    "layer": "app",
    "segment": "金融 AI",
    "description": "AI 信贷决策平台，向银行提供机器学习承保。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1647639",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1647639"
   },
   {
    "id": 1370637,
@@ -2079,8 +1835,7 @@
    "layer": "app",
    "segment": "消费与内容应用",
    "description": "创意电商平台，使用 AI 做搜索、推荐和卖家工具。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1370637",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1370637"
   },
   {
    "id": 1428439,
@@ -2091,8 +1846,7 @@
    "layer": "app",
    "segment": "消费与内容应用",
    "description": "流媒体平台，使用 AI 做内容推荐和广告投放。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1428439",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1428439"
   },
   {
    "id": 1762301,
@@ -2103,8 +1857,7 @@
    "layer": "app",
    "segment": "消费与内容应用",
    "description": "自由职业平台，提供 AI 服务目录和智能匹配。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1762301",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1762301"
   },
   {
    "id": 1269238,
@@ -2115,8 +1868,7 @@
    "layer": "app",
    "segment": "消费与内容应用",
    "description": "在线旅行平台，使用 AI 做行程规划和个性化推荐。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1269238",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1269238"
   },
   {
    "id": 1110646,
@@ -2127,8 +1879,7 @@
    "layer": "app",
    "segment": "消费与内容应用",
    "description": "游戏与内容平台，使用生成式 AI 辅助研发和运营。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1110646",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1110646"
   },
   {
    "id": 1723690,
@@ -2139,8 +1890,7 @@
    "layer": "app",
    "segment": "消费与内容应用",
    "description": "视频与社区平台，使用 AI 推荐、审核和内容生成。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1723690",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1723690"
   },
   {
    "id": 1595761,
@@ -2151,8 +1901,7 @@
    "layer": "app",
    "segment": "消费与内容应用",
    "description": "社交媒体平台，使用 AI 做内容推荐、广告和审核。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1595761",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1595761"
   },
   {
    "id": 1583708,
@@ -2163,8 +1912,7 @@
    "layer": "app",
    "segment": "安全与身份",
    "description": "端点安全平台，以 AI 检测和响应网络威胁。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1583708",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1583708"
   },
   {
    "id": 1660280,
@@ -2175,8 +1923,7 @@
    "layer": "app",
    "segment": "安全与身份",
    "description": "暴露面管理和云安全平台，使用机器学习识别风险。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1660280",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1660280"
   },
   {
    "id": 1560327,
@@ -2187,8 +1934,7 @@
    "layer": "app",
    "segment": "安全与身份",
    "description": "安全运营与漏洞管理软件，提供 AI 辅助检测和响应。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1560327",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1560327"
   },
   {
    "id": 1015922,
@@ -2199,8 +1945,7 @@
    "layer": "app",
    "segment": "安全与身份",
    "description": "网络安全平台，将 AI 用于威胁预防和云防护。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1015922",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1015922"
   },
   {
    "id": 1812364,
@@ -2211,8 +1956,7 @@
    "layer": "app",
    "segment": "医疗 AI 与计算生物",
    "description": "计算结构生物学和机器学习药物发现公司。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1812364",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1812364"
   },
   {
    "id": 1703057,
@@ -2223,8 +1967,7 @@
    "layer": "app",
    "segment": "医疗 AI 与计算生物",
    "description": "抗体发现平台，结合机器学习和自动化实验筛选药物。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1703057",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1703057"
   },
   {
    "id": 1691421,
@@ -2235,8 +1978,7 @@
    "layer": "app",
    "segment": "金融 AI",
    "description": "数字保险平台，以机器学习进行定价、核保和理赔自动化。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1691421",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1691421"
   },
   {
    "id": 1788882,
@@ -2247,8 +1989,7 @@
    "layer": "app",
    "segment": "金融 AI",
    "description": "按驾驶行为定价的数字汽车保险，使用数据和机器学习承保。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1788882",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1788882"
   },
   {
    "id": 1818874,
@@ -2259,8 +2000,7 @@
    "layer": "app",
    "segment": "金融 AI",
    "description": "数字金融平台，将数据和自动化用于贷款、风控和个性化服务。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1818874",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1818874"
   },
   {
    "id": 1576280,
@@ -2271,8 +2011,7 @@
    "layer": "app",
    "segment": "医疗 AI 与计算生物",
    "description": "液体活检和精准肿瘤学平台，利用算法辅助癌症检测和治疗决策。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1576280",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1576280"
   },
   {
    "id": 1384905,
@@ -2283,8 +2022,7 @@
    "layer": "app",
    "segment": "客服与联络中心 AI",
    "description": "云通信和联络中心平台，提供 AI 会议、转录与客服自动化。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1384905",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1384905"
   },
   {
    "id": 1288847,
@@ -2295,8 +2033,7 @@
    "layer": "app",
    "segment": "客服与联络中心 AI",
    "description": "云联络中心软件，提供 AI 语音、质检和客服代理。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1288847",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1288847"
   },
   {
    "id": 1569345,
@@ -2307,8 +2044,7 @@
    "layer": "app",
    "segment": "客服与联络中心 AI",
    "description": "统一客户体验管理平台，使用 AI 处理社交、客服和营销对话。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1569345",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1569345"
   },
   {
    "id": 1800667,
@@ -2319,8 +2055,7 @@
    "layer": "app",
    "segment": "AI 开发工具",
    "description": "DevOps 和软件供应链平台，支持 AI 模型与应用的构建部署。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1800667",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1800667"
   },
   {
    "id": 1372612,
@@ -2331,8 +2066,7 @@
    "layer": "app",
    "segment": "AI 开发工具",
    "description": "企业内容云与 Box AI，帮助团队检索、生成和治理企业知识。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1372612",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1372612"
   },
   {
    "id": 1650372,
@@ -2343,8 +2077,7 @@
    "layer": "app",
    "segment": "AI 开发工具",
    "description": "软件研发协作平台，提供 Jira、Confluence 与 Rovo AI 工具。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1650372",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1650372"
   },
   {
    "id": 1625641,
@@ -2355,8 +2088,7 @@
    "layer": "app",
    "segment": "法律科技 AI",
    "description": "法律诉讼管理平台，使用 AI 做文档审阅、检索和案件协作。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1625641",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1625641"
   },
   {
    "id": 1075124,
@@ -2367,8 +2099,7 @@
    "layer": "app",
    "segment": "法律科技 AI",
    "description": "法律、税务和专业信息服务，提供 CoCounsel 生成式 AI。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1075124",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1075124"
   },
   {
    "id": 1393052,
@@ -2379,8 +2110,7 @@
    "layer": "app",
    "segment": "垂直 SaaS AI",
    "description": "生命科学行业 SaaS，使用 AI 优化临床、质量和商业流程。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1393052",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1393052"
   },
   {
    "id": 1057352,
@@ -2391,8 +2121,7 @@
    "layer": "app",
    "segment": "垂直 SaaS AI",
    "description": "商业地产数据和软件平台，使用 AI 做估值、搜索和营销。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1057352",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1057352"
   },
   {
    "id": 1650164,
@@ -2403,8 +2132,7 @@
    "layer": "app",
    "segment": "垂直 SaaS AI",
    "description": "餐饮行业 SaaS 和支付平台，使用 AI 做经营分析与客户营销。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1650164",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1650164"
   },
   {
    "id": 1336920,
@@ -2415,8 +2143,7 @@
    "layer": "app",
    "segment": "国防与政府 AI",
    "description": "国防、情报和政府 IT 服务商，提供任务分析与 AI 决策系统。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1336920",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1336920"
   },
   {
    "id": 1443646,
@@ -2427,8 +2154,7 @@
    "layer": "app",
    "segment": "国防与政府 AI",
    "description": "政府和国防技术咨询商，为联邦客户部署 AI 与数据平台。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1443646",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1443646"
   },
   {
    "id": 1069258,
@@ -2439,8 +2165,7 @@
    "layer": "app",
    "segment": "国防与政府 AI",
    "description": "无人系统、高超声速和国防电子，推动自主系统与 AI 感知。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1069258",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1069258"
   },
   {
    "id": 1368622,
@@ -2451,8 +2176,7 @@
    "layer": "app",
    "segment": "国防与政府 AI",
    "description": "无人机和自主系统供应商，提供 AI 辅助侦察与打击平台。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1368622",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1368622"
   },
   {
    "id": 1049521,
@@ -2463,8 +2187,7 @@
    "layer": "app",
    "segment": "国防与政府 AI",
    "description": "国防计算和传感器系统，为任务关键型 AI 提供硬件平台。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1049521",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1049521"
   },
   {
    "id": 320193,
@@ -2475,8 +2198,7 @@
    "layer": "edge",
    "segment": "端侧设备",
    "description": "iOS 生态、Mac 与 Apple Intelligence。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=320193",
-   "layer_name": "终端与具身智能"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=320193"
   },
   {
    "id": 47217,
@@ -2487,8 +2209,7 @@
    "layer": "edge",
    "segment": "端侧设备",
    "description": "PC 与企业计算硬件。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=47217",
-   "layer_name": "终端与具身智能"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=47217"
   },
   {
    "id": 1314727,
@@ -2499,8 +2220,7 @@
    "layer": "edge",
    "segment": "端侧设备",
    "description": "智能音箱与音频产品。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1314727",
-   "layer_name": "终端与具身智能"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1314727"
   },
   {
    "id": 1318605,
@@ -2511,11 +2231,7 @@
    "layer": "edge",
    "segment": "自动驾驶与机器人",
    "description": "电动车与自动驾驶、机器人 Optimus。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1318605",
-   "layer_name": "终端与具身智能",
-   "also_in": [
-    "power"
-   ]
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1318605"
   },
   {
    "id": 1910139,
@@ -2526,8 +2242,7 @@
    "layer": "edge",
    "segment": "自动驾驶与机器人",
    "description": "ADAS/自动驾驶芯片与算法。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1910139",
-   "layer_name": "终端与具身智能"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1910139"
   },
   {
    "id": 1736541,
@@ -2538,8 +2253,7 @@
    "layer": "edge",
    "segment": "自动驾驶与机器人",
    "description": "智能电动车与辅助驾驶软件，持续部署端侧 AI。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1736541",
-   "layer_name": "终端与具身智能"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1736541"
   },
   {
    "id": 1791706,
@@ -2550,8 +2264,7 @@
    "layer": "edge",
    "segment": "自动驾驶与机器人",
    "description": "智能电动车和辅助驾驶系统，使用 AI 做感知与座舱交互。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1791706",
-   "layer_name": "终端与具身智能"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1791706"
   },
   {
    "id": 1810997,
@@ -2562,8 +2275,7 @@
    "layer": "edge",
    "segment": "自动驾驶与机器人",
    "description": "智能汽车与自动驾驶软件，推进端到端 AI 辅助驾驶。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1810997",
-   "layer_name": "终端与具身智能"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1810997"
   },
   {
    "id": 1828108,
@@ -2574,8 +2286,7 @@
    "layer": "edge",
    "segment": "自动驾驶与机器人",
    "description": "自动驾驶卡车和软件平台，专注感知、规划与车队运营 AI。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1828108",
-   "layer_name": "终端与具身智能"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1828108"
   },
   {
    "id": 1832483,
@@ -2586,8 +2297,7 @@
    "layer": "edge",
    "segment": "自动驾驶与机器人",
    "description": "人行道配送机器人，使用视觉和导航 AI 实现无人配送。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1832483",
-   "layer_name": "终端与具身智能"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1832483"
   },
   {
    "id": 1837240,
@@ -2598,8 +2308,7 @@
    "layer": "edge",
    "segment": "自动驾驶与机器人",
    "description": "仓储自动化机器人和软件，使用 AI 优化物流编排。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1837240",
-   "layer_name": "终端与具身智能"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1837240"
   },
   {
    "id": 1035267,
@@ -2610,8 +2319,7 @@
    "layer": "edge",
    "segment": "自动驾驶与机器人",
    "description": "手术机器人平台，结合计算机视觉和智能辅助手术。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1035267",
-   "layer_name": "终端与具身智能"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1035267"
   },
   {
    "id": 769397,
@@ -2622,8 +2330,7 @@
    "layer": "app",
    "segment": "企业软件与 Agent",
    "description": "CAD/设计与建筑基础设施软件，行业垂直 AI 与传统企业软件叠加的核心质量公司。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=769397",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=769397"
   },
   {
    "id": 1262039,
@@ -2634,8 +2341,7 @@
    "layer": "app",
    "segment": "安全与身份",
    "description": "网络安全设备与防火墙领导者，AI 安全检测与零信任部署。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1262039",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1262039"
   },
   {
    "id": 1014473,
@@ -2646,8 +2352,7 @@
    "layer": "app",
    "segment": "安全与身份",
    "description": "域名与数字身份服务（GoDaddy/Identity），身份验证与互联网基础设施。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1014473",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1014473"
   },
   {
    "id": 814547,
@@ -2658,8 +2363,7 @@
    "layer": "app",
    "segment": "金融 AI",
    "description": "信用评分与金融决策模型，金融 AI 的数据与算法标准。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=814547",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=814547"
   },
   {
    "id": 1442145,
@@ -2670,8 +2374,7 @@
    "layer": "app",
    "segment": "金融 AI",
    "description": "风险与信用数据公司，保险与金融 AI 的数据服务。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1442145",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1442145"
   },
   {
    "id": 874716,
@@ -2682,8 +2385,7 @@
    "layer": "app",
    "segment": "医疗 AI 与计算生物",
    "description": "兽医诊断设备、耗材与参考实验室，安装基础与重复使用关系。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=874716",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=874716"
   },
   {
    "id": 875320,
@@ -2694,8 +2396,7 @@
    "layer": "app",
    "segment": "医疗 AI 与计算生物",
    "description": "sRNA 平台与研发管线，区分单次试验失败和平台/集中度风险。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=875320",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=875320"
   },
   {
    "id": 943819,
@@ -2706,8 +2407,7 @@
    "layer": "app",
    "segment": "医疗 AI 与计算生物",
    "description": "睡眠呼吸与远程医疗设备及软件平台。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=943819",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=943819"
   },
   {
    "id": 1075531,
@@ -2718,8 +2418,7 @@
    "layer": "app",
    "segment": "消费与内容应用",
    "description": "在线旅游平台，规模与分发优势，价格与预订量可持续追踪。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1075531",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1075531"
   },
   {
    "id": 1397187,
@@ -2730,8 +2429,7 @@
    "layer": "app",
    "segment": "消费与内容应用",
    "description": "运动服饰品牌，消费品牌运营质量案例。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1397187",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1397187"
   },
   {
    "id": 723531,
@@ -2742,8 +2440,7 @@
    "layer": "app",
    "segment": "垂直 SaaS AI",
    "description": "中小企业薪酬与人力资源 SaaS，重复使用与合规工作流。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=723531",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=723531"
   },
   {
    "id": 84839,
@@ -2754,8 +2451,7 @@
    "layer": "app",
    "segment": "国防与政府 AI",
    "description": "航空发动机与国防系统，AI 维护与数字化服务。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=84839",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=84839"
   },
   {
    "id": 1403161,
@@ -2766,8 +2462,7 @@
    "layer": "app",
    "segment": "金融 AI",
    "description": "全球支付网络，规模与分发优势。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1403161",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1403161"
   },
   {
    "id": 909832,
@@ -2778,8 +2473,7 @@
    "layer": "app",
    "segment": "消费与内容应用",
    "description": "折扣零售俱乐部，会员留存与定价权可追踪。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=909832",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=909832"
   },
   {
    "id": 882835,
@@ -2790,8 +2484,7 @@
    "layer": "app",
    "segment": "垂直 SaaS AI",
    "description": "多元化工业与 B2B 软件控股公司，多垂直 SaaS 布局。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=882835",
-   "layer_name": "AI 软件与应用"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=882835"
   },
   {
    "id": 1707925,
@@ -2802,8 +2495,7 @@
    "layer": "power",
    "segment": "数据中心电力与温控",
    "description": "工业气体公司，含数据中心相关冷却与特气供应。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1707925",
-   "layer_name": "能源与电力"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1707925"
   },
   {
    "id": 2088896,
@@ -2814,8 +2506,7 @@
    "layer": "power",
    "segment": "发电与核电",
    "description": "先进核能技术公司，面向数据中心与工业负荷的模块化核能方案。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=2088896",
-   "layer_name": "能源与电力"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=2088896"
   },
   {
    "id": 1849056,
@@ -2826,8 +2517,7 @@
    "layer": "power",
    "segment": "发电与核电",
    "description": "先进裂变能源公司，开发小型模块化核能发电系统。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1849056",
-   "layer_name": "能源与电力"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1849056"
   },
   {
    "id": 1664703,
@@ -2838,8 +2528,7 @@
    "layer": "power",
    "segment": "发电与核电",
    "description": "燃料电池与分布式发电平台，为高密度数据中心提供现场电力。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1664703",
-   "layer_name": "能源与电力"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1664703"
   },
   {
    "id": 2021728,
@@ -2850,8 +2539,7 @@
    "layer": "silicon",
    "segment": "算力芯片",
    "description": "面向 AI 训练与推理的大规模晶圆级加速器平台。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=2021728",
-   "layer_name": "芯片与半导体"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=2021728"
   },
   {
    "id": 1819989,
@@ -2862,8 +2550,7 @@
    "layer": "infra",
    "segment": "GPU 算力租赁",
    "description": "数据中心基础设施运营商，组合中归入 GPU 算力租赁观察组。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1819989",
-   "layer_name": "算力基础设施与云"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1819989"
   },
   {
    "id": 1549084,
@@ -2874,8 +2561,7 @@
    "layer": "infra",
    "segment": "GPU 算力租赁",
    "description": "AI 数据中心与算力基础设施运营商，组合中归入 GPU 算力租赁观察组。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1549084",
-   "layer_name": "算力基础设施与云"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1549084"
   },
   {
    "id": 2111860,
@@ -2886,8 +2572,29 @@
    "layer": "edge",
    "segment": "自动驾驶与机器人",
    "description": "AI 机器人公司，组合中归入自动驾驶与机器人观察组。",
-   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=2111860",
-   "layer_name": "终端与具身智能"
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=2111860"
+  },
+  {
+   "id": 1181412,
+   "ticker": "SPCX",
+   "name": "Space Exploration Technologies",
+   "sector": "Technology",
+   "industry": "System Software",
+   "layer": "infra",
+   "segment": "云与超大规模",
+   "description": "云厂商，组合中归入云与超大规模观察组。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1181412"
+  },
+  {
+   "id": 2130357,
+   "ticker": "ANT",
+   "name": "Anthropic",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "model",
+   "segment": "基础模型",
+   "description": "大模型公司，组合中归入基础模型观察组。",
+   "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=2130357"
   }
  ],
  "links": [
@@ -4061,7 +3768,7 @@
    "desc": "同 GICS 子行业：System Software（Technology）"
   },
   {
-   "source": 883241,
+   "source": 1181412,
    "target": 1653482,
    "type": "industry",
    "weight": 1,
@@ -4075,6 +3782,13 @@
    "desc": "同 GICS 子行业：System Software（Technology）"
   },
   {
+   "source": 1181412,
+   "target": 1800667,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：System Software（Technology）"
+  },
+  {
    "source": 883241,
    "target": 1800667,
    "type": "industry",
@@ -4083,7 +3797,21 @@
   },
   {
    "source": 789019,
+   "target": 1181412,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：System Software（Technology）"
+  },
+  {
+   "source": 789019,
    "target": 883241,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：System Software（Technology）"
+  },
+  {
+   "source": 883241,
+   "target": 1181412,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：System Software（Technology）"
@@ -5154,14 +4882,21 @@
   },
   {
    "source": 796343,
-   "target": 1477720,
+   "target": 2130357,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Application Svc（Technology）"
   },
   {
    "source": 796343,
-   "target": 1650372,
+   "target": 1477720,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1842566,
+   "target": 2130357,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Application Svc（Technology）"
@@ -5181,8 +4916,22 @@
    "desc": "同 GICS 子行业：Application Svc（Technology）"
   },
   {
+   "source": 1477720,
+   "target": 2130357,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
+   "source": 1650372,
+   "target": 2130357,
+   "type": "industry",
+   "weight": 1,
+   "desc": "同 GICS 子行业：Application Svc（Technology）"
+  },
+  {
    "source": 1828108,
-   "target": 1842566,
+   "target": 2130357,
    "type": "industry",
    "weight": 1,
    "desc": "同 GICS 子行业：Application Svc（Technology）"
@@ -6246,24 +5995,10 @@
   },
   {
    "source": 1326801,
-   "target": 1441816,
+   "target": 2130357,
    "type": "industry",
    "weight": 1,
-   "desc": "同分层：模型与数据平台"
-  },
-  {
-   "source": 1000184,
-   "target": 1326801,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同分层：模型与数据平台"
-  },
-  {
-   "source": 1326801,
-   "target": 1640147,
-   "type": "industry",
-   "weight": 1,
-   "desc": "同分层：模型与数据平台"
+   "desc": "同分层环节：基础模型（模型与数据平台）"
   },
   {
    "source": 1674101,
@@ -6280,5 +6015,5 @@
    "desc": "同分层环节：数据中心电力与温控（能源与电力）"
   }
  ],
- "generated_at": "2026-10-16 00:29"
+ "generated_at": "2026-11-24 01:10"
 }

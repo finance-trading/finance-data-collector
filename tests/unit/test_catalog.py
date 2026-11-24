@@ -14,7 +14,7 @@ from types import SimpleNamespace
 import pytest
 
 import fdc.catalog
-from fdc.catalog import list_companies, list_layers, load_catalog, read_quotes
+from fdc.catalog import list_companies, list_layers, load_catalog, read_quotes, read_overview
 
 
 @pytest.fixture(autouse=True)
@@ -114,6 +114,34 @@ def test_directory_includes_catalog_only_company(
     assert result.companies[0].ingestion_status == "not_ingested"
     assert result.companies[0].filing_count == 0
     assert result.companies[0].research_available is False
+
+
+def test_read_overview_aggregates_quotes_and_latest_scores(tmp_path, engine, session_factory, monkeypatch):
+    fdc.quote_store.save_payload({
+        "generated_at": "2026-11-23T15:00:00+00:00",
+        "quotes": {
+            "VRT": {"market_cap": 100, "price": 10, "change_pct": 5},
+            "NVDA": {"market_cap": 300, "price": 20, "change_pct": -4},
+            "AMD": {"market_cap": 50, "price": 5, "change_pct": 1},
+        },
+    })
+    monkeypatch.setattr(fdc.catalog, "load_overrides", lambda: {})
+    from datetime import UTC
+    with session_factory() as session:
+        session.add(CompanyQualityScore(
+            ticker="VRT", snapshot_id="s1", cik="0000000001", company_name="VRT",
+            sector="Technology", rating_cutoff=date(2026, 1, 1),
+            calculated_at=datetime(2026, 1, 1, tzinfo=UTC),
+            rule_version="CQ_V2", semantic_policy="policy", source_facts_sha256="a" * 64,
+            quality_score=Decimal("80"), score_available=True, status="OK",
+        ))
+        session.commit()
+    result = read_overview(catalog_path=_catalog_path(tmp_path), session_factory=session_factory)
+    assert result["total_companies"] == 3
+    assert result["total_market_cap"] == 450
+    assert result["gainers"][0]["ticker"] == "VRT"
+    assert result["losers"][0]["ticker"] == "NVDA"
+    assert result["avg_quality_score"] == 80
 
 
 def test_directory_latest_available_scores_are_batched(tmp_path, engine, session_factory):

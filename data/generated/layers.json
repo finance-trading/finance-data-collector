@@ -1,8 +1,8 @@
 {
- "generated_at": "2026-10-16 00:29",
+ "generated_at": "2026-11-24 01:10",
  "source": "data/ai_companies.json",
  "stats": {
-  "companies": 234,
+  "companies": 236,
   "layers": 6,
   "segments": 32,
   "cross_layer": 27
@@ -12,7 +12,7 @@
   "type": "root",
   "name": "AI 产业链",
   "name_en": "AI Value Chain",
-  "count": 234,
+  "count": 236,
   "children": [
    {
     "id": "power",
@@ -1306,14 +1306,14 @@
     "name": "算力基础设施与云",
     "name_en": "Compute Infrastructure & Cloud",
     "summary": "AI 服务器整机、数据中心网络、超大规模云与 GPU 算力租赁，把芯片转化为可售算力。",
-    "count": 42,
+    "count": 43,
     "children": [
      {
       "id": "infra/云与超大规模",
       "type": "segment",
       "name": "云与超大规模",
       "layer": "infra",
-      "count": 13,
+      "count": 14,
       "children": [
        {
         "id": "MSFT",
@@ -1557,6 +1557,21 @@
          "能源与电力"
         ],
         "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1526125"
+       },
+       {
+        "id": "SPCX",
+        "type": "company",
+        "ticker": "SPCX",
+        "name": "Space Exploration Technologies",
+        "cik": 1181412,
+        "sector": "Technology",
+        "industry": "System Software",
+        "layer": "infra",
+        "segment": "云与超大规模",
+        "description": "云厂商，组合中归入云与超大规模观察组。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1181412"
        }
       ]
      },
@@ -2047,14 +2062,14 @@
     "name": "模型与数据平台",
     "name_en": "Models & Data Platform",
     "summary": "基础大模型、数据云与 MLOps、AI 开发平台，处在算力与商业应用之间的中间层。",
-    "count": 9,
+    "count": 10,
     "children": [
      {
       "id": "model/基础模型",
       "type": "segment",
       "name": "基础模型",
       "layer": "model",
-      "count": 1,
+      "count": 2,
       "children": [
        {
         "id": "META",
@@ -2074,6 +2089,21 @@
          "算力基础设施与云"
         ],
         "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1326801"
+       },
+       {
+        "id": "ANT",
+        "type": "company",
+        "ticker": "ANT",
+        "name": "Anthropic",
+        "cik": 2130357,
+        "sector": "Technology",
+        "industry": "Application Svc",
+        "layer": "model",
+        "segment": "基础模型",
+        "description": "大模型公司，组合中归入基础模型观察组。",
+        "also_in": [],
+        "cross_in": [],
+        "edgar": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=2130357"
        }
       ]
      },

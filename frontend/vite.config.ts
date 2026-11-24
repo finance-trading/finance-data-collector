@@ -10,6 +10,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         index: resolve(root, "index.html"),
+        companies: resolve(root, "companies.html"),
         company: resolve(root, "company.html"),
         layers: resolve(root, "layers.html"),
         research: resolve(root, "research.html"),

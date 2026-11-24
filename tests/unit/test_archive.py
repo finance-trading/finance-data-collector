@@ -15,6 +15,7 @@ from pathlib import Path
 import pytest
 
 from fdc.archive import (
+    PARSER_FORMS as ARCHIVE_PARSER_FORMS,
     artifact_set_hash,
     classify_artifact,
     default_sec_root,
@@ -141,7 +142,7 @@ def test_unsupported_forms_are_skipped_explicitly(fixture_root):
 def test_none_forms_still_enforces_parser_form_contract(fixture_root):
     scan = scan_ticker_archive(fixture_root, "MSFT", None)
 
-    assert scan.forms == ("10-K", "10-K/A", "10-Q", "10-Q/A")
+    assert scan.forms == tuple(sorted(ARCHIVE_PARSER_FORMS))
     assert [filing.form for filing in scan.filings] == ["10-K", "10-Q"]
     assert [gap.form for gap in scan.skipped] == ["8-K"]
     assert all(gap.code is DiagnosticCode.UNSUPPORTED_FORM for gap in scan.skipped)

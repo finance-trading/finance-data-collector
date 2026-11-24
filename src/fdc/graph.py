@@ -34,6 +34,7 @@ import urllib.request
 from collections import Counter, defaultdict
 from pathlib import Path
 
+from fdc import catalog_store
 from fdc.data_files import CATALOG_PATH, GRAPH_PATH, write_json_artifact
 from fdc.sec_storage import CACHE_DIR
 
@@ -474,7 +475,7 @@ def main() -> None:
     ap.add_argument("--wait", type=float, default=0.3, help="seconds between EDGAR queries")
     args = ap.parse_args()
 
-    payload = json.loads(COMPANIES_PATH.read_text())
+    payload = catalog_store.load_catalog_payload()
     companies = payload["companies"]
     layer_names = {layer["id"]: layer["name"] for layer in payload.get("layers", [])}
     print(f"universe: {len(companies)} companies")

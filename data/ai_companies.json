@@ -2269,6 +2269,24 @@
    "layer": "edge",
    "segment": "自动驾驶与机器人",
    "description": "AI 机器人公司，组合中归入自动驾驶与机器人观察组。"
+  },
+  {
+   "ticker": "SPCX",
+   "name": "Space Exploration Technologies",
+   "sector": "Technology",
+   "industry": "System Software",
+   "layer": "infra",
+   "segment": "云与超大规模",
+   "description": "云厂商，组合中归入云与超大规模观察组。"
+  },
+  {
+   "ticker": "ANT",
+   "name": "Anthropic",
+   "sector": "Technology",
+   "industry": "Application Svc",
+   "layer": "model",
+   "segment": "基础模型",
+   "description": "大模型公司，组合中归入基础模型观察组。"
   }
  ]
 }
