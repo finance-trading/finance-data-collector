@@ -1,11 +1,5 @@
-import { apiGet, apiPost } from "../api/client";
-import type {
-  MarketView,
-  MoverItem,
-  NewsItemView,
-  NewsView,
-  OverviewView,
-} from "../api/types";
+import { apiGet } from "../api/client";
+import type { MarketView, MoverItem, OverviewView } from "../api/types";
 
 /** Format a USD value in T/B/M human units; null → em dash. */
 export function formatMarketCap(usd: number | null): string {
@@ -33,23 +27,6 @@ export type Polarity = "up" | "down" | "flat";
 export function polarity(pct: number | null): Polarity {
   if (pct == null || pct === 0) return "flat";
   return pct > 0 ? "up" : "down";
-}
-
-/** Compact relative time: just now / 5m / 3h / 2d / Jan 5. */
-export function relativeTime(iso: string | null, nowMs: number = Date.now()): string {
-  if (!iso) return "";
-  const then = Date.parse(iso);
-  if (Number.isNaN(then)) return "";
-  const diff = nowMs - then;
-  if (diff < 60_000) return "just now";
-  if (diff < 3_600_000) return `${Math.round(diff / 60_000)}m`;
-  if (diff < 86_400_000) return `${Math.round(diff / 3_600_000)}h`;
-  if (diff < 7 * 86_400_000) return `${Math.round(diff / 86_400_000)}d`;
-  return new Date(then).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    timeZone: "UTC",
-  });
 }
 
 /** Map a series onto a horizontal polyline. Empty when fewer than two points. */
@@ -125,6 +102,7 @@ export function buildMovers(view: OverviewView): HTMLDivElement {
   return wrap;
 }
 
+/** One broad-market index card: close, 1D change, 1W/1M ranges, and sparkline. */
 export function buildMarketCards(view: MarketView): HTMLDivElement {
   const wrap = el("div", "market-grid");
   for (const index of view.indices) {
@@ -134,6 +112,17 @@ export function buildMarketCards(view: MarketView): HTMLDivElement {
       el("div", "mc-value", index.close == null ? "—" : index.close.toLocaleString()),
       el("div", `mc-change ${polarity(index.change_pct)}`, formatPct(index.change_pct)),
     );
+
+    const ranges = el("div", "mc-ranges");
+    const range = (label: string, value: number | null | undefined) => {
+      const span = el("span", `mc-range ${polarity(value ?? null)}`, `${label} ${formatPct(value ?? null)}`);
+      ranges.append(span);
+    };
+    range("1W", index.change_1w);
+    ranges.append(document.createTextNode("  "));
+    range("1M", index.change_1m);
+    card.append(ranges);
+
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("viewBox", "0 0 120 32");
     svg.setAttribute("class", "mc-spark");
@@ -146,22 +135,6 @@ export function buildMarketCards(view: MarketView): HTMLDivElement {
     wrap.append(card);
   }
   return wrap;
-}
-
-export function buildNewsList(items: NewsItemView[]): HTMLOListElement {
-  const ol = el("ol", "news-list");
-  for (const item of items) {
-    const li = el("li", "news-item");
-    const top = el("div", "ni-top");
-    top.append(el("span", "ni-source", item.source), el("span", "ni-time", relativeTime(item.published_at)));
-    const link = el("a", "ni-title", item.title);
-    link.href = item.url;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    li.append(top, link);
-    ol.append(li);
-  }
-  return ol;
 }
 
 const STATE = "data-state";
@@ -178,26 +151,21 @@ export async function mountOverview(): Promise<void> {
   const indicators = app.querySelector<HTMLDivElement>("#overview-indicators")!;
   const movers = app.querySelector<HTMLDivElement>("#overview-movers")!;
   const market = app.querySelector<HTMLDivElement>("#overview-market")!;
-  const newsList = app.querySelector<HTMLOListElement>("#overview-news")!;
-  const newsRefresh = app.querySelector<HTMLButtonElement>("#news-refresh")!;
   const asOf = app.querySelector<HTMLParagraphElement>("#overview-as-of")!;
 
   setBusy(indicators, "Loading indicators…");
   setBusy(movers, "Loading movers…");
   setBusy(market, "Loading indices…");
-  setBusy(newsList, "Loading news…");
 
   const fail = (region: HTMLElement, message: string): void => {
     setBusy(region, message);
     region.setAttribute(STATE, "error");
-    newsRefresh.hidden = true;
   };
 
   try {
-    const [ov, mk, nw] = await Promise.all([
+    const [ov, mk] = await Promise.all([
       apiGet<OverviewView>("/api/v1/overview"),
       apiGet<MarketView>("/api/v1/market"),
-      apiGet<NewsView>("/api/v1/news", new URLSearchParams({ limit: "20" })),
     ]);
 
     indicators.replaceChildren(buildIndicatorTiles(ov));
@@ -209,32 +177,10 @@ export async function mountOverview(): Promise<void> {
 
     market.replaceChildren(buildMarketCards(mk));
     market.removeAttribute(STATE);
-
-    const renderNews = (view: NewsView) => {
-      newsList.replaceChildren(buildNewsList(view.items));
-      newsList.removeAttribute(STATE);
-      newsRefresh.hidden = false;
-    };
-    renderNews(nw);
-
-    newsRefresh.addEventListener("click", async () => {
-      newsRefresh.disabled = true;
-      newsRefresh.textContent = "Refreshing…";
-      try {
-        const refreshed = await apiPost<NewsView>("/api/v1/news/refresh");
-        renderNews(refreshed);
-      } catch {
-        fail(newsList, "News refresh failed.");
-      } finally {
-        newsRefresh.disabled = false;
-        newsRefresh.textContent = "Refresh";
-      }
-    });
   } catch {
     fail(indicators, "Overview unavailable.");
     fail(movers, "Movers unavailable.");
     fail(market, "Indices unavailable.");
-    fail(newsList, "News unavailable.");
   }
 }
 

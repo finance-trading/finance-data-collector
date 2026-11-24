@@ -12,7 +12,7 @@ def test_overview_market_and_news_routes(monkeypatch):
         "avg_quality_score": 80, "gainers": [], "losers": [],
     })
     monkeypatch.setattr(market, "read_market", lambda: {"as_of": None, "indices": []})
-    monkeypatch.setattr(news, "read_news", lambda limit: {"as_of": None, "items": []})
+    monkeypatch.setattr(news, "read_news", lambda limit, per_source=None: {"as_of": None, "items": [], "sources": []})
     monkeypatch.setattr(news, "collect", lambda: 0)
     client = TestClient(api.app)
     local = TestClient(api.app, base_url="http://127.0.0.1:8000", client=("127.0.0.1", 51515))
@@ -29,9 +29,20 @@ def test_overview_market_and_news_routes(monkeypatch):
 def test_news_limit_is_bounded(monkeypatch):
     from fdc import api, news
 
-    monkeypatch.setattr(news, "read_news", lambda limit: {"as_of": None, "items": []})
+    monkeypatch.setattr(news, "read_news", lambda limit, per_source=None: {"as_of": None, "items": [], "sources": []})
     client = TestClient(api.app)
     assert client.get("/api/v1/news?limit=0").status_code == 422
+
+
+def test_news_route_forwards_per_source(monkeypatch):
+    from fdc import api, news
+
+    calls = []
+    monkeypatch.setattr(news, "read_news", lambda limit, per_source=None:
+        calls.append((limit, per_source)) or {"as_of": None, "items": [], "sources": []})
+    client = TestClient(api.app)
+    client.get("/api/v1/news?limit=20&per_source=5")
+    assert calls == [(20, 5)]
 
 
 def test_market_and_news_endpoints_accept_injected_storage(tmp_path):
@@ -53,4 +64,4 @@ def test_market_and_news_endpoints_accept_injected_storage(tmp_path):
             collected_at=datetime.now(UTC)))
 
     assert market.read_market(factory)["indices"][0]["spark"] == [5900, 6000]
-    assert news.read_news(1, factory)["items"][0]["title"] == "Headline"
+    assert news.read_news(1, session_factory=factory)["items"][0]["title"] == "Headline"

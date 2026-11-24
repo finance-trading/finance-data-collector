@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Market news collected from multiple public sources: CNBC and Reddit.">
+  <title>Market news | Finance Data Collector</title>
+  <link rel="stylesheet" href="/src/styles/theme.css">
+  <link rel="stylesheet" href="/src/styles/index.css">
+  <link rel="stylesheet" href="/src/styles/overview.css">
+  <link rel="stylesheet" href="/src/styles/news.css">
+  <script type="module" src="/src/pages/news.ts"></script>
+</head>
+<body>
+  <a class="skip-link" href="#news-content">Skip to news</a>
+
+  <header class="site-header">
+    <a class="wordmark" href="index.html" aria-label="Finance Data Collector home">
+      <span class="wordmark-mark" aria-hidden="true">F</span>
+      <span>Finance Data Collector</span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a href="index.html"><span class="nav-full">Overview</span><span class="nav-short">Overview</span></a>
+      <a href="companies.html"><span class="nav-full">Companies</span><span class="nav-short">Companies</span></a>
+      <a href="news.html" aria-current="page"><span class="nav-full">News</span><span class="nav-short">News</span></a>
+      <a href="layers.html"><span class="nav-full">AI layers</span><span class="nav-short">Layers</span></a>
+      <a href="research.html">Research</a>
+    </nav>
+  </header>
+
+  <main id="news-content" data-news-app>
+    <div class="news-page-head">
+      <h1 class="overview-title">Market news</h1>
+      <div class="news-controls">
+        <p id="news-as-of" class="overview-as-of" role="status"></p>
+        <button id="news-refresh" class="btn-ghost" type="button">Refresh</button>
+      </div>
+    </div>
+
+    <div id="news-filters" class="news-filters" role="group" aria-label="Filter news by source"></div>
+    <div id="news-list" role="status"><p class="data-state">Loading news…</p></div>
+  </main>
+</body>
+</html>

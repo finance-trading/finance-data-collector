@@ -1,0 +1,70 @@
+/* News page. Links theme.css first; must not re-declare shared tokens. */
+
+.news-page-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 28px;
+}
+
+.news-controls {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.news-controls .overview-as-of {
+  margin: 0;
+}
+
+/* Source filter chips */
+.news-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0 4px;
+}
+
+.news-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--paper-raised);
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--fast) var(--ease), border-color var(--fast) var(--ease);
+}
+
+.news-filter-chip:hover {
+  border-color: var(--rule-strong);
+  background: var(--blue-wash);
+}
+
+.news-filter-chip[aria-pressed="true"] {
+  border-color: var(--pine);
+  background: var(--pine-wash);
+}
+
+.news-filter-chip .nf-label {
+  font-family: var(--mono);
+}
+
+.news-filter-chip .nf-count {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+}
+
+.news-filter-chip[aria-pressed="true"] .nf-count {
+  color: var(--ink);
+}
+
+@media (max-width: 640px) {
+  .news-page-head { flex-direction: column; align-items: flex-start; }
+}

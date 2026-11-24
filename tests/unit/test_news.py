@@ -65,6 +65,29 @@ def test_read_news_returns_newest_first(tmp_path):
         ])
     result = news.read_news(1, session_factory=factory)
     assert [item["id"] for item in result["items"]] == ["new"]
+    assert result["sources"] == [{"source": "A", "count": 2}]
+
+
+def test_read_news_per_source_caps_each_source(tmp_path):
+    engine = get_engine(f"sqlite:///{tmp_path / 'news-persource.db'}")
+    create_all_for_tests(engine)
+    factory = sessionmaker(engine, expire_on_commit=False)
+    now = datetime.now(UTC)
+    with factory() as session, session.begin():
+        for source in ("CNBC", "reddit/r/stocks"):
+            for index in range(3):
+                session.add(NewsItem(
+                    source=source, external_id=f"{source}-{index}", title=f"{source} {index}",
+                    url=f"https://example.test/{source}-{index}",
+                    published_at=now, collected_at=now,
+                ))
+    result = news.read_news(per_source=2, session_factory=factory)
+    by_source = {}
+    for item in result["items"]:
+        by_source[item["source"]] = by_source.get(item["source"], 0) + 1
+    # Two newest per source, and every source is represented.
+    assert by_source == {"CNBC": 2, "reddit/r/stocks": 2}
+    assert {entry["source"] for entry in result["sources"]} == {"CNBC", "reddit/r/stocks"}
 
 
 def test_parse_rss_rejects_malformed_xml():

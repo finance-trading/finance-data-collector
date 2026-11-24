@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 
 from fdc.config import get_settings
 from fdc.data_files import PROJECT_ROOT
@@ -119,13 +119,30 @@ def collect(fetch=_fetch, session_factory=SessionLocal) -> int:
     return inserted
 
 
-def read_news(limit: int = 40, session_factory=SessionLocal) -> dict[str, Any]:
+def read_news(limit: int = 40, per_source: int | None = None, session_factory=SessionLocal) -> dict[str, Any]:
     with session_factory() as session:
-        rows = session.scalars(select(NewsItem).order_by(
-            NewsItem.published_at.desc().nullslast(), NewsItem.collected_at.desc()).limit(limit)).all()
-    return {"as_of": _iso(rows[0].collected_at) if rows else None,
-            "items": [{"id": row.external_id, "title": row.title, "url": row.url,
-                       "source": row.source, "published_at": _iso(row.published_at)} for row in rows]}
+        if per_source:
+            # Cap the newest items per source so no single feed crowds out the
+            # rest: guarantees multi-source visibility on the news page.
+            rows: list[NewsItem] = []
+            for source in session.scalars(select(NewsItem.source).distinct()).all():
+                rows.extend(session.scalars(select(NewsItem).where(NewsItem.source == source).order_by(
+                    NewsItem.published_at.desc().nullslast(), NewsItem.collected_at.desc()
+                ).limit(per_source)).all())
+            rows.sort(key=lambda row: row.published_at or row.collected_at, reverse=True)
+        else:
+            rows = session.scalars(select(NewsItem).order_by(
+                NewsItem.published_at.desc().nullslast(), NewsItem.collected_at.desc()
+            ).limit(limit)).all()
+        counts = session.execute(select(NewsItem.source, func.count()).group_by(NewsItem.source)).all()
+
+    items = [{"id": row.external_id, "title": row.title, "url": row.url,
+              "source": row.source, "published_at": _iso(row.published_at)} for row in rows]
+    return {
+        "as_of": _iso(rows[0].collected_at) if rows else None,
+        "items": items,
+        "sources": [{"source": source, "count": int(count)} for source, count in counts],
+    }
 
 
 if __name__ == "__main__":

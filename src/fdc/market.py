@@ -1,7 +1,6 @@
 """Fetch and serve short history for broad-market indices."""
 from __future__ import annotations
 
-import json
 import logging
 from datetime import UTC, datetime
 from typing import Any
@@ -14,7 +13,18 @@ from fdc.models import MarketQuote
 from fdc.quotes import apply_proxy
 
 logger = logging.getLogger(__name__)
-INDICES = {"^GSPC": "S&P 500", "^IXIC": "Nasdaq Composite", "^VIX": "VIX"}
+
+#: Display order matters: broad market first, then size/sector gauges, then VIX.
+INDICES = {
+    "^GSPC": "S&P 500",
+    "^IXIC": "Nasdaq Composite",
+    "^NDX": "Nasdaq 100",
+    "^DJI": "Dow Jones",
+    "^RUT": "Russell 2000",
+    "^SOX": "PHLX Semiconductor",
+    "^VIX": "VIX",
+    "^TNX": "10Y Treasury Yield",
+}
 
 
 def _numeric(value: Any) -> float | None:
@@ -23,6 +33,22 @@ def _numeric(value: Any) -> float | None:
         return number if number == number and abs(number) != float("inf") else None
     except (TypeError, ValueError):
         return None
+
+
+def _pct(last: float, prev: float | None) -> float | None:
+    return round(((last / prev) - 1) * 100, 4) if prev else None
+
+
+def _metrics(values: list[float]) -> dict[str, Any]:
+    """Close plus 1D/1W/1M percentage change from the daily close series."""
+    close = values[-1]
+    return {
+        "close": close,
+        "change_pct": _pct(close, values[-2]) if len(values) > 1 else None,
+        "change_1w": _pct(close, values[-6]) if len(values) > 5 else None,
+        "change_1m": _pct(close, values[0]) if len(values) > 1 else None,
+        "spark": values,
+    }
 
 
 def refresh(session_factory=SessionLocal, downloader=None) -> int:
@@ -40,9 +66,7 @@ def refresh(session_factory=SessionLocal, downloader=None) -> int:
             values = [_numeric(value) for value in closes]
             values = [value for value in values if value is not None]
             if values:
-                prev = values[-2] if len(values) > 1 else values[-1]
-                change = round(((values[-1] / prev) - 1) * 100, 4) if prev else None
-                rows.append((symbol, label, {"close": values[-1], "change_pct": change, "spark": values}))
+                rows.append((symbol, label, _metrics(values)))
         except Exception:
             logger.warning("Market index fetch failed: %s", symbol, exc_info=True)
     with session_factory() as session, session.begin():
@@ -58,7 +82,9 @@ def refresh(session_factory=SessionLocal, downloader=None) -> int:
 
 def read_market(session_factory=SessionLocal) -> dict[str, Any]:
     with session_factory() as session:
-        rows = session.scalars(select(MarketQuote).order_by(MarketQuote.symbol)).all()
+        rows = session.scalars(select(MarketQuote)).all()
+    order = {symbol: position for position, symbol in enumerate(INDICES)}
+    rows = sorted(rows, key=lambda row: order.get(row.symbol, len(order)))
     return {"as_of": datetime.now(UTC).date().isoformat(), "indices": [
         {"symbol": row.symbol, "label": row.label, **row.metrics} for row in rows
     ]}

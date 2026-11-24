@@ -187,6 +187,18 @@
 .market-card .mc-change.down { color: var(--error); }
 .market-card .mc-change.flat { color: var(--muted); }
 
+.market-card .mc-ranges {
+  margin-top: 3px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.74rem;
+}
+
+.market-card .mc-range { white-space: nowrap; }
+.market-card .mc-range.up { color: var(--pine); }
+.market-card .mc-range.down { color: var(--error); }
+.market-card .mc-range.flat { color: var(--muted); }
+
 .market-card .mc-spark {
   margin-top: 12px;
   width: 100%;

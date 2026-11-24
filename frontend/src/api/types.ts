@@ -402,6 +402,10 @@ export interface MarketIndexView {
   label: string;
   close: number | null;
   change_pct: number | null;
+  /** Change over the trailing 5 sessions; null when history is too short. */
+  change_1w?: number | null;
+  /** Change over the trailing month; null when history is too short. */
+  change_1m?: number | null;
   /** Recent closes for the sparkline, oldest first. */
   spark: number[];
 }
@@ -420,8 +424,16 @@ export interface NewsItemView {
   published_at: string | null;
 }
 
+/** Per-source item counts from the collector (GET /api/v1/news). */
+export interface NewsSourceCount {
+  source: string;
+  count: number;
+}
+
 export interface NewsView {
   /** Newest collected_at among returned items; null when empty. */
   as_of: string | null;
   items: NewsItemView[];
+  /** Distinct sources present in the store with total counts. */
+  sources?: NewsSourceCount[];
 }

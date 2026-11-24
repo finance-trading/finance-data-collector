@@ -103,10 +103,13 @@ def market() -> dict[str, Any]:
 
 
 @app.get("/api/v1/news")
-def news(limit: Annotated[int, Query(ge=1, le=100)] = 40) -> dict[str, Any]:
+def news(
+    limit: Annotated[int, Query(ge=1, le=100)] = 40,
+    per_source: Annotated[int | None, Query(ge=1, le=50)] = None,
+) -> dict[str, Any]:
     from fdc.news import read_news
 
-    return _read(lambda: read_news(limit))
+    return _read(lambda: read_news(limit, per_source))
 
 
 @app.post("/api/v1/news/refresh")
