@@ -6,7 +6,6 @@ import {
   formatRefreshTime,
   mountDirectory,
   nextSort,
-  observationBandCell,
   readDirectoryState,
   renderCompanies,
   sortKeyOf,
@@ -457,7 +456,7 @@ describe("directory rendering", () => {
     );
     expect(values).toEqual(["$5,649,191M", "$97,086M", "$985.2M"]);
 
-    expect(cells[0].cellIndex).toBe(22);
+    expect(cells[0].cellIndex).toBe(21);
 
     const missing = document.querySelector(".cap-na") as HTMLElement;
     expect(missing.textContent).toBe("—");
@@ -491,10 +490,10 @@ describe("directory rendering", () => {
     // The six columns sit between price and P/E.
     expect(
       (document.querySelector('td[data-label="1W DD"]') as HTMLTableCellElement).cellIndex,
-    ).toBe(6);
+    ).toBe(5);
     expect(
       (document.querySelector('td[data-label="52W Rise"]') as HTMLTableCellElement).cellIndex,
-    ).toBe(11);
+    ).toBe(10);
 
     // A stale cache without the new keys degrades to the muted placeholder.
     const missing = document.querySelectorAll('tr td[data-label="1W DD"]')[1];
@@ -532,16 +531,16 @@ describe("directory rendering", () => {
     // The analyst target column sits after Fwd EPS; the intrinsic columns follow it.
     expect(
       (document.querySelector('td[data-label="Analyst target"]') as HTMLTableCellElement).cellIndex,
-    ).toBe(16);
+    ).toBe(15);
     expect(
       (document.querySelector('td[data-label="Intrinsic"]') as HTMLTableCellElement).cellIndex,
-    ).toBe(17);
+    ).toBe(16);
     expect(
       (document.querySelector('td[data-label="P vs IV"]') as HTMLTableCellElement).cellIndex,
-    ).toBe(18);
+    ).toBe(17);
     expect(
       (document.querySelector('td[data-label="Bull"]') as HTMLTableCellElement).cellIndex,
-    ).toBe(21);
+    ).toBe(20);
   });
 
   it("renders the analyst target column with coverage and links to the drill-down", () => {
@@ -566,54 +565,6 @@ describe("directory rendering", () => {
     const missing = document.querySelectorAll('td[data-label="Analyst target"]')[1]!;
     expect(missing.querySelector(".analyst-target-link")?.textContent).toBe("—");
     expect(missing.querySelector(".analyst-target-summary")).toBeNull();
-  });
-
-  it("starts price ranges collapsed with the recorded range count", () => {
-    const band = observationBandCell({
-      ...catalogOnlyCompany,
-      observation_range: {low: 100, high: 120},
-      entry_range: {low: null, high: null},
-      add_range: {low: 80, high: 90},
-    });
-    const disclosure = band.querySelector<HTMLDetailsElement>("details")!;
-    expect(disclosure.open).toBe(false);
-    expect(disclosure.querySelector("summary")?.textContent).toContain("2/4");
-    disclosure.open = true;
-    expect(disclosure.querySelectorAll(".range-list > div")).toHaveLength(4);
-  });
-
-  it("edits and saves the four price intervals", async () => {
-    const company = {...catalogOnlyCompany, watch_items: [], annotation_saved: false};
-    const saved = vi.spyOn(globalThis, "fetch").mockResolvedValue(
-      new Response(JSON.stringify({annotation_saved: true}), {status: 200}),
-    );
-    const band = observationBandCell(company);
-    band.querySelector<HTMLButtonElement>(".annotation-edit")!.click();
-    const inputs = band.querySelectorAll<HTMLInputElement>(".range-edit-row input");
-    inputs[0].value = "180";
-    inputs[1].value = "200";
-    const form = band.querySelector<HTMLFormElement>("form")!;
-    form.dispatchEvent(new Event("submit", {bubbles: true, cancelable: true}));
-    await vi.waitFor(() => expect(band.textContent).toContain("$180.00–$200.00"));
-    expect(JSON.parse(String(saved.mock.calls[0][1]?.body)).observation_range).toEqual({
-      low: 180, high: 200,
-    });
-    expect(company.annotation_saved).toBe(true);
-  });
-
-  it("keeps price editor open and data unchanged on save failure", async () => {
-    vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response("error", {status: 500}));
-    vi.spyOn(console, "error").mockImplementation(() => {});
-    const company = {...catalogOnlyCompany, observation_range: {low: null, high: null}};
-    const band = observationBandCell(company);
-    band.querySelector<HTMLButtonElement>(".annotation-edit")!.click();
-    const inputs = band.querySelectorAll<HTMLInputElement>(".range-edit-row input");
-    inputs[0].value = "180";
-    inputs[1].value = "200";
-    band.querySelector("form")!.dispatchEvent(new Event("submit", {bubbles: true, cancelable: true}));
-    await vi.waitFor(() => expect(band.querySelector(".annotation-error")?.textContent).toContain("保存失败"));
-    expect(company.observation_range).toEqual({low: null, high: null});
-    expect(band.querySelector("form")).not.toBeNull();
   });
 
   it("edits watch items, orders by priority, and persists deletions", async () => {

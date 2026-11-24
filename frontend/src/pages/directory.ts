@@ -4,7 +4,6 @@ import type {
   CompanyDirectoryItem,
   CompanyDirectoryView,
   FunnelTierInfo,
-  PriceRange,
   QuotesPayload,
   WatchItem,
 } from "../api/types";
@@ -141,7 +140,7 @@ function cell(label: string, className = ""): HTMLTableCellElement {
 
 const mobileDetailLabels = new Set([
   "Latest filing", "1W Rise", "1M Rise", "52W Rise", "P/E", "EPS", "Fwd P/E",
-  "Fwd EPS", "Analyst target", "Intrinsic", "P vs IV", "Bear", "Base", "Bull", "Price ranges",
+  "Fwd EPS", "Analyst target", "Intrinsic", "P vs IV", "Bear", "Base", "Bull",
 ]);
 
 /** The sort key a `*_asc`/`*_desc` state value refers to, or null for catalog order. */
@@ -285,8 +284,7 @@ export function renderCompanies(
       priceCell,
       categoryCell,
       tierCell,
-      ratioCell("Quality Score", company.quality_score),
-      dateCell,
+      ratioCell("Quality Score", company.quality_score, "quality-col"),
       changeCell("1W DD", company.week_change_pct),
       changeCell("1W Rise", company.week_rise_pct),
       changeCell("1M DD", company.month_change_pct),
@@ -304,7 +302,7 @@ export function renderCompanies(
       intrinsicCell("Base", company.scen_base),
       intrinsicCell("Bull", company.scen_bull),
       capCell,
-      observationBandCell(company),
+      dateCell,
       watchItemsCell(company),
       actionCell,
     );
@@ -338,8 +336,12 @@ function changeCell(label: string, pct: number | null | undefined): HTMLTableCel
   return element;
 }
 
-function ratioCell(label: string, value: number | null | undefined): HTMLTableCellElement {
-  const element = cell(label, "number-column ratio-cell");
+function ratioCell(
+  label: string,
+  value: number | null | undefined,
+  extraClass = "",
+): HTMLTableCellElement {
+  const element = cell(label, `number-column ratio-cell ${extraClass}`.trim());
   const span = document.createElement("span");
   span.textContent = formatRatio(value);
   element.append(span);
@@ -383,115 +385,12 @@ function analystTargetCell(company: CompanyDirectoryItem): HTMLTableCellElement 
   return element;
 }
 
-function formatUsd(value: number): string {
-  return new Intl.NumberFormat("en-US", {style: "currency", currency: "USD"}).format(value);
-}
-
-/** Four user-entered price intervals. No price is inferred from tier triggers. */
-const rangeFields = [
-  ["observation_range", "观察"],
-  ["entry_range", "建仓"],
-  ["add_range", "补仓"],
-  ["reduce_range", "减仓"],
-] as const;
-
-type RangeField = typeof rangeFields[number][0];
-
 async function saveAnnotation(company: CompanyDirectoryItem, changes: Record<string, unknown>): Promise<void> {
   await apiPost(
     `/api/v1/research/annotations/${encodeURIComponent(company.ticker)}`,
     {body: changes},
   );
   company.annotation_saved = true;
-}
-
-export function observationBandCell(company: CompanyDirectoryItem): HTMLTableCellElement {
-  const element = cell("Price ranges", "obs-cell");
-  const render = (): void => {
-    const details = document.createElement("details");
-    const summary = document.createElement("summary");
-    const recorded = rangeFields.filter(([field]) => company[field]?.low != null && company[field]?.high != null).length;
-    summary.textContent = `价格区间 (${recorded}/4)`;
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "annotation-edit";
-    button.textContent = "编辑区间";
-    button.setAttribute("aria-label", `${company.ticker} 编辑价格区间`);
-    button.addEventListener("click", edit);
-    const ranges = document.createElement("div");
-    ranges.className = "range-list";
-    for (const [field, label] of rangeFields) {
-      const band = company[field];
-      const line = document.createElement("div");
-      line.textContent = `${label}：${band?.low != null && band?.high != null ? `${formatUsd(band.low)}–${formatUsd(band.high)}` : "—"}`;
-      ranges.append(line);
-    }
-    details.append(summary, ranges, button);
-    element.replaceChildren(details);
-  };
-  const edit = (): void => {
-    const form = document.createElement("form");
-    form.className = "annotation-editor";
-    const inputs = {} as Record<RangeField, [HTMLInputElement, HTMLInputElement]>;
-    for (const [field, label] of rangeFields) {
-      const line = document.createElement("div");
-      line.className = "range-edit-row";
-      const title = document.createElement("span");
-      title.textContent = label;
-      const band = company[field];
-      const pair = (["low", "high"] as const).map((end) => {
-        const input = document.createElement("input");
-        input.type = "number";
-        input.min = "0.01";
-        input.step = "0.01";
-        input.placeholder = end === "low" ? "低" : "高";
-        input.setAttribute("aria-label", `${company.ticker} ${label}${end === "low" ? "低" : "高"}价`);
-        input.value = band?.[end] == null ? "" : String(band[end]);
-        return input;
-      }) as [HTMLInputElement, HTMLInputElement];
-      inputs[field] = pair;
-      line.append(title, pair[0], pair[1]);
-      form.append(line);
-    }
-    const save = document.createElement("button");
-    save.type = "submit";
-    save.textContent = "保存";
-    const cancel = document.createElement("button");
-    cancel.type = "button";
-    cancel.textContent = "取消";
-    cancel.addEventListener("click", render);
-    const error = document.createElement("span");
-    error.className = "annotation-error";
-    error.setAttribute("role", "alert");
-    form.append(save, cancel, error);
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const ranges = {} as Record<RangeField, PriceRange>;
-      for (const [field] of rangeFields) {
-        const [low, high] = inputs[field];
-        if (Boolean(low.value) !== Boolean(high.value) || (low.value && (+low.value > +high.value || +low.value <= 0))) {
-          error.textContent = "请填写完整且有效的区间（低价 ≤ 高价）";
-          return;
-        }
-        ranges[field] = {low: low.value ? +low.value : null, high: high.value ? +high.value : null};
-      }
-      const controls = form.querySelectorAll<HTMLInputElement | HTMLButtonElement>("input, button");
-      controls.forEach((control) => { control.disabled = true; });
-      try {
-        await saveAnnotation(company, ranges);
-        Object.assign(company, ranges);
-        render();
-      } catch (cause) {
-        console.error(cause);
-        error.textContent = "保存失败，请重试";
-        controls.forEach((control) => { control.disabled = false; });
-      }
-    });
-    element.replaceChildren(form);
-    inputs.observation_range[0].focus();
-  };
-  render();
-  return element;
 }
 
 /** Editable company watch items, P1 high → P3 low; labels supplement color. */

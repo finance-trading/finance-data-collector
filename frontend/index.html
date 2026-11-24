@@ -108,8 +108,7 @@
               </th>
               <th scope="col">AI layer</th>
               <th scope="col">Tier</th>
-              <th scope="col" class="number-column">Quality Score</th>
-              <th scope="col">Latest filing</th>
+              <th scope="col" class="number-column quality-col" title="Company quality score (0-100)">Quality</th>
               <th scope="col" class="number-column change-col"
                   data-sort-column="week_change_pct" aria-sort="none">
                 <button type="button" class="sort-button" data-sort="week_change_pct"
@@ -183,23 +182,14 @@
                   <span class="sort-indicator" aria-hidden="true"></span>
                 </button>
               </th>
-              <th scope="col" class="price-range-col">
-                Price ranges
-                <button type="button" class="price-range-help" popovertarget="price-range-note"
-                        aria-label="About price ranges"><span aria-hidden="true">?</span></button>
-                <div id="price-range-note" popover>
-                  <strong>Manual price ranges (USD per share)</strong>
-                  <p>观察: price to start or continue watching. 建仓: initial position. 补仓: add to an existing position. 减仓: reduce an existing position.</p>
-                  <p>Each range has a low and high price. A blank range means no validated price band has been recorded. These are research notes, not trade authorization.</p>
-                </div>
-              </th>
+              <th scope="col">Latest filing</th>
               <th scope="col">Watch items</th>
               <th scope="col"><span class="visually-hidden">Open filing workspace</span></th>
             </tr>
           </thead>
           <tbody id="company-directory-body">
             <tr class="loading-row">
-              <td colspan="22">Loading companies…</td>
+              <td colspan="25">Loading companies…</td>
             </tr>
           </tbody>
         </table>
