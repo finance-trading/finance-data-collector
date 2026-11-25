@@ -20,11 +20,15 @@ def test_binance_daily_closes_parses_kline_closes():
     assert closes == [100.0, 102.0]
 
 
-def test_binance_uses_default_usdt_alias_and_override():
-    # Default alias: BTC-USD -> BTCUSDT.
-    assert "BTCUSDT" in binance_daily_closes("BTC-USD", fetch=lambda url: json.dumps(KLINE).encode()) or True
-    got = binance_daily_closes("BTC-USD", fetch=lambda url: json.dumps(KLINE).encode())
-    assert got == [100.0, 102.0]
+def test_binance_uses_default_usdt_alias():
+    urls: list[str] = []
+
+    def fetch(url):
+        urls.append(url)
+        return json.dumps(KLINE).encode()
+
+    assert binance_daily_closes("BTC-USD", fetch=fetch) == [100.0, 102.0]
+    assert "symbol=BTCUSDT" in urls[0]
 
 
 def test_binance_returns_none_on_bad_payload():
@@ -47,6 +51,68 @@ def test_fallback_routes_crypto_to_binance_and_rest_to_twelvedata():
     assert fallback_closes("BTC-USD", "crypto",
                            fetch=lambda url: json.dumps(KLINE).encode()) == [100.0, 102.0]
     assert fallback_closes("^GSPC", "us", fetch=lambda url: b"{}") is None
+
+
+def test_committed_twelvedata_aliases_are_valid_and_routed():
+    """The checked-in alias map stays parseable, and each alias actually
+    redirects the request URL (so a stale alias can't silently 404)."""
+    from fdc.data_files import PROJECT_ROOT
+
+    raw = json.loads((PROJECT_ROOT / "config" / "market_sources.json").read_text())
+    aliases = raw["twelvedata_symbols"]
+    # Only symbols verified to return data on the free Community tier are listed;
+    # everything that 404s is deliberately omitted (it would just waste calls).
+    assert aliases["DX-Y.NYB"] == "DX"
+    assert aliases["CL=F"] == "WTI"
+
+    captured: list[str] = []
+    payload = {"values": [{"close": "1"}]}
+
+    def fetch_and_captures(url: str) -> bytes:
+        captured.append(url)
+        return json.dumps(payload).encode()
+
+    for yahoo in aliases:
+        twelvedata_daily_closes(yahoo, fetch=fetch_and_captures, api_key="k")
+    # The request URL must carry the aliased symbol, not the Yahoo one.
+    assert any("symbol=DX" in u for u in captured)
+    assert any("symbol=WTI" in u for u in captured)
+    assert not any("DX-Y.NYB" in u for u in captured)
+
+
+
+def test_fallback_skips_unaliased_special_symbols():
+    """Unlisted Yahoo symbols must not reach TwelveData: it fuzzy-resolves
+    some of them to a different instrument (CL=F returned natural gas before
+    the WTI alias existed), which would overwrite the card with wrong data."""
+    calls: list[str] = []
+
+    def fetch(url):
+        calls.append(url)
+        return json.dumps({"values": [{"close": "1"}]}).encode()
+
+    assert fallback_closes("GC=F", "commodity", fetch=fetch) is None
+    assert fallback_closes("^GSPC", "us", fetch=fetch) is None
+    assert fallback_closes("^TNX", "macro", fetch=fetch) is None
+    assert calls == []
+
+
+def test_fallback_queries_twelvedata_for_aliased_and_plain_symbols(monkeypatch):
+    from types import SimpleNamespace
+
+    monkeypatch.setattr("fdc.market_sources.get_settings",
+                        lambda: SimpleNamespace(twelvedata_api_key="k"))
+    urls: list[str] = []
+    payload = {"values": [{"close": "60.0"}]}
+
+    def fetch(url):
+        urls.append(url)
+        return json.dumps(payload).encode()
+
+    assert fallback_closes("CL=F", "commodity", fetch=fetch) == [60.0]
+    assert "symbol=WTI" in urls[0]
+    assert fallback_closes("XLK", "sector", fetch=fetch) == [60.0]
+    assert "symbol=XLK" in urls[1]
 
 
 def test_refresh_falls_back_for_crypto_when_yfinance_fails(tmp_path, monkeypatch):

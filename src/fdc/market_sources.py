@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 import urllib.parse
 import urllib.request
 
@@ -106,6 +107,10 @@ def twelvedata_daily_closes(
         return None
 
 
+#: Plain ticker (US ETF/stock): safe to send to TwelveData as-is.
+_PLAIN_TICKER = re.compile(r"^[A-Z]{1,5}$")
+
+
 def fallback_closes(
     symbol: str, category: str, days: int = 30, fetch=_get,
 ) -> list[float] | None:
@@ -113,7 +118,13 @@ def fallback_closes(
 
     Crypto resolves to Binance (no key needed); every other category resolves
     to TwelveData (free key, inactive until ``FDC_TWELVEDATA_API_KEY`` is set).
+    TwelveData only gets plain tickers and explicitly aliased symbols: for an
+    unknown Yahoo-style symbol it may fuzzy-resolve to an unrelated instrument
+    (CL=F returned natural-gas closes before the WTI alias existed).
     """
     if category == "crypto":
         return binance_daily_closes(symbol, days, fetch)
+    aliases = _load_sources().get("twelvedata_symbols", {})
+    if symbol not in aliases and not _PLAIN_TICKER.match(symbol):
+        return None
     return twelvedata_daily_closes(symbol, days, fetch)

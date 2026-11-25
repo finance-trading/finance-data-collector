@@ -252,3 +252,4 @@ frontend/tests/
 reports/
 sec/
 sec_archive/
+.env*
