@@ -34,6 +34,7 @@ from yfinance.config import YfConfig
 
 from fdc import analyst, catalog_store, quote_store
 from fdc.config import get_settings
+from fdc.netutil import proxy_reachable
 
 logger = logging.getLogger(__name__)
 
@@ -48,15 +49,21 @@ def _redact(proxy: str) -> str:
 
 
 def apply_proxy() -> str | None:
-    """Route yfinance through the configured proxy, if there is one.
+    """Route yfinance through the configured proxy, when that proxy is up.
 
     yfinance talks to Yahoo over curl_cffi, which ignores ``HTTPS_PROXY``, so
     its own network config is the only supported hook.  Yahoo's ATS edge
     answers datacenter egress with HTTP 429 before any request reaches the
-    API; a proxy is the only way to change the source address.
+    API; a proxy is the only way to change the source address.  A configured
+    proxy that is not actually running (Clash stopped on the laptop) is
+    detected by a short probe and skipped, so fetches fall back to direct
+    egress instead of failing fast with "connection refused".
     """
 
     proxy = get_settings().resolved_quotes_proxy
+    if proxy and not proxy_reachable(proxy):
+        logger.warning("configured proxy %s is unreachable — using direct egress", _redact(proxy))
+        proxy = None
     YfConfig.network.proxy = proxy
     if proxy:
         logger.info("routing Yahoo Finance through proxy %s", _redact(proxy))

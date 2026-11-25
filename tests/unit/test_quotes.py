@@ -273,6 +273,7 @@ def test_apply_proxy_uses_configured_proxy_and_hides_credentials(
             resolved_finviz_api_key=None,
         ),
     )
+    monkeypatch.setattr(quotes, "proxy_reachable", lambda proxy, timeout=1.0: True)
 
     with caplog.at_level(logging.INFO):
         assert quotes.apply_proxy() == "socks5://user:secret@proxy.example:1080"
@@ -280,6 +281,29 @@ def test_apply_proxy_uses_configured_proxy_and_hides_credentials(
     assert YfConfig.network.proxy == "socks5://user:secret@proxy.example:1080"
     assert "secret" not in caplog.text
     assert "socks5://proxy.example:1080" in caplog.text
+
+
+def test_apply_proxy_falls_back_to_direct_when_proxy_is_down(
+    monkeypatch, caplog
+):
+    """A configured proxy that is not actually running must not be used:
+    Clash stopped on the laptop must not make every fetch fail fast."""
+    monkeypatch.setattr(YfConfig.network, "proxy", "http://stale:1", raising=False)
+    monkeypatch.setattr(
+        quotes,
+        "get_settings",
+        lambda: SimpleNamespace(
+            resolved_quotes_proxy="socks5://user:secret@proxy.example:1080",
+            resolved_finviz_api_key=None,
+        ),
+    )
+    monkeypatch.setattr(quotes, "proxy_reachable", lambda proxy, timeout=1.0: False)
+
+    with caplog.at_level(logging.WARNING):
+        assert quotes.apply_proxy() is None
+    assert YfConfig.network.proxy is None
+    assert "unreachable" in caplog.text
+    assert "secret" not in caplog.text
 
 
 def test_apply_proxy_clears_the_proxy_when_unset(monkeypatch):
@@ -304,6 +328,7 @@ def test_fetch_quotes_applies_the_proxy_before_downloading(monkeypatch):
             resolved_quotes_proxy="http://p:1", resolved_finviz_api_key=None
         ),
     )
+    monkeypatch.setattr(quotes, "proxy_reachable", lambda proxy, timeout=1.0: True)
     monkeypatch.setattr(quotes, "_load_tickers", lambda: [])
 
     def fake_download(tickers, **kwargs):

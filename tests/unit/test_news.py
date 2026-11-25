@@ -1,11 +1,103 @@
 from datetime import UTC, datetime
 import json
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from types import SimpleNamespace
+import threading
 from sqlalchemy.orm import sessionmaker
 
 from fdc import news
 from fdc.db import get_engine
 from fdc.models import NewsItem, create_all_for_tests
 from fdc.news import parse_reddit, parse_rss
+
+
+def _make_handler(body: bytes):
+    class H(BaseHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+
+        def log_message(self, *args):
+            pass
+
+    return H
+
+
+def test_fetch_falls_back_to_direct_when_configured_proxy_is_down(tmp_path, monkeypatch):
+    """A configured but stopped Clash proxy must not block a direct fetch."""
+    body = b'{"data":{"children":[]}}'
+    server = ThreadingHTTPServer(("127.0.0.1", 0), _make_handler(body))
+    port = server.server_address[1]
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        # Port 1 is reserved and down: models "Clash stopped".
+        monkeypatch.setattr(
+            news, "get_settings",
+            lambda: SimpleNamespace(resolved_quotes_proxy="http://127.0.0.1:1"),
+        )
+        raw = news._fetch(f"http://127.0.0.1:{port}")
+        assert raw == body
+    finally:
+        server.shutdown()
+
+
+def test_fetch_direct_bypasses_environment_proxy(tmp_path, monkeypatch):
+    """.env injects HTTP(S)_PROXY; a direct fetch must bypass it."""
+    body = b'{"ok": true}'
+    server = ThreadingHTTPServer(("127.0.0.1", 0), _make_handler(body))
+    port = server.server_address[1]
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        monkeypatch.setenv("http_proxy", "http://127.0.0.1:1")
+        monkeypatch.setenv("https_proxy", "http://127.0.0.1:1")
+        monkeypatch.setattr(news, "get_settings", lambda: SimpleNamespace(resolved_quotes_proxy=None))
+        assert news._fetch(f"http://127.0.0.1:{port}/") == body
+    finally:
+        server.shutdown()
+
+
+def test_read_news_reports_all_configured_sources_even_when_empty(tmp_path, monkeypatch):
+    """The page must show every configured source; a blocked feed reports 0."""
+    engine = get_engine(f"sqlite:///{tmp_path / 'news-cfg.db'}")
+    create_all_for_tests(engine)
+    factory = sessionmaker(engine, expire_on_commit=False)
+    monkeypatch.setattr(news, "FEEDS_PATH", tmp_path / "feeds.json")
+    (tmp_path / "feeds.json").write_text(json.dumps([
+        {"label": "CNBC", "kind": "rss", "url": "https://example.test/a", "enabled": True},
+        {"label": "reddit/r/stocks", "kind": "reddit_json", "url": "https://example.test/b", "enabled": True},
+    ]))
+    now = datetime.now(UTC)
+    with factory() as session, session.begin():
+        session.add(NewsItem(source="CNBC", external_id="n1", title="Headline",
+            url="https://example.test/n1", published_at=now, collected_at=now))
+    result = news.read_news(per_source=5, session_factory=factory)
+    assert {entry["source"]: entry["count"] for entry in result["sources"]} == {
+        "CNBC": 1, "reddit/r/stocks": 0,
+    }
+
+
+def test_select_proxy_prefers_reachable_configured_proxy(tmp_path, monkeypatch):
+    monkeypatch.setattr(
+        news, "get_settings",
+        lambda: SimpleNamespace(resolved_quotes_proxy="http://10.1.1.1:7890"),
+    )
+    monkeypatch.setattr(news, "proxy_reachable", lambda proxy, timeout=1.0: True)
+    assert news._select_proxy() == "http://10.1.1.1:7890"
+
+
+def test_select_proxy_returns_none_when_proxy_unreachable(tmp_path, monkeypatch):
+    monkeypatch.setattr(
+        news, "get_settings",
+        lambda: SimpleNamespace(resolved_quotes_proxy="http://10.1.1.1:7890"),
+    )
+    monkeypatch.setattr(news, "proxy_reachable", lambda proxy, timeout=1.0: False)
+    assert news._select_proxy() is None
+
 
 
 
@@ -51,7 +143,8 @@ def test_collect_deduplicates_news_across_runs(tmp_path, monkeypatch):
         assert session.query(NewsItem).count() == 1
 
 
-def test_read_news_returns_newest_first(tmp_path):
+def test_read_news_returns_newest_first(tmp_path, monkeypatch):
+    monkeypatch.setattr(news, "_configured_sources", lambda: [])
     engine = get_engine(f"sqlite:///{tmp_path / 'news-read.db'}")
     create_all_for_tests(engine)
     factory = sessionmaker(engine, expire_on_commit=False)
@@ -68,7 +161,8 @@ def test_read_news_returns_newest_first(tmp_path):
     assert result["sources"] == [{"source": "A", "count": 2}]
 
 
-def test_read_news_per_source_caps_each_source(tmp_path):
+def test_read_news_per_source_caps_each_source(tmp_path, monkeypatch):
+    monkeypatch.setattr(news, "_configured_sources", lambda: [])
     engine = get_engine(f"sqlite:///{tmp_path / 'news-persource.db'}")
     create_all_for_tests(engine)
     factory = sessionmaker(engine, expire_on_commit=False)

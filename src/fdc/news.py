@@ -17,6 +17,7 @@ from fdc.config import get_settings
 from fdc.data_files import PROJECT_ROOT
 from fdc.db import SessionLocal
 from fdc.models import NewsItem
+from fdc.netutil import proxy_reachable
 
 logger = logging.getLogger(__name__)
 FEEDS_PATH = PROJECT_ROOT / "config" / "news_feeds.json"
@@ -79,16 +80,33 @@ def _feeds() -> list[dict[str, Any]]:
     return [feed for feed in feeds if isinstance(feed, dict) and feed.get("enabled", True)]
 
 
+def _select_proxy() -> str | None:
+    """Return the configured proxy only if it is actually running.
+
+    The .env pins ``HTTPS_PROXY`` at the local Clash port; when Clash is
+    stopped every fetch routed through it fails with "connection refused", so
+    we probe the port and fall back to direct egress when it is down.
+    """
+
+    proxy = get_settings().resolved_quotes_proxy
+    if proxy and proxy_reachable(proxy):
+        return proxy
+    return None
+
+
 def _fetch(url: str) -> bytes:
     # CNBC's edge answers a generic/bot User-Agent with 403; a browser UA is
     # required. Reddit blocks datacenter egress, so route via the proxy too.
     headers = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"}
     request = urllib.request.Request(url, headers=headers)
-    proxy = get_settings().resolved_quotes_proxy
+    proxy = _select_proxy()
     if proxy:
         opener = urllib.request.build_opener(urllib.request.ProxyHandler({"http": proxy, "https": proxy}))
     else:
-        opener = urllib.request.build_opener()
+        # An explicit empty ProxyHandler overrides the HTTPS_PROXY that .env
+        # injects into the process; otherwise "direct" would still be routed
+        # through a stopped Clash and fail with connection-refused.
+        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
     with opener.open(request, timeout=20) as response:
         return response.read(2_000_000)
 
@@ -119,6 +137,16 @@ def collect(fetch=_fetch, session_factory=SessionLocal) -> int:
     return inserted
 
 
+def _configured_sources() -> list[str]:
+    """Feed labels from the config, in declared order (for the news page)."""
+    labels: list[str] = []
+    for feed in _feeds():
+        label = str(feed.get("label") or "").strip()
+        if label and label not in labels:
+            labels.append(label)
+    return labels
+
+
 def read_news(limit: int = 40, per_source: int | None = None, session_factory=SessionLocal) -> dict[str, Any]:
     with session_factory() as session:
         if per_source:
@@ -134,14 +162,20 @@ def read_news(limit: int = 40, per_source: int | None = None, session_factory=Se
             rows = session.scalars(select(NewsItem).order_by(
                 NewsItem.published_at.desc().nullslast(), NewsItem.collected_at.desc()
             ).limit(limit)).all()
-        counts = session.execute(select(NewsItem.source, func.count()).group_by(NewsItem.source)).all()
+        counts = dict(session.execute(select(NewsItem.source, func.count()).group_by(NewsItem.source)).all())
 
+    # Merge configured sources (even blocked ones, at 0) with stored counts so
+    # the page always shows the full multi-source set.
+    ordered = _configured_sources()
+    for source in counts:
+        if source not in ordered:
+            ordered.append(source)
     items = [{"id": row.external_id, "title": row.title, "url": row.url,
               "source": row.source, "published_at": _iso(row.published_at)} for row in rows]
     return {
         "as_of": _iso(rows[0].collected_at) if rows else None,
         "items": items,
-        "sources": [{"source": source, "count": int(count)} for source, count in counts],
+        "sources": [{"source": source, "count": int(counts.get(source, 0))} for source in ordered],
     }
 
 

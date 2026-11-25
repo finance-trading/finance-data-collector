@@ -6,6 +6,18 @@
     "enabled": true
   },
   {
+    "label": "Bloomberg",
+    "kind": "rss",
+    "url": "https://feeds.bloomberg.com/markets/news.rss",
+    "enabled": true
+  },
+  {
+    "label": "Google News · AI",
+    "kind": "rss",
+    "url": "https://news.google.com/rss/search?q=AI+stocks&hl=en-US&gl=US&ceid=US:en",
+    "enabled": true
+  },
+  {
     "label": "reddit/r/financialnews",
     "kind": "reddit_json",
     "url": "https://www.reddit.com/r/financialnews/hot.json?limit=20",
