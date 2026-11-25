@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+
 from sqlalchemy.orm import sessionmaker
 
 from fdc.db import get_engine
@@ -53,38 +54,51 @@ def test_fallback_routes_crypto_to_binance_and_rest_to_twelvedata():
     assert fallback_closes("^GSPC", "us", fetch=lambda url: b"{}") is None
 
 
-def test_committed_twelvedata_aliases_are_valid_and_routed():
-    """The checked-in alias map stays parseable, and each alias actually
-    redirects the request URL (so a stale alias can't silently 404)."""
+def test_fallback_queries_twelvedata_for_plain_tickers(monkeypatch):
+    from types import SimpleNamespace
+
+    monkeypatch.setattr("fdc.market_sources.get_settings",
+                        lambda: SimpleNamespace(twelvedata_api_key="k"))
+    urls: list[str] = []
+    payload = {"values": [{"close": "190.0"}]}
+
+    def fetch(url):
+        urls.append(url)
+        return json.dumps(payload).encode()
+
+    assert fallback_closes("XLK", "sector", fetch=fetch) == [190.0]
+    assert "symbol=XLK" in urls[0]
+
+
+def test_fallback_routes_explicit_aliases(monkeypatch):
+    """An alias, when configured, replaces the Yahoo symbol in the request."""
+    from types import SimpleNamespace
+
+    monkeypatch.setattr("fdc.market_sources.get_settings",
+                        lambda: SimpleNamespace(twelvedata_api_key="k"))
+    monkeypatch.setattr("fdc.market_sources._load_sources",
+                        lambda: {"twelvedata_symbols": {"^GSPC": "SPY"}})
+    urls: list[str] = []
+
+    def fetch(url):
+        urls.append(url)
+        return json.dumps({"values": [{"close": "600.0"}]}).encode()
+
+    assert fallback_closes("^GSPC", "us", fetch=fetch) == [600.0]
+    assert "symbol=SPY" in urls[0]
+
+
+def test_committed_alias_config_stays_parseable():
     from fdc.data_files import PROJECT_ROOT
 
     raw = json.loads((PROJECT_ROOT / "config" / "market_sources.json").read_text())
-    aliases = raw["twelvedata_symbols"]
-    # Only symbols verified to return data on the free Community tier are listed;
-    # everything that 404s is deliberately omitted (it would just waste calls).
-    assert aliases["DX-Y.NYB"] == "DX"
-    assert aliases["CL=F"] == "WTI"
-
-    captured: list[str] = []
-    payload = {"values": [{"close": "1"}]}
-
-    def fetch_and_captures(url: str) -> bytes:
-        captured.append(url)
-        return json.dumps(payload).encode()
-
-    for yahoo in aliases:
-        twelvedata_daily_closes(yahoo, fetch=fetch_and_captures, api_key="k")
-    # The request URL must carry the aliased symbol, not the Yahoo one.
-    assert any("symbol=DX" in u for u in captured)
-    assert any("symbol=WTI" in u for u in captured)
-    assert not any("DX-Y.NYB" in u for u in captured)
-
+    assert isinstance(raw.get("twelvedata_symbols", {}), dict)
 
 
 def test_fallback_skips_unaliased_special_symbols():
-    """Unlisted Yahoo symbols must not reach TwelveData: it fuzzy-resolves
-    some of them to a different instrument (CL=F returned natural gas before
-    the WTI alias existed), which would overwrite the card with wrong data."""
+    """Unlisted Yahoo symbols must not reach TwelveData: short letter aliases
+    it resolves to unrelated equities (WTI, DX are stock tickers), which would
+    overwrite the card with wrong data."""
     calls: list[str] = []
 
     def fetch(url):
@@ -95,24 +109,6 @@ def test_fallback_skips_unaliased_special_symbols():
     assert fallback_closes("^GSPC", "us", fetch=fetch) is None
     assert fallback_closes("^TNX", "macro", fetch=fetch) is None
     assert calls == []
-
-
-def test_fallback_queries_twelvedata_for_aliased_and_plain_symbols(monkeypatch):
-    from types import SimpleNamespace
-
-    monkeypatch.setattr("fdc.market_sources.get_settings",
-                        lambda: SimpleNamespace(twelvedata_api_key="k"))
-    urls: list[str] = []
-    payload = {"values": [{"close": "60.0"}]}
-
-    def fetch(url):
-        urls.append(url)
-        return json.dumps(payload).encode()
-
-    assert fallback_closes("CL=F", "commodity", fetch=fetch) == [60.0]
-    assert "symbol=WTI" in urls[0]
-    assert fallback_closes("XLK", "sector", fetch=fetch) == [60.0]
-    assert "symbol=XLK" in urls[1]
 
 
 def test_refresh_falls_back_for_crypto_when_yfinance_fails(tmp_path, monkeypatch):

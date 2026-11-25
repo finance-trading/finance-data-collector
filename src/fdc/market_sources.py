@@ -99,7 +99,9 @@ def twelvedata_daily_closes(
         values = payload.get("values") or []
         closes = [float(v["close"]) for v in values if v.get("close") not in (None, "")]
         if not closes:
-            logger.warning("TwelveData returned no closes for %s (%s)", alias, payload.get("status"))
+            logger.warning(
+                "TwelveData returned no closes for %s (%s)", alias, payload.get("status"),
+            )
             return None
         return closes
     except Exception:

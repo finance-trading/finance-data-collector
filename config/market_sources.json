@@ -1,9 +1,6 @@
 {
   "_comment": "Symbol aliases for the market fallbacks. Omit an entry to use the built-in default.",
-  "_twelvedata_note": "Only these resolve on the free 'Community' tier (verified 2026-11-24). ETFs (XLK/XLF/XLE/KWEB) work with their own symbol, so no alias is needed for them. The index/rate/fx/commodity series (^GSPC, ^IXIC, ^TNX, GC=F, ...) are not on the Community tier and 404; they keep their last known values until a Yahoo proxy is available.",
+  "_twelvedata_note": "Only plain US ETF/stock tickers resolve to the intended instrument on the free 'Community' tier (XLK/XLF/XLE/KWEB verified 2026-11-24). Index/rate/fx/commodity series (^GSPC, ^TNX, GC=F, DX-Y.NYB, CL=F, ...) are not on the Community tier; do NOT alias them to short letters — 'WTI' and 'DX' are stock tickers and silently return unrelated equity data. Unaliased symbols keep their last known values until a working Yahoo proxy is available.",
   "crypto_binance": {},
-  "twelvedata_symbols": {
-    "DX-Y.NYB": "DX",
-    "CL=F": "WTI"
-  }
+  "twelvedata_symbols": {}
 }
