@@ -2,9 +2,11 @@ import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 
 import {
   buildIndicatorTiles,
-  buildMarketCards,
+  buildMarketSections,
   buildMovers,
+  formatDayChange,
   formatMarketCap,
+  formatMarketValue,
   formatPct,
   formatScore,
   mountOverview,
@@ -33,9 +35,16 @@ const overview: OverviewView = {
 
 const market: MarketView = {
   as_of: "2026-11-23",
+  categories: [
+    { id: "us", label: "US Broad Market" },
+    { id: "macro", label: "Rates, Volatility & Dollar" },
+    { id: "crypto", label: "Crypto" },
+  ],
   indices: [
-    { symbol: "^GSPC", label: "S&P 500", close: 6123.4, change_pct: 0.5, change_1w: -1.2, change_1m: 4.8, spark: [6100, 6120, 6123.4] },
-    { symbol: "^VIX", label: "VIX", close: 14.2, change_pct: -1.1, change_1w: null, change_1m: -8.0, spark: [16, 15, 14.2] },
+    { symbol: "^GSPC", label: "S&P 500", category: "us", unit: "index", close: 6123.4, change: 31.2, change_pct: 0.5, change_1w: -1.2, change_1m: 4.8, high_1m: 6210, low_1m: 5890, spark: [6100, 6120, 6123.4] },
+    { symbol: "^VIX", label: "VIX", category: "macro", unit: "index", close: 14.2, change: -0.16, change_pct: -1.1, change_1w: null, change_1m: -8.0, spark: [16, 15, 14.2] },
+    { symbol: "^TNX", label: "10Y Treasury Yield", category: "macro", unit: "pct", close: 4.052, change: 0.048, change_pct: 1.2, high_1m: 4.2, low_1m: 3.9, spark: [3.9, 4.0, 4.052] },
+    { symbol: "BTC-USD", label: "Bitcoin", category: "crypto", unit: "usd", close: 95000, change: 437, change_pct: 0.5, high_1m: 100000, low_1m: 88000, spark: [90000, 95000] },
   ],
 };
 
@@ -104,16 +113,57 @@ describe("buildMovers", () => {
   });
 });
 
-describe("buildMarketCards", () => {
-  it("renders a card with 1W/1M ranges and a sparkline per index", () => {
-    const wrap = buildMarketCards(market);
-    expect(wrap.querySelectorAll(".market-card").length).toBe(2);
-    expect(wrap.querySelectorAll(".market-card polyline").length).toBe(2);
+describe("market value formatting", () => {
+  it("formats index, yield, and USD values by unit", () => {
+    expect(formatMarketValue(null, "index")).toBe("—");
+    expect(formatMarketValue(6123.4, "index")).toBe("6,123.4");
+    expect(formatMarketValue(4.052, "pct")).toBe("4.05%");
+    expect(formatMarketValue(4123.45, "usd")).toBe("$4,123");
+    expect(formatMarketValue(5.1234, "usd")).toBe("$5.12");
+    expect(formatMarketValue(95000, "usd")).toBe("$95,000");
+  });
+
+  it("renders day change as absolute plus percent, and percent-only for yields", () => {
+    expect(formatDayChange(market.indices[0])).toBe("+31.2 (+0.5%)");
+    expect(formatDayChange(market.indices[1])).toBe("-0.16 (-1.1%)");
+    expect(formatDayChange(market.indices[2])).toBe("+0.05");
+    expect(formatDayChange(market.indices[3])).toBe("+$437 (+0.5%)");
+  });
+
+  it("falls back to the percent when an older row has no absolute change", () => {
+    const legacy = { ...market.indices[0], change: undefined };
+    expect(formatDayChange(legacy)).toBe("+0.5%");
+    expect(formatDayChange({ ...legacy, change_pct: null })).toBe("—");
+  });
+});
+
+describe("buildMarketSections", () => {
+  it("groups cards under one section per category in server order", () => {
+    const wrap = buildMarketSections(market);
+    const sections = [...wrap.querySelectorAll<HTMLElement>(".market-section")];
+    expect(sections.map((s) => s.querySelector("h3")?.textContent)).toEqual([
+      "US Broad Market",
+      "Rates, Volatility & Dollar",
+      "Crypto",
+    ]);
+    expect(sections.map((s) => s.querySelectorAll(".market-card").length)).toEqual([1, 2, 1]);
+    expect(wrap.querySelectorAll(".market-card polyline").length).toBe(4);
     expect(wrap.textContent).toContain("S&P 500");
     expect(wrap.textContent).toContain("1W -1.2%");
     expect(wrap.textContent).toContain("1M +4.8%");
     // null 1W renders an em dash rather than a number.
     expect(wrap.textContent).toContain("1W —");
+  });
+
+  it("shows the symbol, unit-aware value, and 1M range per card", () => {
+    const wrap = buildMarketSections(market);
+    const cards = [...wrap.querySelectorAll<HTMLElement>(".market-card")];
+    expect(cards[0].querySelector(".mc-symbol")?.textContent).toBe("^GSPC");
+    expect(cards[0].querySelector(".mc-value")?.textContent).toBe("6,123.4");
+    expect(cards[0].querySelector(".mc-change")?.textContent).toBe("+31.2 (+0.5%)");
+    expect(cards[0].getAttribute("title")).toContain("1M range 5,890 – 6,210");
+    expect(cards[2].querySelector(".mc-value")?.textContent).toBe("4.05%");
+    expect(cards[3].querySelector(".mc-value")?.textContent).toBe("$95,000");
   });
 });
 
@@ -149,7 +199,7 @@ describe("mountOverview", () => {
     await mountOverview();
 
     expect(document.querySelector("#overview-indicators .indicator-tile")).toBeTruthy();
-    expect(document.querySelectorAll("#overview-market .market-card").length).toBe(2);
+    expect(document.querySelectorAll("#overview-market .market-card").length).toBe(4);
     expect(document.querySelector("#overview-as-of")?.textContent).toContain("2026-11-23");
   });
 

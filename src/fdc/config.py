@@ -38,6 +38,10 @@ class Settings(BaseSettings):
     #: Finviz Elite API token for the official quote-export endpoint. ``None``
     #: falls back to scraping the public quote pages. ``FDC_FINVIZ_API_KEY``.
     finviz_api_key: str | None = None
+    #: TwelveData free-tier key used as a keyless-market fallback for the
+    #: non-crypto index series when Yahoo is unavailable. ``None`` leaves the
+    #: fallback inactive. ``FDC_TWELVEDATA_API_KEY``.
+    twelvedata_api_key: str | None = None
     #: Shared bearer key for the open write API (research annotations) when the
     #: service is reachable from outside localhost. ``None`` keeps writes
     #: local-only. ``FDC_API_KEY``.

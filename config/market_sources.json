@@ -1,0 +1,5 @@
+{
+  "_comment": "Optional symbol aliases for the market fallbacks. Omit or leave a section empty to use the built-in defaults.",
+  "crypto_binance": {},
+  "twelvedata_symbols": {}
+}

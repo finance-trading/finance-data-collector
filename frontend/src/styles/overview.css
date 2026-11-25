@@ -149,9 +149,25 @@
 .m-change.down { color: var(--error); }
 
 /* Market index cards */
+.market-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.market-section-title {
+  margin: 0 0 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--filing-blue);
+}
+
 .market-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  /* auto-fill keeps tracks (and card widths) uniform when a section is sparse. */
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
   gap: 14px;
 }
 
@@ -162,10 +178,25 @@
   background: var(--paper-raised);
 }
 
+.market-card .mc-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
 .market-card .mc-label {
   color: var(--muted);
   font-size: 0.8rem;
   font-weight: 600;
+}
+
+.market-card .mc-symbol {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  opacity: 0.75;
+  white-space: nowrap;
 }
 
 .market-card .mc-value {

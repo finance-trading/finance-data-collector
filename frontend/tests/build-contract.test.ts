@@ -14,4 +14,13 @@ describe("multi-page frontend", () => {
       );
     },
   );
+
+  it("keeps layout classes off the overview market mount point", () => {
+    // Rendered content owns .market-sections; a grid class here would shrink it
+    // to one grid item.
+    const html = readFileSync(resolve(frontendRoot, "index.html"), "utf8");
+    const mount = html.match(/<div id="overview-market"[^>]*>/)?.[0];
+    expect(mount).toBeTruthy();
+    expect(mount).not.toContain("market-grid");
+  });
 });

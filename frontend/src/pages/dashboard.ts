@@ -1,5 +1,5 @@
 import { apiGet } from "../api/client";
-import type { MarketView, MoverItem, OverviewView } from "../api/types";
+import type { MarketIndexView, MarketUnit, MarketView, MoverItem, OverviewView } from "../api/types";
 
 /** Format a USD value in T/B/M human units; null → em dash. */
 export function formatMarketCap(usd: number | null): string {
@@ -102,37 +102,86 @@ export function buildMovers(view: OverviewView): HTMLDivElement {
   return wrap;
 }
 
-/** One broad-market index card: close, 1D change, 1W/1M ranges, and sparkline. */
-export function buildMarketCards(view: MarketView): HTMLDivElement {
-  const wrap = el("div", "market-grid");
+/** Format a market value by unit: points, percent yield, or USD. */
+export function formatMarketValue(value: number | null, unit: MarketUnit = "index"): string {
+  if (value == null) return "—";
+  if (unit === "pct") return `${value.toFixed(2)}%`;
+  if (unit === "usd") {
+    const digits = Math.abs(value) >= 100 ? 0 : 2;
+    return `$${value.toLocaleString("en-US", { maximumFractionDigits: digits })}`;
+  }
+  return value.toLocaleString("en-US", { maximumFractionDigits: 2 });
+}
+
+/** Day change as signed absolute + percent; yields show the absolute move only. */
+export function formatDayChange(index: MarketIndexView): string {
+  if (index.change == null) return formatPct(index.change_pct);
+  const sign = index.change > 0 ? "+" : index.change < 0 ? "-" : "";
+  if (index.unit === "pct") return `${sign}${Math.abs(index.change).toFixed(2)}`;
+  const text = `${sign}${formatMarketValue(Math.abs(index.change), index.unit ?? "index")}`;
+  if (index.change_pct == null) return text;
+  return `${text} (${formatPct(index.change_pct)})`;
+}
+
+/** One index card: close, 1D change, 1W/1M ranges, and sparkline. */
+function marketCard(index: MarketIndexView): HTMLDivElement {
+  const unit = index.unit ?? "index";
+  const card = el("div", "market-card");
+
+  const head = el("div", "mc-head");
+  head.append(el("span", "mc-label", index.label), el("span", "mc-symbol", index.symbol));
+  card.append(
+    head,
+    el("div", "mc-value", formatMarketValue(index.close, unit)),
+    el("div", `mc-change ${polarity(index.change_pct)}`, formatDayChange(index)),
+  );
+
+  const ranges = el("div", "mc-ranges");
+  const range = (label: string, value: number | null | undefined) => {
+    const span = el("span", `mc-range ${polarity(value ?? null)}`, `${label} ${formatPct(value ?? null)}`);
+    ranges.append(span);
+  };
+  range("1W", index.change_1w);
+  ranges.append(document.createTextNode("  "));
+  range("1M", index.change_1m);
+  card.append(ranges);
+
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", "0 0 120 32");
+  svg.setAttribute("class", "mc-spark");
+  svg.setAttribute("preserveAspectRatio", "none");
+  svg.setAttribute("aria-hidden", "true");
+  const polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+  polyline.setAttribute("points", sparkPoints(index.spark));
+  svg.append(polyline);
+  card.append(svg);
+
+  if (index.high_1m != null && index.low_1m != null) {
+    card.title = `${index.label} · 1M range ${formatMarketValue(index.low_1m, unit)} – ${formatMarketValue(index.high_1m, unit)}`;
+  }
+  return card;
+}
+
+/** Index cards grouped under one section per category, in server order. */
+export function buildMarketSections(view: MarketView): HTMLDivElement {
+  const wrap = el("div", "market-sections");
+  const groups = new Map<string, { label: string; items: MarketIndexView[] }>();
+  for (const category of view.categories ?? []) {
+    groups.set(category.id, { label: category.label, items: [] });
+  }
   for (const index of view.indices) {
-    const card = el("div", "market-card");
-    card.append(
-      el("div", "mc-label", index.label),
-      el("div", "mc-value", index.close == null ? "—" : index.close.toLocaleString()),
-      el("div", `mc-change ${polarity(index.change_pct)}`, formatPct(index.change_pct)),
-    );
-
-    const ranges = el("div", "mc-ranges");
-    const range = (label: string, value: number | null | undefined) => {
-      const span = el("span", `mc-range ${polarity(value ?? null)}`, `${label} ${formatPct(value ?? null)}`);
-      ranges.append(span);
-    };
-    range("1W", index.change_1w);
-    ranges.append(document.createTextNode("  "));
-    range("1M", index.change_1m);
-    card.append(ranges);
-
-    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("viewBox", "0 0 120 32");
-    svg.setAttribute("class", "mc-spark");
-    svg.setAttribute("preserveAspectRatio", "none");
-    svg.setAttribute("aria-hidden", "true");
-    const polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-    polyline.setAttribute("points", sparkPoints(index.spark));
-    svg.append(polyline);
-    card.append(svg);
-    wrap.append(card);
+    const key = index.category ?? "other";
+    if (!groups.has(key)) groups.set(key, { label: key, items: [] });
+    groups.get(key)!.items.push(index);
+  }
+  for (const { label, items } of groups.values()) {
+    if (items.length === 0) continue;
+    const section = el("section", "market-section");
+    section.append(el("h3", "market-section-title", label));
+    const grid = el("div", "market-grid");
+    for (const index of items) grid.append(marketCard(index));
+    section.append(grid);
+    wrap.append(section);
   }
   return wrap;
 }
@@ -175,7 +224,7 @@ export async function mountOverview(): Promise<void> {
     movers.replaceChildren(buildMovers(ov));
     movers.removeAttribute(STATE);
 
-    market.replaceChildren(buildMarketCards(mk));
+    market.replaceChildren(buildMarketSections(mk));
     market.removeAttribute(STATE);
   } catch {
     fail(indicators, "Overview unavailable.");

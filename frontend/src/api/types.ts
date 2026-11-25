@@ -396,22 +396,41 @@ export interface OverviewView {
   losers: MoverItem[];
 }
 
-/** One tracked broad-market index (GET /api/v1/market). */
+/** Display unit for one index: points, percent yield, or USD. */
+export type MarketUnit = "index" | "pct" | "usd";
+
+/** One index category, in display order (GET /api/v1/market). */
+export interface MarketCategory {
+  id: string;
+  label: string;
+}
+
+/** One tracked market index (GET /api/v1/market). */
 export interface MarketIndexView {
   symbol: string;
   label: string;
+  /** Category id, matching MarketView.categories. */
+  category?: string;
+  unit?: MarketUnit;
   close: number | null;
+  /** Absolute change since the previous close. */
+  change?: number | null;
   change_pct: number | null;
   /** Change over the trailing 5 sessions; null when history is too short. */
   change_1w?: number | null;
   /** Change over the trailing month; null when history is too short. */
   change_1m?: number | null;
+  /** Highest and lowest close over the stored month of sessions. */
+  high_1m?: number | null;
+  low_1m?: number | null;
   /** Recent closes for the sparkline, oldest first. */
   spark: number[];
 }
 
 export interface MarketView {
   as_of: string | null;
+  /** Categories in display order; indices reference these by id. */
+  categories?: MarketCategory[];
   indices: MarketIndexView[];
 }
 
